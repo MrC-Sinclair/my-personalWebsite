@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "home": "首页",
+    "blog": "博客",
+    "projects": "项目集锦",
+    "about": "关于",
+    "contact": "联系"
+  },
+  "home": {
+    "greeting": "你好，我是",
+    "name": "开发者",
+    "tagline": "全栈开发者 / 技术写作者",
+    "description": "热爱技术，专注于 Web 开发，分享技术心得与项目经验。",
+    "viewBlog": "查看博客",
+    "viewProjects": "查看项目",
+    "latestPosts": "最新文章",
+    "viewAll": "查看全部",
+    "featuredProjects": "精选项目"
+  },
+  "blog": {
+    "title": "博客",
+    "description": "技术文章与心得分享",
+    "search": "搜索文章...",
+    "categories": "分类",
+    "tags": "标签",
+    "readMore": "阅读更多",
+    "readingTime": "阅读时长",
+    "minutes": "分钟",
+    "publishedAt": "发布于",
+    "updatedAt": "更新于",
+    "prevPost": "上一篇",
+    "nextPost": "下一篇",
+    "toc": "目录",
+    "noResults": "没有找到相关文章",
+    "allCategories": "全部分类"
+  },
+  "projects": {
+    "title": "项目集锦",
+    "description": "个人项目与作品展示",
+    "demo": "在线演示",
+    "github": "GitHub",
+    "techStack": "技术栈",
+    "featured": "精选"
+  },
+  "about": {
+    "title": "关于我",
+    "description": "了解更多关于我的信息",
+    "skills": "技能",
+    "experience": "工作经历",
+    "education": "教育背景"
+  },
+  "contact": {
+    "title": "联系我",
+    "description": "有任何问题或合作意向，欢迎联系我",
+    "name": "姓名",
+    "email": "邮箱",
+    "message": "消息",
+    "send": "发送",
+    "sending": "发送中...",
+    "success": "消息已发送！",
+    "error": "发送失败，请稍后重试。",
+    "socialLinks": "社交链接"
+  },
+  "common": {
+    "darkMode": "暗色模式",
+    "lightMode": "亮色模式",
+    "language": "语言",
+    "search": "搜索",
+    "backToTop": "回到顶部",
+    "loading": "加载中...",
+    "notFound": "页面未找到",
+    "goHome": "返回首页"
+  },
+  "footer": {
+    "copyright": "版权所有",
+    "builtWith": "使用 Nuxt 构建"
+  }
+}
