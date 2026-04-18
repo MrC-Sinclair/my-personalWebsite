@@ -1,7 +1,7 @@
 ---
 title: Building a Personal Website with Nuxt 3
 description: Documenting the process of building a personal website using Nuxt 3 + Nuxt UI + @nuxt/content, sharing technical choices and implementation details.
-date: "2025-04-15"
+date: '2025-04-15'
 tags:
   - Nuxt
   - Vue

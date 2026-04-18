@@ -24,5 +24,4 @@ Thumbs.db
 !.vscode/extensions.json
 .idea
 
-# 本地上下文文件
-CLAUDE.local.md
+

@@ -6,19 +6,19 @@
 
 ## 技术栈
 
-| 类别 | 技术 |
-|------|------|
-| 框架 | Nuxt 3 (^3.17, SSG 模式) + Vue 3 (^3.5) |
-| UI | Nuxt UI v3 + Tailwind CSS v4 |
-| 语言 | TypeScript ^5.x |
-| 内容 | @nuxt/content v3 (Markdown + Zod schema) |
-| 国际化 | @nuxtjs/i18n ^9.x (中/英) |
-| 主题 | @nuxtjs/color-mode (Nuxt UI 内置，亮色/暗色) |
-| 图片 | @nuxt/image ^1.x |
+| 类别   | 技术                                                    |
+| ------ | ------------------------------------------------------- |
+| 框架   | Nuxt 3 (^3.17, SSG 模式) + Vue 3 (^3.5)                 |
+| UI     | Nuxt UI v3 + Tailwind CSS v4                            |
+| 语言   | TypeScript ^5.x                                         |
+| 内容   | @nuxt/content v3 (Markdown + Zod schema)                |
+| 国际化 | @nuxtjs/i18n ^9.x (中/英)                               |
+| 主题   | @nuxtjs/color-mode (Nuxt UI 内置，亮色/暗色)            |
+| 图片   | @nuxt/image ^1.x                                        |
 | 数据库 | Drizzle ORM + PostgreSQL 17 (预留，Docker Compose 本地) |
-| 测试 | Vitest |
-| 规范 | ESLint + Prettier + Commitlint + husky + cspell |
-| 部署 | GitHub Actions → GitHub Pages |
+| 测试   | Vitest                                                  |
+| 规范   | ESLint + Prettier + Commitlint + husky + cspell         |
+| 部署   | GitHub Actions → GitHub Pages                           |
 
 ## 代码风格与规范
 

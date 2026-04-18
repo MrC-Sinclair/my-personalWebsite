@@ -1,7 +1,21 @@
+<!--
+  联系页面 - 联系表单和社交链接
+
+  内容区域：
+  - 联系表单：姓名 + 邮箱 + 留言内容（提交到 Formspree）
+  - 社交链接：GitHub / Twitter / LinkedIn / 微信
+
+  数据获取：
+  - useAppInfo() 提供 siteConfig（社交链接）
+
+  路由：/contact
+-->
 <template>
   <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
     <header class="mb-12 text-center">
-      <h1 class="text-text-primary-light dark:text-text-primary-dark mb-4 text-3xl font-bold sm:text-4xl">
+      <h1
+        class="text-text-primary-light dark:text-text-primary-dark mb-4 text-3xl font-bold sm:text-4xl"
+      >
         {{ t('contact.title') }}
       </h1>
       <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg">
@@ -23,7 +37,7 @@
             :href="siteConfig.social.github"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark hover:shadow-md flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250"
+            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-github" class="h-6 w-6" />
             <span>GitHub</span>
@@ -32,7 +46,7 @@
             :href="siteConfig.social.twitter"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark hover:shadow-md flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250"
+            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-x" class="h-6 w-6" />
             <span>Twitter / X</span>
@@ -41,7 +55,7 @@
             :href="siteConfig.social.linkedin"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark hover:shadow-md flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250"
+            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-linkedin" class="h-6 w-6" />
             <span>LinkedIn</span>

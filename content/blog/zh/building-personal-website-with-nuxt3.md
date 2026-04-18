@@ -1,7 +1,7 @@
 ---
 title: 使用 Nuxt 3 构建个人网站
 description: 记录使用 Nuxt 3 + Nuxt UI + @nuxt/content 搭建个人网站的全过程，分享技术选型与实现细节。
-date: "2025-04-15"
+date: '2025-04-15'
 tags:
   - Nuxt
   - Vue

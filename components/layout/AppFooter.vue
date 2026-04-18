@@ -1,5 +1,23 @@
+<!--
+  AppFooter - 全局页脚组件
+
+  显示版权信息、社交媒体图标链接和技术栈说明。
+
+  内容：
+  - 版权信息（动态年份 + 作者名）
+  - 社交媒体图标链接（GitHub / Twitter / LinkedIn）
+  - "Built with Nuxt" 技术栈说明
+
+  依赖：
+  - useAppInfo() 提供 siteConfig（作者名、社交链接）
+  - useI18n() 提供国际化文案
+
+  使用场景：layouts/default.vue 全局布局
+-->
 <template>
-  <footer class="bg-surface-light-alt dark:bg-surface-dark-alt border-t border-gray-200 dark:border-gray-700">
+  <footer
+    class="bg-surface-light-alt dark:bg-surface-dark-alt border-t border-gray-200 dark:border-gray-700"
+  >
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
         <div class="text-text-secondary-light dark:text-text-secondary-dark text-sm">

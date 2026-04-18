@@ -1,3 +1,24 @@
+<!--
+  ContactForm - 联系表单组件
+
+  提供用户留言表单，提交到 Formspree 第三方服务。
+
+  表单字段：
+  - 姓名（必填）
+  - 邮箱（必填，email 类型校验）
+  - 留言内容（必填，5 行文本域）
+
+  状态管理：
+  - isSubmitting: 提交中禁用按钮和表单
+  - submitStatus: idle / success / error 三种状态
+
+  注意：
+  - Formspree 端点 URL 需替换为实际的 form ID
+  - 提交成功后自动清空表单
+
+  依赖：
+  - useI18n() 提供国际化文案
+-->
 <template>
   <form class="space-y-4" @submit.prevent="handleSubmit">
     <UFormField :label="t('contact.name')" name="name" required>

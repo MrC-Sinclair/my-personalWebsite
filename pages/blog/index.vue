@@ -1,7 +1,24 @@
+<!--
+  博客列表页 - 展示所有已发布的博客文章
+
+  功能：
+  - 页面标题和描述
+  - 分类标签筛选器（点击切换分类）
+  - 关键词搜索（即时过滤标题、描述、标签）
+  - 文章卡片网格列表
+
+  数据获取：
+  - useBlog().getAllPosts() 获取所有文章
+  - useBlog().getAllCategories() 获取所有分类
+
+  路由：/blog
+-->
 <template>
   <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
     <header class="mb-8">
-      <h1 class="text-text-primary-light dark:text-text-primary-dark mb-2 text-3xl font-bold sm:text-4xl">
+      <h1
+        class="text-text-primary-light dark:text-text-primary-dark mb-2 text-3xl font-bold sm:text-4xl"
+      >
         {{ t('blog.title') }}
       </h1>
       <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg">

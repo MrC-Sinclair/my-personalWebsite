@@ -1,3 +1,18 @@
+<!--
+  项目详情页 - 展示单个项目的完整介绍
+
+  通过 URL 中的 slug 参数获取对应项目，使用 ProjectDetail 组件渲染。
+
+  数据获取：
+  - queryCollection 直接查询 @nuxt/content 获取项目原始数据（含 body）
+  - 手动映射为 Project 类型（因为需要 content 对象传递给 ContentRenderer）
+
+  路由：/projects/:slug
+
+  注意：
+  - 此页面未使用 useProjects().getProjectBySlug()，因为需要保留完整的 content 对象
+    用于 ContentRenderer 渲染 Markdown 正文
+-->
 <template>
   <div>
     <ProjectDetail v-if="project && content" :project="project" :content="content" />

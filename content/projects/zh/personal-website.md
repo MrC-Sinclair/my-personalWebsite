@@ -1,7 +1,7 @@
 ---
 title: 个人网站项目
 description: 基于 Nuxt 3 SSG 构建的综合型个人网站，包含博客、项目集锦、关于和联系模块。
-date: "2025-04-10"
+date: '2025-04-10'
 tags:
   - Nuxt
   - Vue

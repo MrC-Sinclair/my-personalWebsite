@@ -1,3 +1,18 @@
+<!--
+  博客详情页 - 展示单篇博客文章的完整内容
+
+  通过 URL 中的 slug 参数获取对应文章，使用 BlogDetail 组件渲染。
+
+  数据获取：
+  - queryCollection 直接查询 @nuxt/content 获取文章原始数据（含 body 和 toc）
+  - 手动映射为 BlogPost 类型（因为需要 content 对象传递给 ContentRenderer）
+
+  路由：/blog/:slug
+
+  注意：
+  - 此页面未使用 useBlog().getPostBySlug()，因为需要保留完整的 content 对象
+    用于 ContentRenderer 渲染 Markdown 正文
+-->
 <template>
   <div>
     <BlogDetail v-if="post && content" :post="post" :content="content" />
@@ -15,7 +30,6 @@ import type { BlogPost } from '~/types/blog'
 
 const { t, locale } = useI18n()
 const route = useRoute()
-const { getPostBySlug } = useBlog()
 
 const slug = route.params.slug as string
 

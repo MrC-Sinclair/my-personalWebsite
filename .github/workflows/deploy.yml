@@ -11,27 +11,27 @@ name: Deploy to GitHub Pages
 # 定义何时运行此工作流
 on:
   push:
-    branches: [main]  # 当代码推送到 main 分支时触发
+    branches: [main] # 当代码推送到 main 分支时触发
 
 # ==================== 权限配置 ====================
 # GitHub Actions 需要的权限（用于部署到 GitHub Pages）
 permissions:
-  contents: read      # 读取仓库内容的权限（用于 checkout）
-  pages: write        # 写入 GitHub Pages 的权限（用于部署）
-  id-token: write     # 用于 OIDC 身份验证（GitHub Pages 部署需要）
+  contents: read # 读取仓库内容的权限（用于 checkout）
+  pages: write # 写入 GitHub Pages 的权限（用于部署）
+  id-token: write # 用于 OIDC 身份验证（GitHub Pages 部署需要）
 
 # ==================== 并发控制 ====================
 # 防止同一工作流多次同时运行造成冲突
 concurrency:
-  group: pages        # 同一组的工作流共享并发限制
-  cancel-in-progress: false  # 不取消正在运行的部署，等待完成后再执行新的
+  group: pages # 同一组的工作流共享并发限制
+  cancel-in-progress: false # 不取消正在运行的部署，等待完成后再执行新的
 
 # ==================== 任务定义 ====================
 # 工作流包含两个任务：build（构建）和 deploy（部署）
 jobs:
   # -------------------- 构建任务 --------------------
   build:
-    runs-on: ubuntu-latest  # 使用 Ubuntu 最新版本作为运行环境
+    runs-on: ubuntu-latest # 使用 Ubuntu 最新版本作为运行环境
 
     steps:
       # 步骤 1：检出代码
@@ -44,7 +44,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10  # 使用 pnpm v10
+          version: 10 # 使用 pnpm v10
 
       # 步骤 3：安装 Node.js 运行时
       # Nuxt 3 需要 Node.js 18+，这里使用 v20
@@ -52,7 +52,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm  # 启用 pnpm 依赖缓存，加速后续构建
+          cache: pnpm # 启用 pnpm 依赖缓存，加速后续构建
 
       # 步骤 4：配置 GitHub Pages
       # 自动设置 GitHub Pages 所需的配置
@@ -74,21 +74,21 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .output/public  # Nuxt SSG 的输出目录
+          path: .output/public # Nuxt SSG 的输出目录
 
   # -------------------- 部署任务 --------------------
   deploy:
     # 部署环境配置
     environment:
-      name: github-pages  # GitHub Pages 环境名称
-      url: ${{ steps.deployment.outputs.page_url }}  # 部署完成后显示的 URL
+      name: github-pages # GitHub Pages 环境名称
+      url: ${{ steps.deployment.outputs.page_url }} # 部署完成后显示的 URL
 
     runs-on: ubuntu-latest
-    needs: build  # 依赖构建任务，必须等 build 完成后才能执行
+    needs: build # 依赖构建任务，必须等 build 完成后才能执行
 
     steps:
       # 步骤 1：部署到 GitHub Pages
       # 将构建产物发布到 GitHub Pages
       - name: Deploy to GitHub Pages
-        id: deployment  # 设置步骤 ID，用于获取输出（如部署 URL）
+        id: deployment # 设置步骤 ID，用于获取输出（如部署 URL）
         uses: actions/deploy-pages@v4

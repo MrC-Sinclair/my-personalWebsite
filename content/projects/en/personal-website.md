@@ -1,7 +1,7 @@
 ---
 title: Personal Website
 description: A comprehensive personal website built with Nuxt 3 SSG, featuring blog, projects portfolio, about, and contact modules.
-date: "2025-04-10"
+date: '2025-04-10'
 tags:
   - Nuxt
   - Vue

@@ -1,14 +1,7 @@
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/ui',
-    '@nuxt/content',
-    '@nuxtjs/i18n',
-    '@nuxt/image',
-  ],
+  modules: ['@nuxt/ui', '@nuxt/content', '@nuxtjs/i18n', '@nuxt/image', '@nuxt/eslint'],
 
-  components: [
-    { path: '~/components', pathPrefix: false },
-  ],
+  components: [{ path: '~/components', pathPrefix: false }],
 
   css: ['~/assets/css/main.css'],
 
@@ -23,9 +16,7 @@ export default defineNuxtConfig({
         { name: 'og:type', content: 'website' },
         { name: 'og:site_name', content: '我的个人网站' },
       ],
-      link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
   },
 

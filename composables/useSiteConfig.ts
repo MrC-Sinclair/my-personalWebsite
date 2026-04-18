@@ -1,8 +1,37 @@
-import type { SiteConfig, NavItem, SocialLinks, SkillGroup, TimelineItem } from '~/types/site'
+/**
+ * @file 站点信息组合式函数
+ * @description 提供站点全局配置、导航菜单、技能分组和工作/教育时间线数据。
+ *              所有数据通过 useI18n 实现国际化，切换语言时自动更新。
+ *              站点配置（名称、社交链接等）为静态数据，后续可迁移到数据库或环境变量。
+ */
 
+import type { SiteConfig, NavItem, SkillGroup, TimelineItem } from '~/types/site'
+
+/**
+ * 站点信息组合式函数
+ *
+ * @returns 站点配置、导航项、技能分组和时间线数据
+ *
+ * @example
+ * ```vue
+ * <script setup>
+ * const { siteConfig, navItems, skillGroups, timeline } = useAppInfo()
+ * </script>
+ *
+ * <template>
+ *   <span>{{ siteConfig.name }}</span>
+ *   <nav>
+ *     <NuxtLink v-for="item in navItems" :key="item.to" :to="item.to">
+ *       {{ item.label }}
+ *     </NuxtLink>
+ *   </nav>
+ * </template>
+ * ```
+ */
 export function useAppInfo() {
   const { t } = useI18n()
 
+  /** 站点全局配置（静态数据，后续可迁移到 .env 或 CMS） */
   const siteConfig: SiteConfig = {
     name: '我的个人网站',
     description: '技术博客、项目作品集、关于我',
@@ -17,6 +46,7 @@ export function useAppInfo() {
     },
   }
 
+  /** 导航菜单项（国际化响应式） */
   const navItems = computed<NavItem[]>(() => [
     { label: t('nav.home'), to: '/' },
     { label: t('nav.blog'), to: '/blog' },
@@ -25,6 +55,7 @@ export function useAppInfo() {
     { label: t('nav.contact'), to: '/contact' },
   ])
 
+  /** 技能分组数据（国际化响应式，用于关于页面展示） */
   const skillGroups = computed<SkillGroup[]>(() => [
     {
       category: '前端',
@@ -44,6 +75,7 @@ export function useAppInfo() {
     },
   ])
 
+  /** 工作/教育时间线数据（国际化响应式，用于关于页面展示） */
   const timeline = computed<TimelineItem[]>(() => [
     {
       title: '高级前端工程师',

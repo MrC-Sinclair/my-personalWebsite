@@ -3,6 +3,7 @@
   "language": "en",
   "words": [
     "nuxt",
+    "nuxtjs",
     "nuxi",
     "tailwindcss",
     "headlessui",
@@ -30,7 +31,16 @@
     "prose",
     "noto",
     "inter",
-    "jetbrains"
+    "jetbrains",
+    "wechat",
+    "wcag",
+    "ttfb",
+    "reka",
+    "googleicons",
+    "demi",
+    "trae",
+    "fira",
+    "todolist"
   ],
   "ignorePaths": [
     "node_modules",
