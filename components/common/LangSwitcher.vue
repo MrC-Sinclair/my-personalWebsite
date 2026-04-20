@@ -10,6 +10,7 @@
   注意：
   - 使用 ClientOnly 包裹，避免 hydration mismatch
   - 依赖 @nuxtjs/i18n 的 useI18n 和 useSwitchLocalePath
+  - 触控区域 ≥ 44×44px（WCAG AA 无障碍标准）
 
   依赖：
   - useI18n() 提供当前语言和可用语言列表
@@ -18,7 +19,7 @@
 <template>
   <ClientOnly>
     <button
-      class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 transition-colors duration-150"
+      class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
       :aria-label="t('common.language')"
       @click="toggleLocale"
     >

@@ -7,7 +7,7 @@
   - post: BlogPost - 博客文章数据对象
 
   展示内容：
-  - 封面图片（可选，懒加载）
+  - 封面图片（可选，懒加载，响应式 sizes）
   - 标签（最多显示 3 个）
   - 文章标题
   - 文章摘要（最多 2 行，line-clamp-2）
@@ -31,6 +31,7 @@
         <NuxtImg
           :src="post.image"
           :alt="post.title"
+          sizes="sm:100vw md:50vw lg:33vw"
           class="h-48 w-full object-cover transition-transform duration-250 group-hover:scale-105"
           loading="lazy"
         />

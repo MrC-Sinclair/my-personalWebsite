@@ -5,15 +5,17 @@
   - AppHeader: 固定顶部导航栏
   - main: 页面内容区域（flex-1 确保页脚始终在底部）
   - AppFooter: 页脚
+  - MobileNavBar: 移动端底部导航栏（md 以下显示）
 
   使用场景：所有页面默认使用此布局
 -->
 <template>
   <div class="flex min-h-screen flex-col">
     <AppHeader />
-    <main class="flex-1">
+    <main class="flex-1 pb-16 md:pb-0">
       <slot />
     </main>
     <AppFooter />
+    <MobileNavBar />
   </div>
 </template>

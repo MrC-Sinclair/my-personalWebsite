@@ -74,7 +74,14 @@ docker compose -f docker/docker-compose.yml down
 - 默认开发语言：中文
 - 编辑器：VS Code / Trae
 - 终端：PowerShell
-- 浏览器调试：Chrome DevTools
+- 浏览器调试：Chrome DevTools（移动端模拟可用 DevTools 设备模拟器）
+
+## 移动端调试
+
+- Chrome DevTools 设备模拟器：F12 → 切换设备工具栏（Ctrl+Shift+M）
+- 测试安全区域：在 DevTools 中模拟 iPhone X+ 设备
+- 测试 PWA：DevTools → Application → Service Workers / Manifest
+- 测试 prefers-reduced-motion：DevTools → Rendering → Emulate CSS media feature prefers-reduced-motion
 
 ## 注意事项
 
@@ -84,3 +91,5 @@ docker compose -f docker/docker-compose.yml down
 - Docker Desktop 需提前启动才能使用本地数据库
 - 首次安装依赖时 pnpm 会提示允许构建原生模块（better-sqlite3 等），已在 `package.json` 的 `pnpm.onlyBuiltDependencies` 中预配置
 - 网络受限环境下，Google Fonts 已在 `nuxt.config.ts` 中禁用（`fonts.providers.google: false`）
+- PWA 在本地开发时自动注册 Service Worker，可通过 DevTools → Application → Service Workers 管理
+- 移动端底部导航栏在 md 以下断点显示，桌面端隐藏；布局 `default.vue` 中 `main` 有 `pb-16 md:pb-0` 为其留出空间

@@ -10,10 +10,12 @@
   布局：
   - 文章头部：分类标签 + 标签组 + 标题 + 发布日期/更新日期
   - 正文区域：左侧 Markdown 渲染内容 + 右侧目录导航（桌面端显示）
+  - 移动端：底部浮动 TOC 按钮（MobileToc）
   - 使用 prose 排版样式渲染 Markdown
 
   依赖：
-  - BlogToc 组件渲染文章目录
+  - BlogToc 组件渲染桌面端文章目录
+  - MobileToc 组件渲染移动端文章目录
   - ContentRenderer 渲染 Markdown 内容
   - useI18n() 提供语言环境和国际化文案
   - formatDate() 工具函数格式化日期
@@ -59,6 +61,8 @@
 
       <BlogToc v-if="toc && toc.links.length > 0" :toc="toc" class="hidden lg:block" />
     </div>
+
+    <MobileToc v-if="toc && toc.links.length > 0" :toc="toc" />
   </article>
 </template>
 

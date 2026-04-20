@@ -11,6 +11,7 @@
   注意：
   - 使用 ClientOnly 包裹，避免 hydration mismatch（主题依赖客户端状态）
   - fallback 显示月亮图标（默认亮色模式的切换按钮）
+  - 触控区域 ≥ 44×44px（WCAG AA 无障碍标准）
 
   依赖：
   - useColorMode() Nuxt UI 内置的颜色模式管理
@@ -19,7 +20,7 @@
 <template>
   <ClientOnly>
     <button
-      class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 transition-colors duration-150"
+      class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
       :aria-label="isDark ? t('common.lightMode') : t('common.darkMode')"
       @click="toggleColorMode"
     >
@@ -28,7 +29,7 @@
     </button>
     <template #fallback>
       <button
-        class="text-text-secondary-light dark:text-text-secondary-dark transition-colors duration-150"
+        class="text-text-secondary-light dark:text-text-secondary-dark flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
         :aria-label="t('common.darkMode')"
       >
         <UIcon name="i-heroicons-moon" class="h-5 w-5" />

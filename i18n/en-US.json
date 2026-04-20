@@ -69,7 +69,9 @@
     "backToTop": "Back to Top",
     "loading": "Loading...",
     "notFound": "Page Not Found",
-    "goHome": "Go Home"
+    "goHome": "Go Home",
+    "openMenu": "Open Menu",
+    "closeMenu": "Close Menu"
   },
   "footer": {
     "copyright": "All rights reserved",

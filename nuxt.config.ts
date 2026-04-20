@@ -1,5 +1,12 @@
 export default defineNuxtConfig({
-  modules: ['@nuxt/ui', '@nuxt/content', '@nuxtjs/i18n', '@nuxt/image', '@nuxt/eslint'],
+  modules: [
+    '@nuxt/ui',
+    '@nuxt/content',
+    '@nuxtjs/i18n',
+    '@nuxt/image',
+    '@nuxt/eslint',
+    '@vite-pwa/nuxt',
+  ],
 
   components: [{ path: '~/components', pathPrefix: false }],
 
@@ -11,10 +18,13 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'zh-CN' },
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
         { name: 'description', content: '个人网站 - 技术博客、项目作品集、关于我' },
         { name: 'og:type', content: 'website' },
         { name: 'og:site_name', content: '我的个人网站' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'theme-color', content: '#6366f1' },
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
@@ -42,6 +52,32 @@ export default defineNuxtConfig({
     providers: {
       google: false,
       googleicons: false,
+    },
+  },
+
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: '我的个人网站',
+      short_name: '个人网站',
+      description: '技术博客、项目作品集、关于我',
+      theme_color: '#6366f1',
+      background_color: '#ffffff',
+      display: 'standalone',
+      start_url: '/my-personalWebsite/',
+      icons: [
+        {
+          src: '/favicon.ico',
+          sizes: '48x48',
+          type: 'image/x-icon',
+        },
+      ],
+    },
+    workbox: {
+      navigateFallback: null,
+    },
+    client: {
+      installPrompt: true,
     },
   },
 

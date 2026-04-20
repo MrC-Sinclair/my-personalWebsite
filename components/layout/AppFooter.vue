@@ -2,6 +2,7 @@
   AppFooter - 全局页脚组件
 
   显示版权信息、社交媒体图标链接和技术栈说明。
+  适配刘海屏设备的安全区域。
 
   内容：
   - 版权信息（动态年份 + 作者名）
@@ -16,7 +17,7 @@
 -->
 <template>
   <footer
-    class="bg-surface-light-alt dark:bg-surface-dark-alt border-t border-gray-200 dark:border-gray-700"
+    class="bg-surface-light-alt dark:bg-surface-dark-alt safe-bottom border-t border-gray-200 dark:border-gray-700"
   >
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -24,12 +25,12 @@
           &copy; {{ currentYear }} {{ siteConfig.author }}. {{ t('footer.copyright') }}
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
           <a
             :href="siteConfig.social.github"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 transition-colors duration-150"
+            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
             aria-label="GitHub"
           >
             <UIcon name="i-simple-icons-github" class="h-5 w-5" />
@@ -38,7 +39,7 @@
             :href="siteConfig.social.twitter"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 transition-colors duration-150"
+            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
             aria-label="Twitter"
           >
             <UIcon name="i-simple-icons-x" class="h-5 w-5" />
@@ -47,7 +48,7 @@
             :href="siteConfig.social.linkedin"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 transition-colors duration-150"
+            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
             aria-label="LinkedIn"
           >
             <UIcon name="i-simple-icons-linkedin" class="h-5 w-5" />

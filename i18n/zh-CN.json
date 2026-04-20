@@ -69,7 +69,9 @@
     "backToTop": "回到顶部",
     "loading": "加载中...",
     "notFound": "页面未找到",
-    "goHome": "返回首页"
+    "goHome": "返回首页",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
   },
   "footer": {
     "copyright": "版权所有",

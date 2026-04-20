@@ -1,17 +1,20 @@
 # my-personalWebsite
 
-综合型个人网站，包含首页、技术博客、项目作品集、关于页面和联系方式五大核心模块。采用 Nuxt 3 SSG 静态生成 + GitHub Pages 部署方案，内容通过 Markdown 文件 + @nuxt/content v3 管理，UI 使用 Nuxt UI v3 组件库。
+综合型个人网站，包含首页、技术博客、项目作品集、关于页面和联系方式五大核心模块。采用 Nuxt 3 SSG 静态生成 + GitHub Pages 部署方案，内容通过 Markdown 文件 + @nuxt/content v3 管理，UI 使用 Nuxt UI v3 组件库。完整适配移动端，支持 PWA 离线访问。
 
 ## 功能特性
 
 - **首页**：个人简介、最新博客预览、精选项目展示、社交链接
-- **博客系统**：Markdown 文章管理、分类/标签筛选、文章详情、全文搜索
-- **项目集锦**：项目卡片展示、项目详情页、技术栈标签、在线演示/GitHub 链接
+- **博客系统**：Markdown 文章管理、分类/标签筛选、文章详情、全文搜索、移动端浮动目录
+- **项目集锦**：项目卡片展示（整体可点击）、项目详情页、技术栈标签、在线演示/GitHub 链接
 - **关于页面**：个人信息、技能树、工作经历时间线、教育背景
 - **联系表单**：静态表单提交（Formspree 第三方服务）
 - **国际化**：中英文双语支持，URL 策略 prefix_except_default
 - **主题切换**：亮色/暗色双模式，持久化到 localStorage
 - **响应式设计**：移动端优先，适配手机/平板/桌面
+- **移动端优化**：汉堡菜单动画、底部导航栏、浮动 TOC、抽屉式侧边栏、触控目标优化
+- **PWA**：支持添加到主屏幕、离线访问、自动更新
+- **无障碍**：WCAG AA 标准、prefers-reduced-motion 支持、安全区域适配
 
 ## 技术栈
 
@@ -23,7 +26,8 @@
 | 内容   | @nuxt/content v3                                | Markdown 渲染与搜索       |
 | 国际化 | @nuxtjs/i18n ^9.x                               | 中/英双语                 |
 | 主题   | @nuxtjs/color-mode                              | 亮色/暗色切换             |
-| 图片   | @nuxt/image ^1.x                                | 响应式图片优化            |
+| 图片   | @nuxt/image ^1.x                                | 响应式图片优化（含 sizes）|
+| PWA    | @vite-pwa/nuxt ^1.x                             | 离线访问、添加到主屏幕    |
 | 数据库 | Drizzle ORM + PostgreSQL 17                     | 预留，Docker Compose 本地 |
 | 测试   | Vitest                                          | 单元测试                  |
 | 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                  |
@@ -34,11 +38,11 @@
 ```
 my-personalWebsite/
 ├── .github/workflows/deploy.yml   # GitHub Actions CI/CD 部署配置
-├── assets/css/main.css            # 全局样式入口（Tailwind @theme Design Tokens）
+├── assets/css/main.css            # 全局样式入口（@theme Design Tokens + prefers-reduced-motion + safe-area）
 ├── components/                    # Vue 组件
-│   ├── layout/                    # 布局组件（AppHeader, AppFooter, AppSidebar）
+│   ├── layout/                    # 布局组件（AppHeader, AppFooter, AppSidebar, MobileNavBar）
 │   ├── home/                      # 首页组件（HeroSection, LatestPosts, FeaturedProjects）
-│   ├── blog/                      # 博客组件（BlogCard, BlogDetail, BlogList, BlogToc）
+│   ├── blog/                      # 博客组件（BlogCard, BlogDetail, BlogList, BlogToc, MobileToc）
 │   ├── project/                   # 项目组件（ProjectCard, ProjectDetail, ProjectGrid）
 │   └── common/                    # 通用组件（ThemeToggle, LangSwitcher, SearchModal, ContactForm）
 ├── composables/                   # 可组合函数（内容获取抽象层）
@@ -55,7 +59,7 @@ my-personalWebsite/
 ├── i18n/                          # 国际化语言包
 │   ├── zh-CN.json                 # 中文
 │   └── en-US.json                 # 英文
-├── layouts/default.vue            # 默认布局（Header + main + Footer）
+├── layouts/default.vue            # 默认布局（Header + main + Footer + MobileNavBar）
 ├── pages/                         # 文件路由
 │   ├── index.vue                  # 首页
 │   ├── blog/index.vue             # 博客列表
@@ -72,7 +76,7 @@ my-personalWebsite/
 ├── app.vue                        # Nuxt 应用入口
 ├── error.vue                      # 全局错误页
 ├── content.config.ts              # @nuxt/content v3 collections 定义
-├── nuxt.config.ts                 # Nuxt 主配置
+├── nuxt.config.ts                 # Nuxt 主配置（含 PWA）
 └── vitest.config.ts               # 单测配置
 ```
 
@@ -132,7 +136,8 @@ pnpm test:watch    # 运行测试（监听模式）
 
 - `nuxt.config.ts` 中 `app.baseURL` 设为 `/my-personalWebsite/`
 - i18n 使用 `prefix_except_default` 策略（中文无前缀，英文 URL 带 `/en/`）
-- 图片优化使用 `@nuxt/image` 的 `ipx` provider
+- 图片优化使用 `@nuxt/image` 的 `ipx` provider，卡片组件配置 `sizes` 属性
+- PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段
 
 ## 本地数据库（可选）
 
@@ -155,6 +160,7 @@ docker compose -f docker/docker-compose.yml down
 - **拼写检查**：cspell
 - **测试**：Vitest 单元测试，新增功能需同步更新测试
 - **组件命名**：自动导入 `pathPrefix: false`，组件名不带目录前缀
+- **移动端组件**：以 `Mobile` 前缀命名（如 MobileToc、MobileNavBar）
 
 ## 架构要点
 
@@ -162,3 +168,4 @@ docker compose -f docker/docker-compose.yml down
 2. **内容层抽象**：`composables/` 封装数据获取逻辑，组件不直接硬编码数据源
 3. **数据层预留**：Drizzle + PostgreSQL 可选，通过 composables 隔离
 4. **路由**：基于文件路由，`pages/` 目录结构即路由结构
+5. **移动端优先**：独立移动端交互组件，桌面端和移动端体验分离
