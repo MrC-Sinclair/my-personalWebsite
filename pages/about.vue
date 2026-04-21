@@ -13,7 +13,7 @@
 -->
 <template>
   <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-    <header class="mb-12 text-center">
+    <header class="scroll-reveal scroll-reveal-up mb-12 text-center">
       <h1
         class="text-text-primary-light dark:text-text-primary-dark mb-4 text-3xl font-bold sm:text-4xl"
       >
@@ -24,7 +24,7 @@
       </p>
     </header>
 
-    <section class="mb-12">
+    <section class="scroll-reveal scroll-reveal-up mb-12">
       <div class="flex flex-col items-center gap-8 md:flex-row md:items-start">
         <div
           class="bg-primary-100 dark:bg-primary-900 flex h-32 w-32 shrink-0 items-center justify-center rounded-full"
@@ -45,15 +45,16 @@
       </div>
     </section>
 
-    <section class="mb-12">
+    <section class="scroll-reveal scroll-reveal-up mb-12">
       <h2 class="text-text-primary-light dark:text-text-primary-dark mb-6 text-2xl font-bold">
         {{ t('about.skills') }}
       </h2>
       <div class="grid gap-6 sm:grid-cols-2">
         <div
-          v-for="group in skillGroups"
+          v-for="(group, index) in skillGroups"
           :key="group.category"
-          class="bg-surface-light dark:bg-surface-dark rounded-xl p-5 shadow-sm"
+          class="scroll-reveal scroll-reveal-up bg-surface-light dark:bg-surface-dark rounded-xl p-5 shadow-sm"
+          :class="`scroll-reveal-delay-${Math.min(index + 1, 5)}`"
         >
           <h3 class="text-primary-500 mb-3 font-semibold">
             {{ group.category }}
@@ -67,12 +68,17 @@
       </div>
     </section>
 
-    <section>
+    <section class="scroll-reveal scroll-reveal-up">
       <h2 class="text-text-primary-light dark:text-text-primary-dark mb-6 text-2xl font-bold">
         {{ t('about.experience') }}
       </h2>
       <div class="border-primary-200 dark:border-primary-800 relative space-y-8 border-l-2 pl-6">
-        <div v-for="(item, index) in timeline" :key="index" class="relative">
+        <div
+          v-for="(item, index) in timeline"
+          :key="index"
+          class="scroll-reveal scroll-reveal-left relative"
+          :class="`scroll-reveal-delay-${Math.min(index + 1, 5)}`"
+        >
           <div class="bg-primary-500 absolute top-1 -left-[1.85rem] h-4 w-4 rounded-full" />
           <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-5 shadow-sm">
             <span class="text-primary-500 text-sm font-medium">{{ item.period }}</span>
@@ -97,6 +103,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { siteConfig, skillGroups, timeline } = useAppInfo()
+useScrollReveal()
 
 useHead({
   title: t('about.title'),

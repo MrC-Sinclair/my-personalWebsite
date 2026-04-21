@@ -12,7 +12,7 @@
 -->
 <template>
   <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-    <header class="mb-12 text-center">
+    <header class="scroll-reveal scroll-reveal-up mb-12 text-center">
       <h1
         class="text-text-primary-light dark:text-text-primary-dark mb-4 text-3xl font-bold sm:text-4xl"
       >
@@ -24,11 +24,11 @@
     </header>
 
     <div class="grid gap-12 md:grid-cols-2">
-      <div>
+      <div class="scroll-reveal scroll-reveal-left">
         <ContactForm />
       </div>
 
-      <div>
+      <div class="scroll-reveal scroll-reveal-right">
         <h2 class="text-text-primary-light dark:text-text-primary-dark mb-6 text-xl font-bold">
           {{ t('contact.socialLinks') }}
         </h2>
@@ -37,7 +37,7 @@
             :href="siteConfig.social.github"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250 hover:shadow-md"
+            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-github" class="h-6 w-6" />
             <span>GitHub</span>
@@ -46,7 +46,7 @@
             :href="siteConfig.social.twitter"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250 hover:shadow-md"
+            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-x" class="h-6 w-6" />
             <span>Twitter / X</span>
@@ -55,7 +55,7 @@
             :href="siteConfig.social.linkedin"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-shadow duration-250 hover:shadow-md"
+            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-linkedin" class="h-6 w-6" />
             <span>LinkedIn</span>
@@ -75,6 +75,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { siteConfig } = useAppInfo()
+useScrollReveal()
 
 useHead({
   title: t('contact.title'),

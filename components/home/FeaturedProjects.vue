@@ -15,13 +15,14 @@
   - ProjectCard 组件渲染单个项目卡片
   - useI18n() 提供国际化文案
   - useLocalePath() 处理国际化路由
+  - useScrollReveal() 滚动进入动画
 
   使用场景：pages/index.vue 首页
 -->
 <template>
   <section class="bg-surface-light-alt dark:bg-surface-dark-alt px-4 py-16 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-7xl">
-      <div class="mb-8 flex items-center justify-between">
+      <div class="scroll-reveal scroll-reveal-up mb-8 flex items-center justify-between">
         <h2
           class="text-text-primary-light dark:text-text-primary-dark text-2xl font-bold sm:text-3xl"
         >
@@ -52,4 +53,5 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+useScrollReveal()
 </script>

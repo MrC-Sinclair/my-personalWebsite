@@ -47,13 +47,15 @@
           <h4 class="text-text-primary-light dark:text-text-primary-dark text-base font-semibold">
             {{ t('blog.toc') }}
           </h4>
-          <button
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-150"
-            :aria-label="t('common.closeMenu')"
-            @click="isPanelOpen = false"
-          >
-            <UIcon name="i-heroicons-x-mark" class="h-5 w-5" />
-          </button>
+          <UTooltip :text="t('common.closeMenu')">
+            <button
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-150"
+              :aria-label="t('common.closeMenu')"
+              @click="isPanelOpen = false"
+            >
+              <UIcon name="i-heroicons-x-mark" class="h-5 w-5" />
+            </button>
+          </UTooltip>
         </div>
         <nav class="px-5 py-3">
           <ul class="space-y-1">
@@ -72,13 +74,15 @@
       </div>
     </Transition>
 
-    <button
-      class="bg-primary-500 hover:bg-primary-600 fixed right-5 bottom-5 z-30 flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg transition-colors duration-150"
-      :aria-label="t('blog.toc')"
-      @click="isPanelOpen = !isPanelOpen"
-    >
-      <UIcon name="i-heroicons-list-bullet" class="h-6 w-6" />
-    </button>
+    <UTooltip :text="t('blog.toc')">
+      <button
+        class="bg-primary-500 hover:bg-primary-600 fixed right-5 bottom-5 z-30 flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg transition-colors duration-150"
+        :aria-label="t('blog.toc')"
+        @click="isPanelOpen = !isPanelOpen"
+      >
+        <UIcon name="i-heroicons-list-bullet" class="h-6 w-6" />
+      </button>
+    </UTooltip>
   </div>
 </template>
 

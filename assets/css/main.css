@@ -44,6 +44,71 @@
   }
 }
 
+/* 页面路由切换过渡动画 */
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* 布局切换过渡动画 */
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 200ms ease;
+}
+.layout-enter-from,
+.layout-leave-to {
+  opacity: 0;
+}
+
+/* 滚动进入动画 - SSG 友好，无 hydration mismatch */
+.scroll-reveal {
+  opacity: 0;
+  transition:
+    opacity 400ms ease,
+    transform 400ms ease;
+}
+.scroll-reveal.scroll-reveal-up {
+  transform: translateY(20px);
+}
+.scroll-reveal.scroll-reveal-up-lg {
+  transform: translateY(30px);
+}
+.scroll-reveal.scroll-reveal-left {
+  transform: translateX(-20px);
+}
+.scroll-reveal.scroll-reveal-right {
+  transform: translateX(20px);
+}
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translate(0);
+}
+.scroll-reveal.scroll-reveal-delay-1 {
+  transition-delay: 80ms;
+}
+.scroll-reveal.scroll-reveal-delay-2 {
+  transition-delay: 160ms;
+}
+.scroll-reveal.scroll-reveal-delay-3 {
+  transition-delay: 240ms;
+}
+.scroll-reveal.scroll-reveal-delay-4 {
+  transition-delay: 320ms;
+}
+.scroll-reveal.scroll-reveal-delay-5 {
+  transition-delay: 400ms;
+}
+
 @supports (padding: env(safe-area-inset-bottom)) {
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);

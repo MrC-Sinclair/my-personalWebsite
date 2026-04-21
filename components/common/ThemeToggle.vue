@@ -7,6 +7,7 @@
   - 点击按钮在亮色和暗色主题之间切换
   - 图标根据当前主题显示太阳（暗色模式）或月亮（亮色模式）
   - 切换时更新 color-mode preference，持久化到 localStorage
+  - 点击时图标旋转 180° 反馈
 
   注意：
   - 使用 ClientOnly 包裹，避免 hydration mismatch（主题依赖客户端状态）
@@ -19,21 +20,26 @@
 -->
 <template>
   <ClientOnly>
-    <button
-      class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
-      :aria-label="isDark ? t('common.lightMode') : t('common.darkMode')"
-      @click="toggleColorMode"
-    >
-      <UIcon v-if="isDark" name="i-heroicons-sun" class="h-5 w-5" />
-      <UIcon v-else name="i-heroicons-moon" class="h-5 w-5" />
-    </button>
-    <template #fallback>
+    <UTooltip :text="isDark ? t('common.lightMode') : t('common.darkMode')">
       <button
-        class="text-text-secondary-light dark:text-text-secondary-dark flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
-        :aria-label="t('common.darkMode')"
+        class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-150"
+        :class="{ 'rotate-180': isSpinning }"
+        :aria-label="isDark ? t('common.lightMode') : t('common.darkMode')"
+        @click="toggleColorMode"
       >
-        <UIcon name="i-heroicons-moon" class="h-5 w-5" />
+        <UIcon v-if="isDark" name="i-heroicons-sun" class="h-5 w-5" />
+        <UIcon v-else name="i-heroicons-moon" class="h-5 w-5" />
       </button>
+    </UTooltip>
+    <template #fallback>
+      <UTooltip :text="t('common.darkMode')">
+        <button
+          class="text-text-secondary-light dark:text-text-secondary-dark flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
+          :aria-label="t('common.darkMode')"
+        >
+          <UIcon name="i-heroicons-moon" class="h-5 w-5" />
+        </button>
+      </UTooltip>
     </template>
   </ClientOnly>
 </template>
@@ -49,7 +55,13 @@ const isDark = computed({
   },
 })
 
+const isSpinning = ref(false)
+
 function toggleColorMode() {
+  isSpinning.value = true
   isDark.value = !isDark.value
+  setTimeout(() => {
+    isSpinning.value = false
+  }, 300)
 }
 </script>

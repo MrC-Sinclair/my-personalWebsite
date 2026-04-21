@@ -63,6 +63,15 @@ i18n/             → zh-CN.json, en-US.json
 - **响应式**：移动端优先，断点 sm:640 / md:768 / lg:1024 / xl:1280
 - **主题**：完整亮色/暗色双模式，非简单颜色反转
 - **动效**：快速 150ms / 标准 250ms / 慢速 400ms，尊重 prefers-reduced-motion（全局 CSS 已实现）
+- **交互效果规范**：新组件必须包含恰当的交互效果，不可出现"裸交互"，具体场景如下：
+  - **导航/路由切换**：页面切换过渡动画（fade、slide 等），导航项激活态视觉反馈
+  - **卡片/按钮悬浮**：hover 时阴影提升（如 `hover:shadow-lg`）+ 微位移（如 `hover:-translate-y-1`），过渡时长 250ms
+  - **面板展开收起**：滑入滑出动画（slide-down / slide-left 等），配合遮罩层淡入淡出
+  - **状态切换**：开关、标签页等使用渐变过渡（`transition-colors` / `transition-opacity`），时长 150-250ms
+  - **列表项**：hover 背景色变化 + 左侧指示条或图标微动
+  - **模态/弹窗**：背景遮罩淡入 + 内容缩放弹入（`scale-95 → scale-100`）
+  - **加载状态**：骨架屏或 spinner，避免内容突变
+  - 所有过渡统一使用 Tailwind 的 `transition` / `duration-*` / `ease-*` 工具类，尊重 `prefers-reduced-motion`
 - **无障碍**：WCAG AA，对比度 ≥ 4.5:1，键盘导航，语义化 HTML，触控目标 ≥ 40px
 - **安全区域**：viewport-fit=cover + env(safe-area-inset-*) 适配刘海屏
 

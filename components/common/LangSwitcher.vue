@@ -18,13 +18,15 @@
 -->
 <template>
   <ClientOnly>
-    <button
-      class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
-      :aria-label="t('common.language')"
-      @click="toggleLocale"
-    >
-      <UIcon name="i-heroicons-language" class="h-5 w-5" />
-    </button>
+    <UTooltip :text="t('common.language')">
+      <button
+        class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
+        :aria-label="t('common.language')"
+        @click="toggleLocale"
+      >
+        <UIcon name="i-heroicons-language" class="h-5 w-5" />
+      </button>
+    </UTooltip>
   </ClientOnly>
 </template>
 

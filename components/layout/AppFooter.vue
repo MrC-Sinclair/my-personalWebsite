@@ -6,7 +6,7 @@
 
   内容：
   - 版权信息（动态年份 + 作者名）
-  - 社交媒体图标链接（GitHub / Twitter / LinkedIn）
+  - 社交媒体图标链接（GitHub / Twitter / LinkedIn）带 Tooltip 提示
   - "Built with Nuxt" 技术栈说明
 
   依赖：
@@ -26,33 +26,39 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <a
-            :href="siteConfig.social.github"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
-            aria-label="GitHub"
-          >
-            <UIcon name="i-simple-icons-github" class="h-5 w-5" />
-          </a>
-          <a
-            :href="siteConfig.social.twitter"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
-            aria-label="Twitter"
-          >
-            <UIcon name="i-simple-icons-x" class="h-5 w-5" />
-          </a>
-          <a
-            :href="siteConfig.social.linkedin"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
-            aria-label="LinkedIn"
-          >
-            <UIcon name="i-simple-icons-linkedin" class="h-5 w-5" />
-          </a>
+          <UTooltip text="GitHub">
+            <a
+              :href="siteConfig.social.github"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-150 hover:scale-110"
+              aria-label="GitHub"
+            >
+              <UIcon name="i-simple-icons-github" class="h-5 w-5" />
+            </a>
+          </UTooltip>
+          <UTooltip text="Twitter / X">
+            <a
+              :href="siteConfig.social.twitter"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-150 hover:scale-110"
+              aria-label="Twitter"
+            >
+              <UIcon name="i-simple-icons-x" class="h-5 w-5" />
+            </a>
+          </UTooltip>
+          <UTooltip text="LinkedIn">
+            <a
+              :href="siteConfig.social.linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-150 hover:scale-110"
+              aria-label="LinkedIn"
+            >
+              <UIcon name="i-simple-icons-linkedin" class="h-5 w-5" />
+            </a>
+          </UTooltip>
         </div>
 
         <div class="text-text-secondary-light dark:text-text-secondary-dark text-sm">

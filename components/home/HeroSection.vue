@@ -14,6 +14,7 @@
   依赖：
   - useI18n() 提供国际化文案
   - useLocalePath() 处理国际化路由
+  - useScrollReveal() 滚动进入动画
 
   使用场景：pages/index.vue 首屏区域
 -->
@@ -24,24 +25,30 @@
     />
 
     <div class="relative mx-auto max-w-4xl text-center">
-      <p class="text-primary-500 mb-4 text-lg font-medium">
+      <p
+        class="text-primary-500 scroll-reveal scroll-reveal-up scroll-reveal-delay-1 mb-4 text-lg font-medium"
+      >
         {{ t('home.greeting') }}
       </p>
       <h1
-        class="text-text-primary-light dark:text-text-primary-dark mb-6 text-4xl font-bold sm:text-5xl lg:text-6xl"
+        class="text-text-primary-light dark:text-text-primary-dark scroll-reveal scroll-reveal-up scroll-reveal-delay-2 mb-6 text-4xl font-bold sm:text-5xl lg:text-6xl"
       >
         {{ t('home.name') }}
       </h1>
-      <p class="text-primary-400 mb-4 text-xl font-semibold sm:text-2xl">
+      <p
+        class="text-primary-400 scroll-reveal scroll-reveal-up scroll-reveal-delay-3 mb-4 text-xl font-semibold sm:text-2xl"
+      >
         {{ t('home.tagline') }}
       </p>
       <p
-        class="text-text-secondary-light dark:text-text-secondary-dark mx-auto mb-10 max-w-2xl text-lg"
+        class="text-text-secondary-light dark:text-text-secondary-dark scroll-reveal scroll-reveal-up scroll-reveal-delay-4 mx-auto mb-10 max-w-2xl text-lg"
       >
         {{ t('home.description') }}
       </p>
 
-      <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <div
+        class="scroll-reveal scroll-reveal-up scroll-reveal-delay-5 flex flex-col items-center justify-center gap-4 sm:flex-row"
+      >
         <UButton :to="localePath('/blog')" variant="solid" size="xl">
           {{ t('home.viewBlog') }}
         </UButton>
@@ -56,4 +63,5 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
+useScrollReveal()
 </script>

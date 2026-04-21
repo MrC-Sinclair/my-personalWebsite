@@ -14,7 +14,7 @@
   - 发布日期（根据语言环境格式化）
 
   交互：
-  - hover 时卡片阴影增强 + 标题变色 + 图片微缩放
+  - hover 时卡片上浮 + 阴影增强 + 标题变色 + 图片微缩放
   - 整张卡片可点击跳转到文章详情
 
   依赖：
@@ -24,7 +24,7 @@
 -->
 <template>
   <article
-    class="bg-surface-light dark:bg-surface-dark group overflow-hidden rounded-xl shadow-md transition-shadow duration-250 hover:shadow-lg"
+    class="bg-surface-light dark:bg-surface-dark scroll-reveal scroll-reveal-up-lg group overflow-hidden rounded-xl shadow-md transition-all duration-250 hover:-translate-y-1 hover:shadow-lg"
   >
     <NuxtLink :to="localePath(blogPath)">
       <div v-if="post.image" class="overflow-hidden">

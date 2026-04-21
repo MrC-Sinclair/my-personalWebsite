@@ -17,7 +17,7 @@
 -->
 <template>
   <article class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-    <header class="mb-8">
+    <header class="scroll-reveal scroll-reveal-up mb-8">
       <div class="mb-4 flex flex-wrap gap-2">
         <UBadge v-for="tag in project.tags" :key="tag" variant="outline" size="sm">
           {{ tag }}
@@ -61,7 +61,9 @@
       </div>
     </header>
 
-    <div class="prose prose-lg dark:prose-invert max-w-none">
+    <div
+      class="scroll-reveal scroll-reveal-up scroll-reveal-delay-1 prose prose-lg dark:prose-invert max-w-none"
+    >
       <ContentRenderer :value="content" />
     </div>
   </article>
@@ -76,4 +78,5 @@ defineProps<{
 }>()
 
 const { t } = useI18n()
+useScrollReveal()
 </script>

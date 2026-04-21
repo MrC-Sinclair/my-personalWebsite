@@ -12,7 +12,7 @@
   - 联系（i-heroicons-envelope）
 
   交互：
-  - 当前页面高亮显示
+  - 当前页面高亮显示，带缩放动画
   - 适配安全区域（safe-bottom）
   - 仅在 md 以下断点显示
 
@@ -33,7 +33,7 @@
         v-for="item in mobileNavItems"
         :key="item.to"
         :to="localePath(item.to)"
-        class="flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2"
+        class="mobile-nav-item flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2"
         :class="
           isActive(item.to)
             ? 'text-primary-500'
@@ -72,3 +72,13 @@ function isActive(path: string) {
   return route.path.startsWith(path)
 }
 </script>
+
+<style scoped>
+.mobile-nav-item {
+  transition: transform 150ms ease, color 150ms ease;
+}
+
+.mobile-nav-item:active {
+  transform: scale(0.9);
+}
+</style>

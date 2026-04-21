@@ -22,7 +22,7 @@
 -->
 <template>
   <article class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-    <header class="mb-8">
+    <header class="scroll-reveal scroll-reveal-up mb-8">
       <div class="mb-4 flex flex-wrap gap-2">
         <UBadge v-if="post.category" variant="subtle" size="sm">
           {{ post.category }}
@@ -52,7 +52,7 @@
       </div>
     </header>
 
-    <div class="flex gap-8">
+    <div class="scroll-reveal scroll-reveal-up scroll-reveal-delay-1 flex gap-8">
       <div class="min-w-0 flex-1">
         <div class="prose prose-lg dark:prose-invert max-w-none">
           <ContentRenderer :value="content" />
@@ -75,6 +75,7 @@ const props = defineProps<{
 }>()
 
 const { t, locale } = useI18n()
+useScrollReveal()
 
 const formattedDate = computed(() => formatDate(props.post.date, locale.value))
 const formattedUpdated = computed(() =>

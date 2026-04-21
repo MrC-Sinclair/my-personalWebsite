@@ -75,13 +75,15 @@
           >
             {{ title }}
           </h3>
-          <button
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
-            :aria-label="t('common.closeMenu')"
-            @click="emitClose"
-          >
-            <UIcon name="i-heroicons-x-mark" class="h-5 w-5" />
-          </button>
+          <UTooltip :text="t('common.closeMenu')">
+            <button
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
+              :aria-label="t('common.closeMenu')"
+              @click="emitClose"
+            >
+              <UIcon name="i-heroicons-x-mark" class="h-5 w-5" />
+            </button>
+          </UTooltip>
         </div>
         <nav class="p-4">
           <ul class="space-y-1">
