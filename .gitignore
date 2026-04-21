@@ -6,6 +6,9 @@ node_modules
 .output
 dist
 
+# @nuxt/content 本地数据库缓存
+.data
+
 # 环境变量
 .env
 .env.*

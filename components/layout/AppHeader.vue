@@ -7,13 +7,9 @@
   功能：
   - Logo/站点名称（链接到首页）
   - 导航菜单（首页/博客/项目/关于/联系）
-  - 搜索按钮（移动端和桌面端均可用）
   - 语言切换按钮（LangSwitcher）
   - 主题切换按钮（ThemeToggle）
   - 移动端汉堡菜单（md 以下显示）
-    - slide-down 展开/收起动画
-    - 点击外部区域自动关闭
-    - 菜单打开时锁定背景滚动（body scroll lock）
 
   依赖：
   - useAppInfo() 提供 navItems 和 siteConfig
@@ -23,7 +19,6 @@
 -->
 <template>
   <header
-    ref="headerRef"
     class="bg-surface-light/80 dark:bg-surface-dark/80 sticky top-0 z-50 backdrop-blur-md transition-colors duration-250"
   >
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
@@ -43,24 +38,14 @@
         </NuxtLink>
       </div>
 
-      <div class="flex items-center gap-1">
-        <button
-          class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
-          :aria-label="t('common.search')"
-          @click="openSearch"
-        >
-          <UIcon name="i-heroicons-magnifying-glass" class="h-5 w-5" />
-        </button>
-
-        <div class="hidden items-center gap-1 md:flex">
-          <LangSwitcher />
-          <ThemeToggle />
-        </div>
+      <div class="flex items-center gap-2">
+        <LangSwitcher />
+        <ThemeToggle />
 
         <button
-          class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 ml-1 flex h-10 w-10 items-center justify-center rounded-lg md:hidden"
-          :aria-label="isMobileMenuOpen ? t('common.closeMenu') : t('common.openMenu')"
-          @click="toggleMobileMenu"
+          class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 ml-2 md:hidden"
+          aria-label="菜单"
+          @click="isMobileMenuOpen = !isMobileMenuOpen"
         >
           <UIcon v-if="!isMobileMenuOpen" name="i-heroicons-bars-3" class="h-6 w-6" />
           <UIcon v-else name="i-heroicons-x-mark" class="h-6 w-6" />
@@ -68,95 +53,37 @@
       </div>
     </nav>
 
-    <Transition
-      enter-active-class="transition-all duration-250 ease-out"
-      leave-active-class="transition-all duration-200 ease-in"
-      enter-from-class="max-h-0 opacity-0"
-      enter-to-class="max-h-96 opacity-100"
-      leave-from-class="max-h-96 opacity-100"
-      leave-to-class="max-h-0 opacity-0"
+    <div
+      v-if="isMobileMenuOpen"
+      class="bg-surface-light dark:bg-surface-dark border-t border-gray-200 md:hidden dark:border-gray-700"
     >
-      <div
-        v-show="isMobileMenuOpen"
-        class="bg-surface-light dark:bg-surface-dark overflow-hidden border-t border-gray-200 md:hidden dark:border-gray-700"
-      >
-        <div class="space-y-1 px-4 py-3">
-          <NuxtLink
-            v-for="item in navItems"
-            :key="item.to"
-            :to="localePath(item.to)"
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 block rounded-lg px-3 py-3 text-base transition-colors duration-150"
-            active-class="text-primary-500 bg-primary-50 dark:bg-primary-950"
-            @click="closeMobileMenu"
-          >
-            {{ item.label }}
-          </NuxtLink>
-          <div
-            class="flex items-center gap-2 border-t border-gray-200 px-3 pt-3 dark:border-gray-700"
-          >
-            <LangSwitcher />
-            <ThemeToggle />
-          </div>
-        </div>
+      <div class="space-y-1 px-4 py-3">
+        <NuxtLink
+          v-for="item in navItems"
+          :key="item.to"
+          :to="localePath(item.to)"
+          class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 block rounded-md px-3 py-2 text-base transition-colors duration-150"
+          active-class="text-primary-500 bg-primary-50 dark:bg-primary-950"
+          @click="isMobileMenuOpen = false"
+        >
+          {{ item.label }}
+        </NuxtLink>
       </div>
-    </Transition>
-
-    <SearchModal ref="searchModalRef" />
+    </div>
   </header>
 </template>
 
 <script setup lang="ts">
 const { navItems, siteConfig } = useAppInfo()
 const localePath = useLocalePath()
-const { t } = useI18n()
 
 const isMobileMenuOpen = ref(false)
-const headerRef = ref<HTMLElement | null>(null)
-const searchModalRef = ref<{ openSearch: () => void } | null>(null)
-
-function toggleMobileMenu() {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value
-  updateBodyScroll()
-}
-
-function closeMobileMenu() {
-  isMobileMenuOpen.value = false
-  updateBodyScroll()
-}
-
-function openSearch() {
-  searchModalRef.value?.openSearch()
-}
-
-function updateBodyScroll() {
-  if (import.meta.client) {
-    document.body.style.overflow = isMobileMenuOpen.value ? 'hidden' : ''
-  }
-}
 
 const route = useRoute()
 watch(
   () => route.path,
   () => {
-    closeMobileMenu()
+    isMobileMenuOpen.value = false
   },
 )
-
-function handleClickOutside(event: MouseEvent) {
-  if (!headerRef.value) return
-  if (!headerRef.value.contains(event.target as Node)) {
-    closeMobileMenu()
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside, true)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside, true)
-  if (import.meta.client) {
-    document.body.style.overflow = ''
-  }
-})
 </script>
