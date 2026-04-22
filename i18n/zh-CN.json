@@ -8,9 +8,9 @@
   },
   "home": {
     "greeting": "你好，我是",
-    "name": "开发者",
-    "tagline": "全栈开发者 / 技术写作者",
-    "description": "热爱技术，专注于 Web 开发，分享技术心得与项目经验。",
+    "name": "Sinclair / 辛克莱",
+    "tagline": "前端开发者（目标成为全栈开发者） / 技术写作者",
+    "description": "热爱技术，专注于 Web 与 跨端开发，分享技术心得与项目经验。",
     "viewBlog": "查看博客",
     "viewProjects": "查看项目",
     "latestPosts": "最新文章",

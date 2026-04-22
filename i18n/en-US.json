@@ -8,9 +8,9 @@
   },
   "home": {
     "greeting": "Hi, I'm",
-    "name": "Developer",
-    "tagline": "Full-Stack Developer / Technical Writer",
-    "description": "Passionate about technology, focused on web development, sharing technical insights and project experiences.",
+    "name": "Sinclair",
+    "tagline": "Frontend Developer (Aspiring Full-Stack) / Technical Writer",
+    "description": "Passionate about technology, focused on web and cross-platform development, sharing technical insights and project experiences.",
     "viewBlog": "View Blog",
     "viewProjects": "View Projects",
     "latestPosts": "Latest Posts",
