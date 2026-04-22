@@ -32,7 +32,9 @@
     "nextPost": "下一篇",
     "toc": "目录",
     "noResults": "没有找到相关文章",
-    "allCategories": "全部分类"
+    "allCategories": "全部分类",
+    "breadcrumb": "博客",
+    "backToList": "返回列表"
   },
   "projects": {
     "title": "项目集锦",
@@ -40,14 +42,32 @@
     "demo": "在线演示",
     "github": "GitHub",
     "techStack": "技术栈",
-    "featured": "精选"
+    "featured": "精选",
+    "breadcrumb": "项目",
+    "backToList": "返回列表"
   },
   "about": {
     "title": "关于我",
     "description": "了解更多关于我的信息",
     "skills": "技能",
     "experience": "工作经历",
-    "education": "教育背景"
+    "education": "教育背景",
+    "skillFrontend": "前端",
+    "skillBackend": "后端",
+    "skillDevops": "DevOps",
+    "skillTools": "工具",
+    "timeline1Title": "高级前端工程师",
+    "timeline1Org": "某科技公司",
+    "timeline1Period": "2022 - 至今",
+    "timeline1Desc": "负责公司核心产品的前端架构设计与开发，推动技术栈升级与团队规范建设。",
+    "timeline2Title": "前端工程师",
+    "timeline2Org": "某互联网公司",
+    "timeline2Period": "2020 - 2022",
+    "timeline2Desc": "参与多个 Web 应用的开发与维护，积累了丰富的前端工程化经验。",
+    "timeline3Title": "计算机科学学士",
+    "timeline3Org": "某大学",
+    "timeline3Period": "2016 - 2020",
+    "timeline3Desc": "主修计算机科学与技术，参与多个学术项目和编程竞赛。"
   },
   "contact": {
     "title": "联系我",
@@ -71,7 +91,8 @@
     "notFound": "页面未找到",
     "goHome": "返回首页",
     "openMenu": "打开菜单",
-    "closeMenu": "关闭菜单"
+    "closeMenu": "关闭菜单",
+    "home": "首页"
   },
   "footer": {
     "copyright": "版权所有",

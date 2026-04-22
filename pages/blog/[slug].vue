@@ -4,22 +4,24 @@
   通过 URL 中的 slug 参数获取对应文章，使用 BlogDetail 组件渲染。
 
   数据获取：
-  - queryCollection 直接查询 @nuxt/content 获取文章原始数据（含 body 和 toc）
-  - 手动映射为 BlogPost 类型（因为需要 content 对象传递给 ContentRenderer）
+  - useBlog().getPostBySlug() 通过 composable 获取文章数据（含 content 对象）
+  - 数据不存在时抛出 404 错误
 
   路由：/blog/:slug
-
-  注意：
-  - 此页面未使用 useBlog().getPostBySlug()，因为需要保留完整的 content 对象
-    用于 ContentRenderer 渲染 Markdown 正文
 -->
 <template>
   <div>
-    <BlogDetail v-if="post && content" :post="post" :content="content" />
+    <BlogDetail
+      v-if="post && content"
+      :post="post"
+      :content="content"
+      :prev-post="prevPost"
+      :next-post="nextPost"
+    />
 
     <div v-else class="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
       <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg">
-        {{ t('blog.noResults') }}
+        {{ t('common.notFound') }}
       </p>
     </div>
   </div>
@@ -28,39 +30,42 @@
 <script setup lang="ts">
 import type { BlogPost } from '~/types/blog'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
+const { getPostBySlug, getAllPosts } = useBlog()
 const route = useRoute()
 
 const slug = route.params.slug as string
 
 const post = ref<BlogPost | null>(null)
 const content = ref<Record<string, unknown> | null>(null)
+const prevPost = ref<BlogPost | null>(null)
+const nextPost = ref<BlogPost | null>(null)
 
-try {
-  const collectionName = locale.value === 'zh' ? 'blogZh' : 'blogEn'
-  const contentPath = locale.value === 'zh' ? `/blog/zh/${slug}` : `/blog/en/${slug}`
+const result = await getPostBySlug(slug)
 
-  const data = await queryCollection(collectionName).path(contentPath).first()
+if (!result.post) {
+  throw createError({ statusCode: 404, statusMessage: t('common.notFound') })
+}
 
-  if (data) {
-    post.value = {
-      title: (data.title as string) || '',
-      description: data.description as string | undefined,
-      date: (data.date as string) || '',
-      updated: data.updated as string | undefined,
-      image: data.image as string | undefined,
-      tags: (data.tags as string[]) || [],
-      category: data.category as string | undefined,
-      draft: (data.draft as boolean) || false,
-      path: (data.path as string) || '',
-    }
-    content.value = data as Record<string, unknown>
-  }
-} catch {
-  post.value = null
+post.value = result.post
+content.value = result.content
+
+const allPosts = await getAllPosts()
+const currentIndex = allPosts.findIndex((p) => p.path === post.value?.path)
+if (currentIndex > 0) {
+  prevPost.value = allPosts[currentIndex - 1]
+}
+if (currentIndex < allPosts.length - 1) {
+  nextPost.value = allPosts[currentIndex + 1]
 }
 
 useHead({
   title: post.value?.title || t('blog.title'),
+  meta: [
+    { name: 'description', content: post.value?.description || '' },
+    { property: 'og:title', content: post.value?.title || '' },
+    { property: 'og:description', content: post.value?.description || '' },
+    { property: 'og:type', content: 'article' },
+  ],
 })
 </script>

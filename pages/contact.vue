@@ -37,7 +37,7 @@
             :href="siteConfig.social.github"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md"
+            class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-github" class="h-6 w-6" />
             <span>GitHub</span>
@@ -46,7 +46,7 @@
             :href="siteConfig.social.twitter"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md"
+            class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-x" class="h-6 w-6" />
             <span>Twitter / X</span>
@@ -55,7 +55,7 @@
             :href="siteConfig.social.linkedin"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md"
+            class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
           >
             <UIcon name="i-simple-icons-linkedin" class="h-6 w-6" />
             <span>LinkedIn</span>
@@ -79,5 +79,10 @@ useScrollReveal()
 
 useHead({
   title: t('contact.title'),
+  meta: [
+    { name: 'description', content: t('contact.description') },
+    { property: 'og:title', content: t('contact.title') },
+    { property: 'og:description', content: t('contact.description') },
+  ],
 })
 </script>

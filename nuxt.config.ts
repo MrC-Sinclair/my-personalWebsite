@@ -15,7 +15,6 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/my-personalWebsite/',
     head: {
-      htmlAttrs: { lang: 'zh-CN' },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
@@ -29,7 +28,6 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
     pageTransition: { name: 'page', mode: 'out-in' },
-    layoutTransition: { name: 'layout', mode: 'out-in' },
   },
 
   i18n: {
@@ -64,7 +62,7 @@ export default defineNuxtConfig({
       short_name: '个人网站',
       description: '技术博客、项目作品集、关于我',
       theme_color: '#6366f1',
-      background_color: '#ffffff',
+      background_color: '#0f172a',
       display: 'standalone',
       start_url: '/my-personalWebsite/',
       icons: [

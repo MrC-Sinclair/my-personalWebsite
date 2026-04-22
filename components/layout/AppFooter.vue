@@ -17,7 +17,7 @@
 -->
 <template>
   <footer
-    class="bg-surface-light-alt dark:bg-surface-dark-alt safe-bottom border-t border-gray-200 dark:border-gray-700"
+    class="bg-surface-light-alt dark:bg-surface-dark-alt safe-bottom border-border-light dark:border-border-dark border-t"
   >
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -31,7 +31,7 @@
               :href="siteConfig.social.github"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-150 hover:scale-110"
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
               aria-label="GitHub"
             >
               <UIcon name="i-simple-icons-github" class="h-5 w-5" />
@@ -42,7 +42,7 @@
               :href="siteConfig.social.twitter"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-150 hover:scale-110"
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
               aria-label="Twitter"
             >
               <UIcon name="i-simple-icons-x" class="h-5 w-5" />
@@ -53,7 +53,7 @@
               :href="siteConfig.social.linkedin"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-150 hover:scale-110"
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
               aria-label="LinkedIn"
             >
               <UIcon name="i-simple-icons-linkedin" class="h-5 w-5" />

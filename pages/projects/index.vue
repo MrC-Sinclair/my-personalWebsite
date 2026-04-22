@@ -36,5 +36,10 @@ const projects = await getAllProjects()
 
 useHead({
   title: t('projects.title'),
+  meta: [
+    { name: 'description', content: t('projects.description') },
+    { property: 'og:title', content: t('projects.title') },
+    { property: 'og:description', content: t('projects.description') },
+  ],
 })
 </script>

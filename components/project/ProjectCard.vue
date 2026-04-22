@@ -16,7 +16,7 @@
 
   交互：
   - hover 时卡片上浮 + 阴影增强 + 图片微缩放
-  - 整张卡片可点击跳转到项目详情
+  - 整张卡片 NuxtLink 包裹可点击跳转
   - 内部按钮使用 @click.stop 阻止冒泡，避免嵌套链接
 
   依赖：
@@ -24,65 +24,66 @@
   - useLocalePath() 处理国际化路由
 -->
 <template>
-  <article
-    class="bg-surface-light dark:bg-surface-dark scroll-reveal scroll-reveal-up-lg group cursor-pointer overflow-hidden rounded-xl shadow-md transition-all duration-250 hover:-translate-y-1 hover:shadow-lg"
-    @click="navigateToDetail"
-  >
-    <div v-if="project.image" class="overflow-hidden">
-      <NuxtImg
-        :src="project.image"
-        :alt="project.title"
-        sizes="sm:100vw md:50vw lg:33vw"
-        class="h-48 w-full object-cover transition-transform duration-250 group-hover:scale-105"
-        loading="lazy"
-      />
-    </div>
-
-    <div class="p-5">
-      <div class="mb-2 flex items-center gap-2">
-        <h3 class="text-text-primary-light dark:text-text-primary-dark text-lg font-semibold">
-          {{ project.title }}
-        </h3>
-        <UBadge v-if="project.featured" variant="subtle" size="xs" color="primary">
-          {{ t('projects.featured') }}
-        </UBadge>
+  <NuxtLink :to="localePath(projectPath)" class="block">
+    <article
+      class="bg-surface-light dark:bg-surface-dark scroll-reveal scroll-reveal-up-lg group duration-normal cursor-pointer overflow-hidden rounded-xl shadow-md transition-all hover:-translate-y-1 hover:shadow-lg"
+    >
+      <div v-if="project.image" class="overflow-hidden">
+        <NuxtImg
+          :src="project.image"
+          :alt="project.title"
+          sizes="sm:100vw md:50vw lg:33vw"
+          class="duration-normal h-48 w-full object-cover transition-transform group-hover:scale-105"
+          loading="lazy"
+        />
       </div>
 
-      <p
-        v-if="project.description"
-        class="text-text-secondary-light dark:text-text-secondary-dark mb-3 line-clamp-2 text-sm"
-      >
-        {{ project.description }}
-      </p>
+      <div class="p-5">
+        <div class="mb-2 flex items-center gap-2">
+          <h3 class="text-text-primary-light dark:text-text-primary-dark text-lg font-semibold">
+            {{ project.title }}
+          </h3>
+          <UBadge v-if="project.featured" variant="subtle" size="xs" color="primary">
+            {{ t('projects.featured') }}
+          </UBadge>
+        </div>
 
-      <div class="mb-4 flex flex-wrap gap-1.5">
-        <UBadge v-for="tag in project.tags.slice(0, 5)" :key="tag" variant="outline" size="xs">
-          {{ tag }}
-        </UBadge>
-      </div>
-
-      <div class="flex gap-3">
-        <UButton
-          v-if="project.demoUrl"
-          variant="solid"
-          size="sm"
-          trailing-icon="i-heroicons-arrow-top-right-on-square"
-          @click.stop="openUrl(project.demoUrl)"
+        <p
+          v-if="project.description"
+          class="text-text-secondary-light dark:text-text-secondary-dark mb-3 line-clamp-2 text-sm"
         >
-          {{ t('projects.demo') }}
-        </UButton>
-        <UButton
-          v-if="project.githubUrl"
-          variant="outline"
-          size="sm"
-          icon="i-simple-icons-github"
-          @click.stop="openUrl(project.githubUrl)"
-        >
-          {{ t('projects.github') }}
-        </UButton>
+          {{ project.description }}
+        </p>
+
+        <div class="mb-4 flex flex-wrap gap-1.5">
+          <UBadge v-for="tag in project.tags.slice(0, 5)" :key="tag" variant="outline" size="xs">
+            {{ tag }}
+          </UBadge>
+        </div>
+
+        <div class="flex gap-3">
+          <UButton
+            v-if="project.demoUrl"
+            variant="solid"
+            size="sm"
+            trailing-icon="i-heroicons-arrow-top-right-on-square"
+            @click.stop="openUrl(project.demoUrl)"
+          >
+            {{ t('projects.demo') }}
+          </UButton>
+          <UButton
+            v-if="project.githubUrl"
+            variant="outline"
+            size="sm"
+            icon="i-simple-icons-github"
+            @click.stop="openUrl(project.githubUrl)"
+          >
+            {{ t('projects.github') }}
+          </UButton>
+        </div>
       </div>
-    </div>
-  </article>
+    </article>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
@@ -94,17 +95,12 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
-const router = useRouter()
 
 const projectPath = computed(() => {
   const path = props.project.path
   const slug = path.split('/').pop()?.replace(/\.md$/, '') || ''
   return `/projects/${slug}`
 })
-
-function navigateToDetail() {
-  router.push(localePath(projectPath.value))
-}
 
 function openUrl(url: string) {
   window.open(url, '_blank', 'noopener,noreferrer')

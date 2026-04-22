@@ -24,7 +24,7 @@
 -->
 <template>
   <article
-    class="bg-surface-light dark:bg-surface-dark scroll-reveal scroll-reveal-up-lg group overflow-hidden rounded-xl shadow-md transition-all duration-250 hover:-translate-y-1 hover:shadow-lg"
+    class="bg-surface-light dark:bg-surface-dark scroll-reveal scroll-reveal-up-lg group duration-normal overflow-hidden rounded-xl shadow-md transition-all hover:-translate-y-1 hover:shadow-lg"
   >
     <NuxtLink :to="localePath(blogPath)">
       <div v-if="post.image" class="overflow-hidden">
@@ -32,7 +32,7 @@
           :src="post.image"
           :alt="post.title"
           sizes="sm:100vw md:50vw lg:33vw"
-          class="h-48 w-full object-cover transition-transform duration-250 group-hover:scale-105"
+          class="duration-normal h-48 w-full object-cover transition-transform group-hover:scale-105"
           loading="lazy"
         />
       </div>
@@ -45,7 +45,7 @@
         </div>
 
         <h3
-          class="text-text-primary-light dark:text-text-primary-dark group-hover:text-primary-500 mb-2 text-lg font-semibold transition-colors duration-150"
+          class="text-text-primary-light dark:text-text-primary-dark group-hover:text-primary-500 duration-fast mb-2 text-lg font-semibold transition-colors"
         >
           {{ post.title }}
         </h3>

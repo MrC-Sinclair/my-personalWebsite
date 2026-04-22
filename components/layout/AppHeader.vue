@@ -19,12 +19,12 @@
 -->
 <template>
   <header
-    class="bg-surface-light/80 dark:bg-surface-dark/80 sticky top-0 z-50 backdrop-blur-md transition-colors duration-250"
+    class="bg-surface-light/80 dark:bg-surface-dark/80 z-modal duration-normal sticky top-0 backdrop-blur-md transition-colors"
   >
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
       <NuxtLink
         :to="localePath('/')"
-        class="text-primary-500 text-xl font-bold transition-opacity duration-150 hover:opacity-80"
+        class="text-primary-500 duration-fast text-xl font-bold transition-opacity hover:opacity-80"
       >
         {{ siteConfig.name }}
       </NuxtLink>
@@ -34,7 +34,7 @@
           v-for="item in navItems"
           :key="item.to"
           :to="localePath(item.to)"
-          class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 relative transition-colors duration-150"
+          class="nav-link text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast relative transition-colors"
           active-class="!text-primary-500"
         >
           {{ item.label }}
@@ -48,7 +48,7 @@
         <UTooltip :text="isMobileMenuOpen ? t('common.closeMenu') : t('common.openMenu')">
           <button
             class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 ml-2 flex h-10 w-10 items-center justify-center md:hidden"
-            aria-label="菜单"
+            :aria-label="isMobileMenuOpen ? t('common.closeMenu') : t('common.openMenu')"
             @click="isMobileMenuOpen = !isMobileMenuOpen"
           >
             <UIcon v-if="!isMobileMenuOpen" name="i-heroicons-bars-3" class="h-6 w-6" />
@@ -59,7 +59,7 @@
     </nav>
 
     <Transition
-      enter-active-class="transition-all duration-250 ease-out"
+      enter-active-class="transition-all duration-normal ease-out"
       leave-active-class="transition-all duration-200 ease-in"
       enter-from-class="max-h-0 opacity-0"
       enter-to-class="max-h-80 opacity-100"
@@ -68,14 +68,14 @@
     >
       <div
         v-if="isMobileMenuOpen"
-        class="bg-surface-light dark:bg-surface-dark overflow-hidden border-t border-gray-200 md:hidden dark:border-gray-700"
+        class="bg-surface-light dark:bg-surface-dark border-border-light dark:border-border-dark overflow-hidden border-t md:hidden"
       >
         <div class="space-y-1 px-4 py-3">
           <NuxtLink
             v-for="item in navItems"
             :key="item.to"
             :to="localePath(item.to)"
-            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 block rounded-md px-3 py-2 text-base transition-colors duration-150"
+            class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast block rounded-md px-3 py-2 text-base transition-colors"
             active-class="text-primary-500 bg-primary-50 dark:bg-primary-950"
             @click="isMobileMenuOpen = false"
           >
@@ -112,7 +112,7 @@ watch(
   width: 0;
   height: 2px;
   background-color: var(--color-primary-500);
-  transition: width 250ms ease;
+  transition: width var(--duration-normal) ease;
   border-radius: 1px;
 }
 

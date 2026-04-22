@@ -21,11 +21,18 @@
 <script setup lang="ts">
 const { getFeaturedPosts } = useBlog()
 const { getFeaturedProjects } = useProjects()
+const { t } = useI18n()
 
 const latestPosts = await getFeaturedPosts(3)
 const featuredProjects = await getFeaturedProjects(3)
 
 useHead({
-  title: '首页',
+  title: `${t('home.name')} - ${t('home.tagline')}`,
+  meta: [
+    { name: 'description', content: t('home.description') },
+    { property: 'og:title', content: `${t('home.name')} - ${t('home.tagline')}` },
+    { property: 'og:description', content: t('home.description') },
+    { property: 'og:type', content: 'website' },
+  ],
 })
 </script>

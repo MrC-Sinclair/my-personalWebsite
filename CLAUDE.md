@@ -73,7 +73,7 @@ i18n/             → zh-CN.json, en-US.json
   - **加载状态**：骨架屏或 spinner，避免内容突变
   - 所有过渡统一使用 Tailwind 的 `transition` / `duration-*` / `ease-*` 工具类，尊重 `prefers-reduced-motion`
 - **无障碍**：WCAG AA，对比度 ≥ 4.5:1，键盘导航，语义化 HTML，触控目标 ≥ 40px
-- **安全区域**：viewport-fit=cover + env(safe-area-inset-*) 适配刘海屏
+- **安全区域**：viewport-fit=cover + env(safe-area-inset-\*) 适配刘海屏
 
 ## 关键配置
 

@@ -32,7 +32,9 @@
     "nextPost": "Next Post",
     "toc": "Table of Contents",
     "noResults": "No articles found",
-    "allCategories": "All Categories"
+    "allCategories": "All Categories",
+    "breadcrumb": "Blog",
+    "backToList": "Back to List"
   },
   "projects": {
     "title": "Projects",
@@ -40,14 +42,32 @@
     "demo": "Live Demo",
     "github": "GitHub",
     "techStack": "Tech Stack",
-    "featured": "Featured"
+    "featured": "Featured",
+    "breadcrumb": "Projects",
+    "backToList": "Back to List"
   },
   "about": {
     "title": "About Me",
     "description": "Learn more about me",
     "skills": "Skills",
     "experience": "Experience",
-    "education": "Education"
+    "education": "Education",
+    "skillFrontend": "Frontend",
+    "skillBackend": "Backend",
+    "skillDevops": "DevOps",
+    "skillTools": "Tools",
+    "timeline1Title": "Senior Frontend Engineer",
+    "timeline1Org": "A Tech Company",
+    "timeline1Period": "2022 - Present",
+    "timeline1Desc": "Responsible for the frontend architecture design and development of the company's core product, driving tech stack upgrades and team standards.",
+    "timeline2Title": "Frontend Engineer",
+    "timeline2Org": "An Internet Company",
+    "timeline2Period": "2020 - 2022",
+    "timeline2Desc": "Participated in the development and maintenance of multiple web applications, gaining rich frontend engineering experience.",
+    "timeline3Title": "Bachelor of Computer Science",
+    "timeline3Org": "A University",
+    "timeline3Period": "2016 - 2020",
+    "timeline3Desc": "Majored in Computer Science and Technology, participated in multiple academic projects and programming competitions."
   },
   "contact": {
     "title": "Contact Me",
@@ -71,7 +91,8 @@
     "notFound": "Page Not Found",
     "goHome": "Go Home",
     "openMenu": "Open Menu",
-    "closeMenu": "Close Menu"
+    "closeMenu": "Close Menu",
+    "home": "Home"
   },
   "footer": {
     "copyright": "All rights reserved",

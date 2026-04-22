@@ -6,6 +6,7 @@
   - 分类标签筛选器（点击切换分类）
   - 关键词搜索（即时过滤标题、描述、标签）
   - 文章卡片网格列表
+  - 空搜索结果提示
 
   数据获取：
   - useBlog().getAllPosts() 获取所有文章
@@ -57,6 +58,15 @@
     </div>
 
     <BlogList :posts="filteredPosts" />
+
+    <div
+      v-if="filteredPosts.length === 0 && (searchQuery || selectedCategory)"
+      class="text-text-secondary-light dark:text-text-secondary-dark py-12 text-center"
+    >
+      <UIcon name="i-heroicons-magnifying-glass" class="mx-auto mb-3 h-10 w-10 opacity-40" />
+      <p class="text-lg">{{ t('blog.noResults') }}</p>
+      <p class="mt-2 text-sm">尝试调整搜索关键词或分类筛选</p>
+    </div>
   </div>
 </template>
 
@@ -93,5 +103,10 @@ const filteredPosts = computed(() => {
 
 useHead({
   title: t('blog.title'),
+  meta: [
+    { name: 'description', content: t('blog.description') },
+    { property: 'og:title', content: t('blog.title') },
+    { property: 'og:description', content: t('blog.description') },
+  ],
 })
 </script>

@@ -18,20 +18,20 @@
 
 ## 技术栈
 
-| 类别   | 技术                                            | 用途                      |
-| ------ | ----------------------------------------------- | ------------------------- |
-| 框架   | Nuxt 3 (^3.17, SSG 模式)                        | 全栈框架                  |
-| UI     | Nuxt UI v3 + Tailwind CSS v4                    | 组件库 + 原子化 CSS       |
-| 语言   | TypeScript ^5.x                                 | 类型安全                  |
-| 内容   | @nuxt/content v3                                | Markdown 渲染与搜索       |
-| 国际化 | @nuxtjs/i18n ^9.x                               | 中/英双语                 |
-| 主题   | @nuxtjs/color-mode                              | 亮色/暗色切换             |
-| 图片   | @nuxt/image ^1.x                                | 响应式图片优化（含 sizes）|
-| PWA    | @vite-pwa/nuxt ^1.x                             | 离线访问、添加到主屏幕    |
-| 数据库 | Drizzle ORM + PostgreSQL 17                     | 预留，Docker Compose 本地 |
-| 测试   | Vitest                                          | 单元测试                  |
-| 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                  |
-| 部署   | GitHub Actions → GitHub Pages                   | CI/CD + 静态托管          |
+| 类别   | 技术                                            | 用途                       |
+| ------ | ----------------------------------------------- | -------------------------- |
+| 框架   | Nuxt 3 (^3.17, SSG 模式)                        | 全栈框架                   |
+| UI     | Nuxt UI v3 + Tailwind CSS v4                    | 组件库 + 原子化 CSS        |
+| 语言   | TypeScript ^5.x                                 | 类型安全                   |
+| 内容   | @nuxt/content v3                                | Markdown 渲染与搜索        |
+| 国际化 | @nuxtjs/i18n ^9.x                               | 中/英双语                  |
+| 主题   | @nuxtjs/color-mode                              | 亮色/暗色切换              |
+| 图片   | @nuxt/image ^1.x                                | 响应式图片优化（含 sizes） |
+| PWA    | @vite-pwa/nuxt ^1.x                             | 离线访问、添加到主屏幕     |
+| 数据库 | Drizzle ORM + PostgreSQL 17                     | 预留，Docker Compose 本地  |
+| 测试   | Vitest                                          | 单元测试                   |
+| 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                   |
+| 部署   | GitHub Actions → GitHub Pages                   | CI/CD + 静态托管           |
 
 ## 项目结构
 

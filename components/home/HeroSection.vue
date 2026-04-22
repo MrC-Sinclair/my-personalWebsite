@@ -36,7 +36,7 @@
         {{ t('home.name') }}
       </h1>
       <p
-        class="text-primary-400 scroll-reveal scroll-reveal-up scroll-reveal-delay-3 mb-4 text-xl font-semibold sm:text-2xl"
+        class="text-primary-600 dark:text-primary-400 scroll-reveal scroll-reveal-up scroll-reveal-delay-3 mb-4 text-xl font-semibold sm:text-2xl"
       >
         {{ t('home.tagline') }}
       </p>

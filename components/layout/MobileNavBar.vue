@@ -25,7 +25,7 @@
 -->
 <template>
   <nav
-    class="bg-surface-light/95 dark:bg-surface-dark/95 safe-bottom fixed right-0 bottom-0 left-0 z-40 border-t border-gray-200 backdrop-blur-md md:hidden dark:border-gray-700"
+    class="bg-surface-light/95 dark:bg-surface-dark/95 safe-bottom z-overlay border-border-light dark:border-border-dark fixed right-0 bottom-0 left-0 border-t backdrop-blur-md md:hidden"
     aria-label="移动端导航"
   >
     <div class="flex items-center justify-around py-1">
@@ -75,7 +75,9 @@ function isActive(path: string) {
 
 <style scoped>
 .mobile-nav-item {
-  transition: transform 150ms ease, color 150ms ease;
+  transition:
+    transform var(--duration-fast) ease,
+    color var(--duration-fast) ease;
 }
 
 .mobile-nav-item:active {

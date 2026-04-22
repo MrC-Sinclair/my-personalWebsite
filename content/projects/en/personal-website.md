@@ -35,7 +35,7 @@ This is a comprehensive personal website project using Nuxt 3 SSG static generat
 - **Drawer Sidebar**: AppSidebar slides in from the left with overlay on mobile
 - **Touch Target Optimization**: All interactive elements ≥ 40×40px
 - **Responsive Images**: NuxtImg configured with sizes attribute for on-demand loading
-- **Safe Area Adaptation**: viewport-fit=cover + env(safe-area-inset-*)
+- **Safe Area Adaptation**: viewport-fit=cover + env(safe-area-inset-\*)
 - **prefers-reduced-motion**: Global CSS rule respects user animation preferences
 
 ## Tech Stack

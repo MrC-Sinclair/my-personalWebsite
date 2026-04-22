@@ -35,7 +35,7 @@ featured: true
 - **抽屉式侧边栏**：AppSidebar 移动端左侧滑入 + 遮罩层
 - **触控目标优化**：所有可交互元素 ≥ 40×40px
 - **响应式图片**：NuxtImg 配置 sizes 属性，移动端按需加载
-- **安全区域适配**：viewport-fit=cover + env(safe-area-inset-*)
+- **安全区域适配**：viewport-fit=cover + env(safe-area-inset-\*)
 - **prefers-reduced-motion**：全局 CSS 规则尊重用户动画偏好
 
 ## 技术栈

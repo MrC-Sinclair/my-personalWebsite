@@ -1,13 +1,14 @@
 <!--
   ProjectDetail - 项目详情组件
 
-  展示项目的完整介绍内容，包含项目头部元信息和正文渲染区域。
+  展示项目的完整介绍内容，包含面包屑导航、项目头部元信息和正文渲染区域。
 
   Props：
   - project: Project - 项目元数据
   - content: Record<string, unknown> - @nuxt/content 返回的完整内容对象
 
   布局：
+  - 面包屑导航：首页 > 项目 > 项目名称
   - 项目头部：技术栈标签 + 标题 + 描述 + 操作按钮（在线演示/GitHub）
   - 正文区域：Markdown 渲染内容，使用 prose 排版样式
 
@@ -17,6 +18,34 @@
 -->
 <template>
   <article class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <nav class="scroll-reveal scroll-reveal-up mb-6" aria-label="面包屑">
+      <ol
+        class="text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-2 text-sm"
+      >
+        <li>
+          <NuxtLink
+            :to="localePath('/')"
+            class="hover:text-primary-500 duration-fast transition-colors"
+          >
+            {{ t('common.home') }}
+          </NuxtLink>
+        </li>
+        <li>/</li>
+        <li>
+          <NuxtLink
+            :to="localePath('/projects')"
+            class="hover:text-primary-500 duration-fast transition-colors"
+          >
+            {{ t('projects.breadcrumb') }}
+          </NuxtLink>
+        </li>
+        <li>/</li>
+        <li class="text-text-primary-light dark:text-text-primary-dark truncate">
+          {{ project.title }}
+        </li>
+      </ol>
+    </nav>
+
     <header class="scroll-reveal scroll-reveal-up mb-8">
       <div class="mb-4 flex flex-wrap gap-2">
         <UBadge v-for="tag in project.tags" :key="tag" variant="outline" size="sm">
@@ -78,5 +107,6 @@ defineProps<{
 }>()
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 useScrollReveal()
 </script>

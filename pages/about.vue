@@ -107,5 +107,10 @@ useScrollReveal()
 
 useHead({
   title: t('about.title'),
+  meta: [
+    { name: 'description', content: t('about.description') },
+    { property: 'og:title', content: t('about.title') },
+    { property: 'og:description', content: t('about.description') },
+  ],
 })
 </script>
