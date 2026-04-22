@@ -31,12 +31,12 @@ import type { SiteConfig, NavItem, SkillGroup, TimelineItem } from '~/types/site
 export function useAppInfo() {
   const { t } = useI18n()
 
-  /** 站点全局配置（静态数据，后续可迁移到 .env 或 CMS） */
-  const siteConfig: SiteConfig = {
-    name: '我的个人网站',
-    description: '技术博客、项目作品集、关于我',
+  /** 站点全局配置（国际化响应式，后续可迁移到 .env 或 CMS） */
+  const siteConfig = computed<SiteConfig>(() => ({
+    name: t('home.name'),
+    description: t('home.description'),
     url: 'https://yourusername.github.io',
-    author: '开发者',
+    author: t('footer.author'),
     email: 'your@email.com',
     social: {
       github: 'https://github.com/yourusername',
@@ -44,7 +44,7 @@ export function useAppInfo() {
       linkedin: 'https://linkedin.com/in/yourusername',
       wechat: 'your-wechat-id',
     },
-  }
+  }))
 
   /** 导航菜单项（国际化响应式） */
   const navItems = computed<NavItem[]>(() => [

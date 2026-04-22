@@ -8,7 +8,7 @@
   },
   "home": {
     "greeting": "你好，我是",
-    "name": "Sinclair / 辛克莱",
+    "name": "Sinclair-CXP",
     "tagline": "前端开发者（目标成为全栈开发者） / 技术写作者",
     "description": "热爱技术，专注于 Web 与 跨端开发，分享技术心得与项目经验。",
     "viewBlog": "查看博客",
@@ -75,6 +75,7 @@
   },
   "footer": {
     "copyright": "版权所有",
-    "builtWith": "使用 Nuxt 构建"
+    "builtWith": "使用 Nuxt 构建",
+    "author": "Sinclair / 辛克莱"
   }
 }

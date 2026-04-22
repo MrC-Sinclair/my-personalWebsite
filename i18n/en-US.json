@@ -8,7 +8,7 @@
   },
   "home": {
     "greeting": "Hi, I'm",
-    "name": "Sinclair",
+    "name": "Sinclair-CXP",
     "tagline": "Frontend Developer (Aspiring Full-Stack) / Technical Writer",
     "description": "Passionate about technology, focused on web and cross-platform development, sharing technical insights and project experiences.",
     "viewBlog": "View Blog",
@@ -75,6 +75,7 @@
   },
   "footer": {
     "copyright": "All rights reserved",
-    "builtWith": "Built with Nuxt"
+    "builtWith": "Built with Nuxt",
+    "author": "Sinclair"
   }
 }
