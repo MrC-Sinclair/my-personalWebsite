@@ -1,8 +1,13 @@
 # 依赖
 node_modules
 
-# Nuxt 构建输出
+# 项目配置了 husky （在 package.json 的 prepare 脚本中），用于在 git commit 前自动运行代码检查（如 ESLint + Prettier + cspell）。 .husky/ 目录存放这些 hook 脚本（如 pre-commit ）。这是本地开发工具配置，不需要提交。
+.husky
+
+# Nuxt 构建输出 Nuxt 3 的自动生成的运行时目录
+# nuxt/content v3 使用 SQLite 存储解析后的 Markdown 内容索引。 .data 目录存放这些 SQLite 数据库文件（如 content.sqlite ），用于开发时快速查询内容。构建时会重新生成，不需要提交到版本库
 .nuxt
+# 运行 pnpm build 或 pnpm generate 后，产物输出到这里 这是构建产物，源文件已包含在仓库中，不需要提交输出。
 .output
 dist
 
