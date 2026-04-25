@@ -67,7 +67,7 @@
         {{ t('contact.success') }}
       </p>
       <p v-if="submitStatus === 'error'" class="text-danger text-sm">
-        {{ t('contact.error') }}
+        {{ errorMessage }}
       </p>
     </div>
   </UForm>
@@ -89,6 +89,7 @@ const form = reactive({
 
 const isSubmitting = ref(false)
 const submitStatus = ref<'idle' | 'success' | 'error'>('idle')
+const errorMessage = ref('')
 
 function validate(state: typeof form): FormError[] {
   const errors: FormError[] = []
@@ -118,9 +119,25 @@ function validate(state: typeof form): FormError[] {
   return errors
 }
 
+function resolveErrorMessage(result: { message?: string } | null): string {
+  if (!result?.message) return t('contact.error')
+  const msg = result.message.toLowerCase()
+  if (msg.includes('spam')) return t('contact.errorSpam')
+  if (msg.includes('access_key') || msg.includes('form_id') || msg.includes('invalid key'))
+    return t('contact.errorInvalidKey')
+  if (msg.includes('missing') || msg.includes('required fields'))
+    return t('contact.errorMissingFields')
+  if (msg.includes('invalid email')) return t('contact.errorInvalidEmail')
+  if (msg.includes('too short') || msg.includes('too long') || msg.includes('empty'))
+    return t('contact.errorMessageLength')
+  if (msg.includes('limit') || msg.includes('quota')) return t('contact.errorRateLimit')
+  return t('contact.error')
+}
+
 async function handleSubmit(event: FormSubmitEvent<typeof form>) {
   isSubmitting.value = true
   submitStatus.value = 'idle'
+  errorMessage.value = ''
 
   try {
     const response = await fetch('https://api.web3forms.com/submit', {
@@ -141,10 +158,15 @@ async function handleSubmit(event: FormSubmitEvent<typeof form>) {
       form.email = ''
       form.message = ''
     } else {
+      const result = await response.json().catch(() => null)
+      console.error('[ContactForm] 提交失败:', result)
       submitStatus.value = 'error'
+      errorMessage.value = resolveErrorMessage(result)
     }
-  } catch {
+  } catch (err) {
+    console.error('[ContactForm] 网络错误:', err)
     submitStatus.value = 'error'
+    errorMessage.value = t('contact.errorNetwork')
   } finally {
     isSubmitting.value = false
   }
