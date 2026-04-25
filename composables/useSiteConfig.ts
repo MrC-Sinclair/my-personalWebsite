@@ -17,17 +17,27 @@ export function useAppInfo() {
     author: t('footer.author'),
     email: 'your@email.com',
     social: {
-      github: 'https://github.com/yourusername',
-      twitter: 'https://twitter.com/yourusername',
-      linkedin: 'https://linkedin.com/in/yourusername',
+      github: 'https://github.com/MrC-Sinclair',
+      dingtalk: '钉钉',
+      feishu: '飞书',
       wechat: 'c2256843428',
     },
   }))
 
   const socialLinks = computed<SocialLinkItem[]>(() => [
     { name: 'GitHub', url: siteConfig.value.social.github, icon: 'i-simple-icons-github' },
-    { name: 'Twitter / X', url: siteConfig.value.social.twitter, icon: 'i-simple-icons-x' },
-    { name: 'LinkedIn', url: siteConfig.value.social.linkedin, icon: 'i-simple-icons-linkedin' },
+    {
+      name: t('contact.dingtalk'),
+      url: null,
+      icon: 'i-tabler-brand-dingtalk',
+      qrCode: '/images/dingding-qr.jpg',
+    },
+    {
+      name: t('contact.feishu'),
+      url: null,
+      icon: 'i-local-feishu',
+      qrCode: '/images/feishu-qr.jpg',
+    },
     {
       name: t('contact.wechat'),
       url: null,

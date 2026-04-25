@@ -38,6 +38,8 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@iconify-json/simple-icons": "^1.2.79",
+    "@iconify-json/tabler": "^1.2.33",
     "@nuxt/eslint": "^1.15.2",
     "@nuxt/test-utils": "^3.19.1",
     "@tailwindcss/vite": "^4.2.2",

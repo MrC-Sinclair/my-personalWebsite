@@ -23,10 +23,10 @@ export interface SiteConfig {
 export interface SocialLinks {
   /** GitHub 主页地址 */
   github: string
-  /** Twitter/X 主页地址 */
-  twitter: string
-  /** LinkedIn 主页地址 */
-  linkedin: string
+  /** 钉钉（显示二维码） */
+  dingtalk: string
+  /** 飞书（显示二维码） */
+  feishu: string
   /** 微信号（显示在联系页面） */
   wechat: string
 }

@@ -3,12 +3,12 @@
 
   显示版权信息、社交媒体图标链接和技术栈说明。
   适配刘海屏设备的安全区域。
-  微信图标点击弹出二维码 Popover。
+  二维码类社交平台（钉钉/飞书/微信）点击弹出 Popover。
 
   内容：
   - 版权信息（动态年份 + 作者名）
-  - 社交媒体图标链接（GitHub / Twitter / LinkedIn）带 Tooltip 提示
-  - 微信图标带 Popover（二维码 + 微信号 + 复制按钮）
+  - 社交媒体图标链接（GitHub）带 Tooltip 提示
+  - 二维码类图标（钉钉/飞书/微信）带 Popover（二维码 + 可选微信号）
   - "Built with Nuxt" 技术栈说明
 
   依赖：
@@ -44,7 +44,7 @@
             <UPopover v-else :ui="{ width: 'w-auto' }">
               <button
                 class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
-                :aria-label="t('contact.wechatQrTip')"
+                :aria-label="t('contact.qrTip')"
               >
                 <UIcon :name="link.icon" class="h-5 w-5" />
               </button>
@@ -64,23 +64,20 @@
                       loading="lazy"
                     />
                     <div
+                      v-if="link.value"
                       class="flex w-full items-center justify-center gap-2 rounded-lg bg-surface-light-alt dark:bg-surface-dark-alt px-3 py-1.5"
                     >
-                      <span
-                        class="text-text-secondary-light dark:text-text-secondary-dark text-xs"
-                      >
+                      <span class="text-text-secondary-light dark:text-text-secondary-dark text-xs">
                         {{ t('contact.wechatId') }}:
                       </span>
-                      <span
-                        class="text-text-primary-light dark:text-text-primary-dark text-xs font-medium"
-                      >
+                      <span class="text-text-primary-light dark:text-text-primary-dark text-xs font-medium">
                         {{ link.value }}
                       </span>
                       <UTooltip :text="copyTooltip" :open="copyTooltipOpen">
                         <button
                           class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-600 dark:hover:text-primary-400 duration-fast ml-0.5 flex h-6 w-6 items-center justify-center rounded transition-colors"
                           :aria-label="t('contact.copyWechatId')"
-                          @click.stop="copyWechatId(link.value ?? '')"
+                          @click.stop="copyId(link.value ?? '')"
                         >
                           <UIcon
                             :name="copySuccess ? 'i-heroicons-check' : 'i-heroicons-clipboard-document'"
@@ -116,7 +113,7 @@ const copyTooltip = computed(() =>
   copySuccess.value ? t('contact.copied') : t('contact.copyWechatId'),
 )
 
-async function copyWechatId(value: string) {
+async function copyId(value: string) {
   try {
     await navigator.clipboard.writeText(value)
     copySuccess.value = true
