@@ -75,11 +75,25 @@
     "name": "姓名",
     "email": "邮箱",
     "message": "消息",
+    "namePlaceholder": "请输入你的姓名",
+    "emailPlaceholder": "请输入你的邮箱",
+    "messagePlaceholder": "请输入你想说的话...",
     "send": "发送",
     "sending": "发送中...",
     "success": "消息已发送！",
     "error": "发送失败，请稍后重试。",
-    "socialLinks": "社交链接"
+    "emailSubject": "你的个人网站my-personalWebsite - 新消息",
+    "socialLinks": "社交链接",
+    "validation": {
+      "nameRequired": "请输入姓名",
+      "nameMin": "姓名至少需要 2 个字符",
+      "nameMax": "姓名最多 20 个字符",
+      "emailRequired": "请输入邮箱",
+      "emailInvalid": "请输入有效的邮箱地址",
+      "messageRequired": "请输入留言内容",
+      "messageMin": "留言内容至少需要 5 个字符",
+      "messageMax": "留言内容最多 200 个字符"
+    }
   },
   "common": {
     "darkMode": "暗色模式",

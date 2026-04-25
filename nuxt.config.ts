@@ -81,6 +81,12 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    public: {
+      web3formsKey: '',
+    },
+  },
+
   compatibilityDate: '2025-04-18',
 
   devtools: { enabled: true },
