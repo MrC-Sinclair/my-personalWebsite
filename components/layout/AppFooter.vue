@@ -26,39 +26,27 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <UTooltip text="GitHub">
-            <a
-              :href="siteConfig.social.github"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
-              aria-label="GitHub"
-            >
-              <UIcon name="i-simple-icons-github" class="h-5 w-5" />
-            </a>
-          </UTooltip>
-          <UTooltip text="Twitter / X">
-            <a
-              :href="siteConfig.social.twitter"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
-              aria-label="Twitter"
-            >
-              <UIcon name="i-simple-icons-x" class="h-5 w-5" />
-            </a>
-          </UTooltip>
-          <UTooltip text="LinkedIn">
-            <a
-              :href="siteConfig.social.linkedin"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
-              aria-label="LinkedIn"
-            >
-              <UIcon name="i-simple-icons-linkedin" class="h-5 w-5" />
-            </a>
-          </UTooltip>
+          <template v-for="link in socialLinks" :key="link.name">
+            <UTooltip v-if="link.url" :text="link.name">
+              <a
+                :href="link.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
+                :aria-label="link.name"
+              >
+                <UIcon :name="link.icon" class="h-5 w-5" />
+              </a>
+            </UTooltip>
+            <UTooltip v-else :text="link.value || link.name">
+              <span
+                class="text-text-secondary-light dark:text-text-secondary-dark duration-fast hover:text-primary-500 flex h-10 w-10 cursor-default items-center justify-center rounded-lg transition-all hover:scale-110"
+                :aria-label="link.name"
+              >
+                <UIcon :name="link.icon" class="h-5 w-5" />
+              </span>
+            </UTooltip>
+          </template>
         </div>
 
         <div class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
@@ -70,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-const { siteConfig } = useAppInfo()
+const { siteConfig, socialLinks } = useAppInfo()
 const { t } = useI18n()
 
 const currentYear = new Date().getFullYear()

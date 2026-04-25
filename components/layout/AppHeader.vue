@@ -19,7 +19,7 @@
 -->
 <template>
   <header
-    class="bg-surface-light/80 dark:bg-surface-dark/80 z-modal duration-normal sticky top-0 backdrop-blur-md transition-colors"
+    class="duration-normal sticky top-0 z-50 border-b border-gray-200 bg-white transition-colors dark:border-gray-700 dark:bg-[#0f172a]"
   >
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
       <NuxtLink
