@@ -91,6 +91,11 @@
     "errorNetwork": "Network connection failed, please check your network. You can also use other contact methods.",
     "emailSubject": "Your Personal Website my-personalWebsite - New Message",
     "socialLinks": "Social Links",
+    "wechat": "WeChat",
+    "wechatQrTip": "Click to view QR code",
+    "wechatId": "WeChat ID",
+    "copyWechatId": "Copy WeChat ID",
+    "copied": "Copied",
     "validation": {
       "nameRequired": "Please enter your name",
       "nameMin": "Name must be at least 2 characters",

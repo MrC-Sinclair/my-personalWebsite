@@ -20,7 +20,7 @@ export function useAppInfo() {
       github: 'https://github.com/yourusername',
       twitter: 'https://twitter.com/yourusername',
       linkedin: 'https://linkedin.com/in/yourusername',
-      wechat: 'your-wechat-id',
+      wechat: 'c2256843428',
     },
   }))
 
@@ -29,10 +29,11 @@ export function useAppInfo() {
     { name: 'Twitter / X', url: siteConfig.value.social.twitter, icon: 'i-simple-icons-x' },
     { name: 'LinkedIn', url: siteConfig.value.social.linkedin, icon: 'i-simple-icons-linkedin' },
     {
-      name: '微信',
+      name: t('contact.wechat'),
       url: null,
       icon: 'i-simple-icons-wechat',
       value: siteConfig.value.social.wechat,
+      qrCode: '/images/wechat-qr.png',
     },
   ])
 

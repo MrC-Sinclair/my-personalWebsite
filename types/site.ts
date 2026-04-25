@@ -41,6 +41,8 @@ export interface SocialLinkItem {
   icon: string
   /** 显示值（如微信号，无则为 null） */
   value?: string
+  /** 二维码图片路径（如微信二维码） */
+  qrCode?: string
 }
 
 /** 导航栏菜单项 */
