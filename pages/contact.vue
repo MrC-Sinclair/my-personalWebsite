@@ -33,39 +33,25 @@
           {{ t('contact.socialLinks') }}
         </h2>
         <div class="space-y-4">
-          <a
-            :href="siteConfig.social.github"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <UIcon name="i-simple-icons-github" class="h-6 w-6" />
-            <span>GitHub</span>
-          </a>
-          <a
-            :href="siteConfig.social.twitter"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <UIcon name="i-simple-icons-x" class="h-6 w-6" />
-            <span>Twitter / X</span>
-          </a>
-          <a
-            :href="siteConfig.social.linkedin"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <UIcon name="i-simple-icons-linkedin" class="h-6 w-6" />
-            <span>LinkedIn</span>
-          </a>
-          <div
-            class="bg-surface-light dark:bg-surface-dark flex items-center gap-3 rounded-xl p-4 shadow-sm"
-          >
-            <UIcon name="i-simple-icons-wechat" class="h-6 w-6" />
-            <span>{{ siteConfig.social.wechat }}</span>
-          </div>
+          <template v-for="link in socialLinks" :key="link.name">
+            <a
+              v-if="link.url"
+              :href="link.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <UIcon :name="link.icon" class="h-6 w-6" />
+              <span>{{ link.name }}</span>
+            </a>
+            <div
+              v-else
+              class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <UIcon :name="link.icon" class="h-6 w-6" />
+              <span>{{ link.value || link.name }}</span>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -74,7 +60,7 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
-const { siteConfig } = useAppInfo()
+const { socialLinks } = useAppInfo()
 useScrollReveal()
 
 useHead({

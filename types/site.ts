@@ -31,6 +31,18 @@ export interface SocialLinks {
   wechat: string
 }
 
+/** 社交媒体条目（带图标，用于组件循环渲染） */
+export interface SocialLinkItem {
+  /** 平台名称 */
+  name: string
+  /** 平台地址（微信等无链接的平台可为 null） */
+  url: string | null
+  /** 图标类名（如 "i-simple-icons-github"） */
+  icon: string
+  /** 显示值（如微信号，无则为 null） */
+  value?: string
+}
+
 /** 导航栏菜单项 */
 export interface NavItem {
   /** 菜单项显示文本 */

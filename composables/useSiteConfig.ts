@@ -5,7 +5,7 @@
  *              站点配置（名称、社交链接等）为静态数据，后续可迁移到数据库或环境变量。
  */
 
-import type { SiteConfig, NavItem, SkillGroup, TimelineItem } from '~/types/site'
+import type { SiteConfig, NavItem, SkillGroup, TimelineItem, SocialLinkItem } from '~/types/site'
 
 export function useAppInfo() {
   const { t } = useI18n()
@@ -23,6 +23,18 @@ export function useAppInfo() {
       wechat: 'your-wechat-id',
     },
   }))
+
+  const socialLinks = computed<SocialLinkItem[]>(() => [
+    { name: 'GitHub', url: siteConfig.value.social.github, icon: 'i-simple-icons-github' },
+    { name: 'Twitter / X', url: siteConfig.value.social.twitter, icon: 'i-simple-icons-x' },
+    { name: 'LinkedIn', url: siteConfig.value.social.linkedin, icon: 'i-simple-icons-linkedin' },
+    {
+      name: '微信',
+      url: null,
+      icon: 'i-simple-icons-wechat',
+      value: siteConfig.value.social.wechat,
+    },
+  ])
 
   const navItems = computed<NavItem[]>(() => [
     { label: t('nav.home'), to: '/' },
@@ -74,6 +86,7 @@ export function useAppInfo() {
 
   return {
     siteConfig,
+    socialLinks,
     navItems,
     skillGroups,
     timeline,
