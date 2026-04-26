@@ -86,7 +86,7 @@ i18n/             → zh-CN.json, en-US.json
 - ThemeToggle 等依赖客户端状态的组件使用 `<ClientOnly>` 包裹，避免 hydration mismatch
 - PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段，manifest 含 name/short_name/theme_color/icons
 - viewport meta 含 `viewport-fit=cover`，适配刘海屏安全区域
-- 联系表单使用 Web3Forms API，access_key 通过环境变量 `NUXT_PUBLIC_WEB3FORMS_KEY` 配置，组件为 `ContactForm`
+- 联系表单使用 Formspree，form ID 在 `ContactForm.vue` 中硬编码，组件为 `ContactForm`
 - Apple Web App 配置：`apple-mobile-web-app-capable` + `black-translucent` 状态栏
 
 ## 移动端适配要点

@@ -67,7 +67,6 @@ docker compose -f docker/docker-compose.yml down
 参考 `.env.example` 创建 `.env` 文件，典型变量：
 
 - `NUXT_PUBLIC_SITE_URL` - 站点 URL
-- `NUXT_PUBLIC_WEB3FORMS_KEY` - Web3Forms 联系表单 API 密钥（从 https://web3forms.com 获取）
 - `DATABASE_URL` - PostgreSQL 连接字符串（可选）
 
 ## 本地偏好

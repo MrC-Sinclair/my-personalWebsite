@@ -1,8 +1,8 @@
 <!--
   ContactForm - 联系表单组件
 
-  提供用户留言表单，提交到 Web3Forms 第三方服务。
-  access_key 通过环境变量 NUXT_PUBLIC_WEB3FORMS_KEY 配置。
+  提供用户留言表单，提交到 Formspree 第三方服务。
+  表单 ID 在代码中硬编码（mzdywoje）。
 
   表单字段：
   - 姓名（必填，2-20 字符）
@@ -79,7 +79,6 @@
 import type { FormError, FormSubmitEvent } from '#ui/types'
 
 const { t } = useI18n()
-const config = useRuntimeConfig()
 
 const form = reactive({
   name: '',
@@ -119,18 +118,14 @@ function validate(state: typeof form): FormError[] {
   return errors
 }
 
-function resolveErrorMessage(result: { message?: string } | null): string {
-  if (!result?.message) return t('contact.error')
-  const msg = result.message.toLowerCase()
-  if (msg.includes('spam')) return t('contact.errorSpam')
-  if (msg.includes('access_key') || msg.includes('form_id') || msg.includes('invalid key'))
-    return t('contact.errorInvalidKey')
-  if (msg.includes('missing') || msg.includes('required fields'))
-    return t('contact.errorMissingFields')
-  if (msg.includes('invalid email')) return t('contact.errorInvalidEmail')
-  if (msg.includes('too short') || msg.includes('too long') || msg.includes('empty'))
-    return t('contact.errorMessageLength')
-  if (msg.includes('limit') || msg.includes('quota')) return t('contact.errorRateLimit')
+function resolveErrorMessage(
+  result: { errors?: Array<{ name?: string; message?: string }> } | null,
+): string {
+  if (!result) return t('contact.error')
+  if (result.errors && result.errors.length > 0) {
+    const first = result.errors[0]
+    return first.message || t('contact.error')
+  }
   return t('contact.error')
 }
 
@@ -140,11 +135,10 @@ async function handleSubmit(event: FormSubmitEvent<typeof form>) {
   errorMessage.value = ''
 
   try {
-    const response = await fetch('https://api.web3forms.com/submit', {
+    const response = await fetch('https://formspree.io/f/mzdywoje', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        access_key: config.public.web3formsKey,
         name: event.data.name,
         email: event.data.email,
         message: event.data.message,

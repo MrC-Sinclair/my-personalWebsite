@@ -82,9 +82,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    public: {
-      web3formsKey: '',
-    },
+    public: {},
   },
 
   compatibilityDate: '2025-04-18',
