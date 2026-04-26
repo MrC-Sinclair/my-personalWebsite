@@ -3,6 +3,8 @@
  * @description 定义站点全局配置、社交链接、导航项、技能分组和时间线条目的数据模型。
  */
 
+import type { Component } from 'vue'
+
 /** 站点全局配置 */
 export interface SiteConfig {
   /** 站点名称（显示在导航栏 Logo 和页面标题） */
@@ -38,7 +40,9 @@ export interface SocialLinkItem {
   /** 平台地址（微信等无链接的平台可为 null） */
   url: string | null
   /** 图标类名（如 "i-simple-icons-github"） */
-  icon: string
+  icon?: string
+  /** 自定义 SVG 图标组件（优先于 icon 类名） */
+  customIcon?: Component
   /** 显示值（如微信号，无则为 null） */
   value?: string
   /** 二维码图片路径（如微信二维码） */

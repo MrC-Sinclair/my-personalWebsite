@@ -6,6 +6,7 @@
  */
 
 import type { SiteConfig, NavItem, SkillGroup, TimelineItem, SocialLinkItem } from '~/types/site'
+import IconFeishu from '~/components/icon/IconFeishu.vue'
 
 export function useAppInfo() {
   const { t } = useI18n()
@@ -38,7 +39,7 @@ export function useAppInfo() {
     {
       name: t('contact.feishu'),
       url: null,
-      icon: 'i-local-feishu',
+      customIcon: IconFeishu,
       qrCode: `${baseURL}images/feishu-qr.jpg`,
     },
     {

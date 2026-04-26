@@ -41,7 +41,7 @@
               rel="noopener noreferrer"
               class="bg-surface-light dark:bg-surface-dark duration-normal flex items-center gap-3 rounded-xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
             >
-              <UIcon :name="link.icon" class="h-6 w-6" />
+              <SocialIcon :icon="link.icon" :custom-icon="link.customIcon" size="h-6 w-6" />
               <span>{{ link.name }}</span>
             </a>
 
@@ -52,7 +52,7 @@
                 :aria-label="t('contact.qrTip')"
                 @click="toggleExpand(link.name)"
               >
-                <UIcon :name="link.icon" class="h-6 w-6" />
+                <SocialIcon :icon="link.icon" :custom-icon="link.customIcon" size="h-6 w-6" />
                 <span class="flex-1">{{ link.name }}</span>
                 <UIcon
                   :name="

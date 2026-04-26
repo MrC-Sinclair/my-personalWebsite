@@ -88,17 +88,4 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-04-18',
 
   devtools: { enabled: true },
-
-  icon: {
-    customCollections: [
-      {
-        prefix: 'local',
-        icons: {
-          feishu: {
-            body: '<path fill="currentColor" d="M2.5 10.8L21 3.2c.4-.2.8.2.7.6L18 13.5l2.8 6.3c.2.4-.2.8-.6.6l-7.3-3.2L6 20.8c-.4.2-.8-.2-.7-.6l3.2-7.2-6-2.2c-.4-.2-.4-.8 0-1zm7.7 3.2l-2.5 5.6 5.7-2.9-3.2-2.7zm6.4-7.6L10 12.5l3.7 3.1 2.9-9.2z"/>',
-          },
-        },
-      },
-    ],
-  },
 })

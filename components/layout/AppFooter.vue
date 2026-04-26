@@ -37,7 +37,7 @@
                 class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
                 :aria-label="link.name"
               >
-                <UIcon :name="link.icon" class="h-5 w-5" />
+                <SocialIcon :icon="link.icon" :custom-icon="link.customIcon" size="h-5 w-5" />
               </a>
             </UTooltip>
 
@@ -46,7 +46,7 @@
                 class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-110"
                 :aria-label="t('contact.qrTip')"
               >
-                <UIcon :name="link.icon" class="h-5 w-5" />
+                <SocialIcon :icon="link.icon" :custom-icon="link.customIcon" size="h-5 w-5" />
               </button>
 
               <template #content>
@@ -64,12 +64,14 @@
                     />
                     <div
                       v-if="link.value"
-                      class="flex w-full items-center justify-center gap-2 rounded-lg bg-surface-light-alt dark:bg-surface-dark-alt px-3 py-1.5"
+                      class="bg-surface-light-alt dark:bg-surface-dark-alt flex w-full items-center justify-center gap-2 rounded-lg px-3 py-1.5"
                     >
                       <span class="text-text-secondary-light dark:text-text-secondary-dark text-xs">
                         {{ t('contact.wechatId') }}:
                       </span>
-                      <span class="text-text-primary-light dark:text-text-primary-dark text-xs font-medium">
+                      <span
+                        class="text-text-primary-light dark:text-text-primary-dark text-xs font-medium"
+                      >
                         {{ link.value }}
                       </span>
                       <UTooltip :text="copyTooltip" :open="copyTooltipOpen">
@@ -79,7 +81,9 @@
                           @click.stop="copyId(link.value ?? '')"
                         >
                           <UIcon
-                            :name="copySuccess ? 'i-heroicons-check' : 'i-heroicons-clipboard-document'"
+                            :name="
+                              copySuccess ? 'i-heroicons-check' : 'i-heroicons-clipboard-document'
+                            "
                             class="h-3.5 w-3.5"
                           />
                         </button>
