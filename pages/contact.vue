@@ -75,12 +75,11 @@
                 <div class="overflow-hidden">
                   <div class="border-border-light dark:border-border-dark border-t px-4 pt-5 pb-4">
                     <div class="flex flex-col items-center gap-4">
-                      <NuxtImg
+                      <img
                         v-if="link.qrCode"
                         :src="link.qrCode"
                         :alt="link.name"
                         width="200"
-                        fit="contain"
                         class="rounded-lg"
                         loading="lazy"
                       />

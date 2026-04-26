@@ -54,12 +54,11 @@
                   class="border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark w-56 rounded-xl border p-4 shadow-lg"
                 >
                   <div class="flex flex-col items-center gap-3">
-                    <NuxtImg
+                    <img
                       v-if="link.qrCode"
                       :src="link.qrCode"
                       :alt="link.name"
                       width="176"
-                      fit="contain"
                       class="rounded-lg"
                       loading="lazy"
                     />

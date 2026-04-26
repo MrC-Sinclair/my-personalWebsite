@@ -9,6 +9,9 @@ import type { SiteConfig, NavItem, SkillGroup, TimelineItem, SocialLinkItem } fr
 
 export function useAppInfo() {
   const { t } = useI18n()
+  const {
+    app: { baseURL },
+  } = useRuntimeConfig()
 
   const siteConfig = computed<SiteConfig>(() => ({
     name: t('home.name'),
@@ -30,20 +33,20 @@ export function useAppInfo() {
       name: t('contact.dingtalk'),
       url: null,
       icon: 'i-tabler-brand-dingtalk',
-      qrCode: '/images/dingding-qr.jpg',
+      qrCode: `${baseURL}images/dingding-qr.jpg`,
     },
     {
       name: t('contact.feishu'),
       url: null,
       icon: 'i-local-feishu',
-      qrCode: '/images/feishu-qr.jpg',
+      qrCode: `${baseURL}images/feishu-qr.jpg`,
     },
     {
       name: t('contact.wechat'),
       url: null,
       icon: 'i-simple-icons-wechat',
       value: siteConfig.value.social.wechat,
-      qrCode: '/images/wechat-qr.png',
+      qrCode: `${baseURL}images/wechat-qr.png`,
     },
   ])
 
