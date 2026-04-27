@@ -9,8 +9,8 @@ tags:
   - TypeScript
   - Tailwind CSS
   - PWA
-demoUrl: https://yourusername.github.io/my-personalWebsite/
-githubUrl: https://github.com/yourusername/my-personalWebsite
+demoUrl: https://mrc-sinclair.github.io/my-personalWebsite/
+githubUrl: https://github.com/mrc-sinclair/my-personalWebsite
 featured: true
 ---
 
@@ -26,6 +26,7 @@ This is a comprehensive personal website project using Nuxt 3 SSG static generat
 - **Theme Switching**: Complete light/dark dual-mode
 - **Mobile Adaptation**: Mobile-first with dedicated mobile interaction components
 - **PWA Support**: Offline access, add-to-home-screen, auto-update
+- **Data Layer Reserved**: Drizzle ORM + PostgreSQL optional configuration, data source isolated through composables layer
 
 ## Mobile Adaptation
 
@@ -57,3 +58,4 @@ This is a comprehensive personal website project using Nuxt 3 SSG static generat
 4. Accessibility: Following WCAG AA standards, touch targets ≥ 40px
 5. PWA support: Service Worker + Web App Manifest + offline access
 6. Performance optimization: Responsive images, code splitting, pre-rendering
+7. Data layer reserved: Drizzle ORM + PostgreSQL optional configuration, composables layer isolates data sources for seamless future migration

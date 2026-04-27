@@ -9,8 +9,8 @@ tags:
   - TypeScript
   - Tailwind CSS
   - PWA
-demoUrl: https://yourusername.github.io/my-personalWebsite/
-githubUrl: https://github.com/yourusername/my-personalWebsite
+demoUrl: https://mrc-sinclair.github.io/my-personalWebsite/
+githubUrl: https://github.com/mrc-sinclair/my-personalWebsite
 featured: true
 ---
 
@@ -26,6 +26,7 @@ featured: true
 - **主题切换**：完整的亮色/暗色双模式
 - **移动端适配**：移动端优先，独立移动端交互组件
 - **PWA 支持**：离线访问、添加到主屏幕、自动更新
+- **数据层预留**：Drizzle ORM + PostgreSQL 可选配置，通过 composables 层隔离数据源
 
 ## 移动端适配
 
@@ -57,3 +58,4 @@ featured: true
 4. 无障碍支持：遵循 WCAG AA 标准，触控目标 ≥ 40px
 5. PWA 支持：Service Worker + Web App Manifest + 离线访问
 6. 性能优化：响应式图片、代码分割、预渲染
+7. 数据层预留：Drizzle ORM + PostgreSQL 可选配置，composables 层隔离数据源，未来可无缝切换

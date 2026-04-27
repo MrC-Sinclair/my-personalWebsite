@@ -2,7 +2,7 @@
 title: 使用 Nuxt 3 构建个人网站
 description: 记录使用 Nuxt 3 + Nuxt UI + @nuxt/content 搭建个人网站的全过程，分享技术选型、移动端适配与 PWA 实现细节。
 date: '2025-04-15'
-updated: '2025-04-20'
+updated: '2025-04-28'
 tags:
   - Nuxt
   - Vue
@@ -15,73 +15,148 @@ draft: false
 
 ## 为什么选择 Nuxt 3
 
-Nuxt 3 是一个基于 Vue 3 的全栈框架，支持 SSR、SSG 和混合渲染模式。对于个人网站来说，SSG（静态站点生成）是最理想的选择：
+在众多前端框架中，我选择 Nuxt 3 主要基于以下考量：
 
-- **性能优异**：预渲染为纯静态 HTML，加载速度极快
-- **部署简单**：可直接部署到 GitHub Pages、Vercel 等平台
-- **SEO 友好**：预渲染的 HTML 对搜索引擎完全可见
-- **开发体验好**：热更新、自动导入、TypeScript 支持
+- **SSG 是个人网站的最优解**：个人网站内容更新频率低、无服务端逻辑，预渲染为纯静态 HTML 后加载极快，部署到 GitHub Pages 零成本。Nuxt 3 同时支持 SSR/SSG/混合渲染，未来如果需要动态功能（如评论系统），可以逐页切换渲染模式，不必重构
+- **生态完整**：Nuxt UI、@nuxt/content、@nuxtjs/i18n、@vite-pwa/nuxt 等官方/社区模块覆盖了个人网站几乎所有需求，避免自己拼装
+- **TypeScript 优先**：从路由参数到内容 schema 全链路类型安全，配合 Zod 做运行时校验，构建时就能捕获内容格式错误
 
-## 技术栈选择
-
-### UI 框架：Nuxt UI v3
-
-Nuxt UI v3 基于 Tailwind CSS v4 和 Reka UI，提供了丰富的组件和优秀的开发体验。
+## 技术栈选择与踩坑
 
 ### 内容管理：@nuxt/content v3
 
-使用 Markdown 文件管理博客和项目内容，通过 Zod schema 定义结构化数据，支持全文搜索。
+选择 @nuxt/content v3 而非 v2，是因为 v3 引入了 `defineCollection` + Zod schema，可以在构建时校验 Markdown frontmatter 的字段类型和格式。
+
+**踩坑**：v3 的 collection 必须按 source 路径分离，不支持在单个 collection 内用语言字段区分。因此中英文内容需要定义独立的 collection：
+
+```ts
+// content.config.ts
+const blogSchema = z.object({
+  title: z.string(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  tags: z.array(z.string()).default([]),
+  draft: z.boolean().default(false),
+  // ...
+})
+
+export default defineContentConfig({
+  collections: {
+    blogZh: defineCollection({ type: 'page', source: 'blog/zh/**/*.md', schema: blogSchema }),
+    blogEn: defineCollection({ type: 'page', source: 'blog/en/**/*.md', schema: blogSchema }),
+  },
+})
+```
+
+这样做的好处是 schema 可以在中文和英文 collection 之间复用，坏处是每新增一种语言就要加一对 collection。对于个人网站的双语场景，这个代价可以接受。
 
 ### 国际化：@nuxtjs/i18n
 
-支持中英文双语，使用 `prefix_except_default` 策略，中文为默认语言。
+使用 `prefix_except_default` 策略：中文（默认语言）URL 无前缀，英文带 `/en/` 前缀。这样中文用户访问的 URL 更简洁，英文用户也能通过前缀明确语言。
 
-### PWA：@vite-pwa/nuxt
+**踩坑**：i18n 切换语言时，composable 中缓存的列表数据需要清空，否则页面会短暂显示旧语言内容。解决方案是在 composable 中 `watch(locale)` 时清空缓存：
 
-通过 @vite-pwa/nuxt 模块实现 PWA 支持，用户可以将网站添加到主屏幕，支持离线访问和自动更新。
+```ts
+const postsCache = ref<BlogPost[] | null>(null)
 
-## 项目结构
+watch(locale, () => {
+  postsCache.value = null
+})
+```
 
-项目采用模块化的目录结构，将组件按功能分类：
+### Design Token 系统
 
-- `components/layout/` - 布局组件（AppHeader, AppFooter, AppSidebar, MobileNavBar）
-- `components/home/` - 首页组件
-- `components/blog/` - 博客组件（含 MobileToc 移动端目录）
-- `components/project/` - 项目组件
-- `components/common/` - 通用组件（ThemeToggle, LangSwitcher, SearchModal, ContactForm）
+项目通过 Tailwind CSS v4 的 `@theme` 指令统一管理设计变量，避免组件中硬编码颜色值：
 
-## 移动端适配方案
+```css
+@theme {
+  --color-primary-500: #6366f1;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #0f172a;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --z-overlay: 40;
+  --z-modal: 50;
+}
+```
 
-项目遵循"移动端优先，渐进增强"的设计策略，从核心交互、体验优化和高级特性三个层面实现完整的移动端适配。
+这样组件中使用 `bg-surface-light dark:bg-surface-dark`、`duration-fast` 等语义 Token，换主题色只需改一处。
 
-### 核心交互
+## 移动端适配：为什么这样做
 
-**汉堡菜单增强**：AppHeader 的移动端菜单添加了 slide-down 展开/收起动画、点击外部区域自动关闭、菜单打开时锁定背景滚动（body scroll lock），确保移动端导航体验流畅。
+项目遵循"移动端优先，渐进增强"策略。以下是几个关键决策及其背后的原因。
 
-**搜索入口**：在 AppHeader 中添加搜索图标按钮，移动端和桌面端均可触发 SearchModal，解决了之前移动端无法使用搜索功能的问题。
+### 为什么需要独立的移动端组件
 
-**移动端文章目录**：新建 MobileToc 组件，在博客详情页以右下角浮动按钮形式展示，点击后弹出底部目录面板，方便移动端用户跳转文章章节。桌面端仍使用 BlogToc 侧边栏固定显示。
+最初我把移动端和桌面端的交互逻辑写在同一个组件里，用 `v-if` + 断点切换。但很快发现这会导致：
 
-**底部导航栏**：新建 MobileNavBar 组件，在 md 断点以下固定在页面底部，提供首页、博客、项目、关于、联系五个主要页面的快速切换入口。
+1. **组件臃肿**：一个组件同时维护两套交互逻辑（如侧边栏固定显示 vs 抽屉滑入），可读性急剧下降
+2. **SSR 困境**：服务端无法知道屏幕宽度，`v-if="isMobile"` 在 SSR 时只能猜一个默认值，容易导致 hydration mismatch
 
-### 体验优化
+最终方案是拆分为独立组件：`MobileToc`（浮动按钮 + 底部面板）和 `BlogToc`（侧边栏固定），通过 CSS 媒体查询控制显示（`lg:hidden` vs `hidden lg:block`），SSR 时两套 DOM 都渲染，客户端由 CSS 决定哪套可见，避免 hydration 问题。
 
-**触控目标尺寸**：所有可交互元素（按钮、链接）的触控区域扩大到 40×40px（h-10 w-10），接近 WCAG 推荐的 44×44px 标准，避免移动端误触。
+### 滚动动画的 SSG 兼容方案
 
-**prefers-reduced-motion**：在 `assets/css/main.css` 中添加全局 CSS 规则，当用户系统设置减少动画时，自动禁用所有动画和过渡效果。
+常见的滚动动画方案是在 `onMounted` 中给元素设置初始透明状态，但这会导致 SSG 场景下的 hydration mismatch——服务端渲染的 HTML 是可见的，客户端 mount 后突然变透明再动画出现。
 
-**响应式图片**：NuxtImg 组件配置 `sizes="sm:100vw md:50vw lg:33vw"`，避免移动端下载不必要的大图，节省流量。
+我的方案是用纯 CSS 定义初始状态，IntersectionObserver 只负责添加 `.revealed` 类：
 
-**ProjectCard 整体可点击**：使用 NuxtLink 包裹整张卡片，内部按钮通过 `@click.stop` 阻止事件冒泡，移动端无需精确点击小按钮。
+```ts
+export function useScrollReveal() {
+  onMounted(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
+    )
 
-**AppSidebar 抽屉模式**：移动端侧边栏改为抽屉式，从左侧滑入并显示遮罩层，通过 `isOpen` prop 和 `close` emit 控制，路由切换时自动关闭。
+    document.querySelectorAll('.scroll-reveal').forEach((el) => {
+      observer.observe(el)
+    })
+  })
+}
+```
 
-### 高级特性
+CSS 中 `.scroll-reveal` 初始 `opacity: 0`，`.scroll-reveal.revealed` 过渡到 `opacity: 1`。服务端渲染时元素就是透明的（CSS 生效），客户端进入视口后添加类触发过渡，SSR 和客户端渲染结果一致。
 
-**安全区域适配**：viewport meta 添加 `viewport-fit=cover`，CSS 提供 `safe-bottom/top/left/right` 工具类，适配 iPhone X+ 等刘海屏设备。
+同时，`prefers-reduced-motion` 下必须显式覆盖 `.scroll-reveal { opacity: 1 !important; transform: none !important }`，仅设置 `transition-duration: 0` 不够——`opacity: 0` 是静态样式不是 transition，不会因为禁用过渡就自动变为可见。
 
-**PWA 支持**：通过 @vite-pwa/nuxt 模块配置 Web App Manifest 和 Service Worker，支持添加到主屏幕、离线访问和自动更新。同时配置了 `apple-mobile-web-app-capable` 和 `black-translucent` 状态栏样式。
+### 触控目标的教训
+
+移动端可交互元素的触控区域应 ≥ 40×40px（WCAG 推荐 44×44px）。我在开发中漏掉了 MobileToc 面板的关闭按钮，用了 `h-8 w-8`（32px），后来审查时才发现并修正为 `h-10 w-10`。这类问题容易遗漏，建议在代码审查时专门检查移动端按钮尺寸。
+
+### 安全区域适配
+
+iPhone X 及以上机型有底部 Home Indicator，固定定位的底部导航栏会被遮挡。解决方案：
+
+```css
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+```
+
+viewport meta 需添加 `viewport-fit=cover`，否则 `env(safe-area-inset-*)` 值为 0。
+
+## PWA 实现要点
+
+通过 @vite-pwa/nuxt 模块实现 PWA 支持，关键配置：
+
+- `registerType: 'autoUpdate'`：Service Worker 自动更新，用户无需手动刷新
+- `client: { installPrompt: true }`：启用安装提示
+- `apple-mobile-web-app-capable` + `black-translucent` 状态栏：iOS 添加到主屏幕后全屏显示
+
+**踩坑**：iOS 的 PWA 状态栏默认覆盖页面内容，必须用 `safe-area-inset-top` 给顶部留出空间，否则 AppHeader 会被状态栏遮挡。
 
 ## 总结
 
-通过 Nuxt 3 生态系统的各个模块，我们可以快速搭建一个功能完善、性能优异的个人网站。从基础的 SSG 静态生成到完整的移动端适配和 PWA 支持，项目逐步完善了各个功能模块，确保在各种设备上都能提供优秀的用户体验。
+通过 Nuxt 3 生态系统的各个模块，我们可以快速搭建一个功能完善、性能优异的个人网站。开发过程中最大的挑战不是功能实现，而是 SSG 场景下的 hydration 一致性和移动端交互的细节打磨。以下是我总结的几条经验：
+
+1. **SSG 项目中，所有"客户端才知道的值"都必须延迟到 `onMounted` 或用 `<ClientOnly>` 包裹**，否则必然产生 hydration mismatch
+2. **移动端交互组件应该独立拆分**，而非在同一个组件内用条件判断切换，这样代码更清晰、SSR 更安全
+3. **Design Token 统一管理**比看起来更重要——当项目从 10 个组件增长到 50 个时，硬编码的颜色值会成为维护噩梦
+4. **触控目标尺寸这类细节容易遗漏**，建议建立检查清单，在代码审查时逐项确认

@@ -17,7 +17,7 @@
   交互：
   - hover 时卡片上浮 + 阴影增强 + 图片微缩放
   - 整张卡片 NuxtLink 包裹可点击跳转
-  - 内部按钮使用 @click.stop 阻止冒泡，避免嵌套链接
+  - 内部链接按钮使用原生 <a> + @click.stop 阻止冒泡，避免嵌套链接
 
   依赖：
   - useI18n() 提供国际化文案
@@ -56,30 +56,39 @@
         </p>
 
         <div class="mb-4 flex flex-wrap gap-1.5">
-          <UBadge v-for="tag in (Array.isArray(project.tags) ? project.tags : []).slice(0, 5)" :key="tag" variant="outline" size="xs">
+          <UBadge
+            v-for="tag in (Array.isArray(project.tags) ? project.tags : []).slice(0, 5)"
+            :key="tag"
+            variant="outline"
+            size="xs"
+          >
             {{ tag }}
           </UBadge>
         </div>
 
         <div class="flex gap-3">
-          <UButton
+          <a
             v-if="project.demoUrl"
-            variant="solid"
-            size="sm"
-            trailing-icon="i-heroicons-arrow-top-right-on-square"
-            @click.stop="openUrl(project.demoUrl)"
+            :href="project.demoUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-primary-500 hover:bg-primary-600 dark:bg-primary-500 dark:hover:bg-primary-400 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-white transition-colors"
+            @click.stop
           >
             {{ t('projects.demo') }}
-          </UButton>
-          <UButton
+            <UIcon name="i-heroicons-arrow-top-right-on-square" class="size-4" />
+          </a>
+          <a
             v-if="project.githubUrl"
-            variant="outline"
-            size="sm"
-            icon="i-simple-icons-github"
-            @click.stop="openUrl(project.githubUrl)"
+            :href="project.githubUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+            @click.stop
           >
+            <UIcon name="i-simple-icons-github" class="size-4" />
             {{ t('projects.github') }}
-          </UButton>
+          </a>
         </div>
       </div>
     </article>
@@ -101,10 +110,4 @@ const projectPath = computed(() => {
   const slug = path.split('/').pop()?.replace(/\.md$/, '') || ''
   return `/projects/${slug}`
 })
-
-function openUrl(url: string) {
-  if (import.meta.client) {
-    window.open(url, '_blank', 'noopener,noreferrer')
-  }
-}
 </script>

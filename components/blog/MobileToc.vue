@@ -53,7 +53,7 @@
           </h4>
           <UTooltip :text="t('common.closeMenu')">
             <button
-              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+              class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 duration-fast flex h-10 w-10 items-center justify-center rounded-full transition-colors"
               :aria-label="t('common.closeMenu')"
               @click="isPanelOpen = false"
             >

@@ -10,70 +10,63 @@
 
 import { defineContentConfig, defineCollection, z } from '@nuxt/content'
 
+const blogSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  updated: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  image: z.string().optional(),
+  tags: z.array(z.string()).default([]),
+  category: z.string().optional(),
+  draft: z.boolean().default(false),
+})
+
+const projectSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  updated: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  image: z.string().optional(),
+  tags: z.array(z.string()).default([]),
+  demoUrl: z.string().optional(),
+  githubUrl: z.string().optional(),
+  featured: z.boolean().default(false),
+})
+
 export default defineContentConfig({
   collections: {
     /** 中文博客文章集合 */
     blogZh: defineCollection({
       type: 'page',
       source: 'blog/zh/**/*.md',
-      schema: z.object({
-        title: z.string(),
-        description: z.string().optional(),
-        date: z.string(),
-        updated: z.string().optional(),
-        image: z.string().optional(),
-        tags: z.array(z.string()).default([]),
-        category: z.string().optional(),
-        draft: z.boolean().default(false),
-      }),
+      schema: blogSchema,
     }),
 
     /** 英文博客文章集合 */
     blogEn: defineCollection({
       type: 'page',
       source: 'blog/en/**/*.md',
-      schema: z.object({
-        title: z.string(),
-        description: z.string().optional(),
-        date: z.string(),
-        updated: z.string().optional(),
-        image: z.string().optional(),
-        tags: z.array(z.string()).default([]),
-        category: z.string().optional(),
-        draft: z.boolean().default(false),
-      }),
+      schema: blogSchema,
     }),
 
     /** 中文项目集合 */
     projectsZh: defineCollection({
       type: 'page',
       source: 'projects/zh/**/*.md',
-      schema: z.object({
-        title: z.string(),
-        description: z.string().optional(),
-        date: z.string(),
-        image: z.string().optional(),
-        tags: z.array(z.string()).default([]),
-        demoUrl: z.string().optional(),
-        githubUrl: z.string().optional(),
-        featured: z.boolean().default(false),
-      }),
+      schema: projectSchema,
     }),
 
     /** 英文项目集合 */
     projectsEn: defineCollection({
       type: 'page',
       source: 'projects/en/**/*.md',
-      schema: z.object({
-        title: z.string(),
-        description: z.string().optional(),
-        date: z.string(),
-        image: z.string().optional(),
-        tags: z.array(z.string()).default([]),
-        demoUrl: z.string().optional(),
-        githubUrl: z.string().optional(),
-        featured: z.boolean().default(false),
-      }),
+      schema: projectSchema,
     }),
   },
 })

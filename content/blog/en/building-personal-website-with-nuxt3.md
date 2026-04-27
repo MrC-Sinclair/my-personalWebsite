@@ -2,7 +2,7 @@
 title: Building a Personal Website with Nuxt 3
 description: Documenting the process of building a personal website using Nuxt 3 + Nuxt UI + @nuxt/content, sharing technical choices, mobile adaptation, and PWA implementation details.
 date: '2025-04-15'
-updated: '2025-04-20'
+updated: '2025-04-28'
 tags:
   - Nuxt
   - Vue
@@ -15,73 +15,148 @@ draft: false
 
 ## Why Nuxt 3
 
-Nuxt 3 is a full-stack framework based on Vue 3 that supports SSR, SSG, and hybrid rendering modes. For a personal website, SSG (Static Site Generation) is the ideal choice:
+Among the many frontend frameworks, I chose Nuxt 3 for the following reasons:
 
-- **Excellent Performance**: Pre-rendered as pure static HTML for blazing fast loading
-- **Simple Deployment**: Can be deployed directly to GitHub Pages, Vercel, etc.
-- **SEO Friendly**: Pre-rendered HTML is fully visible to search engines
-- **Great DX**: Hot reload, auto-imports, TypeScript support
+- **SSG is the optimal solution for personal websites**: Personal sites have low content update frequency and no server-side logic. Pre-rendering to pure static HTML delivers blazing fast loads, and deploying to GitHub Pages costs nothing. Nuxt 3 supports SSR/SSG/hybrid rendering simultaneously — if dynamic features are needed in the future (e.g., a comment system), individual pages can switch rendering modes without a full rewrite
+- **Complete ecosystem**: Nuxt UI, @nuxt/content, @nuxtjs/i18n, @vite-pwa/nuxt and other official/community modules cover nearly every need for a personal website, eliminating the need to assemble pieces yourself
+- **TypeScript-first**: End-to-end type safety from route params to content schemas, with Zod for runtime validation — content format errors are caught at build time
 
-## Tech Stack
-
-### UI Framework: Nuxt UI v3
-
-Nuxt UI v3 is built on Tailwind CSS v4 and Reka UI, providing rich components and excellent developer experience.
+## Tech Stack Choices and Pitfalls
 
 ### Content Management: @nuxt/content v3
 
-Using Markdown files for blog and project content, with Zod schema for structured data and full-text search support.
+I chose @nuxt/content v3 over v2 because v3 introduces `defineCollection` + Zod schema, which validates Markdown frontmatter field types and formats at build time.
+
+**Pitfall**: v3 collections must be separated by source path — you can't distinguish languages within a single collection using a language field. Therefore, Chinese and English content require separate collections:
+
+```ts
+// content.config.ts
+const blogSchema = z.object({
+  title: z.string(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  tags: z.array(z.string()).default([]),
+  draft: z.boolean().default(false),
+  // ...
+})
+
+export default defineContentConfig({
+  collections: {
+    blogZh: defineCollection({ type: 'page', source: 'blog/zh/**/*.md', schema: blogSchema }),
+    blogEn: defineCollection({ type: 'page', source: 'blog/en/**/*.md', schema: blogSchema }),
+  },
+})
+```
+
+The benefit is that schemas can be shared across Chinese and English collections. The downside is that adding a new language requires a new pair of collections. For a bilingual personal site, this trade-off is acceptable.
 
 ### Internationalization: @nuxtjs/i18n
 
-Supporting Chinese and English with `prefix_except_default` strategy, Chinese as the default language.
+Using the `prefix_except_default` strategy: Chinese (default language) URLs have no prefix, English URLs carry an `/en/` prefix. This gives Chinese users cleaner URLs while English users can identify the language from the URL.
 
-### PWA: @vite-pwa/nuxt
+**Pitfall**: When switching languages with i18n, cached list data in composables must be cleared — otherwise the page briefly shows content in the old language. The solution is to clear the cache when `watch(locale)` fires:
 
-Implementing PWA support through the @vite-pwa/nuxt module, allowing users to add the website to their home screen with offline access and auto-update capabilities.
+```ts
+const postsCache = ref<BlogPost[] | null>(null)
 
-## Project Structure
+watch(locale, () => {
+  postsCache.value = null
+})
+```
 
-The project uses a modular directory structure with components organized by function:
+### Design Token System
 
-- `components/layout/` - Layout components (AppHeader, AppFooter, AppSidebar, MobileNavBar)
-- `components/home/` - Home page components
-- `components/blog/` - Blog components (including MobileToc for mobile)
-- `components/project/` - Project components
-- `components/common/` - Common components (ThemeToggle, LangSwitcher, SearchModal, ContactForm)
+The project uses Tailwind CSS v4's `@theme` directive to centrally manage design variables, avoiding hardcoded color values in components:
 
-## Mobile Adaptation
+```css
+@theme {
+  --color-primary-500: #6366f1;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #0f172a;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --z-overlay: 40;
+  --z-modal: 50;
+}
+```
 
-The project follows a "mobile-first, progressive enhancement" design strategy, implementing complete mobile adaptation across three layers: core interactions, experience optimization, and advanced features.
+This way, components use semantic tokens like `bg-surface-light dark:bg-surface-dark` and `duration-fast`. Changing the theme color only requires updating one place.
 
-### Core Interactions
+## Mobile Adaptation: Why We Did It This Way
 
-**Enhanced Hamburger Menu**: The AppHeader mobile menu features slide-down animation, click-outside-to-close behavior, and body scroll lock when the menu is open, ensuring a smooth mobile navigation experience.
+The project follows a "mobile-first, progressive enhancement" strategy. Below are key decisions and the reasoning behind them.
 
-**Search Access**: A search icon button was added to AppHeader, enabling both mobile and desktop users to trigger SearchModal, resolving the previous issue where search was inaccessible on mobile.
+### Why Separate Mobile Components
 
-**Mobile Table of Contents**: A new MobileToc component displays as a floating button in the bottom-right corner of blog detail pages. Tapping it reveals a bottom sheet with the table of contents, making it easy for mobile users to navigate article sections. Desktop users still see the BlogToc sidebar.
+Initially, I put mobile and desktop interaction logic in the same component, using `v-if` + breakpoint switching. This quickly led to:
 
-**Bottom Navigation Bar**: A new MobileNavBar component is fixed at the bottom of the page below the md breakpoint, providing quick access to Home, Blog, Projects, About, and Contact pages.
+1. **Bloated components**: A single component maintaining two sets of interaction logic (e.g., sidebar always visible vs. drawer slide-in) made readability plummet
+2. **SSR dilemma**: The server doesn't know the screen width, so `v-if="isMobile"` can only guess a default value during SSR, easily causing hydration mismatch
 
-### Experience Optimization
+The final solution was to split into separate components: `MobileToc` (floating button + bottom sheet) and `BlogToc` (sticky sidebar), controlled by CSS media queries (`lg:hidden` vs `hidden lg:block`). Both DOM trees render during SSR, and CSS determines which is visible on the client — avoiding hydration issues.
 
-**Touch Target Size**: All interactive elements (buttons, links) have been enlarged to 40×40px (h-10 w-10), approaching the WCAG-recommended 44×44px standard to prevent accidental taps on mobile.
+### SSG-Compatible Scroll Animation
 
-**prefers-reduced-motion**: A global CSS rule in `assets/css/main.css` automatically disables all animations and transitions when the user's system is set to reduce motion.
+A common scroll animation approach is to set elements to transparent in `onMounted`, but this causes hydration mismatch in SSG — the server renders visible HTML, then the client suddenly makes it transparent before animating it in.
 
-**Responsive Images**: NuxtImg components are configured with `sizes="sm:100vw md:50vw lg:33vw"` to prevent mobile devices from downloading unnecessarily large images.
+My solution uses pure CSS for the initial state, with IntersectionObserver only adding the `.revealed` class:
 
-**Clickable ProjectCard**: The entire ProjectCard is wrapped in a NuxtLink, with internal buttons using `@click.stop` to prevent event bubbling, eliminating the need for precise tapping on mobile.
+```ts
+export function useScrollReveal() {
+  onMounted(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
+    )
 
-**AppSidebar Drawer Mode**: The mobile sidebar uses a drawer pattern, sliding in from the left with an overlay backdrop, controlled via `isOpen` prop and `close` emit, and automatically closes on route changes.
+    document.querySelectorAll('.scroll-reveal').forEach((el) => {
+      observer.observe(el)
+    })
+  })
+}
+```
 
-### Advanced Features
+In CSS, `.scroll-reveal` starts at `opacity: 0`, and `.scroll-reveal.revealed` transitions to `opacity: 1`. During SSR, elements are already transparent (CSS takes effect), and on the client, the class is added when entering the viewport — SSR and client render results are consistent.
 
-**Safe Area Adaptation**: The viewport meta includes `viewport-fit=cover`, and CSS provides `safe-bottom/top/left/right` utility classes for iPhone X+ notch device compatibility.
+Additionally, under `prefers-reduced-motion`, you must explicitly override `.scroll-reveal { opacity: 1 !important; transform: none !important }`. Simply setting `transition-duration: 0` is not enough — `opacity: 0` is a static style, not a transition, so disabling transitions won't make it automatically visible.
 
-**PWA Support**: Configured via @vite-pwa/nuxt with Web App Manifest and Service Worker, supporting add-to-home-screen, offline access, and auto-update. Also configured with `apple-mobile-web-app-capable` and `black-translucent` status bar style.
+### Touch Target Lessons
+
+Interactive elements on mobile should have a touch area ≥ 40×40px (WCAG recommends 44×44px). During development, I missed the close button in the MobileToc panel — it used `h-8 w-8` (32px). I only caught this during a later review and fixed it to `h-10 w-10`. These issues are easy to overlook; I recommend specifically checking mobile button sizes during code review.
+
+### Safe Area Adaptation
+
+iPhone X and later models have a bottom Home Indicator that overlaps fixed-position bottom navigation bars. The solution:
+
+```css
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+```
+
+The viewport meta must include `viewport-fit=cover`, otherwise `env(safe-area-inset-*)` values will be 0.
+
+## PWA Implementation Highlights
+
+PWA support is implemented via the @vite-pwa/nuxt module with these key configurations:
+
+- `registerType: 'autoUpdate'`: Service Worker updates automatically, no manual refresh needed
+- `client: { installPrompt: true }`: Enables install prompt
+- `apple-mobile-web-app-capable` + `black-translucent` status bar: Full-screen display when added to home screen on iOS
+
+**Pitfall**: iOS PWA status bar overlaps page content by default. You must use `safe-area-inset-top` to reserve space at the top, otherwise AppHeader gets obscured by the status bar.
 
 ## Summary
 
-Through the various modules of the Nuxt 3 ecosystem, we can quickly build a fully-featured, high-performance personal website. From basic SSG static generation to complete mobile adaptation and PWA support, the project has progressively improved each functional module to ensure an excellent user experience across all devices.
+Through the various modules of the Nuxt 3 ecosystem, we can quickly build a fully-featured, high-performance personal website. The biggest challenge during development wasn't implementing features — it was maintaining hydration consistency in SSG scenarios and polishing mobile interaction details. Here are my key takeaways:
+
+1. **In SSG projects, all "client-only values" must be deferred to `onMounted` or wrapped in `<ClientOnly>`**, otherwise hydration mismatch is inevitable
+2. **Mobile interaction components should be split independently** rather than conditionally switching within the same component — this yields cleaner code and safer SSR
+3. **Centralized Design Token management** is more important than it seems — when a project grows from 10 to 50 components, hardcoded color values become a maintenance nightmare
+4. **Details like touch target sizes are easy to miss** — I recommend building a checklist and verifying each item during code review
