@@ -44,8 +44,8 @@
     </aside>
 
     <Transition
-      enter-active-class="transition-opacity duration-200 ease-out"
-      leave-active-class="transition-opacity duration-150 ease-in"
+      enter-active-class="transition-opacity duration-normal ease-out"
+      leave-active-class="transition-opacity duration-fast ease-in"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
       leave-from-class="opacity-100"
@@ -56,7 +56,7 @@
 
     <Transition
       enter-active-class="transition-transform duration-normal ease-out"
-      leave-active-class="transition-transform duration-200 ease-in"
+      leave-active-class="transition-transform duration-normal ease-in"
       enter-from-class="-translate-x-full"
       enter-to-class="translate-x-0"
       leave-from-class="translate-x-0"

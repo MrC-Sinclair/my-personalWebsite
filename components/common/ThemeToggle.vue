@@ -22,7 +22,7 @@
   <ClientOnly>
     <UTooltip :text="isDark ? t('common.lightMode') : t('common.darkMode')">
       <button
-        class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-150"
+        class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-fast"
         :class="{ 'rotate-180': isSpinning }"
         :aria-label="isDark ? t('common.lightMode') : t('common.darkMode')"
         @click="toggleColorMode"
@@ -34,7 +34,7 @@
     <template #fallback>
       <UTooltip :text="t('common.darkMode')">
         <button
-          class="text-text-secondary-light dark:text-text-secondary-dark flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-150"
+          class="text-text-secondary-light dark:text-text-secondary-dark flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-fast"
           :aria-label="t('common.darkMode')"
         >
           <UIcon name="i-heroicons-moon" class="h-5 w-5" />

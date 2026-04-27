@@ -27,7 +27,7 @@
       <li v-for="link in toc.links" :key="link.id">
         <a
           :href="`#${link.id}`"
-          class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 block text-sm transition-colors duration-150"
+          class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 block text-sm transition-colors duration-fast"
           :class="{ 'pl-4': link.depth === 3 }"
         >
           {{ link.text }}

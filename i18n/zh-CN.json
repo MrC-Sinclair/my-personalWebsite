@@ -32,6 +32,7 @@
     "nextPost": "下一篇",
     "toc": "目录",
     "noResults": "没有找到相关文章",
+    "noResultsHint": "尝试调整搜索关键词或分类筛选",
     "allCategories": "全部分类",
     "breadcrumb": "博客",
     "backToList": "返回列表"
@@ -43,6 +44,9 @@
     "github": "GitHub",
     "techStack": "技术栈",
     "featured": "精选",
+    "noResults": "暂无项目",
+    "prevProject": "上一个项目",
+    "nextProject": "下一个项目",
     "breadcrumb": "项目",
     "backToList": "返回列表"
   },
@@ -114,7 +118,10 @@
     "goHome": "返回首页",
     "openMenu": "打开菜单",
     "closeMenu": "关闭菜单",
-    "home": "首页"
+    "home": "首页",
+    "mobileNav": "移动端导航",
+    "breadcrumb": "面包屑",
+    "postNav": "文章导航"
   },
   "footer": {
     "copyright": "版权所有",

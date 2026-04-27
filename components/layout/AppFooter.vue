@@ -108,7 +108,10 @@
 const { siteConfig, socialLinks } = useAppInfo()
 const { t } = useI18n()
 
-const currentYear = new Date().getFullYear()
+const currentYear = ref(2026)
+onMounted(() => {
+  currentYear.value = new Date().getFullYear()
+})
 const copySuccess = ref(false)
 const copyTooltipOpen = ref(false)
 
@@ -118,7 +121,9 @@ const copyTooltip = computed(() =>
 
 async function copyId(value: string) {
   try {
-    await navigator.clipboard.writeText(value)
+    if (import.meta.client && navigator.clipboard) {
+      await navigator.clipboard.writeText(value)
+    }
     copySuccess.value = true
     copyTooltipOpen.value = true
     setTimeout(() => {

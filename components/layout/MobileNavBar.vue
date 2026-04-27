@@ -26,7 +26,7 @@
 <template>
   <nav
     class="bg-surface-light/95 dark:bg-surface-dark/95 safe-bottom z-overlay border-border-light dark:border-border-dark fixed right-0 bottom-0 left-0 border-t backdrop-blur-md md:hidden"
-    aria-label="移动端导航"
+    :aria-label="t('common.mobileNav')"
   >
     <div class="flex items-center justify-around py-1">
       <NuxtLink
@@ -51,6 +51,7 @@
 const { navItems } = useAppInfo()
 const localePath = useLocalePath()
 const route = useRoute()
+const { t } = useI18n()
 
 const iconMap: Record<string, string> = {
   '/': 'i-heroicons-home',

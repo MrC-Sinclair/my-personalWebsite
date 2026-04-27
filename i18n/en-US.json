@@ -32,6 +32,7 @@
     "nextPost": "Next Post",
     "toc": "Table of Contents",
     "noResults": "No articles found",
+    "noResultsHint": "Try adjusting your search keywords or category filters",
     "allCategories": "All Categories",
     "breadcrumb": "Blog",
     "backToList": "Back to List"
@@ -43,6 +44,9 @@
     "github": "GitHub",
     "techStack": "Tech Stack",
     "featured": "Featured",
+    "noResults": "No projects yet",
+    "prevProject": "Previous Project",
+    "nextProject": "Next Project",
     "breadcrumb": "Projects",
     "backToList": "Back to List"
   },
@@ -114,7 +118,10 @@
     "goHome": "Go Home",
     "openMenu": "Open Menu",
     "closeMenu": "Close Menu",
-    "home": "Home"
+    "home": "Home",
+    "mobileNav": "Mobile Navigation",
+    "breadcrumb": "Breadcrumb",
+    "postNav": "Post Navigation"
   },
   "footer": {
     "copyright": "All rights reserved",

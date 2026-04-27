@@ -39,7 +39,7 @@
 
       <div class="p-5">
         <div class="mb-2 flex flex-wrap gap-2">
-          <UBadge v-for="tag in post.tags.slice(0, 3)" :key="tag" variant="subtle" size="xs">
+          <UBadge v-for="tag in (Array.isArray(post.tags) ? post.tags : []).slice(0, 3)" :key="tag" variant="subtle" size="xs">
             {{ tag }}
           </UBadge>
         </div>

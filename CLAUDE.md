@@ -8,16 +8,16 @@
 
 | 类别   | 技术                                                    |
 | ------ | ------------------------------------------------------- |
-| 框架   | Nuxt 3 (^3.17, SSG 模式) + Vue 3 (^3.5)                 |
-| UI     | Nuxt UI v3 + Tailwind CSS v4                            |
-| 语言   | TypeScript ^5.x                                         |
-| 内容   | @nuxt/content v3 (Markdown + Zod schema)                |
-| 国际化 | @nuxtjs/i18n ^9.x (中/英)                               |
+| 框架   | Nuxt 3 (^3.17.7, SSG 模式) + Vue 3 (^3.5)              |
+| UI     | Nuxt UI v3 (^3.1.3) + Tailwind CSS v4 (^4.2.2)         |
+| 语言   | TypeScript ^5.8.3                                       |
+| 内容   | @nuxt/content v3 (^3.6.3, Markdown + Zod schema)       |
+| 国际化 | @nuxtjs/i18n ^9.5.5 (中/英)                             |
 | 主题   | @nuxtjs/color-mode (Nuxt UI 内置，亮色/暗色)            |
-| 图片   | @nuxt/image ^1.x (含响应式 sizes)                       |
-| PWA    | @vite-pwa/nuxt ^1.x (离线访问、添加到主屏幕)            |
+| 图片   | @nuxt/image ^1.10.0 (含响应式 sizes)                    |
+| PWA    | @vite-pwa/nuxt ^1.1.1 (离线访问、添加到主屏幕)          |
 | 数据库 | Drizzle ORM + PostgreSQL 17 (预留，Docker Compose 本地) |
-| 测试   | Vitest                                                  |
+| 测试   | Vitest (^3.1.4)                                         |
 | 规范   | ESLint + Prettier + Commitlint + husky + cspell         |
 | 部署   | GitHub Actions → GitHub Pages                           |
 
@@ -43,13 +43,15 @@
 
 ```
 content/          → Markdown 内容（blog/zh/, blog/en/, projects/zh/, projects/en/）
-composables/      → 数据获取抽象层（useBlog, useProjects, useAppInfo）
+composables/      → 数据获取抽象层（useBlog, useProjects, useSiteConfig, useScrollReveal）
+                     注意：useSiteConfig.ts 文件导出的函数名为 useAppInfo()
 components/
   layout/         → AppHeader, AppFooter, AppSidebar, MobileNavBar
   home/           → HeroSection, LatestPosts, FeaturedProjects
   blog/           → BlogList, BlogCard, BlogDetail, BlogToc, MobileToc
   project/        → ProjectGrid, ProjectCard, ProjectDetail
-  common/         → ThemeToggle, LangSwitcher, SearchModal, ContactForm
+  common/         → ThemeToggle, LangSwitcher, SearchModal, ContactForm, SocialIcon
+  icon/           → IconFeishu（自定义 SVG 图标组件）
 pages/            → index, blog/[slug], projects/[slug], about, contact
 types/            → blog.ts, project.ts, site.ts
 utils/            → format.ts 等工具函数
@@ -83,6 +85,7 @@ i18n/             → zh-CN.json, en-US.json
 - 图片 `@nuxt/image` 配置 `provider: ipx`，卡片组件配置 `sizes="sm:100vw md:50vw lg:33vw"`
 - 组件自动导入 `pathPrefix: false`，避免目录前缀（如 `LayoutAppHeader` → `AppHeader`）
 - Tailwind CSS v4 使用 `@theme` 指令定义 Design Tokens（在 `assets/css/main.css` 中）
+- 网络受限环境下，Google Fonts 和 Google Icons 已在 `nuxt.config.ts` 中禁用（`fonts.providers.google: false, fonts.providers.googleicons: false`）
 - ThemeToggle 等依赖客户端状态的组件使用 `<ClientOnly>` 包裹，避免 hydration mismatch
 - PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段，manifest 含 name/short_name/theme_color/icons
 - viewport meta 含 `viewport-fit=cover`，适配刘海屏安全区域
@@ -104,7 +107,7 @@ i18n/             → zh-CN.json, en-US.json
 1. 新增功能前先确认路由和组件归属
 2. 内容型数据放 `content/` 目录，结构化类型放 `types/`
 3. 数据获取逻辑封装到 `composables/`，不要在组件中直接调用 content API
-4. 新增组件遵循目录分类约定（layout/home/blog/project/common）
+4. 新增组件遵循目录分类约定（layout/home/blog/project/common/icon）
 5. 移动端专属组件以 `Mobile` 前缀命名（如 MobileToc、MobileNavBar）
 6. 提交前确保 ESLint + Prettier + cspell 通过
 7. 新增功能需编写 Vitest 单元测试

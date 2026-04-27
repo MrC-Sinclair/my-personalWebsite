@@ -13,7 +13,7 @@
   <div class="flex min-h-screen flex-col">
     <AppHeader />
     <main class="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
-      <h1 class="text-primary-500 mb-4 text-8xl font-bold">
+      <h1 class="text-primary-600 dark:text-primary-400 mb-4 text-8xl font-bold">
         {{ error?.statusCode || 404 }}
       </h1>
       <p class="text-text-secondary-light dark:text-text-secondary-dark mb-8 text-xl">

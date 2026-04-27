@@ -56,7 +56,7 @@
         </p>
 
         <div class="mb-4 flex flex-wrap gap-1.5">
-          <UBadge v-for="tag in project.tags.slice(0, 5)" :key="tag" variant="outline" size="xs">
+          <UBadge v-for="tag in (Array.isArray(project.tags) ? project.tags : []).slice(0, 5)" :key="tag" variant="outline" size="xs">
             {{ tag }}
           </UBadge>
         </div>
@@ -103,6 +103,8 @@ const projectPath = computed(() => {
 })
 
 function openUrl(url: string) {
-  window.open(url, '_blank', 'noopener,noreferrer')
+  if (import.meta.client) {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
 }
 </script>

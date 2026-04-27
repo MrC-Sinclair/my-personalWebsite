@@ -26,7 +26,7 @@
 -->
 <template>
   <article class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-    <nav class="scroll-reveal scroll-reveal-up mb-6" aria-label="面包屑">
+    <nav class="scroll-reveal scroll-reveal-up mb-6" :aria-label="t('common.breadcrumb')">
       <ol
         class="text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-2 text-sm"
       >
@@ -99,12 +99,12 @@
     <nav
       v-if="prevPost || nextPost"
       class="border-border-light dark:border-border-dark mt-12 flex flex-col gap-4 border-t pt-8 sm:flex-row sm:justify-between"
-      aria-label="文章导航"
+      :aria-label="t('common.postNav')"
     >
       <NuxtLink
         v-if="prevPost"
         :to="localePath(blogPath(prevPost))"
-        class="bg-surface-light dark:bg-surface-dark hover:border-primary-500 duration-normal flex items-center gap-3 rounded-xl border border-gray-200 p-4 transition-all hover:shadow-md dark:border-gray-700"
+        class="bg-surface-light dark:bg-surface-dark hover:border-primary-500 duration-normal flex items-center gap-3 rounded-xl border border-border-light p-4 transition-all hover:shadow-md dark:border-border-dark"
       >
         <UIcon name="i-heroicons-arrow-left" class="text-primary-500 h-5 w-5 shrink-0" />
         <div class="min-w-0">
@@ -123,7 +123,7 @@
       <NuxtLink
         v-if="nextPost"
         :to="localePath(blogPath(nextPost))"
-        class="bg-surface-light dark:bg-surface-dark hover:border-primary-500 duration-normal flex items-center gap-3 rounded-xl border border-gray-200 p-4 text-right transition-all hover:shadow-md dark:border-gray-700"
+        class="bg-surface-light dark:bg-surface-dark hover:border-primary-500 duration-normal flex items-center gap-3 rounded-xl border border-border-light p-4 text-right transition-all hover:shadow-md dark:border-border-dark"
       >
         <div class="min-w-0">
           <span class="text-text-secondary-light dark:text-text-secondary-dark text-xs">{{

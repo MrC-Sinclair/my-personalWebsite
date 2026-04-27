@@ -19,8 +19,8 @@
 <template>
   <div v-if="toc && toc.links.length > 0" class="lg:hidden">
     <Transition
-      enter-active-class="transition-opacity duration-150 ease-out"
-      leave-active-class="transition-opacity duration-100 ease-in"
+      enter-active-class="transition-opacity duration-fast ease-out"
+      leave-active-class="transition-opacity duration-fast ease-in"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
       leave-from-class="opacity-100"
@@ -35,7 +35,7 @@
 
     <Transition
       enter-active-class="transition-transform duration-normal ease-out"
-      leave-active-class="transition-transform duration-200 ease-in"
+      leave-active-class="transition-transform duration-normal ease-in"
       enter-from-class="translate-y-full"
       enter-to-class="translate-y-0"
       leave-from-class="translate-y-0"

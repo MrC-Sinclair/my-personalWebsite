@@ -35,7 +35,7 @@
             v-for="result in searchResults"
             :key="result.path"
             :to="localePath(result.path)"
-            class="hover:bg-primary-50 dark:hover:bg-primary-950 block rounded-md p-3 transition-colors duration-150"
+            class="hover:bg-primary-50 dark:hover:bg-primary-950 block rounded-md p-3 transition-colors duration-fast"
             @click="isOpen = false"
           >
             <div class="text-text-primary-light dark:text-text-primary-dark font-medium">

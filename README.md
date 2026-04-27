@@ -20,16 +20,16 @@
 
 | 类别   | 技术                                            | 用途                       |
 | ------ | ----------------------------------------------- | -------------------------- |
-| 框架   | Nuxt 3 (^3.17, SSG 模式)                        | 全栈框架                   |
-| UI     | Nuxt UI v3 + Tailwind CSS v4                    | 组件库 + 原子化 CSS        |
-| 语言   | TypeScript ^5.x                                 | 类型安全                   |
-| 内容   | @nuxt/content v3                                | Markdown 渲染与搜索        |
-| 国际化 | @nuxtjs/i18n ^9.x                               | 中/英双语                  |
+| 框架   | Nuxt 3 (^3.17.7, SSG 模式)                      | 全栈框架                   |
+| UI     | Nuxt UI v3 (^3.1.3) + Tailwind CSS v4 (^4.2.2) | 组件库 + 原子化 CSS        |
+| 语言   | TypeScript ^5.8.3                               | 类型安全                   |
+| 内容   | @nuxt/content v3 (^3.6.3)                       | Markdown 渲染与搜索        |
+| 国际化 | @nuxtjs/i18n ^9.5.5                             | 中/英双语                  |
 | 主题   | @nuxtjs/color-mode                              | 亮色/暗色切换              |
-| 图片   | @nuxt/image ^1.x                                | 响应式图片优化（含 sizes） |
-| PWA    | @vite-pwa/nuxt ^1.x                             | 离线访问、添加到主屏幕     |
+| 图片   | @nuxt/image ^1.10.0                             | 响应式图片优化（含 sizes） |
+| PWA    | @vite-pwa/nuxt ^1.1.1                           | 离线访问、添加到主屏幕     |
 | 数据库 | Drizzle ORM + PostgreSQL 17                     | 预留，Docker Compose 本地  |
-| 测试   | Vitest                                          | 单元测试                   |
+| 测试   | Vitest (^3.1.4)                                 | 单元测试                   |
 | 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                   |
 | 部署   | GitHub Actions → GitHub Pages                   | CI/CD + 静态托管           |
 
@@ -44,11 +44,13 @@ my-personalWebsite/
 │   ├── home/                      # 首页组件（HeroSection, LatestPosts, FeaturedProjects）
 │   ├── blog/                      # 博客组件（BlogCard, BlogDetail, BlogList, BlogToc, MobileToc）
 │   ├── project/                   # 项目组件（ProjectCard, ProjectDetail, ProjectGrid）
-│   └── common/                    # 通用组件（ThemeToggle, LangSwitcher, SearchModal, ContactForm）
+│   ├── common/                    # 通用组件（ThemeToggle, LangSwitcher, SearchModal, ContactForm, SocialIcon）
+│   └── icon/                      # 自定义 SVG 图标（IconFeishu）
 ├── composables/                   # 可组合函数（内容获取抽象层）
 │   ├── useBlog.ts                 # 博客数据获取
 │   ├── useProjects.ts             # 项目数据获取
-│   └── useSiteConfig.ts           # 站点配置与导航
+│   ├── useSiteConfig.ts           # 站点配置与导航（导出 useAppInfo 函数）
+│   └── useScrollReveal.ts         # 滚动进入视口动画（IntersectionObserver）
 ├── content/                       # Markdown 内容文件
 │   ├── blog/zh/                   # 中文博客文章
 │   ├── blog/en/                   # 英文博客文章
@@ -72,6 +74,7 @@ my-personalWebsite/
 │   ├── blog.ts                    # 博客相关类型
 │   ├── project.ts                 # 项目相关类型
 │   └── site.ts                    # 站点配置类型
+├── public/images/                 # 静态图片资源（二维码等）
 ├── utils/format.ts                # 工具函数（日期格式化、阅读时长、slug 生成）
 ├── app.vue                        # Nuxt 应用入口
 ├── error.vue                      # 全局错误页

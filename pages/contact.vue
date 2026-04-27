@@ -156,7 +156,9 @@ function toggleExpand(name: string) {
 
 async function copyId(name: string, value: string) {
   try {
-    await navigator.clipboard.writeText(value)
+    if (import.meta.client && navigator.clipboard) {
+      await navigator.clipboard.writeText(value)
+    }
     copySuccessSet.value.add(name)
     copyTooltipOpen.value = name
     setTimeout(() => {

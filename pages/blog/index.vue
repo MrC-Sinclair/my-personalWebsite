@@ -65,7 +65,7 @@
     >
       <UIcon name="i-heroicons-magnifying-glass" class="mx-auto mb-3 h-10 w-10 opacity-40" />
       <p class="text-lg">{{ t('blog.noResults') }}</p>
-      <p class="mt-2 text-sm">尝试调整搜索关键词或分类筛选</p>
+      <p class="mt-2 text-sm">{{ t('blog.noResultsHint') }}</p>
     </div>
   </div>
 </template>

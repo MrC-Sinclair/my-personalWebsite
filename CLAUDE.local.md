@@ -5,7 +5,7 @@
 ## 本地环境信息
 
 - **操作系统**：Windows
-- **项目路径**：`d:\code\my-personalWebsite`
+- **项目路径**：`d:\code\codeWork\my-personalWebsite`
 - **包管理器**：pnpm
 
 ## 本地开发命令
@@ -89,7 +89,7 @@ docker compose -f docker/docker-compose.yml down
 - `nuxt generate` 生成的静态文件在 `.output/public/` 目录
 - 本地开发时 `app.baseURL` 默认为 `/`，部署时需改为 `/my-personalWebsite/`
 - Docker Desktop 需提前启动才能使用本地数据库
-- 首次安装依赖时 pnpm 会提示允许构建原生模块（better-sqlite3 等），已在 `package.json` 的 `pnpm.onlyBuiltDependencies` 中预配置
-- 网络受限环境下，Google Fonts 已在 `nuxt.config.ts` 中禁用（`fonts.providers.google: false`）
+- 首次安装依赖时 pnpm 会提示允许构建原生模块，已在 `package.json` 的 `pnpm.onlyBuiltDependencies` 中预配置，包含：`@parcel/watcher, better-sqlite3, esbuild, sharp, unrs-resolver, vue-demi`
+- 网络受限环境下，Google Fonts 和 Google Icons 已在 `nuxt.config.ts` 中禁用（`fonts.providers.google: false, fonts.providers.googleicons: false`）
 - PWA 在本地开发时自动注册 Service Worker，可通过 DevTools → Application → Service Workers 管理
 - 移动端底部导航栏在 md 以下断点显示，桌面端隐藏；布局 `default.vue` 中 `main` 有 `pb-16 md:pb-0` 为其留出空间

@@ -5,19 +5,20 @@
 
   数据获取：
   - useProjects().getProjectBySlug() 通过 composable 获取项目数据（含 content 对象）
+  - useProjects().getAllProjects() 获取所有项目用于计算上下篇
   - 数据不存在时抛出 404 错误
 
   路由：/projects/:slug
 -->
 <template>
   <div>
-    <ProjectDetail v-if="project && content" :project="project" :content="content" />
-
-    <div v-else class="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
-      <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg">
-        {{ t('common.notFound') }}
-      </p>
-    </div>
+    <ProjectDetail
+      v-if="project && content"
+      :project="project"
+      :content="content"
+      :prev-project="prevProject"
+      :next-project="nextProject"
+    />
   </div>
 </template>
 
@@ -25,13 +26,15 @@
 import type { Project } from '~/types/project'
 
 const { t } = useI18n()
-const { getProjectBySlug } = useProjects()
+const { getProjectBySlug, getAllProjects } = useProjects()
 const route = useRoute()
 
 const slug = route.params.slug as string
 
 const project = ref<Project | null>(null)
 const content = ref<Record<string, unknown> | null>(null)
+const prevProject = ref<Project | null>(null)
+const nextProject = ref<Project | null>(null)
 
 const result = await getProjectBySlug(slug)
 
@@ -41,6 +44,15 @@ if (!result.project) {
 
 project.value = result.project
 content.value = result.content
+
+const allProjects = await getAllProjects()
+const currentIndex = allProjects.findIndex((p) => p.path === project.value?.path)
+if (currentIndex > 0) {
+  prevProject.value = allProjects[currentIndex - 1]
+}
+if (currentIndex < allProjects.length - 1) {
+  nextProject.value = allProjects[currentIndex + 1]
+}
 
 useHead({
   title: project.value?.title || t('projects.title'),
