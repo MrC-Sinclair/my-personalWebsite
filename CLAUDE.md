@@ -84,7 +84,7 @@ i18n/             → zh-CN.json, en-US.json
 - i18n 使用 `prefix_except_default` 策略（默认中文无前缀，英文 URL 带 `/en/` 前缀）
 - 图片 `@nuxt/image` 配置 `provider: ipx`，卡片组件配置 `sizes="sm:100vw md:50vw lg:33vw"`
 - 组件自动导入 `pathPrefix: false`，避免目录前缀（如 `LayoutAppHeader` → `AppHeader`）
-- Tailwind CSS v4 使用 `@theme` 指令定义 Design Tokens（在 `assets/css/main.css` 中）
+- Tailwind CSS v4 使用 `@theme` 指令定义 Design Tokens（在 `assets/css/main.css` 中），z-index 必须用 `--z-index-*` 命名空间（如 `--z-index-modal: 50`），`--z-*` 不会生成工具类
 - 网络受限环境下，Google Fonts 和 Google Icons 已在 `nuxt.config.ts` 中禁用（`fonts.providers.google: false, fonts.providers.googleicons: false`）
 - ThemeToggle 等依赖客户端状态的组件使用 `<ClientOnly>` 包裹，避免 hydration mismatch
 - PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段，manifest 含 name/short_name/theme_color/icons
