@@ -60,7 +60,7 @@
           <button
             class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-500 ml-2 flex h-10 w-10 items-center justify-center md:hidden"
             :aria-label="isMobileMenuOpen ? t('common.closeMenu') : t('common.openMenu')"
-            @click="isMobileMenuOpen = !isMobileMenuOpen"
+            @click.stop="isMobileMenuOpen = !isMobileMenuOpen"
           >
             <UIcon v-if="!isMobileMenuOpen" name="i-heroicons-bars-3" class="h-6 w-6" />
             <UIcon v-else name="i-heroicons-x-mark" class="h-6 w-6" />
