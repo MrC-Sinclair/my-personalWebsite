@@ -62,19 +62,19 @@ export function useAppInfo() {
   const skillGroups = computed<SkillGroup[]>(() => [
     {
       category: t('about.skillFrontend'),
-      skills: ['Vue.js', 'Nuxt', 'React', 'TypeScript', 'Tailwind CSS'],
+      skills: ['Vue', 'React', 'Nuxt', 'Next', 'UniApp', 'ECharts', 'D3.js', 'qiankun'],
     },
     {
       category: t('about.skillBackend'),
-      skills: ['Node.js', 'Python', 'PostgreSQL', 'Redis'],
+      skills: ['Node.js', 'PostgreSQL + Drizzle', 'SSE'],
     },
     {
       category: t('about.skillDevops'),
-      skills: ['Docker', 'GitHub Actions', 'Linux', 'Nginx'],
+      skills: ['Docker', 'GitHub Actions'],
     },
     {
       category: t('about.skillTools'),
-      skills: ['Git', 'VS Code', 'Figma', 'Vitest'],
+      skills: ['Git', 'Figma'],
     },
   ])
 
@@ -96,6 +96,12 @@ export function useAppInfo() {
       organization: t('about.timeline3Org'),
       period: t('about.timeline3Period'),
       description: t('about.timeline3Desc'),
+    },
+    {
+      title: t('about.timeline4Title'),
+      organization: t('about.timeline4Org'),
+      period: t('about.timeline4Period'),
+      description: t('about.timeline4Desc'),
     },
   ])
 
