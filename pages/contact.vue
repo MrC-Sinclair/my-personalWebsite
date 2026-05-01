@@ -82,7 +82,7 @@
                         width="200"
                         class="rounded-lg"
                         loading="lazy"
-                      />
+                      >
                       <div
                         v-if="link.value"
                         class="bg-surface-light-alt dark:bg-surface-dark-alt flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2"

@@ -73,8 +73,6 @@
   </UForm>
 </template>
 
-<style scoped></style>
-
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
 
@@ -166,3 +164,5 @@ async function handleSubmit(event: FormSubmitEvent<typeof form>) {
   }
 }
 </script>
+
+<style scoped></style>
