@@ -44,7 +44,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10 # 使用 pnpm v10
+          version: 11 # 使用 pnpm v11
 
       # 步骤 3：安装 Node.js 运行时
       # Nuxt 3 需要 Node.js 18+，这里使用 v20
