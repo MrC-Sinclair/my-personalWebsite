@@ -135,6 +135,26 @@ pnpm test:watch    # 运行测试（监听模式）
 2. GitHub Actions 执行 `pnpm install → pnpm generate`
 3. 将 `.output/public/` 部署到 GitHub Pages
 
+### 手动部署到自有服务器（腾讯云轻量 + 宝塔）
+
+如需发布到自有服务器（当前生产环境），按以下步骤操作：
+
+```bash
+# 1. 本地生成静态站点（先关闭 Nuxt 遥测询问）
+$env:NUXT_TELEMETRY_DISABLED = "1"
+pnpm generate
+```
+
+2. 将 `.output/public/` 目录打包为 zip
+3. 打开宝塔面板，上传 zip 到站点根目录并解压覆盖
+4. 浏览器访问验证（返回 HTTP 200 即成功）
+
+关键点：
+
+- `pnpm generate` 已定义在 package.json 的 `scripts` 中，直接执行即可
+- 服务器站点根目录：`/www/wwwroot/my-personalWebsite/`
+- 本流程为手动发布；如要自动化，可另配 GitHub Actions 通过 SSH/SFTP 推送产物
+
 ### 关键配置
 
 - `nuxt.config.ts` 中 `app.baseURL` 设为 `/my-personalWebsite/`
