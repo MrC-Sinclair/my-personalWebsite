@@ -19,8 +19,22 @@
  * ```
  */
 export function formatDate(dateString: string, locale: string = 'zh-CN'): string {
-  const date = new Date(dateString)
-  return date.toLocaleDateString(locale, {
+  // 短语言码归一化：i18n 的 locale 是 'zh'/'en'，映射到完整 BCP 47 标签保证确定性
+  const localeMap: Record<string, string> = { zh: 'zh-CN', en: 'en-US' }
+  const resolvedLocale = localeMap[locale] ?? locale
+
+  // 纯日期字符串（YYYY-MM-DD）按本地时区解析：new Date('YYYY-MM-DD') 会按 UTC 解析，
+  // UTC 西侧时区的用户会看到日期偏移一天（SSG 预渲染与客户端也可能不一致）
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(dateString)
+  const date = dateOnly
+    ? new Date(
+        Number(dateString.slice(0, 4)),
+        Number(dateString.slice(5, 7)) - 1,
+        Number(dateString.slice(8, 10)),
+      )
+    : new Date(dateString)
+
+  return date.toLocaleDateString(resolvedLocale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

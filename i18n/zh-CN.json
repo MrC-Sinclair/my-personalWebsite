@@ -132,6 +132,21 @@
     "breadcrumb": "面包屑",
     "postNav": "文章导航"
   },
+  "styles": {
+    "pageTitleSuffix": "UI 风格",
+    "gallery": {
+      "title": "UI 风格画廊",
+      "description": "一套内容，20 种 UI 大风格——同一份内容与业务逻辑的完全不同的视觉表达",
+      "enter": "进入风格",
+      "tier": "成本档位",
+      "tier1": "纯结构与样式",
+      "tier2": "需要外部资源",
+      "tier3": "需要交互脚本",
+      "statusReady": "页面齐全",
+      "statusPartial": "部分页面",
+      "statusPlanned": "规划中"
+    }
+  },
   "footer": {
     "copyright": "版权所有",
     "builtWith": "使用 Nuxt 构建",

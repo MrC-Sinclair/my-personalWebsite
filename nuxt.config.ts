@@ -10,7 +10,7 @@ export default defineNuxtConfig({
 
   components: [{ path: '~/components', pathPrefix: false }],
 
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '~/styles/_base/tokens.css'],
 
   app: {
     baseURL: '/my-personalWebsite/',
@@ -78,6 +78,36 @@ export default defineNuxtConfig({
     },
     client: {
       installPrompt: true,
+    },
+  },
+
+  nitro: {
+    prerender: {
+      // 风格预渲染路由清单 —— 必须与 styles/registry.ts 同步维护；
+      // 画廊页与各风格内部链接由预渲染爬虫自动发现
+      routes: [
+        '/styles',
+        '/style/liquid-glass',
+        '/style/neo-brutalism',
+        '/style/soft-3d',
+        '/style/minimalism',
+        '/style/cyberpunk',
+        '/style/editorial',
+        '/style/y2k',
+        '/style/web2-glossy',
+        '/style/pixel',
+        '/style/terminal',
+        '/style/dashboard',
+        '/style/swiss',
+        '/style/retro-computer',
+        '/style/sci-fi-hud',
+        '/style/claymorphism',
+        '/style/neumorphism',
+        '/style/glassmorphism',
+        '/style/skeuomorphism',
+        '/style/metro',
+        '/style/flat-design',
+      ],
     },
   },
 

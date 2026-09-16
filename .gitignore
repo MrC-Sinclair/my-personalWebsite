@@ -31,4 +31,11 @@ Thumbs.db
 .idea
 .codeBuddy/*
 
+# 视觉验收截图产物（体积大且可随时重新生成，不入库）
+.shots
+.shots-new
+
+# AI 协作工作区数据（记忆与诊断脚本，仅本地使用）
+.workbuddy
+
 

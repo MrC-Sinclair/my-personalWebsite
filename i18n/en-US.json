@@ -132,6 +132,21 @@
     "breadcrumb": "Breadcrumb",
     "postNav": "Post Navigation"
   },
+  "styles": {
+    "pageTitleSuffix": "UI Style",
+    "gallery": {
+      "title": "UI Style Gallery",
+      "description": "One set of content, 20 UI styles — completely different visual expressions of the same content and business logic",
+      "enter": "Enter Style",
+      "tier": "Complexity Tier",
+      "tier1": "Structure & styles only",
+      "tier2": "Needs external assets",
+      "tier3": "Needs interaction scripts",
+      "statusReady": "Full pages",
+      "statusPartial": "Partial pages",
+      "statusPlanned": "Planned"
+    }
+  },
   "footer": {
     "copyright": "All rights reserved",
     "builtWith": "Built with Nuxt",

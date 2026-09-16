@@ -18,6 +18,21 @@ describe('formatDate', () => {
     const result = formatDate('2026-12-01', 'zh-CN')
     expect(result).toBe('2026年12月1日')
   })
+
+  it('短语言码 zh 归一化为 zh-CN', () => {
+    expect(formatDate('2026-01-15', 'zh')).toBe('2026年1月15日')
+  })
+
+  it('短语言码 en 归一化为 en-US', () => {
+    expect(formatDate('2026-01-15', 'en')).toBe('January 15, 2026')
+  })
+
+  it('纯日期字符串不受时区影响（本地时区解析）', () => {
+    // 此前 new Date('YYYY-MM-DD') 按 UTC 解析，UTC 西侧时区会偏移一天；
+    // 现按本地时区解析，任何时区下结果一致
+    expect(formatDate('2026-01-15', 'en-US')).toBe('January 15, 2026')
+    expect(formatDate('2026-01-15', 'zh-CN')).toBe('2026年1月15日')
+  })
 })
 
 describe('estimateReadingTime', () => {
