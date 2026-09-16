@@ -1,0 +1,77 @@
+/* ============================================================
+   扁平化（flat-design）—— 变量填表
+   ------------------------------------------------------------
+   按 styles/_base/tokens.css 的变量契约填表：只填值、不新增变量。
+   风格关键词：平面、纯色、几何、简洁、无纹理、少阴影。
+   UI 不模拟现实，直接呈现为数字图形（flat 落地页的隐喻）。
+
+   与 metro（信息版面）的区分：
+   - metro = 锐利直角 + 大 Tile 铺满 + 近黑底的「色块信息版面」；
+   - flat  = 轻圆角 + 全宽色带纵向分节 + 浅底留白的「图形化界面」，
+     装饰走强调色条 / 色圈 / 几何图形，而非信息瓷砖。
+
+   「换性质」决策（不是换值、是换性质）：
+   - --shadow / --shadow-press 填 none：无阴影是本风格的签名，
+     层级完全依靠纯色深浅与色块并置表达，不依赖投影拟物。
+   - --press-transform 填 none：交互反馈用颜色变化（hover / active
+     变深）而非位移，按压不做任何 transform。
+   - --radius 填 4px：保留极轻圆角（与 metro 的 0 直角区分），
+     图形边缘干净但不锐利。
+   - --deco 填 #f1c40f：装饰开关在本风格定义为「几何装饰专用色」
+     （向日葵黄），供色条 / 色点 / 几何图形取用。
+   - --space 填 28px：色带内留白呼吸感比 metro 更强。
+   - 色彩体系：浅冷灰底 + 白色表面 + 深蓝灰正文，强调色为
+     深晴空蓝 / 南瓜橙（与正文的对比度均 ≥ 4.5:1）；扁平经典
+     亮色（绿松石 / 祖母绿 / 紫晶 / 西红柿等）作为风格签名装饰
+     色在组件内定义（components/tones.ts，承载白字处均用加深
+     变体校验过对比度），本表只填契约变量。
+   ============================================================ */
+
+[data-style='flat-design'] {
+  /* —— 色彩 —— */
+  --c-bg: #f4f6f8;
+  --c-surface: #ffffff;
+  --c-text: #2c3e50;
+  --c-muted: #5d6d7e;
+  --c-accent: #2471a3;
+  --c-accent-2: #d35400;
+  --c-border: #dfe4ea;
+  --c-on-accent: #ffffff;
+
+  /* —— 形态 —— */
+  --radius: 4px;
+  --radius-sm: 3px;
+  --border-w: 1px;
+
+  /* —— 阴影：无阴影（层级靠纯色深浅表达）—— */
+  --shadow: none;
+  --shadow-press: none;
+
+  /* —— 字体 —— */
+  --font-body: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号 —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 48px;
+  --fs-title: 21px;
+  --lh-body: 1.7;
+
+  /* —— 间距 —— */
+  --space: 28px;
+  --gap: 20px;
+  --page-w: 1080px;
+
+  /* —— 动效：颜色过渡快速干脆；按压不做位移 —— */
+  --transition: 180ms ease;
+  --press-transform: none;
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关：几何装饰专用色（向日葵黄）—— */
+  --deco: #f1c40f;
+}

@@ -1,0 +1,74 @@
+/* ============================================================
+   复古电脑（retro-computer）—— 变量填表
+   ------------------------------------------------------------
+   按 styles/_base/tokens.css 的变量契约填表：只填值、不新增变量。
+   风格关键词：CRT、DOS、Windows 95、Macintosh Classic、低分辨率、
+   复古窗口边框（外侧深 / 内侧亮的立体凹凸边框）、经典桌面 UI
+   （窗口 / 标题栏 / 任务栏），像打开了一台 1990 年代的电脑。
+
+   「换性质」决策（不是换值、是换性质）：
+   - --radius / --radius-sm 填 0：95 系窗口没有一个圆角，
+     「无圆角」是形态性质的切换，不是数值微调。
+   - --transition 填 none：90 年代 GUI 的状态切换是瞬时换色
+     （hover 即亮、按下即凹），没有渐变过渡，关掉过渡才像。
+   - --press-transform 填 none：95 按钮按下不位移，靠「凸→凹」
+     的立体边框翻转表达按压，位移反而破坏像素对齐。
+   - --font-body / --font-head 填 MS Sans Serif / Tahoma 系统栈：
+     Win95 的界面字体气质（仅系统栈，不引入字体文件）；
+     --font-mono 填 Courier New：DOS 时代点阵等宽的气质。
+   - --img-rendering 填 pixelated：低分辨率 CRT 屏幕，图片必须
+     硬边放大，不许平滑插值。
+   - --deco 填 crt：装饰开关定义为「CRT 扫描线 + 暗角覆盖层启用」。
+   - 色彩体系：--c-bg 是经典桌面青绿（#008080），--c-surface 是
+     95 窗口灰（#c0c0c0），--c-accent / --c-accent-2 是经典标题栏
+     深蓝渐变两端，--c-border 是立体边框的暗灰面。
+   ============================================================ */
+
+[data-style='retro-computer'] {
+  /* —— 色彩 —— */
+  --c-bg: #008080;
+  --c-surface: #c0c0c0;
+  --c-text: #0a0a0a;
+  --c-muted: #4d4d4d;
+  --c-accent: #000080;
+  --c-accent-2: #1084d0;
+  --c-border: #808080;
+  --c-on-accent: #ffffff;
+
+  /* —— 形态 —— */
+  --radius: 0;
+  --radius-sm: 0;
+  --border-w: 1px;
+
+  /* —— 阴影（硬边偏移投影，无模糊，像素风投影）—— */
+  --shadow: 3px 3px 0 rgb(0 0 0 / 0.4);
+  --shadow-press: inset 1px 1px 0 0 #0a0a0a, inset -1px -1px 0 0 #ffffff;
+
+  /* —— 字体 —— */
+  --font-body: 'MS Sans Serif', Tahoma, Geneva, Verdana, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: 'MS Sans Serif', Tahoma, Verdana, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'Courier New', Courier, 'Noto Sans Mono', monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（95 界面以小字号、高密度著称）—— */
+  --fs-base: 14px;
+  --fs-small: 12px;
+  --fs-head: 44px;
+  --fs-title: 16px;
+  --lh-body: 1.7;
+
+  /* —— 间距 —— */
+  --space: 20px;
+  --gap: 16px;
+  --page-w: 1120px;
+
+  /* —— 动效（none：90 年代 GUI 状态瞬时切换，无渐变过渡）—— */
+  --transition: none;
+  --press-transform: none;
+
+  /* —— 渲染模式（CRT 低分辨率：图片硬边放大）—— */
+  --img-rendering: pixelated;
+
+  /* —— 装饰开关：crt = 扫描线 + 暗角覆盖层启用 —— */
+  --deco: crt;
+}

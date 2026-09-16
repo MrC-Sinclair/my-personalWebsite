@@ -1,0 +1,75 @@
+/* ============================================================
+   现代信息界面（metro）—— 变量填表
+   ------------------------------------------------------------
+   按 styles/_base/tokens.css 的变量契约填表：只填值、不新增变量。
+   风格关键词：Tile、Typography、Grid、动态、信息、色块、大字。
+   UI 不是按钮集合，而是一张可以实时变化的信息版面
+   （Windows Phone / Windows 8 开始屏幕的隐喻）。
+
+   「换性质」决策（不是换值、是换性质）：
+   - --radius / --radius-sm 填 0：锐利直角是本风格的签名，
+     一切 Tile 都是绝对方正的色块，圆角性质被整体关闭。
+   - --shadow / --shadow-press 填 none：扁平无阴影，层级完全
+     依靠色块并置表达，不依赖投影拟物。
+   - --gap 填 10px：Tile 沟槽刻意收窄（开始屏幕的窄缝节奏），
+     与宽松的 --space（区块间距）形成疏密对比。
+   - --fs-head 填 52px 且英雄区标题用 Segoe UI Light 细字重：
+     Metro 的排版签名是「细字重超大字」，不是粗体大字。
+   - --transition 填 160ms ease-out：Tile 的倾斜/提亮反馈要快、
+     干脆，配合 --press-transform: scale(0.96) 的按压缩小。
+   - --deco 填 none：本风格没有任何拟物装饰，装饰开关保持关闭。
+   - 色彩体系：近黑开始屏幕底（--c-bg #171717）+ 高饱和 Metro
+     经典色块（cobalt 蓝 / violet 紫罗兰 / purple 紫 / green 绿 /
+     teal 青 / orange 橙 / magenta 洋红 / red 红）。色块具体色值
+     在组件中定义（风格签名装饰允许硬编码），本表只填契约变量；
+     承载白色正文的色块均已校验对比度 ≥ 4.5:1。
+   ============================================================ */
+
+[data-style='metro'] {
+  /* —— 色彩 —— */
+  --c-bg: #171717;
+  --c-surface: #262626;
+  --c-text: #ffffff;
+  --c-muted: #a6a6a6;
+  --c-accent: #1ba1e2;
+  --c-accent-2: #f09609;
+  --c-border: #333333;
+  --c-on-accent: #ffffff;
+
+  /* —— 形态 —— */
+  --radius: 0;
+  --radius-sm: 0;
+  --border-w: 1px;
+
+  /* —— 阴影 —— */
+  --shadow: none;
+  --shadow-press: none;
+
+  /* —— 字体 —— */
+  --font-body: 'Segoe UI', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: 'Segoe UI', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号 —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 52px;
+  --fs-title: 24px;
+  --lh-body: 1.6;
+
+  /* —— 间距 —— */
+  --space: 24px;
+  --gap: 10px;
+  --page-w: 1240px;
+
+  /* —— 动效 —— */
+  --transition: 160ms ease-out;
+  --press-transform: scale(0.96);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关：none = 无任何拟物装饰 —— */
+  --deco: none;
+}

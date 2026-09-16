@@ -1,0 +1,65 @@
+/* ============================================================
+   变量契约（Design Token Contract）
+   ------------------------------------------------------------
+   _base 只做两件事：
+   1. 声明「有哪些变量」——这是所有风格必须填写的清单
+   2. 提供中性回落值——风格漏填时不至于崩掉
+
+   新增一种风格 = 在 styles/<id>/tokens.css 填这张表（选择器
+   为 [data-style='<id>']），不动任何业务代码。
+   变量挂在风格路由壳（pages/style/[style]/[...slug].vue）的
+   包裹元素上，只作用于风格路由，不影响过渡层页面。
+
+   注意：默认值是一套中性皮肤，真正的外观由各风格覆盖。
+   关键心法：不是换值、是换性质——像素风把 --transition 填
+   none（关掉过渡才像素）、--img-rendering 填 pixelated。
+   ============================================================ */
+
+[data-style] {
+  /* —— 色彩 —— */
+  --c-bg: #ffffff;
+  --c-surface: #f6f6f4;
+  --c-text: #1a1a1a;
+  --c-muted: #6b6b6b;
+  --c-accent: #3333ff;
+  --c-accent-2: #ff5544;
+  --c-border: #1a1a1a;
+  --c-on-accent: #ffffff;
+
+  /* —— 形态 —— */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --border-w: 1px;
+
+  /* —— 阴影（一个值，风格可换成硬阴影或无阴影）—— */
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  --shadow-press: 0 1px 1px rgb(0 0 0 / 0.12);
+
+  /* —— 字体 —— */
+  --font-body: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: var(--font-body);
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto; /* 像素风会把它关掉 */
+
+  /* —— 字号 —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 40px;
+  --fs-title: 22px;
+  --lh-body: 1.75;
+
+  /* —— 间距 —— */
+  --space: 20px;
+  --gap: 16px;
+  --page-w: 1100px;
+
+  /* —— 动效（允许填 none 表示关闭过渡）—— */
+  --transition: 160ms ease;
+  --press-transform: translateY(1px);
+
+  /* —— 渲染模式（像素风填 pixelated）—— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（各风格自行定义用途）—— */
+  --deco: none;
+}

@@ -1,0 +1,88 @@
+/* cspell:ignore skeuomorphism Zhongsong */
+/* ============================================================
+   拟物主义（skeuomorphism）—— Design Token 填表
+   ------------------------------------------------------------
+   按 styles/_base/tokens.css 的变量契约填表：只填值、不新增变量。
+   风格关键词：真实材质、皮革、木头、金属、纸张、真实阴影、
+   明确光源方向（左上）、拟真物理结构（缝线、铆钉、卷边）。
+   一句话：数字世界里的东西，尽可能长得像现实世界里的东西。
+
+   与 y2k 的分界：y2k 是「塑料/铬金属的未来感」，本风格是
+   「皮革/木纹/纸张的怀旧实物感」——材质语义完全不同。
+   材质纹理全部由组件内纯 CSS（渐变/阴影/伪元素）绘制。
+
+   「换性质」决策（不是换值、是换性质）：
+   1. 常暗暖棕「木桌」底色（不分亮暗模式）：所有实物都摆在
+      一张深色胡桃木桌上，皮革/黄铜只有在暖暗底色上才有
+      实物感；--c-surface 反差地填米白「纸张」色——深色材质
+      上的浅文字复用这支「象牙墨水」，物理上同为一支米白颜料
+   2. --shadow 填双层重落影（大扩散悬影 + 贴地接触影）：实物
+      摆在桌上有明确投影，光源固定左上；--shadow-press 填
+      inset 内凹：按压 = 实体被按进桌面（行程感签名）
+   3. --font-head / --font-body 走衬线印刷栈：标题如雕版印书、
+      正文如纸张印刷（中文回落宋体系）；--font-mono 走
+      Courier 打字机栈：日期与编号像打字机敲在索引卡上
+   4. --border-w 提到 2px：材质有厚度，边缘是真实的壁面
+   5. --transition 填 200ms ease：实物有分量，动作比默认沉稳；
+      --press-transform 下沉 2px 配合内凹阴影构成按压行程
+   6. --deco 用作黄铜「拉丝高光」斜向扫光渐变（金属铭牌叠层）
+   7. --c-muted 填纸面弱化墨色（暖棕，对米白纸面对比 ≥ 4.5:1）：
+      本风格的主要阅读材质是纸张（文章/项目/技能签）
+   ============================================================ */
+
+[data-style='skeuomorphism'] {
+  /* —— 色彩（常暗木桌皮肤：米白纸张 × 皮革深棕 × 黄铜） —— */
+  --c-bg: #2b1a0f;
+  --c-surface: #f3ead7;
+  --c-text: #2e1c0d;
+  --c-muted: #6d5335;
+  --c-accent: #b8893a;
+  --c-accent-2: #a84632;
+  --c-border: #1c1006;
+  --c-on-accent: #2a1808;
+
+  /* —— 形态（材质厚度） —— */
+  --radius: 10px;
+  --radius-sm: 5px;
+  --border-w: 2px;
+
+  /* —— 阴影（真实光影：左上光源 + 接触落影 / 按压内凹行程） —— */
+  --shadow:
+    0 12px 24px rgb(10 4 0 / 0.45),
+    0 2px 6px rgb(10 4 0 / 0.4);
+  --shadow-press: inset 0 2px 5px rgb(0 0 0 / 0.5);
+
+  /* —— 字体（衬线印刷 / 打字机，禁止引入字体文件） —— */
+  --font-body: Georgia, 'Times New Roman', 'STSong', 'SimSun', 'Noto Serif SC', serif;
+  --font-head: Georgia, 'Times New Roman', 'STZhongsong', 'SimSun', 'Noto Serif SC', serif;
+  --font-mono: 'Courier New', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（纸张阅读的舒展行高 + 实物标题的大字） —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 46px;
+  --fs-title: 22px;
+  --lh-body: 1.8;
+
+  /* —— 间距 —— */
+  --space: 24px;
+  --gap: 20px;
+  --page-w: 1080px;
+
+  /* —— 动效（实物分量感） —— */
+  --transition: 200ms ease;
+  --press-transform: translateY(2px);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关：黄铜拉丝斜向高光扫光（金属铭牌叠层用） —— */
+  --deco: linear-gradient(
+    105deg,
+    rgb(255 255 255 / 0) 38%,
+    rgb(255 255 255 / 0.26) 47%,
+    rgb(255 255 255 / 0.04) 56%,
+    rgb(255 255 255 / 0) 64%
+  );
+}

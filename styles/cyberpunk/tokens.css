@@ -1,0 +1,79 @@
+/* ============================================================
+   cyberpunk 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：赛博朋克（Cyberpunk / Neon City）。
+   关键词：暗色、霓虹、发光、科技、HUD、数字感、未来。
+   视觉签名：近黑深紫底色、青/粉/紫多色霓虹撞色、霓虹辉光
+   （box-shadow 发光代替投影）、clip-path 切角面板、CRT 扫描
+   线、网格数据流背景、glitch 故障感标题、等宽科技字体。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --shadow / --shadow-press 由「投影」换成「霓虹辉光」：
+      阴影不再是落地深影，而是元素自身发出的彩色光晕
+   2. --radius / --radius-sm 填 0：赛博朋克拒绝圆角，形体
+      的软化一律由 clip-path 切角完成（圆角是反风格性质）
+   3. --font-head 换成等宽科技感系统字体栈（无外部字体）：
+      标题、数据、编号全部等宽呈现终端机械感；--font-body
+      保留中文系统栈保证中文正文的阅读体验
+   4. --deco 用作 CRT 扫描线纹理（repeating-linear-gradient），
+      整页与面板均可叠加，是「数据流质感」的统一来源
+   5. 色彩为常暗夜城皮肤：霓虹城市没有亮色模式，近黑紫底
+      + 高亮度霓虹即签名；青 #22d3ee 对底约 11:1、粉
+      #ff2d95 约 5.9:1，均过 4.5:1 正文对比度要求
+   ============================================================ */
+
+[data-style='cyberpunk'] {
+  /* —— 色彩（常暗夜城皮肤：黑色即签名，不分亮暗模式） —— */
+  --c-bg: #05010d;
+  --c-surface: #0d0821;
+  --c-text: #e8f6ff;
+  --c-muted: #a8a3cf;
+  --c-accent: #22d3ee;
+  --c-accent-2: #ff2d95;
+  --c-border: #37246e;
+  --c-on-accent: #03040a;
+
+  /* —— 形态（零圆角：形体软化全部交给 clip-path 切角） —— */
+  --radius: 0px;
+  --radius-sm: 0px;
+  --border-w: 1px;
+
+  /* —— 阴影（换性质：投影 → 霓虹辉光） —— */
+  --shadow: 0 0 14px rgb(34 211 238 / 0.2);
+  --shadow-press: 0 0 8px rgb(34 211 238 / 0.32);
+
+  /* —— 字体（标题/数据走等宽科技栈，禁止引入外部字体文件） —— */
+  --font-body: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-head: 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas,
+    'PingFang SC', 'Microsoft YaHei', monospace;
+  --font-mono: 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号 —— */
+  --fs-base: 15px;
+  --fs-small: 12px;
+  --fs-head: 44px;
+  --fs-title: 20px;
+  --lh-body: 1.7;
+
+  /* —— 间距（宽幅 HUD 版面） —— */
+  --space: 24px;
+  --gap: 16px;
+  --page-w: 1240px;
+
+  /* —— 动效（快速、带街机灵敏度） —— */
+  --transition: 180ms ease-out;
+  --press-transform: translateY(1px) scale(0.99);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：CRT 扫描线纹理，叠加在整页与面板上） —— */
+  --deco: repeating-linear-gradient(
+    0deg,
+    rgb(34 211 238 / 0.05) 0px,
+    rgb(34 211 238 / 0.05) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}

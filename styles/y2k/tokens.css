@@ -1,0 +1,83 @@
+/* ============================================================
+   Y2K 千禧年数字风（y2k）—— Design Token 填表
+   ------------------------------------------------------------
+   按 styles/_base/tokens.css 的变量契约填表：只填值、不新增变量。
+   风格关键词：千禧年、未来主义、金属铬、透明塑料、Glossy、
+   蓝紫、银色、彩虹渐变、气泡、星星。
+   一句话：2000 年的人想象未来电脑会长什么样。
+
+   与 web2-glossy 的分界：Web 2.0 是「蜡质高光 + 柔和蓝白」，
+   Y2K 是「金属铬 + 彩虹 + 气泡星星」——质感更硬、装饰更炫。
+
+   「换性质」决策（不是换值、是换性质）：
+   1. 常暗深空蓝紫底色（不分亮暗模式）：星空即画布，金属与
+      彩虹材质只有在深空底色上才有「数字未来」的折射感
+   2. --radius 28px / --radius-sm 16px：圆角从「面板工艺」升级为
+      「气泡体积」——所有形体都像充了气的透明塑料
+   3. --shadow 填双层彩色辉光（蓝紫外发光替代中性灰投影）：
+      Y2K 的立体感来自「辉光 + 塑料透光」而非落影方向；
+      --shadow-press 填 inset 内凹：按压 = 塑料被按瘪进面板
+   4. --font-head 填 Arial Black 优先栈：千禧年海报式粗黑 3D
+      标题的系统字体等价物；--font-body 填 Verdana 优先栈：
+      Y2K 时代界面正文的事实标准（大 x-height、宽松字距）；
+      --font-mono 填 Courier New 优先栈：早期互联网的打字机铭牌
+   5. --fs-small 降到 12px：金属铭牌式小字与 Verdana 的大字腔
+      形成尺寸悬殊，是排版签名的一部分
+   6. --transition 填 220ms 弹性曲线：塑料的柔韧回弹，比线性
+      ease 更「Q」；--press-transform 下沉 2px 配合内凹阴影
+   7. --deco 填关键字 bubbles：装饰开关定义为「气泡/星星漂浮
+      层启用」（Y2KStarfield 据此常开）
+   8. --c-muted 填银蓝而非灰：正文弱化色是「银色金属字面」，
+      已加深保证深空底上对比度 ≥ 4.5:1
+   ============================================================ */
+
+[data-style='y2k'] {
+  /* —— 色彩（常暗深空皮肤：星幕 + 铬银 + 蓝紫） —— */
+  --c-bg: #171048;
+  --c-surface: #221a66;
+  --c-text: #eef0ff;
+  --c-muted: #a8b0e8;
+  --c-accent: #8b7bff;
+  --c-accent-2: #ff5ce1;
+  --c-border: #8f9ce0;
+  --c-on-accent: #140b3c;
+
+  /* —— 形态（气泡化大圆角） —— */
+  --radius: 28px;
+  --radius-sm: 16px;
+  --border-w: 1px;
+
+  /* —— 阴影（彩色辉光 + 内凹按压，换性质） —— */
+  --shadow:
+    0 18px 44px rgb(5 0 42 / 0.5),
+    0 6px 18px rgb(139 123 255 / 0.22);
+  --shadow-press: inset 0 3px 8px rgb(8 2 52 / 0.55);
+
+  /* —— 字体（Arial Black 标题 / Verdana 正文 / Courier 铭牌，禁止引入字体文件） —— */
+  --font-body: Verdana, 'Segoe UI', Geneva, Tahoma, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: 'Arial Black', Arial, Verdana, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'Courier New', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（小铭牌 × 大标题的悬殊对比） —— */
+  --fs-base: 16px;
+  --fs-small: 12px;
+  --fs-head: 52px;
+  --fs-title: 24px;
+  --lh-body: 1.75;
+
+  /* —— 间距 —— */
+  --space: 24px;
+  --gap: 18px;
+  --page-w: 1160px;
+
+  /* —— 动效（塑料回弹曲线） —— */
+  --transition: 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  --press-transform: translateY(2px);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关：bubbles = 气泡/星星漂浮层启用 —— */
+  --deco: bubbles;
+}

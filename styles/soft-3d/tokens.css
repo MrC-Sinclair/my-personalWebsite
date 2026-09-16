@@ -1,0 +1,116 @@
+/* ============================================================
+   soft-3d 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：柔和空间立体风（Soft 3D / Spatial）。
+   关键词：3D、空间、漂浮、柔光、立体、物体感、柔和阴影。
+   视觉签名：把 UI 从屏幕里拿出来，变成一组摆在深色空间
+   「桌面」上的数字物体——渐变受光体 + 多层柔和阴影 +
+   明亮边缘光（rim light）+ 大圆角 + 漂浮动效 + 前后景深。
+   与「黏土拟态」风格的区分：黏土是「Pastel 可爱 + 超厚圆角」
+   的材质表达；soft-3d 是「真实空间感 + 景深透视 + 柔和
+   渐变」的 Z 轴纵深表达——强调物体摆在空间里的层次。
+   （视觉参数参考 Flutter 3D 充实质感参考项目的糖果渐变与
+   深空底色，仅提取配色 / 阴影参数，未复用任何代码。）
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --shadow 换成「受光体配方」：三层外投影（环境暗影 +
+      主色辉光 + 近距接触影）+ 内顶部高光 + 内底部阴影，
+      五层共同把平面元素塑成「被上方光源照亮的悬浮物体」
+      ——这是本风格的核心签名；--shadow-press 是被按下去
+      的状态：外影收紧、内底阴影加深（压入空间的 Z 轴反馈）
+   2. --c-border 换成发光边：rgb(255 255 255 / 0.16)，
+      配合 --border-w 1.5px，边界不再是「描线」而是物体
+      受光的边缘轮廓光（rim light）
+   3. --press-transform 填 translateY(3px) scale(0.985)：
+      按压是把物体「压向空间深处」的 Z 轴位移，而非黏土的
+      压扁或普通按钮的 1px 下沉
+   4. --transition 填 300ms 缓出曲线 cubic-bezier(0.22, 1,
+      0.36, 1)：物体被轻轻托起 / 放下时的「漂浮沉降」手感，
+      比 _base 的 160ms 明显更慢更柔
+   5. --font-head 指向圆润几何的系统栈（Trebuchet MS 优先）：
+      拉丁字形带柔和圆头笔画，契合「圆润物体」气质；正文
+      保持常规系统栈保证可读性（禁止引入外部字体文件）
+   6. 色彩：深空皮肤（紫夜底色 + 亮紫 / 青双强调），来自
+      参考项目的糖果渐变体系；正文级颜色全部按深底校验
+      对比度——--c-text #F4F2FF（≈16:1）、--c-muted
+      #BDB7EC（≈9:1）、--c-accent #A78BFA（≈6:1）、
+      --c-accent-2 #22D3EE（≈10:1）；交互面上的白字使用
+      更深的糖果渐变端点（#7C3AED → #DB2777，≥4.5:1），
+      高饱和亮色仅作装饰辉光
+   7. --radius 24px / --radius-sm 14px：圆润但不走黏土的
+      30px「Q 弹」路线，物体感靠光影而非极致圆角
+   8. --space / --gap 放宽：大面积柔影需要呼吸空间，相邻
+      物体的影子不能互相吃掉
+   9. --deco 用作背景柔光斑（柔紫径向辉光），配合组件内的
+      同族青 / 粉光斑构成深空景深氛围
+   10. 移动端（≤640px）阴影尺度整体收敛、倾角归零，但
+       「多层外影 + 边缘光」配方签名保留
+   ============================================================ */
+
+[data-style='soft-3d'] {
+  /* —— 色彩（深空皮肤：紫夜底 + 糖果双强调） —— */
+  --c-bg: #120e2e;
+  --c-surface: #1d1747;
+  --c-text: #f4f2ff;
+  --c-muted: #bdb7ec;
+  --c-accent: #a78bfa;
+  --c-accent-2: #22d3ee;
+  --c-border: rgb(255 255 255 / 0.16);
+  --c-on-accent: #ffffff;
+
+  /* —— 形态（圆润几何 + 受光边缘轮廓） —— */
+  --radius: 24px;
+  --radius-sm: 14px;
+  --border-w: 1.5px;
+
+  /* —— 阴影（受光体配方：环境暗影 + 主色辉光 + 接触影 + 内高光 + 内底影） —— */
+  --shadow:
+    0 24px 48px rgb(6 3 26 / 0.6), 0 10px 22px rgb(139 92 246 / 0.26),
+    0 3px 7px rgb(6 3 26 / 0.45), inset 0 2px 5px rgb(255 255 255 / 0.2),
+    inset 0 -8px 16px rgb(9 5 40 / 0.5);
+  --shadow-press:
+    0 10px 18px rgb(6 3 26 / 0.55), 0 4px 9px rgb(139 92 246 / 0.18),
+    inset 0 3px 7px rgb(255 255 255 / 0.14), inset 0 -12px 20px rgb(9 5 40 / 0.58);
+
+  /* —— 字体（标题走圆润几何栈，正文保持可读系统栈） —— */
+  --font-body: 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui,
+    sans-serif;
+  --font-head: 'Trebuchet MS', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（海报感：标题大而松弛） —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 46px;
+  --fs-title: 22px;
+  --lh-body: 1.75;
+
+  /* —— 间距（宽松：柔影需要呼吸空间） —— */
+  --space: 28px;
+  --gap: 20px;
+  --page-w: 1200px;
+
+  /* —— 动效（漂浮沉降手感；按压 = 压入空间深处） —— */
+  --transition: 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  --press-transform: translateY(3px) scale(0.985);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：背景柔光斑的柔紫径向辉光） —— */
+  --deco: radial-gradient(closest-side, rgb(167 139 250 / 0.4), rgb(167 139 250 / 0));
+}
+
+/* 窄屏阴影收敛：偏移与模糊约缩 40%，受光体配方（多层外影 + 边缘光）保留 */
+@media (max-width: 640px) {
+  [data-style='soft-3d'] {
+    --shadow:
+      0 14px 28px rgb(6 3 26 / 0.55), 0 6px 13px rgb(139 92 246 / 0.22),
+      0 2px 5px rgb(6 3 26 / 0.4), inset 0 2px 4px rgb(255 255 255 / 0.2),
+      inset 0 -5px 10px rgb(9 5 40 / 0.5);
+    --shadow-press:
+      0 6px 11px rgb(6 3 26 / 0.5), 0 2px 6px rgb(139 92 246 / 0.16),
+      inset 0 2px 5px rgb(255 255 255 / 0.14), inset 0 -8px 13px rgb(9 5 40 / 0.58);
+  }
+}

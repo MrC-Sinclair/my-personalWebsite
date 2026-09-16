@@ -1,0 +1,85 @@
+/* ============================================================
+   liquid-glass 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：液态玻璃（Liquid Glass）。
+   关键词：透明、玻璃、折射、模糊、光影、层叠、流动。
+   视觉签名：深空场景中漂浮的一层层透明玻璃片——半透玻璃
+   填充 + backdrop-blur 折射、1px 半透白描边 + 上缘高光弧 +
+   顶部镜面高光，玻璃背后透出柔光光斑与光束；面板以错落
+   宽度/对齐层叠，滚动时背景光斑视差漂移。
+
+   与玻璃拟态（glassmorphism）的区分：本风格不做满屏彩色
+   mesh 渐变底，背景是「深空 + 少量光斑/光束」的场景，彩色
+   只作为玻璃内部的微弱折射染色；签名重点是「折射 + 边缘
+   高光 + 漂浮玻璃片层叠的景深」。
+
+   视觉参数提取自参考实现 ArkUI-X 液态毛玻璃（仅取配色 /
+   模糊半径 / 高光透明度等参数，未照搬任何代码）。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --c-surface 填半透白 rgb(255 255 255 / 0.07)、
+      --c-border 填半透白 rgb(255 255 255 / 0.2)：
+      表面与边框不再是「实色」而是「透光材质」，这是玻璃
+      的本质性质，而非换个颜色的数值
+   2. --shadow 换成大扩散深投影 + 组件内叠加 inset 上缘
+      内高光：阴影不再是「纸片贴地」而是「玻璃悬浮在场景
+      上方」的景深来源
+   3. --transition 换成 280ms 液态缓出曲线（cubic-bezier
+      (0.22,1,0.36,1)）：流动感优先于机械感
+   4. --press-transform 填 scale(0.98)：玻璃按压是「整体
+      微缩」而不是「下移 1px」
+   5. --radius 提到 26px：大圆角是液滴表面张力的形态签名
+   6. 常暗场景（--c-bg 深空底色）：玻璃折射需要暗背景才有
+      对比，本风格不分亮暗模式，暗即签名
+   7. --deco 用作玻璃上缘的高光弧（中亮两端渐隐的 1px 横向
+      渐变），组件内以伪元素消费
+   ============================================================ */
+
+[data-style='liquid-glass'] {
+  /* —— 色彩（常暗深空场景） —— */
+  --c-bg: #100b2e;
+  --c-surface: rgb(255 255 255 / 0.07);
+  --c-text: #f2f4ff;
+  --c-muted: #b9bee0;
+  --c-accent: #5ee3ff;
+  --c-accent-2: #a78bff;
+  --c-border: rgb(255 255 255 / 0.2);
+  --c-on-accent: #071226;
+
+  /* —— 形态（液滴表面张力的大圆角） —— */
+  --radius: 26px;
+  --radius-sm: 14px;
+  --border-w: 1px;
+
+  /* —— 阴影（悬浮景深：大扩散 + 深色） —— */
+  --shadow: 0 24px 48px rgb(4 2 18 / 0.45), 0 4px 12px rgb(4 2 18 / 0.3);
+  --shadow-press: 0 10px 22px rgb(4 2 18 / 0.38);
+
+  /* —— 字体（系统栈，不引入外部字体文件） —— */
+  --font-body: 'Segoe UI', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-head: var(--font-body);
+  --font-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号 —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 44px;
+  --fs-title: 22px;
+  --lh-body: 1.7;
+
+  /* —— 间距 —— */
+  --space: 24px;
+  --gap: 18px;
+  --page-w: 1160px;
+
+  /* —— 动效（液态缓出，流动感签名） —— */
+  --transition: 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  --press-transform: scale(0.98);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：玻璃上缘高光弧，1px 中亮两端渐隐） —— */
+  --deco: linear-gradient(90deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.85) 50%, rgb(255 255 255 / 0));
+}

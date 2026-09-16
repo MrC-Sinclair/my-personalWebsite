@@ -1,0 +1,74 @@
+/* ============================================================
+   neo-brutalism 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：新粗野主义（Neo-Brutalism）。
+   关键词：高对比、粗边框、硬阴影、巨大字体、几何、反精致。
+   一句话：把网页从「精致装修」变成一张贴满海报的设计工作台。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --radius / --radius-sm 填 0px：拒绝一切圆角，几何全靠
+      矩形与斜切块表达（性质：无圆角能力）
+   2. --border-w 提到 3px：粗黑描边是本风格的骨架，所有形体
+      都由 3px 黑框圈出来
+   3. --shadow / --shadow-press 从「模糊投影」换成「位移硬影」：
+      阴影不再是柔和的光，而是一块实心黑纸（6px 6px 0）
+   4. --press-transform 换成 translate(4px, 4px)：按下时元素
+      主动「贴向」自己的阴影（配合 --shadow-press 收缩），
+      模拟把贴纸按进桌面的手感
+   5. --font-head 指向 Arial Black 系统栈：标题粗重到不合理，
+      不引入外部字体文件
+   6. --fs-head 提到 72px：海报的标题占满视线，不规规矩矩
+   7. --transition 收到 120ms 快速曲线：交互硬切、不拖泥带水
+   8. --c-accent 用海报黄（#ffe600）、--c-on-accent 配黑字：
+      黄黑对撞是本风格的签名对比（对比度约 15:1）
+   9. --deco 用作 45° 斜纹图案（英雄区装饰方块等复用）
+   ============================================================ */
+
+[data-style='neo-brutalism'] {
+  /* —— 色彩（纸面底 + 纯黑墨 + 海报黄/电光蓝对撞） —— */
+  --c-bg: #f4f4ef;
+  --c-surface: #ffffff;
+  --c-text: #101010;
+  --c-muted: #55554d;
+  --c-accent: #ffe600;
+  --c-accent-2: #4361ee;
+  --c-border: #101010;
+  --c-on-accent: #101010;
+
+  /* —— 形态（零圆角 + 粗描边） —— */
+  --radius: 0px;
+  --radius-sm: 0px;
+  --border-w: 3px;
+
+  /* —— 阴影（实心位移硬影，按压时收缩） —— */
+  --shadow: 6px 6px 0 var(--c-border);
+  --shadow-press: 2px 2px 0 var(--c-border);
+
+  /* —— 字体（标题走超重系统栈，等宽字负责标签与编号） —— */
+  --font-body: 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-head: 'Arial Black', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'Courier New', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（海报尺度） —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 72px;
+  --fs-title: 24px;
+  --lh-body: 1.65;
+
+  /* —— 间距 —— */
+  --space: 24px;
+  --gap: 18px;
+  --page-w: 1160px;
+
+  /* —— 动效（快速硬切；按压贴向阴影） —— */
+  --transition: 120ms cubic-bezier(0.2, 0.8, 0.3, 1);
+  --press-transform: translate(4px, 4px);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：45° 黑色斜纹图案） —— */
+  --deco: repeating-linear-gradient(45deg, #101010 0 9px, transparent 9px 21px);
+}

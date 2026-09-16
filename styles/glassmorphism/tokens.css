@@ -1,0 +1,84 @@
+/* ============================================================
+   glassmorphism 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：玻璃拟态（Glassmorphism）。
+   关键词：半透明、Blur、玻璃、渐变、背景穿透、Glow。
+   视觉签名：把一块半透明磨砂玻璃放在彩色背景上——大面积
+   多彩 mesh 渐变底（多个 radial-gradient 光斑叠加），内容
+   是 rgba 白色半透明卡 + backdrop-filter: blur(16~24px) +
+   1px 半透白边框 + 柔和 Glow 投影；文字用深靛色保证在磨砂
+   卡上的可读对比。
+
+   与液态玻璃（liquid-glass）的区分：液态玻璃是「深空暗场
+   里折射高光的漂浮玻璃片」，本风格是「明亮彩色渐变底上叠
+   磨砂卡片」，气质是白昼、清爽、悬浮的苹果式毛玻璃。
+
+   视觉参数参考自 Taro-MaoBoLi（仅提取配色/模糊半径/高光
+   透明度等参数，未照搬任何代码）。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --c-surface 填半透白 rgb(255 255 255 / 0.55)、
+      --c-border 填半透白 rgb(255 255 255 / 0.6)：表面与
+      边框不再是实色，而是「透光材质」——磨砂卡片叠在彩色
+      渐变上、背景从卡底穿透出来，是玻璃拟态的本质性质
+   2. --c-bg 填亮色淡紫底 + 组件内叠多彩光斑：常亮场景
+      （与液态玻璃的常暗相对），磨砂玻璃需要明亮的彩色底
+      才呈现「日间玻璃」气质；正文用深靛色保证 ≥4.5:1
+   3. --shadow 填大扩散靛蓝调彩色投影：阴影是玻璃悬浮感的
+      来源；hover 时组件内再叠加彩色 Glow（签名装饰）
+   4. --radius 提到 28px：大圆角玻璃板是磨砂卡片签名
+   5. --press-transform 填 scale(0.97)：玻璃按压是「整体
+      微缩」而非「下移」
+   6. --transition 用 260ms 柔和缓出曲线：玻璃的轻盈感
+   7. --deco 用作签名极光渐变带（青→紫→粉），组件内以
+      伪元素/标题装饰线消费
+   ============================================================ */
+
+[data-style='glassmorphism'] {
+  /* —— 色彩（常亮彩色场景：亮底 + 深靛文字） —— */
+  --c-bg: #e9edfb;
+  --c-surface: rgb(255 255 255 / 0.55);
+  --c-text: #1c2140;
+  --c-muted: #454e78;
+  --c-accent: #6d28d9;
+  --c-accent-2: #0e7490;
+  --c-border: rgb(255 255 255 / 0.6);
+  --c-on-accent: #ffffff;
+
+  /* —— 形态（大圆角玻璃板 + 1px 半透白描边） —— */
+  --radius: 28px;
+  --radius-sm: 14px;
+  --border-w: 1px;
+
+  /* —— 阴影（悬浮景深：大扩散 + 靛蓝色调） —— */
+  --shadow: 0 8px 32px rgb(31 38 135 / 0.16);
+  --shadow-press: 0 4px 16px rgb(31 38 135 / 0.2);
+
+  /* —— 字体（系统栈，不引入外部字体文件） —— */
+  --font-body: 'Segoe UI', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-head: var(--font-body);
+  --font-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（海报感的大标题 + 舒适正文） —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 46px;
+  --fs-title: 24px;
+  --lh-body: 1.75;
+
+  /* —— 间距（呼吸感 + 居中玻璃板流） —— */
+  --space: 24px;
+  --gap: 20px;
+  --page-w: 1140px;
+
+  /* —— 动效（柔和缓出，轻盈玻璃感） —— */
+  --transition: 260ms cubic-bezier(0.33, 1, 0.68, 1);
+  --press-transform: scale(0.97);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：签名极光渐变带，青→紫→粉） —— */
+  --deco: linear-gradient(90deg, #22d3ee 0%, #8b5cf6 52%, #f472b6 100%);
+}

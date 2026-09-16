@@ -1,0 +1,88 @@
+/* ============================================================
+   swiss 风格（瑞士国际主义 / Swiss International Style）
+   —— Design Token 填表（选择器 [data-style='swiss']）
+   ------------------------------------------------------------
+   风格定义：用 Grid 和 Typography 建立秩序，而不是依靠装饰
+   制造视觉效果。关键词：Grid、Typography、秩序、理性、留白、
+   非对称。视觉签名：严格 12 栏网格（极淡背景网格线）、超大
+   左对齐标题、编号 + 细则线的信息条目、大量留白、Helvetica
+   系 Sans、黑白 + 唯一强调色（瑞士红 #E30613）、零圆角零阴影。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --c-border 填纯黑：细则线不是浅灰分隔，而是版面秩序
+      本身（黑色 hairline 是瑞士排版的骨架），层级只靠线的
+      粗细（1px/2px/3px）与留白表达
+   2. --c-accent-2 填黑：全风格只允许一个彩色强调（瑞士红），
+      第二强调回归黑——从制度上禁止第二彩色
+   3. --radius / --radius-sm 填 0：瑞士排版只有直角，
+      圆角属于消费主义装饰
+   4. --shadow / --shadow-press 填 none：纸上排版没有投影，
+      立体感由规则线与留白产生
+   5. --font-body / --font-head 统一指向 Helvetica 系系统栈
+      （不引入外部字体文件）：一种字体家族贯穿全站正是瑞士
+      风格的本体——标题与正文只靠字重与字号区分
+   6. --fs-head 提到 72px：标题「大到不合理」是海报传统；
+      --fs-small 降到 12px：宽字距小标签（eyebrow/编号）与
+      巨型标题形成尺寸悬殊对比
+   7. --space 提到 48px：大留白是构图的积极参与者
+   8. --transition 填 120ms linear：线性时长 = 理性、机械、
+      可预期的运动，拒绝弹性缓动
+   9. --press-transform 填 none：不做按压下沉，交互反馈统一
+      为强调色下划线的生长位移（组件层实现）
+   10. --deco 用作 12 栏背景网格线（极淡 repeating 渐变）：
+       可见的网格是本风格唯一的「装饰」
+   ============================================================ */
+
+[data-style='swiss'] {
+  /* —— 色彩（黑白 + 唯一强调色瑞士红） —— */
+  --c-bg: #ffffff;
+  --c-surface: #f5f5f4;
+  --c-text: #111111;
+  --c-muted: #6e6e6e;
+  --c-accent: #e30613;
+  --c-accent-2: #111111;
+  --c-border: #111111;
+  --c-on-accent: #ffffff;
+
+  /* —— 形态（直角 + 细则线） —— */
+  --radius: 0;
+  --radius-sm: 0;
+  --border-w: 1px;
+
+  /* —— 阴影（关闭投影，层级只靠规则线与留白） —— */
+  --shadow: none;
+  --shadow-press: none;
+
+  /* —— 字体（Helvetica 系系统栈，一种家族贯穿全站） —— */
+  --font-body: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei',
+    'Noto Sans SC', system-ui, sans-serif;
+  --font-head: var(--font-body);
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（巨型标题 + 宽字距小标签的尺寸悬殊） —— */
+  --fs-base: 16px;
+  --fs-small: 12px;
+  --fs-head: 72px;
+  --fs-title: 24px;
+  --lh-body: 1.7;
+
+  /* —— 间距（大留白） —— */
+  --space: 48px;
+  --gap: 24px;
+  --page-w: 1280px;
+
+  /* —— 动效（精确、机械：线性时长） —— */
+  --transition: 120ms linear;
+  --press-transform: none;
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：12 栏极淡背景网格线） —— */
+  --deco: repeating-linear-gradient(
+    to right,
+    rgb(17 17 17 / 4%) 0 1px,
+    transparent 1px calc(100% / 12)
+  );
+}

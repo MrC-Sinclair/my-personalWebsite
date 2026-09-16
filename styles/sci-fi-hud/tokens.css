@@ -1,0 +1,94 @@
+/* ============================================================
+   sci-fi-hud 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：科幻 HUD（Futurism / Sci-Fi HUD）。
+   关键词：HUD、雷达、扫描线、数据流、仪表、控制台、军用感。
+   视觉签名：深蓝绿座舱底、单青绿信号色系细线框、面板四角
+   括角（HUD 括角）、刻度标尺、conic-gradient 雷达扫描、
+   目标标注框（Targeting Frame）、等宽科技字体、克制的
+   仪表辉光——像宇宙飞船驾驶舱里的控制面板。
+
+   与 cyberpunk（已完成）的气质区分：cyberpunk 是「城市霓虹
+   + 街机感」（粉紫撞色、粗辉光、glitch 故障）；本风格是
+   「舰船仪表 + 军用感」（单一青绿信号色 + 琥珀警示色、
+   细线框、刻度读数、精确克制），不做赛博朋克。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --radius / --radius-sm 填 0：军规仪表拒绝圆角，一切形体
+      由直角细线框 + 括角构成（圆角是反风格性质）
+   2. --shadow / --shadow-press 由「落地投影」换成「仪表辉光」：
+      低强度、克制点亮（仅 hover / 激活时出现），区别于霓虹粗发光
+   3. --deco 由「无」换成「座舱坐标网格」纹理：整页底纹的统一
+      来源（双方向 repeating-linear-gradient），替代图片背景
+   4. --font-head / --font-mono 前置 Consolas 等宽科技栈：编号、
+      读数、标题全部等宽呈现仪表机械感；--font-body 保留中文
+      系统栈保证中文正文阅读体验（不引入任何外部字体文件）
+   5. 色彩为常暗座舱皮肤：驾驶舱没有亮色模式，深底 + 高亮度
+      信号色即签名；正文 #d9f3ef 对面板底约 14.4:1，muted
+      #7fa0ad 约 6:1，信号色 #4af0c6 约 11.6:1，均过 4.5:1
+   ============================================================ */
+
+[data-style='sci-fi-hud'] {
+  /* —— 色彩（常暗座舱皮肤：不分亮暗模式） —— */
+  --c-bg: #04101a;
+  --c-surface: #08202e;
+  --c-text: #d9f3ef;
+  --c-muted: #7fa0ad;
+  --c-accent: #4af0c6;
+  --c-accent-2: #ffb454;
+  --c-border: #16414f;
+  --c-on-accent: #03251e;
+
+  /* —— 形态（零圆角：军规直角 + 括角） —— */
+  --radius: 0px;
+  --radius-sm: 0px;
+  --border-w: 1px;
+
+  /* —— 阴影（换性质：投影 → 克制仪表辉光） —— */
+  --shadow: 0 0 12px rgb(74 240 198 / 0.14);
+  --shadow-press: 0 0 6px rgb(74 240 198 / 0.26);
+
+  /* —— 字体（标题/读数走等宽科技栈，禁止引入外部字体文件） —— */
+  --font-body: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-head: 'Consolas', 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo,
+    'PingFang SC', 'Microsoft YaHei', monospace;
+  --font-mono: 'Consolas', 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo,
+    'PingFang SC', 'Microsoft YaHei', monospace;
+  --font-smooth: auto;
+
+  /* —— 字号 —— */
+  --fs-base: 15px;
+  --fs-small: 12px;
+  --fs-head: 48px;
+  --fs-title: 19px;
+  --lh-body: 1.7;
+
+  /* —— 间距（仪表密度：紧凑版面） —— */
+  --space: 20px;
+  --gap: 14px;
+  --page-w: 1280px;
+
+  /* —— 动效（仪表响应：快速、直线感） —— */
+  --transition: 140ms ease-out;
+  --press-transform: translateY(1px);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：座舱坐标网格底纹，叠加整页） —— */
+  --deco:
+    repeating-linear-gradient(
+      0deg,
+      rgb(74 240 198 / 0.05) 0px,
+      rgb(74 240 198 / 0.05) 1px,
+      transparent 1px,
+      transparent 48px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgb(74 240 198 / 0.05) 0px,
+      rgb(74 240 198 / 0.05) 1px,
+      transparent 1px,
+      transparent 48px
+    );
+}

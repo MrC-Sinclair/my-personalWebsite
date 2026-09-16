@@ -1,0 +1,85 @@
+/* ============================================================
+   neumorphism 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：新拟态（Neumorphism）。
+   关键词：凸起、内凹、Soft Shadow、同色背景、实体感。
+   视觉签名：UI 与背景使用同一块「材料」（同色），凸起与内凹
+   完全靠双向光影表达；几乎无边框；所有控件都像从同一块材料
+   里压出来或凹进去。光源约定：左上方 —— 凸起 = 左上亮阴影 +
+   右下暗阴影；内凹 = 同一组阴影取 inset。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --c-surface 与 --c-bg 填同一个值：表面与背景同色是
+      新拟态的定义本身，立体感全部交给阴影表达
+   2. --c-border 填 transparent、--border-w 填 0：取消边框
+      （出现边框就不叫新拟态），元素边界只靠光影
+   3. --shadow 填双向凸起阴影、--shadow-press 填双向内凹阴影：
+      按压态的性质从「投影变小」换成「凸起压成内凹」，这是
+      本风格最核心的交互签名（按下去 = 凹进材料里）
+   4. --press-transform 填 none：按压反馈完全由凹凸阴影承担，
+      不做位移，保持「同一块材料」的稳定感
+   5. --page-w 收窄到 760px：整页居中单列——新拟态的美学建立
+      在对称与居中上，强行分栏会破坏光影逻辑（style-lab 已验证）
+   6. 对比度补偿：新拟态天然低对比，文字色取足够深的色值——
+      --c-text #434e60（≈6.7:1）、--c-muted #5a6478（≈4.75:1）、
+      --c-accent #3b55c8（≈5.05:1），均对 #e0e5ec 背景达标 ≥4.5:1
+   7. --deco 用作「凸起填充块」的渐变（技能条填充、装饰圆点）
+   8. 移动端（≤640px）阴影尺度整体收敛，但双向光影签名保留
+   ============================================================ */
+
+[data-style='neumorphism'] {
+  /* —— 色彩（同一块浅灰蓝材料） —— */
+  --c-bg: #e0e5ec;
+  --c-surface: #e0e5ec;
+  --c-text: #434e60;
+  --c-muted: #5a6478;
+  --c-accent: #3b55c8;
+  --c-accent-2: #7f9bff; /* 仅作渐变端色等装饰，不用作正文色 */
+  --c-border: transparent;
+  --c-on-accent: #ffffff;
+
+  /* —— 形态（无边框，圆角偏大显柔软） —— */
+  --radius: 20px;
+  --radius-sm: 14px;
+  --border-w: 0px;
+
+  /* —— 阴影（双向：右下暗 + 左上亮；按压态 = 内凹） —— */
+  --shadow: 9px 9px 18px #a3b1c6, -9px -9px 18px #ffffff;
+  --shadow-press: inset 5px 5px 11px #a3b1c6, inset -5px -5px 11px #ffffff;
+
+  /* —— 字体（系统栈，禁引入字体文件） —— */
+  --font-body: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-head: var(--font-body);
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号 —— */
+  --fs-base: 15px;
+  --fs-small: 13px;
+  --fs-head: 44px;
+  --fs-title: 20px;
+  --lh-body: 1.85;
+
+  /* —— 间距（宽松：阴影需要呼吸空间，否则互相吃掉） —— */
+  --space: 26px;
+  --gap: 20px;
+  --page-w: 760px;
+
+  /* —— 动效（阴影过渡需要稍长时长才显得「柔」） —— */
+  --transition: 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  --press-transform: none;
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：凸起填充块渐变） —— */
+  --deco: linear-gradient(135deg, #7f9bff, #3b55c8);
+}
+
+/* 移动端阴影收敛：偏移与模糊约缩 1/3，双向光影签名保留 */
+@media (max-width: 640px) {
+  [data-style='neumorphism'] {
+    --shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+    --shadow-press: inset 3px 3px 7px #a3b1c6, inset -3px -3px 7px #ffffff;
+  }
+}

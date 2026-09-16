@@ -1,0 +1,83 @@
+/* ============================================================
+   pixel 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：Pixel / 8-bit UI（游戏 HUD）。
+   关键词：Pixel、8-bit、低分辨率、Sprite、RPG 状态界面。
+   视觉签名：硬边缘（圆角一律为 0）、有限色板（Sweetie-16 血统
+   的深蓝底 + 金黄/草绿双强调色）、4px 纯黑实心边框、无模糊的
+   实心硬偏移阴影、等宽字体全大写模拟点阵字、CRT 扫描线。
+
+   「不是换值、是换性质」的三个核心开关：
+   1. --transition: none         —— 不是更快，是关掉。有平滑过渡就不像素了，
+                                    所有 hover/active 反馈都是瞬时「色块反转」
+   2. --img-rendering: pixelated —— 关掉图片插值，二维码等图片按像素硬放大
+   3. --font-smooth: none        —— 关掉字体抗锯齿（组件内经
+                                    -webkit-font-smoothing 应用到页面根）
+
+   其余性质级决策：
+   4. --radius / --radius-sm: 0px —— 硬边缘是像素风的第一签名
+   5. --shadow: 4px 4px 0 实心偏移 —— 无模糊，阴影就是一块实心色块；
+      --shadow-press 归零 + --press-transform 位移 (4px,4px)：
+      按下时元素「踩进」自己的影子里
+   6. --border-w: 4px —— 粗黑边框替代一切轻描淡写的分隔
+   7. 字体：无点阵字体文件（禁止引入），用等宽栈 + 组件内
+      全大写 + 700 字重 + 硬偏移文字阴影模拟像素字；中文回落宋体
+   8. --fs-base 14px / --lh-body 1.9 —— 等宽小字 + 大行高，
+      贴近 8-bit 游戏文本框；间距全部对齐 4px 像素网格
+   9. --deco 用作 CRT 扫描线覆盖层（页面根元素铺满）
+   ============================================================ */
+
+[data-style='pixel'] {
+  /* —— 色彩（有限色板：深蓝夜幕 + 面板蓝 + 金黄/草绿双强调） —— */
+  --c-bg: #1a1c2c;
+  --c-surface: #29366f;
+  --c-text: #f4f4f4;
+  --c-muted: #94b0c2;
+  --c-accent: #ffcd75;
+  --c-accent-2: #4ad07e;
+  --c-border: #000000;
+  --c-on-accent: #1a1c2c;
+
+  /* —— 形态（硬边缘：圆角一律为 0，边框加粗为 4px 实心） —— */
+  --radius: 0px;
+  --radius-sm: 0px;
+  --border-w: 4px;
+
+  /* —— 阴影（无模糊实心硬偏移；按下时阴影塌缩为零） —— */
+  --shadow: 4px 4px 0 var(--c-border);
+  --shadow-press: 0 0 0 var(--c-border);
+
+  /* —— 字体（等宽栈模拟点阵字，不引入任何字体文件） —— */
+  --font-body: ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', 'SimSun', '宋体', monospace;
+  --font-head: var(--font-body);
+  --font-mono: var(--font-body);
+  --font-smooth: none;
+
+  /* —— 字号（等宽小字 + 大行高，贴近 8-bit 文本框） —— */
+  --fs-base: 14px;
+  --fs-small: 12px;
+  --fs-head: 32px;
+  --fs-title: 16px;
+  --lh-body: 1.9;
+
+  /* —— 间距（全部对齐 4px 像素网格） —— */
+  --space: 16px;
+  --gap: 12px;
+  --page-w: 960px;
+
+  /* —— 动效（换性质：不是更快，是关掉。有平滑过渡就不像素了） —— */
+  --transition: none;
+  --press-transform: translate(4px, 4px);
+
+  /* —— 渲染模式（换性质：关掉图片插值，图片按像素硬放大） —— */
+  --img-rendering: pixelated;
+
+  /* —— 装饰开关（本风格用作：CRT 扫描线覆盖层） —— */
+  --deco: repeating-linear-gradient(
+    0deg,
+    rgb(0 0 0 / 0.14) 0px,
+    rgb(0 0 0 / 0.14) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}

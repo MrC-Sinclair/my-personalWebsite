@@ -1,0 +1,81 @@
+/* ============================================================
+   minimalism 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：极简主义（Minimalism）。
+   关键词：留白、克制、秩序、Typography、低饱和、内容优先。
+   视觉签名：近白纸面 + 墨灰文字 + 一枚低饱和钢蓝做唯一强调
+   色；hairline 细线替代卡片边框；轻量级双层软阴影只出现在
+   少数「浮起」的白色面板上；单字族排版，层级靠「字号 + 字重
+   + 留白」表达而非字体族对比或装饰；大留白的竖向节奏。
+   与 swiss（强网格 + 非对称 + 瑞士红的平面传统）的区分：
+   minimalism 是低饱和、柔和、内容优先的产品化极简。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --font-head 指向与正文相同的字族（单字族纪律）：极简的
+      层级来源是字号 / 字重 / 疏密，不是「标题字体 vs 正文字
+      体」的对比——与 editorial 的衬线对比路线相反
+   2. --shadow 从「无 / 硬」换成轻量级双层软阴影：极简不是没
+      有光影，而是极轻的光影（只在白色浮起面板上出现）
+   3. --page-w 收窄到 960px：内容优先 = 阅读优先，窄栏测量是
+      本风格的版式签名（仪表盘放宽、极简收窄，方向相反）
+   4. --lh-body 升到 1.8 / --space、--gap 放大：留白本身是设计
+      材料，呼吸感优先于信息密度
+   5. --transition 换成 220ms 柔和缓动曲线：一切反馈都「轻」，
+      拒绝生硬的线性切换
+   6. --c-accent 用 29% 饱和度的钢蓝：低饱和是色彩签名，强调
+      色只做「点到为止」的指向（链接、指示点、悬停渲染）
+   7. --deco 用作悬停时的 6% 静默底色渲染：最小限度的 hover
+      反馈——不位移、不变色，只有一层几乎不可见的雾
+   ============================================================ */
+
+[data-style='minimalism'] {
+  /* —— 色彩（近白纸面 + 墨灰 + 低饱和钢蓝 + 极淡鼠尾草点缀） —— */
+  --c-bg: #f7f7f5;
+  --c-surface: #ffffff;
+  --c-text: #1d1d1f;
+  --c-muted: #6b6b70;
+  --c-accent: #4f6b8f;
+  --c-accent-2: #7c8a7e;
+  --c-border: #e4e4e0;
+  --c-on-accent: #ffffff;
+
+  /* —— 形态（柔和的产品圆角 + hairline 细线） —— */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --border-w: 1px;
+
+  /* —— 阴影（轻量级双层软阴影：极简的光影是「轻」不是「无」） —— */
+  --shadow:
+    0 1px 2px rgb(29 29 31 / 0.04),
+    0 10px 30px rgb(29 29 31 / 0.05);
+  --shadow-press: 0 1px 2px rgb(29 29 31 / 0.08);
+
+  /* —— 字体（单字族纪律：标题与正文同族，层级靠字重与字号） —— */
+  --font-body:
+    system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: var(--font-body);
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（排版主导：大而轻的标题 + 舒朗的正文行距） —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 48px;
+  --fs-title: 24px;
+  --lh-body: 1.8;
+
+  /* —— 间距（留白即设计：大间距、窄测量） —— */
+  --space: 32px;
+  --gap: 24px;
+  --page-w: 960px;
+
+  /* —— 动效（柔和缓出，反馈要「轻」） —— */
+  --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  --press-transform: translateY(1px);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：悬停时的 6% 静默底色渲染） —— */
+  --deco: color-mix(in srgb, var(--c-accent) 6%, transparent);
+}

@@ -1,0 +1,70 @@
+/* ============================================================
+   Web 2.0 光泽（web2-glossy）—— 变量填表
+   ------------------------------------------------------------
+   按 styles/_base/tokens.css 的变量契约填表：只填值、不新增变量。
+   风格关键词：Glossy、渐变、倒角、大圆角、反光、按钮、Drop Shadow，
+   一切东西都像刚打过蜡。
+
+   「换性质」决策（不是换值、是换性质）：
+   - --radius-sm 填 999px：小圆角升级为「胶囊」，Web 2.0 的按钮/徽章
+     几乎全是胶囊形，这是形态性质的切换，不是数值微调。
+   - --shadow-press 填 inset 内阴影：按下反馈从「影子变短」换成
+     「凝胶被按瘪」（内凹），配合 --press-transform 下沉使用。
+   - --shadow 填双层柔和蓝调投影：外层 drop shadow 是本风格的签名
+     （明显的、带颜色的立体投影），而非中性灰影。
+   - --font-head 填 Trebuchet MS 优先的系统字体栈：Web 2.0 时代
+     （2005-2010）的标志性界面字体，仅用系统栈、不引入字体文件。
+   - --deco 填 gloss：装饰开关定义为「顶部半条白色高光启用」。
+   - 色彩整体为「天空蓝 + 光泽白」体系：--c-bg 是浅蓝天空底，
+     --c-border 是浅蓝倒角边（非黑色硬边），--c-accent-2 为深橙
+     （RSS 时代徽章色，加深至白字对比度达标）。
+   ============================================================ */
+
+[data-style='web2-glossy'] {
+  /* —— 色彩 —— */
+  --c-bg: #d9eafc;
+  --c-surface: #ffffff;
+  --c-text: #173a5e;
+  --c-muted: #4a6b8a;
+  --c-accent: #1e6fd9;
+  --c-accent-2: #bf4d00;
+  --c-border: #a9c8e8;
+  --c-on-accent: #ffffff;
+
+  /* —— 形态 —— */
+  --radius: 16px;
+  --radius-sm: 999px;
+  --border-w: 1px;
+
+  /* —— 阴影 —— */
+  --shadow: 0 2px 6px rgb(23 74 128 / 0.16), 0 14px 28px rgb(23 74 128 / 0.14);
+  --shadow-press: inset 0 2px 8px rgb(9 34 64 / 0.4);
+
+  /* —— 字体 —— */
+  --font-body: 'Segoe UI', 'Trebuchet MS', 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: 'Trebuchet MS', 'Segoe UI', Verdana, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号 —— */
+  --fs-base: 16px;
+  --fs-small: 13px;
+  --fs-head: 54px;
+  --fs-title: 24px;
+  --lh-body: 1.7;
+
+  /* —— 间距 —— */
+  --space: 24px;
+  --gap: 20px;
+  --page-w: 1080px;
+
+  /* —— 动效 —— */
+  --transition: 180ms ease-out;
+  --press-transform: translateY(2px);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关：gloss = 顶部半条白色高光启用 —— */
+  --deco: gloss;
+}

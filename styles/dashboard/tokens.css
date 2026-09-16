@@ -1,0 +1,70 @@
+/* ============================================================
+   dashboard 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：数据仪表盘（Dashboard / Data UI）。
+   关键词：Grid、Chart、Metric、Table、KPI、Dense Information。
+   视觉签名：常暗控制台底色、细边框分层面板、等宽字体的
+   大数字与数据标签、近直角的工程圆角、无阴影（层级只靠
+   边框与底色表达）、高信息密度的小字号与小间距。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --shadow / --shadow-press 填 none：仪表盘不靠投影分层，
+      立体感完全由 1px 边框 + 面板底色差表达
+   2. --font-head 指向等宽栈：标题与 KPI 数字用等宽字体，
+      数字天然对齐（tabular），呈现监控台的机械感
+   3. --fs-base 降到 14px / --fs-small 降到 11px：信息密度
+      本身就是风格签名，基准字号向数据后台看齐
+   4. --radius 降到 4px：接近制图直角，拒绝消费级大圆角
+   5. --page-w 放宽到 1440px：仪表盘是宽屏多格布局
+   6. --space / --gap 收紧：密集网格
+   7. --deco 用作面板顶部的数据高光条（横向渐变）
+   ============================================================ */
+
+[data-style='dashboard'] {
+  /* —— 色彩（常暗控制台皮肤：仪表盘不分亮暗模式，常暗即签名） —— */
+  --c-bg: #0b1220;
+  --c-surface: #121b2d;
+  --c-text: #e3eaf3;
+  --c-muted: #93a5c0;
+  --c-accent: #38bdf8;
+  --c-accent-2: #f5b94a;
+  --c-border: #22304a;
+  --c-on-accent: #04121e;
+
+  /* —— 形态（近直角的工程圆角 + 细边框） —— */
+  --radius: 4px;
+  --radius-sm: 2px;
+  --border-w: 1px;
+
+  /* —— 阴影（关闭投影，层级只靠边框与底色，换性质） —— */
+  --shadow: none;
+  --shadow-press: none;
+
+  /* —— 字体（标题与数字改走等宽栈，禁止引入外部字体文件） —— */
+  --font-body: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-head: var(--font-mono);
+  --font-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（密集信息：基准 14px，数据标签 11px） —— */
+  --fs-base: 14px;
+  --fs-small: 11px;
+  --fs-head: 34px;
+  --fs-title: 17px;
+  --lh-body: 1.6;
+
+  /* —— 间距（密集网格） —— */
+  --space: 16px;
+  --gap: 12px;
+  --page-w: 1440px;
+
+  /* —— 动效（快速、机械） —— */
+  --transition: 140ms ease;
+  --press-transform: translateY(1px);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：面板顶部数据高光条） —— */
+  --deco: linear-gradient(90deg, var(--c-accent) 0%, transparent 72%);
+}

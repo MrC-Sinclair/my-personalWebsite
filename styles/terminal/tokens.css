@@ -1,0 +1,79 @@
+/* ============================================================
+   terminal 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：Terminal / CLI（终端机）。
+   关键词：Monospace、Command Line、黑底、文本、Cursor、代码。
+   视觉签名：黑色/深色背景、等宽字体全文、文本优先（无卡片
+   无按钮）、命令行 Prompt、ASCII/框线字符装饰、闪烁块状光标、
+   荧光绿 + 琥珀双色的磷光屏配色、CRT 扫描线。
+
+   「不是换值、是换性质」的核心开关：
+   1. --font-body / --font-head 填等宽栈 —— 终端的第一签名，
+      一切文字（含中文回落）都按等宽排版
+   2. --transition: none —— 终端没有缓动动画：命令回显、hover
+      反色都是瞬时切换，任何平滑过渡都会「出戏」
+   3. --radius / --radius-sm: 0px —— 文本流里不存在圆角几何
+   4. --shadow: none —— 屏幕上没有「海拔」，层级只靠颜色深浅；
+      磷光辉光由组件内 text-shadow 装饰实现，不占用阴影契约
+   5. --fs-base 14px / --fs-small 13px —— 密排终端文本流
+      （13px 为移动端字号下限，不再更小）
+   6. --img-rendering: auto —— 终端是纯文本流不展示位图，
+      明确不采用 pixelated（若引用二维码等图片需保持可扫描）
+   7. --deco 用作 CRT 扫描线覆盖层（页面根元素铺满）
+   ============================================================ */
+
+[data-style='terminal'] {
+  /* —— 色彩（黑底荧光屏：近黑底 + 磷光绿正文 + 琥珀强调） —— */
+  --c-bg: #05080a;
+  --c-surface: #0b120e;
+  --c-text: #33ff66;
+  --c-muted: #35b86b;
+  --c-accent: #7cffb2;
+  --c-accent-2: #ffb454;
+  --c-border: #1d5c37;
+  --c-on-accent: #05080a;
+
+  /* —— 形态（零圆角：终端里没有圆角几何） —— */
+  --radius: 0px;
+  --radius-sm: 0px;
+  --border-w: 1px;
+
+  /* —— 阴影（无海拔：层级只靠明暗，不用投影） —— */
+  --shadow: none;
+  --shadow-press: none;
+
+  /* —— 字体（等宽栈贯穿正文与标题，中文回落宋体保持等宽观感） —— */
+  --font-body: ui-monospace, 'Cascadia Mono', 'Source Code Pro', Menlo, Consolas, 'SimSun', '宋体',
+    monospace;
+  --font-head: var(--font-body);
+  --font-mono: var(--font-body);
+  --font-smooth: auto;
+
+  /* —— 字号（密排文本流；13px 为移动端下限） —— */
+  --fs-base: 14px;
+  --fs-small: 13px;
+  --fs-head: 30px;
+  --fs-title: 15px;
+  --lh-body: 1.7;
+
+  /* —— 间距（紧凑的行式布局） —— */
+  --space: 16px;
+  --gap: 10px;
+  --page-w: 900px;
+
+  /* —— 动效（换性质：终端没有缓动，一切反馈瞬时完成） —— */
+  --transition: none;
+  --press-transform: translateY(1px);
+
+  /* —— 渲染模式（终端为纯文本流，位图保持平滑不像素化） —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：CRT 扫描线覆盖层） —— */
+  --deco: repeating-linear-gradient(
+    0deg,
+    rgb(0 0 0 / 0.22) 0px,
+    rgb(0 0 0 / 0.22) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}

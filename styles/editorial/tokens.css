@@ -1,0 +1,75 @@
+/* ============================================================
+   editorial 风格 —— Design Token 填表
+   ------------------------------------------------------------
+   风格定义：杂志编辑排版（Editorial）。
+   关键词：大标题、强排版、网格、图片、文字、版式、内容驱动。
+   视觉签名：纸感米白底 + 油墨黑 + 刊头红（辅以墨绿做第二印
+   刷色）；衬线巨标题与无衬线注释小字形成强烈字体对比；细线
+   分隔、01/02/03 编号、非对称多栏网格、图文对开——像一本
+   高级杂志被重新设计成了可以交互的数字界面。
+
+   「换性质」而非「换值」的决策（相对 _base 回落值）：
+   1. --font-head 换成衬线系统字体栈（Georgia / 宋体）：标题
+      从「界面字」变成「刊头字」，与无衬线正文构成印刷品式
+      的字体对比（禁止引入外部字体文件）
+   2. --radius / --radius-sm 填 0：纸面印刷品没有「圆角」
+      这个性质，所有形体都是直角裁切
+   3. --shadow / --shadow-press 填 none：纸面没有投影，
+      层级只靠细线、字重与疏密表达
+   4. --fs-small 降到 12px：注释式小字（kicker / 图注 /
+      页边注）本身就是版式的组成部分，而非缩小的正文
+   5. --lh-body 升到 1.85：杂志正文的疏排行距
+   6. --page-w 放宽到 1240px：杂志对开页的横向幅面
+   7. --space / --gap 放大：纸面留白是版式张力的一部分
+   8. --deco 用作「荧光笔淡染」：悬停时标题/行底泛起的
+      12% 刊头红淡染，模拟在杂志页面上用荧光笔划重点
+   ============================================================ */
+
+[data-style='editorial'] {
+  /* —— 色彩（纸感三色印刷：米白纸 + 油墨黑 + 刊头红/墨绿） —— */
+  --c-bg: #f6f1e7;
+  --c-surface: #ece4d3;
+  --c-text: #1d1912;
+  --c-muted: #6d6455;
+  --c-accent: #8e2318;
+  --c-accent-2: #2f584a;
+  --c-border: #d9d0bd;
+  --c-on-accent: #f6f1e7;
+
+  /* —— 形态（印刷直角 + hairline 细线） —— */
+  --radius: 0px;
+  --radius-sm: 0px;
+  --border-w: 1px;
+
+  /* —— 阴影（关闭投影：纸面无光，层级靠细线与字重，换性质） —— */
+  --shadow: none;
+  --shadow-press: none;
+
+  /* —— 字体（标题换衬线栈，正文保持无衬线，构成印刷对比） —— */
+  --font-body: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: Georgia, 'Times New Roman', 'Songti SC', 'STSong', SimSun, serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-smooth: auto;
+
+  /* —— 字号（注释式小字 + 疏排正文） —— */
+  --fs-base: 16px;
+  --fs-small: 12px;
+  --fs-head: 52px;
+  --fs-title: 24px;
+  --lh-body: 1.85;
+
+  /* —— 间距（纸面留白） —— */
+  --space: 28px;
+  --gap: 20px;
+  --page-w: 1240px;
+
+  /* —— 动效（从容的纸感节奏） —— */
+  --transition: 240ms ease;
+  --press-transform: translateY(1px);
+
+  /* —— 渲染模式 —— */
+  --img-rendering: auto;
+
+  /* —— 装饰开关（本风格用作：悬停时的荧光笔淡染底色） —— */
+  --deco: color-mix(in srgb, var(--c-accent) 12%, transparent);
+}
