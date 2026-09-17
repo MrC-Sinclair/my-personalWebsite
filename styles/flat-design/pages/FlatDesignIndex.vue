@@ -323,23 +323,15 @@ const skillBars = computed<SkillBar[]>(() => {
   border-radius: var(--radius-sm);
 }
 
-/* —— 精选项目网格：1 → 2 → 3 列渐进 —— */
+/* —— 精选项目网格 ——
+   原为 1 → 2 → 3 列固定递进，但精选项目只有 1 条时，大屏下卡片仅占
+   1/3 而右侧空置 2/3。改为自动适配并居中：轨道宽度有上限，卡片不会
+   被拉伸变形；min(100%, 280px) 保证窄屏不溢出 */
 .proj-grid {
   display: grid;
   gap: var(--gap);
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 640px) {
-  .proj-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .proj-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 420px));
+  justify-content: center;
 }
 
 /* —— 最新文章网格：1 → 2 列 —— */

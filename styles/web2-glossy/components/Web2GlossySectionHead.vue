@@ -86,7 +86,10 @@ const headId = computed(() => props.id)
   pointer-events: none;
 }
 
-/* —— 渐变光泽标题 —— */
+/* —— 渐变光泽标题 ——
+   渐变起端原为 #2b82e9，在浅色区块上明度偏高，导致大标题看起来
+   比正文还淡、层级倒置；整体加深一档（起端对白底约 5:1），
+   既恢复层级又保留 Web 2.0 的蓝色渐变质感 */
 .sect-head__title {
   margin: 0;
   font-family: var(--font-head);
@@ -94,7 +97,7 @@ const headId = computed(() => props.id)
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: 0.01em;
-  background: linear-gradient(180deg, #2b82e9 0%, #1d5fae 55%, #123c6e 100%);
+  background: linear-gradient(180deg, #1c6cc8 0%, #175ca8 55%, #0f3560 100%);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;

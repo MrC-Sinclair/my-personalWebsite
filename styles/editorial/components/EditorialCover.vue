@@ -124,6 +124,9 @@ const tocItems = computed(() => [
   font-style: italic;
   line-height: 1.4;
   color: var(--c-text);
+  /* 均衡各行长度，避免折行后末行只挂一个字（如「…开发者」的「者」独占一行）。
+     短句用 balance 效果最好；不支持的浏览器降级为普通换行，无副作用 */
+  text-wrap: balance;
 }
 
 .desc {

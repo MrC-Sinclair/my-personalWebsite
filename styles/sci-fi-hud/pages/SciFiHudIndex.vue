@@ -609,7 +609,9 @@ useScrollReveal()
 .payload-grid {
   display: grid;
   gap: var(--gap);
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  /* 同 cyberpunk：单条载荷时 auto-fill 会留下大片空轨道 */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 420px));
+  justify-content: center;
 }
 
 /* —— 通讯面板引导语 —— */

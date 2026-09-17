@@ -292,7 +292,11 @@ useScrollReveal()
 /* —— 项目网格：自适应数据板 —— */
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  /* 精选项目当前只有 1 条：auto-fill 会按容器宽度铺出多个空轨道，
+     结果是「单卡居左 + 右侧大片空置」。改用 auto-fit 并给轨道设上限
+     （卡片是纵向布局，拉伸到整行会变形），再整体居中让留白对称 */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 460px));
+  justify-content: center;
   gap: var(--gap);
 }
 
