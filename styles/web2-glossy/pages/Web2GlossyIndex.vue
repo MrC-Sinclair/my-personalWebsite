@@ -45,37 +45,9 @@
 
       <!-- ============ 关于 + 技能：非对称分栏 ============ -->
       <section id="about" data-section="about" class="section" aria-labelledby="about-title">
-        <div class="container about-grid">
-          <!-- 左：关于面板 + 经历时间线 -->
-          <div class="panel about-main scroll-reveal">
-            <Web2GlossySectionHead id="about-title" :badge="t('nav.about')" :title="t('about.title')" />
-            <p class="about-main__intro">{{ t('about.description') }}</p>
-
-            <h3 class="about-main__sub">{{ t('about.experience') }}</h3>
-            <ol class="timeline">
-              <li v-for="item in safeTimeline" :key="item.period" class="timeline__item">
-                <span class="timeline__period">{{ item.period }}</span>
-                <div class="timeline__body">
-                  <p class="timeline__title">{{ item.title }} · {{ item.organization }}</p>
-                  <p class="timeline__desc">{{ item.description }}</p>
-                </div>
-              </li>
-            </ol>
-          </div>
-
-          <!-- 右：技能分组（凝胶图标面板） -->
-          <div class="about-side">
-            <h3 class="about-side__heading scroll-reveal">
-              <span class="about-side__heading-text">{{ t('about.skills') }}</span>
-            </h3>
-            <Web2GlossySkillPanel
-              v-for="(group, index) in safeSkillGroups"
-              :key="group.category"
-              :group="group"
-              :icon="skillIcon(index)"
-              class="scroll-reveal"
-            />
-          </div>
+        <!-- 关于内容抽成区块组件：「关于」子页复用同一块（见 Web2GlossyAboutBlock） -->
+        <div class="container">
+          <Web2GlossyAboutBlock/>
         </div>
       </section>
 
@@ -195,12 +167,11 @@
  */
 import type { BlogPost } from '~/types/blog'
 import type { Project } from '~/types/project'
-import type { GelIconVariant } from '../components/Web2GlossyGelIcon.vue'
 import Web2GlossyGelButton from '../components/Web2GlossyGelButton.vue'
 import Web2GlossySectionHead from '../components/Web2GlossySectionHead.vue'
 import Web2GlossySiteHeader from '../components/Web2GlossySiteHeader.vue'
 import Web2GlossySiteFooter from '../components/Web2GlossySiteFooter.vue'
-import Web2GlossySkillPanel from '../components/Web2GlossySkillPanel.vue'
+import Web2GlossyAboutBlock from '../components/Web2GlossyAboutBlock.vue'
 import Web2GlossyProjectCard from '../components/Web2GlossyProjectCard.vue'
 import Web2GlossyPostRow from '../components/Web2GlossyPostRow.vue'
 import Web2GlossySocialTile from '../components/Web2GlossySocialTile.vue'
@@ -208,7 +179,8 @@ import Web2GlossySocialTile from '../components/Web2GlossySocialTile.vue'
 const { t } = useI18n()
 
 // —— 共享业务层：站点信息 / 项目 / 博客 / 滚动动画 ——
-const { skillGroups, timeline, socialLinks } = useAppInfo()
+// 技能分组与经历时间线已随「关于」区块下沉到 Web2GlossyAboutBlock
+const { socialLinks } = useAppInfo()
 const { getFeaturedProjects } = useProjects()
 const { getFeaturedPosts } = useBlog()
 useScrollReveal()
@@ -246,15 +218,8 @@ onMounted(async () => {
 // —— 防御：数组字段非数组时回退为空列表 ——
 const safeProjects = computed(() => (Array.isArray(projects.value) ? projects.value : []))
 const safePosts = computed(() => (Array.isArray(posts.value) ? posts.value : []))
-const safeSkillGroups = computed(() => (Array.isArray(skillGroups.value) ? skillGroups.value : []))
-const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.value : []))
 const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socialLinks.value : []))
 
-/** 技能分组按顺序映射凝胶图标变体，越界回退 spark */
-function skillIcon(index: number): GelIconVariant {
-  const order: GelIconVariant[] = ['window', 'layers', 'orbit', 'spark']
-  return order[index] ?? 'spark'
-}
 </script>
 
 <style scoped>
@@ -521,170 +486,6 @@ function skillIcon(index: number): GelIconVariant {
 @keyframes burst-spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-/* ================= 关于 + 技能 ================= */
-.about-grid {
-  display: grid;
-  gap: var(--gap);
-}
-
-.about-main__intro {
-  margin: 0;
-  color: var(--c-muted);
-}
-
-.about-main__sub {
-  margin: 26px 0 14px;
-  font-family: var(--font-head);
-  font-size: 1.1875rem;
-  font-weight: 800;
-  color: var(--c-text);
-}
-
-/* —— 经历时间线：凝胶节点 + 渐变连线 —— */
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.timeline__item {
-  position: relative;
-  display: flex;
-  gap: 12px;
-  padding-left: 30px;
-}
-
-/* 渐变连线 */
-.timeline__item::before {
-  content: '';
-  position: absolute;
-  top: 22px;
-  bottom: -18px;
-  left: 8px;
-  width: 4px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, #58a6f5 0%, #1d5fae 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
-}
-
-/* 最后一项不向外延伸连线 */
-.timeline__item:last-child::before {
-  bottom: 6px;
-}
-
-/* 凝胶节点 */
-.timeline__item::after {
-  content: '';
-  position: absolute;
-  top: 6px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #14417e;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 28%, #ffffff 0 20%, #58a6f5 21%, #1d5fae 100%);
-  box-shadow: 0 2px 4px rgb(23 74 128 / 0.35);
-}
-
-/* 年份胶囊：橙色凝胶 */
-.timeline__period {
-  position: relative;
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  align-self: flex-start;
-  min-height: 32px;
-  padding: 4px 14px;
-  overflow: hidden;
-  border: 1px solid #8a3c08;
-  border-radius: var(--radius-sm);
-  color: #ffffff;
-  font-family: var(--font-head);
-  font-size: var(--fs-small);
-  font-weight: 700;
-  white-space: nowrap;
-  background: linear-gradient(180deg, #d97a1c 0%, #bf5a10 55%, #a84a0c 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.45),
-    0 2px 5px rgb(23 74 128 / 0.25);
-}
-
-.timeline__period::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.35) 0%, rgb(255 255 255 / 0) 60%);
-  pointer-events: none;
-}
-
-.timeline__body {
-  min-width: 0;
-}
-
-.timeline__title {
-  margin: 0;
-  font-family: var(--font-head);
-  font-weight: 800;
-  color: var(--c-text);
-}
-
-.timeline__desc {
-  margin: 4px 0 0;
-  color: var(--c-muted);
-  font-size: 0.9375rem;
-}
-
-/* —— 右列：技能 —— */
-.about-side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-}
-
-/* 技能列标题：渐变光泽小标题 */
-.about-side__heading {
-  position: relative;
-  margin: 0;
-  padding-bottom: 10px;
-  font-family: var(--font-head);
-  font-size: 1.375rem;
-  font-weight: 800;
-}
-
-.about-side__heading-text {
-  background: linear-gradient(180deg, #2b82e9 0%, #1d5fae 55%, #123c6e 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-/* 标题下的高光胶囊条 */
-.about-side__heading::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 72px;
-  height: 8px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(180deg, #58a6f5 0%, #1d5fae 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.6),
-    0 2px 5px rgb(23 74 128 / 0.3);
-}
-
-/* —— 非对称分栏：宽屏 7:5 —— */
-@media (min-width: 900px) {
-  .about-grid {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: calc(var(--gap) * 1.5);
   }
 }
 

@@ -5,5 +5,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import Web2GlossyIndex from './pages/Web2GlossyIndex.vue'
+import Web2GlossyAbout from './pages/Web2GlossyAbout.vue'
+import Web2GlossyProjects from './pages/Web2GlossyProjects.vue'
+import Web2GlossyBlog from './pages/Web2GlossyBlog.vue'
+import Web2GlossyContact from './pages/Web2GlossyContact.vue'
 
-export default { pages: { '/': Web2GlossyIndex } } satisfies StyleEntry
+export default {
+  pages: {
+    '/': Web2GlossyIndex,
+    '/about': Web2GlossyAbout,
+    '/projects': Web2GlossyProjects,
+    '/blog': Web2GlossyBlog,
+    '/contact': Web2GlossyContact,
+  },
+} satisfies StyleEntry
