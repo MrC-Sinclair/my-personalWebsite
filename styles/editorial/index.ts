@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import EditorialIndex from './pages/EditorialIndex.vue'
+import EditorialAbout from './pages/EditorialAbout.vue'
+import EditorialProjects from './pages/EditorialProjects.vue'
+import EditorialBlog from './pages/EditorialBlog.vue'
+import EditorialContact from './pages/EditorialContact.vue'
 
 export default {
   pages: {
     '/': EditorialIndex,
+    '/about': EditorialAbout,
+    '/projects': EditorialProjects,
+    '/blog': EditorialBlog,
+    '/contact': EditorialContact,
   },
 } satisfies StyleEntry
