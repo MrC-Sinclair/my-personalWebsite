@@ -49,27 +49,8 @@
       </PixelPanel>
 
       <template v-else>
-        <!-- ② ABOUT 对话框：简介 + 经历时间线（全宽） -->
-        <PixelPanel
-          id="about"
-          data-section="about"
-          class="col-full"
-          head="ABOUT"
-          :title="t('nav.about')"
-        >
-          <p class="prose">{{ t('about.description') }}</p>
-          <ul class="timeline">
-            <li v-for="item in timeline" :key="`${item.period}-${item.title}`" class="tl-row">
-              <span class="tl-period">{{ item.period }}</span>
-              <div class="tl-body">
-                <p class="tl-head">
-                  {{ item.title }}<span class="tl-org"> @ {{ item.organization }}</span>
-                </p>
-                <p class="tl-desc">{{ item.description }}</p>
-              </div>
-            </li>
-          </ul>
-        </PixelPanel>
+        <!-- ② ABOUT 对话框：简介 + 经历时间线（全宽，与 /about 子页共用同一块） -->
+        <PixelAboutBlock id="about" data-section="about" class="col-full" />
 
         <!-- ③ STATUS（左 5 栏）× INVENTORY（右 7 栏）：老游戏左右分栏 -->
         <PixelPanel
@@ -140,6 +121,7 @@
 import type { BlogPost } from '~/types/blog'
 import type { Project } from '~/types/project'
 import PixelHudBar from '../components/PixelHudBar.vue'
+import PixelAboutBlock from '../components/PixelAboutBlock.vue'
 import PixelPanel from '../components/PixelPanel.vue'
 import PixelSkillBars from '../components/PixelSkillBars.vue'
 import PixelInventoryItem from '../components/PixelInventoryItem.vue'
@@ -157,7 +139,7 @@ const { t, locale } = useI18n()
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
 const { getFeaturedProjects } = useProjects()
-const { skillGroups, timeline, socialLinks } = useAppInfo()
+const { skillGroups, socialLinks } = useAppInfo()
 
 // 文章列表（useAsyncData 承载：SSG 预渲染即含数据，payload 下发避免水合不一致）
 const {
@@ -499,73 +481,13 @@ const sections = computed(() => [
   outline-offset: 2px;
 }
 
-/* —— ABOUT 时间线：存档记录式条目 —— */
+/* —— CONTACT 面板自述段落（ABOUT 的时间线已抽到 PixelAboutBlock） —— */
 .prose {
   margin: 0;
   max-width: 70ch;
 }
 
 .prose--muted {
-  color: var(--c-muted);
-}
-
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tl-row {
-  display: grid;
-  grid-template-columns: minmax(96px, auto) 1fr;
-  align-items: start;
-  gap: 12px;
-  padding: 10px 12px;
-  background: color-mix(in srgb, var(--c-bg) 55%, var(--c-surface));
-  border: 2px solid color-mix(in srgb, var(--c-muted) 40%, transparent);
-}
-
-/* 列表项 hover：底色轻微变化（瞬时，无过渡） */
-.tl-row:hover {
-  background: color-mix(in srgb, var(--c-accent) 14%, var(--c-surface));
-  border-color: var(--c-border);
-}
-
-.tl-period {
-  padding: 2px 8px;
-  font-size: var(--fs-small);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  color: var(--c-on-accent);
-  background: var(--c-accent-2);
-  border: 2px solid var(--c-border);
-}
-
-.tl-body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.tl-head {
-  margin: 0;
-  font-weight: 700;
-  color: var(--c-text);
-}
-
-.tl-org {
-  font-weight: 400;
-  color: var(--c-muted);
-}
-
-.tl-desc {
-  margin: 0;
-  font-size: var(--fs-small);
   color: var(--c-muted);
 }
 

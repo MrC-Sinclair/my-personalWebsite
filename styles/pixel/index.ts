@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import PixelIndex from './pages/PixelIndex.vue'
+import PixelAbout from './pages/PixelAbout.vue'
+import PixelProjects from './pages/PixelProjects.vue'
+import PixelBlog from './pages/PixelBlog.vue'
+import PixelContact from './pages/PixelContact.vue'
 
 export default {
   pages: {
     '/': PixelIndex,
+    '/about': PixelAbout,
+    '/projects': PixelProjects,
+    '/blog': PixelBlog,
+    '/contact': PixelContact,
   },
 } satisfies StyleEntry
