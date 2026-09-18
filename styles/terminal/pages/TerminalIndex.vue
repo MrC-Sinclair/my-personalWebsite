@@ -30,7 +30,12 @@
       <!-- 异步数据加载态（await useAsyncData 后通常已就绪，防御分支） -->
       <p v-if="loading" class="loading" role="status">{{ t('common.loading') }}</p>
 
-      <TerminalConsole :posts="latestPosts" :projects="featuredProjects" />
+      <TerminalConsole
+        :posts="latestPosts"
+        :projects="featuredProjects"
+        :post-count="postCount"
+        :project-count="featuredProjects.length"
+      />
     </main>
 
     <!-- 隐藏降级区：命令输入不可用时经页首跳转链接直达（焦点可落） -->
@@ -96,7 +101,9 @@ const {
   refresh: refreshPosts,
 } = await useAsyncData<BlogPost[]>('terminal-posts', async () => {
   const list = await getAllPosts()
-  return Array.isArray(list) ? list.slice(0, POST_COUNT) : []
+  // 返回全量（不在此处截断）：MOTD 需要真实的文章总数，
+  // 展示用的「最新 N 条」在下面的 computed 里另行 slice
+  return Array.isArray(list) ? list : []
 })
 
 // 精选项目
@@ -116,12 +123,16 @@ watch(locale, () => {
 })
 
 // —— 数据防御与视图推导（同步计算，SSR 安全） ——
+/** 展示用最新文章（截断到 POST_COUNT） */
 const latestPosts = computed<BlogPost[]>(() =>
-  Array.isArray(postsData.value) ? postsData.value : [],
+  Array.isArray(postsData.value) ? postsData.value.slice(0, POST_COUNT) : [],
 )
 const featuredProjects = computed<Project[]>(() =>
   Array.isArray(projectsData.value) ? projectsData.value : [],
 )
+
+/** MOTD 用：文章总数（未截断；与展示数据同源，SSR 安全） */
+const postCount = computed(() => (Array.isArray(postsData.value) ? postsData.value.length : 0))
 
 /** 加载态：仅在尚无任何数据时显示占位 */
 const loading = computed(

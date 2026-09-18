@@ -22,6 +22,9 @@
       <template v-for="entry in entries" :key="entry.id">
         <p v-if="entry.kind === 'banner'" class="banner" aria-hidden="true">{{ entry.text }}</p>
 
+        <!-- MOTD：承载真实数据（文章/项目总数），对读屏可见，故不加 aria-hidden -->
+        <pre v-else-if="entry.kind === 'motd'" class="motd">{{ entry.text }}</pre>
+
         <p v-else-if="entry.kind === 'echo'" class="line line--echo">
           <span class="prompt" aria-hidden="true">{{ promptText }}</span>
           <span class="echo-text">{{ entry.text }}</span>
@@ -96,6 +99,10 @@ const props = defineProps<{
   posts: BlogPost[]
   /** 精选项目（来自共享层 useProjects，页面经 useAsyncData 传入） */
   projects: Project[]
+  /** 文章总数（MOTD 用：呈现全站规模，而非只显示「最新 N 条」） */
+  postCount?: number
+  /** 项目总数（同上） */
+  projectCount?: number
 }>()
 
 const { t, locale } = useI18n()
@@ -135,6 +142,16 @@ interface BannerEntry extends BaseEntry {
   text: string
 }
 
+/**
+ * MOTD 信息块（neofetch 式：左 ASCII 徽标 + 右侧站点信息表）
+ * 与 banner 的区别：banner 是纯装饰框线（aria-hidden），MOTD 承载
+ * 真实数据（文章/项目总数），因此对读屏可见，不能 aria-hidden。
+ */
+interface MotdEntry extends BaseEntry {
+  kind: 'motd'
+  text: string
+}
+
 /** 普通文本行（参与打字机） */
 interface LineEntry extends BaseEntry {
   kind: 'line'
@@ -155,7 +172,7 @@ interface BlockEntry extends BaseEntry {
   block: BlockName
 }
 
-type Entry = EchoEntry | BannerEntry | LineEntry | RunEntry | BlockEntry
+type Entry = EchoEntry | BannerEntry | MotdEntry | LineEntry | RunEntry | BlockEntry
 
 const entries = ref<Entry[]>([])
 const queue: Entry[] = []
@@ -360,6 +377,36 @@ const bannerText = computed(() => {
   return `╔${bar}╗\n║${title.padEnd(width)}║\n╚${bar}╝`
 })
 
+/**
+ * MOTD：neofetch 式信息块（左 ASCII 徽标 + 右侧站点信息表）
+ * 标签统一用英文——终端/neofetch 的惯例，同时避免中英混排时
+ * 全角字符导致的等宽对齐错位。数值取真实统计，不是装饰。
+ */
+const motdText = computed(() => {
+  const logo = [
+    '  ┌────────────┐ ',
+    '  │ ▄▄▄▄▄▄▄▄ │ ',
+    '  │ █  ▄▄▄▄  █ │ ',
+    '  │ █ █    █ █ │ ',
+    '  │ █  ▀▀▀  █ │ ',
+    '  │ ▀▀▀▀▀▀▀▀ │ ',
+    '  └────────────┘ ',
+  ]
+  const postCount = props.postCount ?? blockPosts.value.length
+  const projectCount = props.projectCount ?? blockProjects.value.length
+  const info = [
+    `${t('home.name').toLowerCase().replace(/\s+/g, '-')}@terminal-os`,
+    '─'.repeat(21),
+    'OS     : TERMINAL-OS',
+    'Shell  : nuxt-tsc',
+    `Posts  : ${postCount}`,
+    `Works  : ${projectCount}`,
+  ]
+  const gutter = Math.max(...logo.map((l) => l.length)) + 2
+  const rows = Math.max(logo.length, info.length)
+  return Array.from({ length: rows }, (_, i) => (logo[i] ?? '').padEnd(gutter) + (info[i] ?? '')).join('\n')
+})
+
 /* ============ 交互辅助 ============ */
 
 /** 点击终端任意空白处聚焦输入框（终端惯例） */
@@ -404,6 +451,9 @@ onMounted(() => {
 
   // 开机：横幅瞬时输出，问候语走打字机（reduced-motion 下直接整行）
   commit({ id: nextId(), kind: 'banner', text: bannerText.value })
+  // MOTD：横幅之后、问候语之前补 neofetch 式信息块，
+  // 让首屏不再是一整片纯黑（此前整块黑场缺少可辨识的终端信息）
+  commit({ id: nextId(), kind: 'motd', text: motdText.value })
   enqueue(
     line('out', t('home.tagline')),
     line('dim', copy.value.welcomeGuide),
@@ -461,6 +511,18 @@ onUnmounted(() => {
   white-space: pre;
   color: var(--c-accent);
   text-shadow: 0 0 10px color-mix(in srgb, var(--c-accent) 40%, transparent);
+  overflow-x: auto;
+}
+
+/* —— MOTD：同横幅的等宽预格式，但用正文色且辉光更弱，
+      让信息表可读而不抢横幅的视觉重心 —— */
+.motd {
+  margin: 0 0 var(--gap);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  white-space: pre;
+  color: var(--c-text);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--c-accent) 22%, transparent);
   overflow-x: auto;
 }
 
