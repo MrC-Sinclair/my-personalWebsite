@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import DashboardIndex from './pages/DashboardIndex.vue'
+import DashboardAbout from './pages/DashboardAbout.vue'
+import DashboardProjects from './pages/DashboardProjects.vue'
+import DashboardBlog from './pages/DashboardBlog.vue'
+import DashboardContact from './pages/DashboardContact.vue'
 
 export default {
   pages: {
     '/': DashboardIndex,
+    '/about': DashboardAbout,
+    '/projects': DashboardProjects,
+    '/blog': DashboardBlog,
+    '/contact': DashboardContact,
   },
 } satisfies StyleEntry

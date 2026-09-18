@@ -195,18 +195,14 @@ import DashboardPostsTable from '../components/DashboardPostsTable.vue'
 import DashboardContactGrid from '../components/DashboardContactGrid.vue'
 import DashboardStatusStrip from '../components/DashboardStatusStrip.vue'
 import DashboardEmptyState from '../components/DashboardEmptyState.vue'
-
-/** 标签 Top N 常量 */
-const TAG_TOP_N = 6
-/** 趋势图统计的月份数 */
-const TREND_MONTHS = 12
+import { useDashboardStats } from '../composables/useDashboardStats'
 
 const { t, locale } = useI18n()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
 const { getAllProjects, getFeaturedProjects } = useProjects()
-const { socialLinks, skillGroups } = useAppInfo()
+const { socialLinks } = useAppInfo()
 
 // 文章列表（useAsyncData 承载：SSG 预渲染即含数据，payload 下发避免水合不一致）
 const {
@@ -252,99 +248,21 @@ const loading = computed(
   () => (postsPending.value && !postsData.value) || (projectsPending.value && !projectsData.value),
 )
 
-// —— 图表数据推导 ——
-/** 分类分布：按 category 计数，倒序 */
-const categoryStats = computed(() => {
-  const counts = new Map<string, number>()
-  for (const post of posts.value) {
-    const key = typeof post.category === 'string' ? post.category.trim() : ''
-    if (!key) continue
-    counts.set(key, (counts.get(key) ?? 0) + 1)
-  }
-  return [...counts.entries()]
-    .map(([label, value]) => ({ label, value }))
-    .sort((a, b) => b.value - a.value || a.label.localeCompare(b.label))
-})
-
-/** 全量标签计数（KPI 用） */
-const fullTagStats = computed(() => {
-  const counts = new Map<string, number>()
-  for (const post of posts.value) {
-    const tags = Array.isArray(post.tags) ? post.tags : []
-    for (const tag of tags) {
-      const key = String(tag).trim()
-      if (!key) continue
-      counts.set(key, (counts.get(key) ?? 0) + 1)
-    }
-  }
-  return [...counts.entries()]
-    .map(([label, value]) => ({ label, value }))
-    .sort((a, b) => b.value - a.value || a.label.localeCompare(b.label))
-})
-
-/** 标签 Top N（图表用） */
-const tagStats = computed(() => fullTagStats.value.slice(0, TAG_TOP_N))
-
-/** 技能分布：各分组的技能数量（来自 useAppInfo 真实数据） */
-const skillStats = computed(() =>
-  skillGroups.value
-    .map((group) => ({
-      label: group.category,
-      value: Array.isArray(group.skills) ? group.skills.length : 0,
-    }))
-    .filter((item) => item.value > 0),
-)
-
-/** 发文趋势：以内容中最新文章的月份为基准向前推 12 个月（不使用 Date.now，保证 SSR/客户端一致） */
-const trend = computed(() => {
-  let anchorYear = 0
-  let anchorMonth = 0
-  for (const post of posts.value) {
-    const year = Number(String(post.date).slice(0, 4))
-    const month = Number(String(post.date).slice(5, 7))
-    if (!Number.isFinite(year) || !Number.isFinite(month) || month < 1 || month > 12) continue
-    if (year > anchorYear || (year === anchorYear && month > anchorMonth)) {
-      anchorYear = year
-      anchorMonth = month
-    }
-  }
-  if (!anchorYear) return { values: [] as number[], labels: [] as string[] }
-
-  // 纯算术生成 12 个年月键（不构造 Date，避免任何不确定性）
-  const keys: string[] = []
-  const counts = new Map<string, number>()
-  let year = anchorYear
-  let month = anchorMonth
-  for (let i = 0; i < TREND_MONTHS; i++) {
-    const key = `${year}-${String(month).padStart(2, '0')}`
-    keys.unshift(key)
-    counts.set(key, 0)
-    month -= 1
-    if (month === 0) {
-      month = 12
-      year -= 1
-    }
-  }
-  for (const post of posts.value) {
-    const key = String(post.date).slice(0, 7)
-    if (counts.has(key)) counts.set(key, (counts.get(key) ?? 0) + 1)
-  }
-  return {
-    values: keys.map((key) => counts.get(key) ?? 0),
-    // 横轴标签用两位数字月份（语言无关）
-    labels: keys.map((key) => key.slice(5, 7)),
-  }
-})
-
-/** 趋势期内发文总数（面板 meta） */
-const trendTotal = computed(() => trend.value.values.reduce((sum, v) => sum + v, 0))
+// —— 图表数据推导（与 /about、/blog 子页共用同一口径） ——
+const {
+  categoryStats,
+  tagStats,
+  skillStats,
+  trend,
+  trendTotal,
+  kpiCategories,
+  kpiTags,
+  kpiSkills,
+} = useDashboardStats(posts)
 
 // —— KPI（真实统计） ——
 const kpiPosts = computed(() => posts.value.length)
 const kpiProjects = computed(() => projectsData.value?.all.length ?? 0)
-const kpiCategories = computed(() => categoryStats.value.length)
-const kpiTags = computed(() => fullTagStats.value.length)
-const kpiSkills = computed(() => skillStats.value.reduce((sum, s) => sum + s.value, 0))
 
 /** 最新一篇文章（列表按日期倒序，首篇即最新） */
 const latestPost = computed(() => posts.value[0] ?? null)
