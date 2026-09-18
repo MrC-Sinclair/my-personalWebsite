@@ -86,7 +86,7 @@ const { t } = useI18n()
   line-height: 1.04;
   letter-spacing: -0.02em;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .hero-tagline {

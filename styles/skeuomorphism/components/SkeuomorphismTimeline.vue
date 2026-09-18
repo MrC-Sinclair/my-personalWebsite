@@ -160,7 +160,7 @@ const tilts = [-1.1, 0.9, -0.7, 1.2]
   font-size: 15px;
   line-height: var(--lh-body);
   color: #e6d5b4;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 @media (prefers-reduced-motion: reduce) {

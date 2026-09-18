@@ -93,7 +93,7 @@ function dateText(post: BlogPost): string {
 .post-link {
   color: var(--c-accent);
   text-decoration: none;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .post-link::after {

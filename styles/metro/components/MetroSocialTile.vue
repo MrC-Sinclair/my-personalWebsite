@@ -106,7 +106,7 @@ function toggleQr() {
   font-size: 20px;
   font-weight: 700;
   line-height: 1.2;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .social__meta {

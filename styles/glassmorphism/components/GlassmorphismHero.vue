@@ -144,7 +144,7 @@ const localePath = useLocalePath()
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .hero-tagline {

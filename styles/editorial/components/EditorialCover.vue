@@ -102,7 +102,7 @@ const tocItems = computed(() => [
   line-height: 0.98;
   letter-spacing: -0.015em;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .dot {

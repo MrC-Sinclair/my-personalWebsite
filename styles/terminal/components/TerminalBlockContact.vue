@@ -94,7 +94,7 @@ function urlText(url: string): string {
   margin: 0;
   max-width: 68ch;
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .list {
@@ -120,7 +120,7 @@ function urlText(url: string): string {
 .key {
   margin: 0;
   color: var(--c-accent-2);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .key::before {

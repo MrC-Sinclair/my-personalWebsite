@@ -208,7 +208,7 @@ function slugOf(path: string): string {
   font-size: var(--fs-title);
   font-weight: 700;
   line-height: 1.3;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 标题墨水链接：hover 泛起砖红 */
@@ -236,7 +236,7 @@ function slugOf(path: string): string {
   font-size: 15px;
   line-height: var(--lh-body);
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* —— 技术栈：邮票式小签（dashed 齿孔边） —— */

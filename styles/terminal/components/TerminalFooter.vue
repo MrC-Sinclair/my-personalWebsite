@@ -46,7 +46,7 @@ const { t } = useI18n()
   align-items: center;
   margin: 0;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .info-sep {

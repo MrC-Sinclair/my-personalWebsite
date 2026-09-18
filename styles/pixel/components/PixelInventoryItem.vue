@@ -123,7 +123,7 @@ const metaText = computed(() => {
   text-transform: uppercase;
   color: var(--c-text);
   text-shadow: 2px 2px 0 var(--c-border);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 标题链接拉伸铺满整行（相对 .item 定位），实现整行可点 */
@@ -142,7 +142,7 @@ const metaText = computed(() => {
   margin: 0;
   font-size: var(--fs-small);
   color: var(--c-accent-2);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .item-desc {

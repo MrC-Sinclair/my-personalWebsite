@@ -49,7 +49,7 @@ const host = computed(() => `guest@${t('home.name')}`.toLowerCase())
   font-size: var(--fs-small);
   color: var(--c-muted);
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 磷光绿呼吸点：表示「会话在线」 */

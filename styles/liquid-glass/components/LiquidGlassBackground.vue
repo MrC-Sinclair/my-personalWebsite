@@ -31,6 +31,22 @@
     </div>
 
     <!--
+      高频折射纹理层 —— 液态玻璃「看得见」的关键
+      存在的理由：玻璃板的 backdrop-filter 只能采样已有像素；纯低频的
+      大光斑采样后依旧是平滑渐变，板内看不出任何形变，玻璃就只剩「半透
+      白底 + 描边」，与普通玻璃拟态无异。这一层提供高空间频率的细节
+      （同心环 / 细条纹 / 短扰流弧），经 blur 后变成板内可辨识的液态
+      波纹与折射条纹——这是本风格与 glassmorphism 的分水岭。
+      置于内容带（面板落点）而非视口边缘，确保玻璃下面真的有东西可采样。
+    -->
+    <div class="layer layer-caustic">
+      <span class="caustic caustic-rings"/>
+      <span class="caustic caustic-stripes"/>
+      <span class="caustic caustic-arc"/>
+      <span class="caustic caustic-rings caustic-rings--b"/>
+    </div>
+
+    <!--
       折射球体层：位于内容带的实心玻璃球（中视差）
       存在的理由：光斑只是低频渐变，玻璃板 backdrop-filter 采样后
       几乎看不出形变；球体有明确的亮核、彩色晕与边缘高光，折射后
@@ -125,6 +141,126 @@ onUnmounted(() => {
 /* 折射球体层：与中景同视差，保证球体与玻璃板相对位置稳定 */
 .layer-refract {
   transform: translate3d(0, calc(var(--lg-drift, 0px) * -0.1), 0);
+}
+
+/* 高频折射纹理层：视差略快于球体，玻璃板内产生轻微的相对滑移（液态感） */
+.layer-caustic {
+  transform: translate3d(0, calc(var(--lg-drift, 0px) * -0.12), 0);
+}
+
+/* —— 焦散纹理：高空间频率细节，blur 后化成板内波纹 ——
+   三种形态各司其职：
+   -rings   同心环：最像水波，blur 后留下层层叠叠的亮弧
+   -stripes 细条纹：模拟水面扰动造成的定向折射条纹
+   -arc     短扰流弧：打断条纹的规则性，避免出现「百叶窗」感
+   所有纹理透明度都压得很低（0.12~0.3）——它们会被 22~26px 的
+   backdrop-blur 揉开，原始对比太高会变成脏斑而不是折射。
+
+   ★ 定位原则（实测踩过的坑）：
+   背景层 `.layer` 有 `inset: -12%` 的外扩，如果直接按「层内百分比」
+   定位，元素会被推到可视区之外——首版就是这样：环的圆心落在
+   (-127,157)，弧线跑到页头被导航挡住，而 hero 玻璃板在 y=797
+   以下，板下几乎没有可采样的高频纹理，于是「折射看不见」。
+   所以每个焦散元素都用**目标玻璃板的视口坐标**来定位：
+   首屏 hero 板约在 y 300~900、内容板在 y 900 以下，
+   对应的 vmin 值按 1440x900 视口标定，clamp 保证小视口不越界。 */
+.caustic {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+/* 同心环：靠重复的 radial-gradient 直接画环，不额外加滤镜
+   圆心对准首屏 hero 玻璃板的中部（约视口 42% 高） */
+.caustic-rings {
+  width: 46vmax;
+  height: 46vmax;
+  left: calc(50% - 23vmax);
+  top: calc(42% - 23vmax);
+  background:
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      rgb(255 255 255 / 0.2) 0,
+      rgb(255 255 255 / 0.2) 2px,
+      transparent 2px,
+      transparent 30px
+    );
+  opacity: 0.6;
+  mask-image: radial-gradient(closest-side, #000 10%, rgb(0 0 0 / 0.6) 50%, transparent 78%);
+  animation: caustic-breathe 23s ease-in-out infinite alternate;
+}
+
+/* 第二组环：错位 + 反向漂移，与上一组叠加出非周期性的波纹
+   对准第二屏的玻璃主板（关于/技能），让滚动后依然有折射 */
+.caustic-rings--b {
+  width: 34vmax;
+  height: 34vmax;
+  right: auto;
+  left: calc(62% - 17vmax);
+  top: calc(150% - 17vmax);
+  background:
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      rgb(94 227 255 / 0.22) 0,
+      rgb(94 227 255 / 0.22) 1.5px,
+      transparent 1.5px,
+      transparent 24px
+    );
+  animation-direction: alternate-reverse;
+  animation-duration: 29s;
+}
+
+/* 细条纹：旋转 12°，避免与栅格布局的横竖边平行（平行会显得像装饰线）
+   横跨首屏 hero 板所在的高度带 */
+.caustic-stripes {
+  width: 96vmax;
+  height: 54vmax;
+  left: -14vmax;
+  top: 22vmax;
+  background:
+    repeating-linear-gradient(
+      102deg,
+      rgb(255 255 255 / 0.15) 0,
+      rgb(255 255 255 / 0.15) 3px,
+      transparent 3px,
+      transparent 20px
+    );
+  opacity: 0.55;
+  mask-image: radial-gradient(closest-side, #000 6%, transparent 76%);
+  animation: caustic-breathe 17s ease-in-out infinite alternate-reverse;
+}
+
+/* 扰流弧：一条弯月形亮带，blur 后成为板内最显眼的单道折射
+   放在首屏板的上半部（视觉重心），不与 hero 文字块重叠区域冲突 */
+.caustic-arc {
+  width: 58vmax;
+  height: 30vmax;
+  left: calc(52% - 29vmax);
+  top: calc(44% - 15vmax);
+  background: radial-gradient(
+    closest-side at 50% 100%,
+    rgb(255 255 255 / 0.32),
+    rgb(255 255 255 / 0.13) 46%,
+    transparent 72%
+  );
+  border-radius: 50% 50% 0 0;
+  opacity: 0.45;
+}
+
+/* 焦散呼吸：位移较光斑更小（纹理怕大幅移动，会像在爬） */
+@keyframes caustic-breathe {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(2.6vmax, 2vmax, 0) scale(1.05);
+  }
+}
+
+/* 扰流弧：不旋转，只用更慢的呼吸+横向漂移（弧线旋转会像坏掉的水印） */
+.caustic-arc {
+  animation: caustic-breathe 26s ease-in-out infinite alternate;
 }
 
 /* —— 实心玻璃球：亮核 + 彩色晕 + 边缘高光 ——
@@ -321,7 +457,8 @@ onUnmounted(() => {
 @media (prefers-reduced-motion: reduce) {
   .orb,
   .orb-solid,
-  .beam {
+  .beam,
+  .caustic {
     animation: none;
   }
 }

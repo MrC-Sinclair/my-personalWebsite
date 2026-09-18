@@ -146,7 +146,7 @@ function slugOf(path: string): string {
   font-weight: 700;
   color: var(--c-text);
   transition: color var(--transition);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .note:hover .note-title {

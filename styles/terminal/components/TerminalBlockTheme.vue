@@ -63,7 +63,7 @@ function statusText(status: StyleMeta['status']): string {
   margin: 0;
   max-width: 68ch;
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .list {
@@ -97,7 +97,7 @@ function statusText(status: StyleMeta['status']): string {
 .name {
   min-width: 9em;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .tier {
@@ -123,7 +123,7 @@ function statusText(status: StyleMeta['status']): string {
   color: var(--c-accent);
   text-decoration: none;
   border: var(--border-w) solid transparent;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .go-glyph {

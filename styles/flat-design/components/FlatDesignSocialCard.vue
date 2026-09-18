@@ -247,7 +247,7 @@ function copyValue() {
 .social-card__meta {
   font-size: var(--fs-small);
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 尾部符号：随卡片 hover 变色（无位移） */

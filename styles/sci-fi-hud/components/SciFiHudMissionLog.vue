@@ -116,7 +116,7 @@ defineProps<{
   font-size: 15px;
   font-weight: 700;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .org {

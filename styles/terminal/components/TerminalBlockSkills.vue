@@ -56,7 +56,7 @@ const groups = computed(() => {
   align-items: center;
   margin: 0;
   color: var(--c-accent-2);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .group-glyph {
@@ -106,7 +106,7 @@ const groups = computed(() => {
 }
 
 .skill-name {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .skill-name::before {

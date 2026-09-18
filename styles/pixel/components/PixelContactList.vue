@@ -97,7 +97,7 @@ function linkText(url: string): string {
   text-transform: uppercase;
   color: var(--c-accent);
   text-shadow: 2px 2px 0 var(--c-border);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .crow-val {

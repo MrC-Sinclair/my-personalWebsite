@@ -152,7 +152,7 @@ withDefaults(
   letter-spacing: 0.05em;
   color: var(--c-text);
   text-shadow: 0 0 12px color-mix(in srgb, var(--panel-tone) 60%, transparent);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .head-meta {

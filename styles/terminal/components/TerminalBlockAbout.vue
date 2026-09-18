@@ -48,27 +48,27 @@ const { timeline } = useAppInfo()
   font-weight: 700;
   color: var(--c-accent);
   text-shadow: 0 0 10px color-mix(in srgb, var(--c-accent) 45%, transparent);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .tag {
   margin: 0;
   color: var(--c-accent-2);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .dim {
   margin: 0;
   max-width: 68ch;
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 区块内二级标题：琥珀色 + 左侧竖条 */
 .head {
   margin: 10px 0 0;
   color: var(--c-accent-2);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .head::before {
@@ -119,18 +119,18 @@ const { timeline } = useAppInfo()
 .tl-title {
   color: var(--c-text);
   font-weight: 700;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .tl-org {
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .tl-desc {
   margin: 2px 0 0;
   font-size: var(--fs-small);
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 </style>

@@ -133,7 +133,7 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.project.tags) ? p
   font-size: 22px;
   font-weight: 900;
   line-height: 1.25;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 精选小旗：黑底反白角标 */

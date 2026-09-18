@@ -104,7 +104,7 @@ const { t } = useI18n()
   line-height: 1.1;
   letter-spacing: 0.01em;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 职签：加粗正文色 + 黏土质感小胶囊两枚包夹 */

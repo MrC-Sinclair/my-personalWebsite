@@ -114,7 +114,7 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? prop
   font-size: 19px;
   font-weight: 900;
   line-height: 1.3;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .desc {

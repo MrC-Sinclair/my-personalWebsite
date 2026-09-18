@@ -167,7 +167,7 @@ const projectRoute = computed(() => `/projects/${contentSlug(props.project.path)
   font-size: var(--fs-title);
   font-weight: 700;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 精选徽标：小玻璃胶囊 */

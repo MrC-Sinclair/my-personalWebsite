@@ -107,7 +107,7 @@ const { t } = useI18n()
   font-weight: 900;
   line-height: 0.98;
   letter-spacing: 0.01em;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   background: linear-gradient(
     180deg,
     #ffffff 0%,

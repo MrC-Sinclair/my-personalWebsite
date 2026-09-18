@@ -189,7 +189,7 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   font-size: var(--fs-title);
   font-weight: 700;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .project-card-date {

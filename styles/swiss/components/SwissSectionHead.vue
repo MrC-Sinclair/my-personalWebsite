@@ -63,7 +63,7 @@ function pad(n: number): string {
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 补充信息：独占下一行（移动端），右对齐 */

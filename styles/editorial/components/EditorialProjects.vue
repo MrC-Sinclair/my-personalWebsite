@@ -216,7 +216,7 @@ function projectRoute(project: Project): string {
   font-weight: 700;
   line-height: 1.25;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   background-image: linear-gradient(var(--c-accent), var(--c-accent));
   background-repeat: no-repeat;
   background-position: 0 100%;

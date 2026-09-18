@@ -122,7 +122,7 @@ function tagsOf(project: Project): string[] {
   min-height: 40px;
   color: var(--c-accent);
   text-decoration: none;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .work-link:hover {
@@ -141,13 +141,13 @@ function tagsOf(project: Project): string[] {
 
 .work-plain {
   color: var(--c-accent);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .work-desc {
   margin: 0;
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 标签行统一用 muted 绿（对比度 ≥ 4.5:1），标签名略暗 */
@@ -155,7 +155,7 @@ function tagsOf(project: Project): string[] {
   margin: 0;
   font-size: var(--fs-small);
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .work-tags-label {

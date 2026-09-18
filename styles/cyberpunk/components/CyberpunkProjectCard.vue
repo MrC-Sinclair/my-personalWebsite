@@ -223,7 +223,7 @@ const projectRoute = computed(() => `/projects/${contentSlug(props.project.path)
   letter-spacing: 0.03em;
   color: var(--c-accent);
   text-shadow: 0 0 12px rgb(34 211 238 / 0.5);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   transition: text-shadow var(--transition);
 }
 

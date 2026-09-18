@@ -220,7 +220,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   font-size: var(--fs-title);
   font-weight: 900;
   line-height: 1.28;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 标题链接：铬字 → 悬浮点亮 */
@@ -242,7 +242,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   font-size: 15px;
   line-height: var(--lh-body);
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* —— 技术栈铬银胶囊 —— */

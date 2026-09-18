@@ -259,7 +259,7 @@ const projectRoute = computed(() => `/projects/${contentSlug(props.project.path)
   font-weight: 700;
   line-height: 1.35;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .pod-desc {

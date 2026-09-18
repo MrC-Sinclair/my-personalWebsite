@@ -200,7 +200,7 @@ function groupSkills(group: SkillGroup): string[] {
   font-weight: 700;
   line-height: 1.3;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .entry-org {

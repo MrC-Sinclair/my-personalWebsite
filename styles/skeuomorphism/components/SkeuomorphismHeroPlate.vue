@@ -128,7 +128,7 @@ const { t } = useI18n()
   font-size: clamp(44px, 8vw, 88px);
   font-weight: 700;
   line-height: 1.08;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   /* 烫金压花：金字渐变 + 落影 */
   background: linear-gradient(180deg, #fdf3d7 0%, #ecd39c 52%, #c9a45c 100%);
   background-clip: text;

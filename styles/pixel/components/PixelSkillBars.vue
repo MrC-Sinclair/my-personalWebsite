@@ -97,6 +97,6 @@ function namesOf(group: SkillGroup): string {
   font-size: var(--fs-small);
   line-height: 1.9;
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 </style>

@@ -121,7 +121,7 @@ function safeSkills(group: SkillGroup): string[] {
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   background: color-mix(in srgb, var(--c-surface) 80%, transparent);
   border: var(--border-w) solid var(--c-border);
   transition:

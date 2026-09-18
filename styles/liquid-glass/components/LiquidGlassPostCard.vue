@@ -160,7 +160,7 @@ const postRoute = computed(() => `/blog/${contentSlug(props.post.path)}`)
   font-weight: 600;
   line-height: 1.35;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .desc {

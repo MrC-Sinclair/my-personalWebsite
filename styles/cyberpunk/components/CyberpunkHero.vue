@@ -150,7 +150,7 @@ const { t } = useI18n()
   text-shadow:
     0 0 12px rgb(34 211 238 / 0.65),
     0 0 46px rgb(34 211 238 / 0.28);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .glitch::before,

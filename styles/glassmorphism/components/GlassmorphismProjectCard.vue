@@ -106,7 +106,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   font-weight: 800;
   line-height: 1.3;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   transition: color var(--transition);
 }
 

@@ -59,6 +59,6 @@ defineProps<{
   font-weight: 800;
   line-height: 1.2;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 </style>

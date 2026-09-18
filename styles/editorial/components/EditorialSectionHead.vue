@@ -73,7 +73,7 @@ defineProps<{
   line-height: 1.08;
   letter-spacing: -0.01em;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 注释式小字：右对齐页边注 */

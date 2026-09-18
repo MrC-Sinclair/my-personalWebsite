@@ -156,7 +156,7 @@ const projectRoute = computed(() => `/projects/${contentSlug(props.project.path)
   font-size: var(--fs-title);
   font-weight: 800;
   color: var(--tone-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 精选徽标：近白压印胶囊 */

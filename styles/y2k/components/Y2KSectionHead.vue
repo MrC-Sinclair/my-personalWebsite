@@ -81,7 +81,7 @@ withDefaults(
   font-size: clamp(28px, 4.5vw, 46px);
   font-weight: 900;
   line-height: 1.12;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   background: linear-gradient(180deg, #ffffff 0%, #ccd6f6 38%, #6e7db1 56%, #aeb9e8 100%);
   background-clip: text;
   -webkit-background-clip: text;

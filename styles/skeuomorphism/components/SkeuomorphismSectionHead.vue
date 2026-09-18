@@ -79,7 +79,7 @@ defineProps<{
   font-size: clamp(30px, 5vw, 52px);
   font-weight: 700;
   line-height: 1.15;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   color: #f3e7c9;
   /* 雕刻：文字上吃阴影、下缘高光，像刻进木头 */
   text-shadow:

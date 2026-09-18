@@ -51,7 +51,11 @@ const { t } = useI18n()
   padding: var(--space) var(--gap);
 }
 
-/* —— 巨型玻璃主板：与导航同源的玻璃配方，模糊半径更深 —— */
+/* —— 巨型玻璃主板：与导航同源的玻璃配方，模糊半径更深 ——
+   二次迭代：hero 是全站最大的一块玻璃，最该「看得出是玻璃」。
+   与 Panel 同向加强——折射染色拉高、四边补边缘光、加色散细线、
+   blur 提到 26px（大板子需要更深的模糊才有厚度），投影换成
+   --shadow-lg（尺寸与景深必须耦合）。 */
 .glass {
   position: relative;
   width: 100%;
@@ -59,16 +63,27 @@ const { t } = useI18n()
   overflow: hidden;
   padding: clamp(32px, 6vw, 72px);
   background:
-    linear-gradient(115deg, rgb(167 139 255 / 0.1), rgb(94 227 255 / 0.05) 46%, rgb(255 122 184 / 0.1)),
-    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.04));
+    linear-gradient(
+      158deg,
+      rgb(255 255 255 / 0.18) 0%,
+      rgb(255 255 255 / 0.035) 24%,
+      rgb(255 255 255 / 0.08) 56%,
+      rgb(255 255 255 / 0.02) 100%
+    ),
+    linear-gradient(115deg, rgb(167 139 255 / 0.18), rgb(94 227 255 / 0.09) 44%, rgb(255 122 184 / 0.16)),
+    linear-gradient(180deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.04));
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
   box-shadow:
-    var(--shadow),
-    inset 0 1px 0 rgb(255 255 255 / 0.32),
-    inset 0 -1px 0 rgb(255 255 255 / 0.06);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    var(--shadow-lg),
+    inset 0 1px 0 rgb(255 255 255 / 0.46),
+    inset 0 -1px 0 rgb(255 255 255 / 0.09),
+    inset 1px 0 0 rgb(255 255 255 / 0.16),
+    inset -1px 0 0 rgb(255 255 255 / 0.11),
+    2px 0 0 rgb(94 227 255 / 0.2),
+    -2px 0 0 rgb(255 122 184 / 0.16);
+  backdrop-filter: blur(26px) saturate(1.6) brightness(1.07) contrast(1.05);
+  -webkit-backdrop-filter: blur(26px) saturate(1.6) brightness(1.07) contrast(1.05);
 }
 
 @supports not (backdrop-filter: blur(1px)) {
@@ -81,20 +96,25 @@ const { t } = useI18n()
 .glass::after {
   position: absolute;
   top: 0;
-  right: 14%;
-  left: 14%;
-  height: 1px;
+  right: 12%;
+  left: 12%;
+  height: 2px;
   content: '';
   background: var(--deco);
+  opacity: 0.95;
 }
 
-/* 顶部镜面高光：玻璃顶端的球面反光 */
+/* 顶部镜面高光：玻璃顶端的球面反光 + 斜向液膜亮弧
+   液膜反光是弯的、不对称的——这是「液态」与「亚克力板」的分界。 */
 .glass::before {
   position: absolute;
   inset: 0;
   pointer-events: none;
   content: '';
-  background: radial-gradient(110% 55% at 50% 0%, rgb(255 255 255 / 0.2), transparent 62%);
+  background:
+    radial-gradient(34% 58% at 16% 3%, rgb(255 255 255 / 0.24), transparent 60%),
+    radial-gradient(24% 42% at 86% 2%, rgb(167 139 255 / 0.18), transparent 58%),
+    radial-gradient(110% 55% at 50% 0%, rgb(255 255 255 / 0.2), transparent 62%);
 }
 
 /* 折射光带：斜向高光缓慢扫过玻璃（reduced-motion 下静止） */
@@ -154,7 +174,7 @@ const { t } = useI18n()
   font-weight: 800;
   line-height: 1.04;
   letter-spacing: -0.02em;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   background: linear-gradient(100deg, var(--c-text) 8%, var(--c-accent) 42%, var(--c-accent-2) 72%, #ff7ab8 96%);
   background-clip: text;
   -webkit-background-clip: text;

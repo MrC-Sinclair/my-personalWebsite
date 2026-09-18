@@ -443,7 +443,7 @@ const sections = computed(() => [
   text-transform: uppercase;
   color: var(--c-text);
   text-shadow: 4px 4px 0 var(--c-border);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .hero-tagline {

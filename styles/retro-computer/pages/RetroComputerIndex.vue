@@ -366,7 +366,7 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
 /* 主标题：大到不合理的像素块字 + 硬边深蓝投影 */
 .rc-hero__name {
   margin: 8px 0 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   color: var(--c-text);
   font-family: var(--font-head);
   font-size: clamp(32px, 7vw, var(--fs-head));

@@ -405,7 +405,7 @@ useScrollReveal()
   letter-spacing: 0.04em;
   color: var(--c-text);
   text-shadow: 0 0 24px rgb(74 240 198 / 0.25);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 框内底部刻度尺（装饰） */

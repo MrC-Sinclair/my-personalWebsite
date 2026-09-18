@@ -68,7 +68,7 @@ const { t } = useI18n()
   text-transform: uppercase;
   color: var(--c-text);
   text-shadow: 6px 6px 0 var(--c-accent);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .tagline {

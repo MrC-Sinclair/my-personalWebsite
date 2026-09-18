@@ -84,7 +84,7 @@ const { t } = useI18n()
   letter-spacing: -0.03em;
   text-transform: uppercase;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 底部非对称两栏：移动端上下堆叠，桌面端左链接右文案 */

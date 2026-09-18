@@ -138,7 +138,7 @@ const { copied, copy } = useClipboardCopy()
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .contact-value {

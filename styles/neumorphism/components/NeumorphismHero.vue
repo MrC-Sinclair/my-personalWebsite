@@ -105,7 +105,7 @@ const initials = computed(() => {
   line-height: 1.15;
   color: var(--c-text);
   letter-spacing: 0.01em;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   text-shadow: 1px 1px 1px rgb(255 255 255 / 0.92), -1px -1px 1px rgb(163 177 198 / 0.45);
 }
 

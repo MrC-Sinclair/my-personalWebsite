@@ -476,7 +476,7 @@ const sections = computed(() => [
   font-weight: 700;
   line-height: 1.12;
   color: var(--c-text);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* 幽灵数字：文章总数的大号装饰重复（真实数据的装饰化表达） */

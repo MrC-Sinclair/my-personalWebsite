@@ -395,7 +395,7 @@ function revealClass(index: number): string {
   background: linear-gradient(118deg, #ede9fe 8%, #a78bfa 46%, #67e8f9 92%);
   background-clip: text;
   color: transparent;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .hero-tagline {

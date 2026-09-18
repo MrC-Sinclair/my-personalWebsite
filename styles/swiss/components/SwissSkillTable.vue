@@ -76,7 +76,7 @@ function skillsText(skills: unknown): string {
   line-height: 1.9;
   color: var(--c-muted);
   letter-spacing: 0.04em;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* —— 桌面端：编号 | 类别 | 清单 同行，非对称 3/9 分栏 —— */
