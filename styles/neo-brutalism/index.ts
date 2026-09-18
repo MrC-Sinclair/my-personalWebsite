@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import NeoBrutalismIndex from './pages/NeoBrutalismIndex.vue'
+import NeoBrutalismAbout from './pages/NeoBrutalismAbout.vue'
+import NeoBrutalismProjects from './pages/NeoBrutalismProjects.vue'
+import NeoBrutalismBlog from './pages/NeoBrutalismBlog.vue'
+import NeoBrutalismContact from './pages/NeoBrutalismContact.vue'
 
 export default {
   pages: {
     '/': NeoBrutalismIndex,
+    '/about': NeoBrutalismAbout,
+    '/projects': NeoBrutalismProjects,
+    '/blog': NeoBrutalismBlog,
+    '/contact': NeoBrutalismContact,
   },
 } satisfies StyleEntry
