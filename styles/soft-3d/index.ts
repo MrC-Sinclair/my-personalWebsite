@@ -9,9 +9,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import Soft3DIndex from './pages/Soft3DIndex.vue'
+import Soft3DAbout from './pages/Soft3DAbout.vue'
+import Soft3DProjects from './pages/Soft3DProjects.vue'
+import Soft3DBlog from './pages/Soft3DBlog.vue'
+import Soft3DContact from './pages/Soft3DContact.vue'
 
 export default {
   pages: {
     '/': Soft3DIndex,
+    '/about': Soft3DAbout,
+    '/projects': Soft3DProjects,
+    '/blog': Soft3DBlog,
+    '/contact': Soft3DContact,
   },
 } satisfies StyleEntry

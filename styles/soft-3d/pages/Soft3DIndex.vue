@@ -55,31 +55,8 @@
           variant="cyan"
         />
 
-        <div class="skill-grid">
-          <div
-            v-for="pod in revealSkills"
-            :key="pod.label"
-            class="reveal-wrap scroll-reveal scroll-reveal-up"
-            :class="pod.reveal"
-          >
-            <div class="z-item" :class="pod.z">
-              <Soft3DSkillPod :label="pod.label" :skills="pod.skills" :variant="pod.variant" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 经历：一排摆上台面的里程碑浮板 -->
-        <h3 class="exp-title">{{ t('about.experience') }}</h3>
-        <ol class="exp-row">
-          <li v-for="item in timeline" :key="item.period" class="exp-item">
-            <article class="exp-card">
-              <span class="exp-period">{{ item.period }}</span>
-              <h4 class="exp-role">{{ item.title }}</h4>
-              <p class="exp-org">{{ item.organization }}</p>
-              <p class="exp-desc">{{ item.description }}</p>
-            </article>
-          </li>
-        </ol>
+        <!-- 关于内容抽成区块组件：「关于」子页复用同一块（见 Soft3DAboutBlock） -->
+        <Soft3DAboutBlock/>
       </section>
 
       <!-- ③ 精选项目：三列 Z 层错落（近 / 中 / 远） -->
@@ -207,11 +184,10 @@
 <script setup lang="ts">
 import type { BlogPost } from '~/types/blog'
 import type { Project } from '~/types/project'
-import type { SkillGroup } from '~/types/site'
 import Soft3DBackground from '../components/Soft3DBackground.vue'
 import Soft3DFloatNav from '../components/Soft3DFloatNav.vue'
 import Soft3DSectionHead from '../components/Soft3DSectionHead.vue'
-import Soft3DSkillPod from '../components/Soft3DSkillPod.vue'
+import Soft3DAboutBlock from '../components/Soft3DAboutBlock.vue'
 import Soft3DProjectCard from '../components/Soft3DProjectCard.vue'
 import Soft3DPostCard from '../components/Soft3DPostCard.vue'
 import Soft3DContactPod from '../components/Soft3DContactPod.vue'
@@ -228,7 +204,8 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
-const { socialLinks, skillGroups, timeline } = useAppInfo()
+// 技能分组与经历时间线已随「关于」区块下沉到 Soft3DAboutBlock
+const { socialLinks } = useAppInfo()
 const { getFeaturedPosts } = useBlog()
 const { getFeaturedProjects } = useProjects()
 
@@ -284,19 +261,6 @@ const navSections = computed(() => [
 const coverVariants = ['violet', 'cyan', 'warm', 'mint', 'sun', 'grape'] as const
 const postVariants = ['cyan', 'violet', 'mint', 'pink', 'sun'] as const
 const contactVariants = ['violet', 'cyan', 'pink', 'sun'] as const
-
-// —— 技能舱：分组数据 + 配色 + Z 层 + reveal 交错 ——
-const skillPalette = ['violet', 'cyan', 'pink', 'mint'] as const
-
-const revealSkills = computed(() =>
-  skillGroups.value.map((group: SkillGroup, i: number) => ({
-    label: group.category,
-    skills: Array.isArray(group.skills) ? group.skills : [],
-    variant: skillPalette[i % skillPalette.length],
-    z: zOf(i + 1),
-    reveal: revealClass(i),
-  })),
-)
 
 /** Z 层轮换：远 / 近 / 中循环，形成「物体错落摆放」的纵深（确定性，SSR 安全） */
 function zOf(index: number): 'z-near' | 'z-mid' | 'z-far' {
@@ -549,95 +513,6 @@ function revealClass(index: number): string {
   transform: translateX(-50%);
 }
 
-/* ============ ② 技能舱网格 ============ */
-.skill-grid {
-  display: grid;
-  gap: var(--gap);
-  margin-top: calc(var(--space) * 1.1);
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-
-/* —— 经历里程碑：一排浮板，窄屏纵排 —— */
-.exp-title {
-  margin: calc(var(--space) * 1.3) 0 var(--gap);
-  font-family: var(--font-head);
-  font-size: clamp(20px, 2.6vw, 26px);
-  font-weight: 700;
-  color: var(--c-text);
-}
-
-.exp-row {
-  display: grid;
-  gap: var(--gap);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  grid-template-columns: 1fr;
-}
-
-/* 桌面端：浮板错落（台面纵深），偶数块下沉 */
-@media (min-width: 900px) {
-  .exp-row {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .exp-item:nth-child(even) {
-    margin-top: 22px;
-  }
-}
-
-.exp-card {
-  height: 100%;
-  padding: calc(var(--space) * 0.8);
-  background: linear-gradient(160deg, color-mix(in srgb, var(--c-accent) 8%, var(--c-surface)), var(--c-surface) 60%);
-  border: var(--border-w) solid var(--c-border);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow);
-  transition: transform var(--transition), box-shadow var(--transition);
-}
-
-.exp-card:hover {
-  transform: translateY(-5px);
-  box-shadow:
-    0 30px 52px rgb(6 3 26 / 0.62),
-    0 12px 24px rgb(139 92 246 / 0.28),
-    inset 0 2px 5px rgb(255 255 255 / 0.24),
-    inset 0 -8px 16px rgb(9 5 40 / 0.5);
-}
-
-.exp-period {
-  display: inline-block;
-  margin-bottom: 8px;
-  padding: 3px 12px;
-  font-family: var(--font-mono);
-  font-size: var(--fs-small);
-  color: var(--c-accent-2);
-  background: color-mix(in srgb, var(--c-accent-2) 13%, transparent);
-  border: 1px solid color-mix(in srgb, var(--c-accent-2) 36%, transparent);
-  border-radius: 999px;
-}
-
-.exp-role {
-  margin: 0 0 4px;
-  font-family: var(--font-head);
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--c-text);
-}
-
-.exp-org {
-  margin: 0 0 8px;
-  font-size: var(--fs-small);
-  color: var(--c-accent);
-}
-
-.exp-desc {
-  margin: 0;
-  font-size: var(--fs-small);
-  line-height: 1.7;
-  color: var(--c-muted);
-}
-
 /* ============ ③ 项目网格：三列 Z 层 ============ */
 .proj-grid {
   display: grid;
@@ -812,7 +687,6 @@ function revealClass(index: number): string {
 
 @media (prefers-reduced-motion: reduce) {
   .cta,
-  .exp-card,
   .more,
   .more-arrow,
   .top-orb,
@@ -823,7 +697,6 @@ function revealClass(index: number): string {
 
   .cta-solid:hover,
   .cta-ghost:hover,
-  .exp-card:hover,
   .more:hover,
   .top-orb:hover {
     transform: none;
