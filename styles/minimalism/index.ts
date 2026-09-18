@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import MinimalismIndex from './pages/MinimalismIndex.vue'
+import MinimalismAbout from './pages/MinimalismAbout.vue'
+import MinimalismProjects from './pages/MinimalismProjects.vue'
+import MinimalismBlog from './pages/MinimalismBlog.vue'
+import MinimalismContact from './pages/MinimalismContact.vue'
 
 export default {
   pages: {
     '/': MinimalismIndex,
+    '/about': MinimalismAbout,
+    '/projects': MinimalismProjects,
+    '/blog': MinimalismBlog,
+    '/contact': MinimalismContact,
   },
 } satisfies StyleEntry
