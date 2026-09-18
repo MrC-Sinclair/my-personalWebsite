@@ -29,33 +29,8 @@
         <div class="rail" aria-hidden="true"/>
 
         <!-- ②-1 关于 + 技能：7/5 非对称分栏，技能面板下沉错位 -->
-        <div class="duo">
-          <CyberpunkPanel
-            id="about"
-            data-section="about"
-            class="duo-a scroll-reveal scroll-reveal-up"
-            :eyebrow="t('nav.about')"
-            :title="t('about.title')"
-            tone="cyan"
-          >
-            <p class="about-lead">{{ t('about.description') }}</p>
-
-            <h3 class="sub-title">{{ t('about.experience') }}</h3>
-            <CyberpunkTimeline :items="timeline"/>
-          </CyberpunkPanel>
-
-          <CyberpunkPanel
-            id="skills"
-            data-section="skills"
-            class="duo-b scroll-reveal scroll-reveal-up scroll-reveal-delay-2"
-            :eyebrow="t('nav.about')"
-            :title="t('about.skills')"
-            tone="violet"
-            flip
-          >
-            <CyberpunkSkillGrid :groups="skillGroups"/>
-          </CyberpunkPanel>
-        </div>
+        <!-- 关于 + 技能抽成区块组件：「关于」子页复用同一块（见 CyberpunkAboutBlock） -->
+        <CyberpunkAboutBlock/>
 
         <!-- ②-2 精选项目：悬赏数据板网格 -->
         <CyberpunkPanel
@@ -142,8 +117,7 @@ import CyberpunkScanOverlay from '../components/CyberpunkScanOverlay.vue'
 import CyberpunkHudNav from '../components/CyberpunkHudNav.vue'
 import CyberpunkHero from '../components/CyberpunkHero.vue'
 import CyberpunkPanel from '../components/CyberpunkPanel.vue'
-import CyberpunkTimeline from '../components/CyberpunkTimeline.vue'
-import CyberpunkSkillGrid from '../components/CyberpunkSkillGrid.vue'
+import CyberpunkAboutBlock from '../components/CyberpunkAboutBlock.vue'
 import CyberpunkProjectCard from '../components/CyberpunkProjectCard.vue'
 import CyberpunkPostRow from '../components/CyberpunkPostRow.vue'
 import CyberpunkContactDeck from '../components/CyberpunkContactDeck.vue'
@@ -160,7 +134,8 @@ const { t, locale } = useI18n()
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
 const { getFeaturedProjects } = useProjects()
-const { socialLinks, skillGroups, timeline } = useAppInfo()
+// 技能分组与经历时间线已随「关于」区块下沉到 CyberpunkAboutBlock
+const { socialLinks } = useAppInfo()
 
 // 最新文章（useAsyncData 承载：SSG 预渲染即含数据，payload 下发避免水合不一致）
 const {
@@ -252,43 +227,6 @@ useScrollReveal()
   }
 }
 
-/* —— 关于 + 技能：7/5 非对称分栏，技能面板下沉 —— */
-.duo {
-  display: grid;
-  gap: clamp(36px, 5vw, 64px);
-}
-
-@media (min-width: 960px) {
-  .duo {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    align-items: start;
-    gap: var(--space);
-  }
-
-  .duo-b {
-    margin-top: 44px;
-  }
-}
-
-.about-lead {
-  margin: 0 0 var(--space);
-  font-size: clamp(16px, 1.6vw, 18px);
-  line-height: var(--lh-body);
-  color: var(--c-muted);
-}
-
-/* 小节标题：等宽粉字 + 发光下划线 */
-.sub-title {
-  margin: 0 0 var(--gap);
-  padding-bottom: 8px;
-  font-family: var(--font-head);
-  font-size: var(--fs-base);
-  letter-spacing: 0.18em;
-  color: var(--c-accent-2);
-  border-bottom: 1px solid rgb(255 45 149 / 0.35);
-  text-shadow: 0 0 10px rgb(255 45 149 / 0.35);
-}
-
 /* —— 项目网格：自适应数据板 —— */
 .project-grid {
   display: grid;
@@ -363,13 +301,6 @@ useScrollReveal()
   padding: 0;
   border: 0;
   white-space: nowrap;
-}
-
-/* 窄屏：错位与下沉全部落回单列（霓虹签名保留） */
-@media (max-width: 959px) {
-  .duo-b {
-    margin-top: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

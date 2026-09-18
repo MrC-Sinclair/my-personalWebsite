@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import CyberpunkIndex from './pages/CyberpunkIndex.vue'
+import CyberpunkAbout from './pages/CyberpunkAbout.vue'
+import CyberpunkProjects from './pages/CyberpunkProjects.vue'
+import CyberpunkBlog from './pages/CyberpunkBlog.vue'
+import CyberpunkContact from './pages/CyberpunkContact.vue'
 
 export default {
   pages: {
     '/': CyberpunkIndex,
+    '/about': CyberpunkAbout,
+    '/projects': CyberpunkProjects,
+    '/blog': CyberpunkBlog,
+    '/contact': CyberpunkContact,
   },
 } satisfies StyleEntry
