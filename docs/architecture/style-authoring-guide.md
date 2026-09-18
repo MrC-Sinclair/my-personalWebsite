@@ -43,23 +43,76 @@ styles/<style-id>/          ← id 用 kebab-case 英文，如 liquid-glass
 
 ### 第 5 步：导出风格入口
 
-`styles/<id>/index.ts` 导出页面组件映射：
+`styles/<id>/index.ts` 导出页面组件映射。**页面键必须来自契约清单**
+`STYLE_SUB_PATHS`（`/about` `/projects` `/blog` `/contact`），不能自造路径——
+`tests/styles-structure.test.ts` 会校验这一点。
 
 ```ts
 import LiquidGlassIndex from './pages/LiquidGlassIndex.vue'
-// ...
+import LiquidGlassAbout from './pages/LiquidGlassAbout.vue'
+import LiquidGlassProjects from './pages/LiquidGlassProjects.vue'
+import LiquidGlassBlog from './pages/LiquidGlassBlog.vue'
+import LiquidGlassContact from './pages/LiquidGlassContact.vue'
 
 export default {
   pages: {
     '/': LiquidGlassIndex,
-    // '/blog': ...,   ← 未做的页面不写，薄壳路由对缺失页面返回 404
+    '/about': LiquidGlassAbout,
+    '/projects': LiquidGlassProjects,
+    '/blog': LiquidGlassBlog,
+    '/contact': LiquidGlassContact,
   },
-}
+} satisfies StyleEntry
 ```
+
+未做的页面键不写，薄壳路由对缺失页面返回 404。**导出 N 个键，
+`pages/` 下就必须有 N 个 `.vue` 文件**（一一对应，同样由测试守住）——
+这条防止「index.ts 写了映射却忘了建页面」的静默 404。
+预渲染路由清单会从 `index.ts` 自动派生，不需要手工维护 `nuxt.config.ts`。
+
+#### 子页模式（每个风格 4 个子页）
+
+子页化后，每个风格有 5 个页面：首页（完整展示）+ 4 个子页。**子页的标准做法**：
+
+1. **抽一个 `XxxSubPage` 外壳组件**（放 `components/`），承载子页共享的
+   结构：导航 + 页脚 + 子页标题 + 内容插槽。4 个子页共用它，
+   避免同一套壳写 4 遍。
+2. **抽一个 `XxxSubNav` 子页导航组件**，链接指向**路由**
+   （`/style/<id>/about`），不是页内锚点。注意与首页导航区分：
+   首页导航是页内锚点（`#about`），子页导航是路由跳转，
+   两种语义不能混用。
+3. **子页文件本身是薄封装**，只指定标题与主体区块：
+
+```vue
+<template>
+  <LiquidGlassSubPage :title="t('nav.about')">
+    <LiquidGlassAbout />
+  </LiquidGlassSubPage>
+</template>
+```
+
+**这是风格内部复用，不违反「UI 不跨风格复用」红线。**
+红线禁止的是 A 风格引用 B 风格的组件；同一风格内抽外壳消除重复是应该做的。
+
+子页与首页的关系：**内容同源**。子页的区块组件应与首页共用同一批组件
+（首页如果把这些区块放在单页里，就把它们抽成组件后两处共用），
+不要为子页另写一套区块——否则同一份内容会有两个实现，改一处漏一处。
+
+子页相对首页允许的差异只有**数据量**（如首页列「最新 6 条」、
+博客子页列全部），数据来源仍必须是同一批 composables。
+
+参考实现：`styles/terminal/`——`TerminalSubPage.vue`（外壳）+
+`TerminalSubNav.vue`（路由导航）+ 4 个薄子页。
 
 ### 第 6 步：注册
 
-在 `styles/registry.ts` 数组末尾加一条元信息（id / name / en / tier / tierLabel / note / status / preview）。画廊页会自动列出，无需改画廊代码。
+在 `styles/registry.ts` 数组末尾加一条元信息
+（`id` / `name` / `en` / `tier` / `tierLabel` / `note` / `status` / `accent` / `preview`）。
+画廊页会自动列出，无需改画廊代码。
+
+- `accent` 填该风格 `tokens.css` 的 `--c-accent` 值（画廊页用它给卡片打色彩签名）
+- `status`：4 个子页都做完才是 `ready`；只做了首页填 `partial`
+- `preview`：暂无预览图时填空串
 
 ### 第 7 步：验收
 

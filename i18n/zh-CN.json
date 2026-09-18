@@ -130,7 +130,9 @@
     "home": "首页",
     "mobileNav": "移动端导航",
     "breadcrumb": "面包屑",
-    "postNav": "文章导航"
+    "postNav": "文章导航",
+    "navigation": "主导航",
+    "subNav": "子页导航"
   },
   "styles": {
     "pageTitleSuffix": "UI 风格",
@@ -145,7 +147,8 @@
       "statusReady": "页面齐全",
       "statusPartial": "部分页面",
       "statusPlanned": "规划中"
-    }
+    },
+    "galleryLink": "UI 风格画廊"
   },
   "footer": {
     "copyright": "版权所有",

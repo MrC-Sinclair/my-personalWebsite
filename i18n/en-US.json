@@ -130,7 +130,9 @@
     "home": "Home",
     "mobileNav": "Mobile Navigation",
     "breadcrumb": "Breadcrumb",
-    "postNav": "Post Navigation"
+    "postNav": "Post Navigation",
+    "navigation": "Main navigation",
+    "subNav": "Page navigation"
   },
   "styles": {
     "pageTitleSuffix": "UI Style",
@@ -145,7 +147,8 @@
       "statusReady": "Full pages",
       "statusPartial": "Partial pages",
       "statusPlanned": "Planned"
-    }
+    },
+    "galleryLink": "UI Style Gallery"
   },
   "footer": {
     "copyright": "All rights reserved",

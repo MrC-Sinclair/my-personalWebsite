@@ -19,6 +19,19 @@ export interface StyleEntry {
   pages: Record<string, Component>
 }
 
+/**
+ * 子页路径清单 —— 各风格 index.ts 的 pages 映射键必须与之一致。
+ * '/' 是首页（保留概览式完整展示），其余为独立子页。
+ * 未导出的路径由路由壳抛 404，因此风格可以逐个补齐，不存在半成品被访问的问题。
+ */
+export const STYLE_SUB_PATHS = ['/about', '/projects', '/blog', '/contact'] as const
+
+/** 单个风格页面路径的联合类型（'/' 或子页路径） */
+export type StylePagePath = '/' | (typeof STYLE_SUB_PATHS)[number]
+
+/** 单个风格在完成全部子页后的页面键清单（首页 + 子页） */
+export const STYLE_ALL_PATHS: StylePagePath[] = ['/', ...STYLE_SUB_PATHS]
+
 /** 单个风格的元信息 */
 export interface StyleMeta {
   /** kebab-case 英文标识，同时是路由参数与目录名 */

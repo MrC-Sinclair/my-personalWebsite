@@ -7,11 +7,12 @@
  *    tokens.css / index.ts / pages/ 目录
  * 2. 注册表 id 唯一
  * 3. 每个风格 index.ts 默认导出的页面映射必须包含 '/'
+ * 4. 子页契约：页面键来自 STYLE_SUB_PATHS，且导出数与 pages/ 文件数一致
  */
 import { describe, expect, it } from 'vitest'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
-import { styleRegistry } from '~/styles/registry'
+import { styleRegistry, STYLE_SUB_PATHS } from '~/styles/registry'
 
 const stylesRoot = resolve(process.cwd(), 'styles')
 
@@ -83,6 +84,62 @@ describe('多风格架构结构', () => {
         if (used && !imported.has(sibling)) {
           problems.push(`${file.replace(stylesRoot, 'styles')} 使用了 <${sibling}> 但未 import`)
         }
+      }
+    }
+
+    expect(problems).toEqual([])
+  })
+
+  /**
+   * 子页契约校验。
+   * 子页化后每个风格最多导出 5 个页面（'/' + 4 个子页），
+   * 这里守住两条：一是子页键必须来自 STYLE_SUB_PATHS（不能自造路径，
+   * 否则路由壳会渲染出没人预期的 URL）；二是**导出即须有对应 .vue 文件**
+   * （防止 index.ts 写了映射却忘了建页面，运行时才 404）。
+   */
+  it('风格页面映射的键必须来自契约清单', async () => {
+    const entries = import.meta.glob<{ default: { pages?: Record<string, unknown> } }>(
+      '/styles/*/index.ts',
+      { eager: true },
+    )
+    const allowed = new Set<string>(['/', ...STYLE_SUB_PATHS])
+    const problems: string[] = []
+
+    for (const item of styleRegistry) {
+      const pages = entries[`/styles/${item.id}/index.ts`]?.default?.pages ?? {}
+      for (const key of Object.keys(pages)) {
+        if (!allowed.has(key)) {
+          problems.push(`${item.id} 导出了契约外的页面键 "${key}"`)
+        }
+      }
+    }
+
+    expect(problems).toEqual([])
+  })
+
+  it('导出的每个页面键都能在 pages/ 目录找到对应组件文件', async () => {
+    const entries = import.meta.glob<{ default: { pages?: Record<string, unknown> } }>(
+      '/styles/*/index.ts',
+      { eager: true },
+    )
+    const problems: string[] = []
+
+    for (const item of styleRegistry) {
+      const pagesRoot = resolve(stylesRoot, item.id, 'pages')
+      if (!existsSync(pagesRoot)) continue
+      const files = readdirSync(pagesRoot).filter((name) => name.endsWith('.vue'))
+      if (files.length === 0) {
+        problems.push(`styles/${item.id}/pages/ 下没有任何 .vue 页面`)
+        continue
+      }
+      // index.ts 导出了 N 个页面键，pages/ 下就该有 N 个 .vue（一一对应）
+      const pages = entries[`/styles/${item.id}/index.ts`]?.default?.pages ?? {}
+      const declared = Object.keys(pages).length
+      if (declared !== files.length) {
+        problems.push(
+          `styles/${item.id}: index.ts 导出 ${declared} 个页面，` +
+            `但 pages/ 下有 ${files.length} 个组件文件（${files.join(', ')}）`,
+        )
       }
     }
 
