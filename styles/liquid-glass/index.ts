@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import LiquidGlassIndex from './pages/LiquidGlassIndex.vue'
+import LiquidGlassAbout from './pages/LiquidGlassAbout.vue'
+import LiquidGlassProjects from './pages/LiquidGlassProjects.vue'
+import LiquidGlassBlog from './pages/LiquidGlassBlog.vue'
+import LiquidGlassContact from './pages/LiquidGlassContact.vue'
 
 export default {
   pages: {
     '/': LiquidGlassIndex,
+    '/about': LiquidGlassAbout,
+    '/projects': LiquidGlassProjects,
+    '/blog': LiquidGlassBlog,
+    '/contact': LiquidGlassContact,
   },
 } satisfies StyleEntry
