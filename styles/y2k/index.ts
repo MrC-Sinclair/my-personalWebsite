@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import Y2KIndex from './pages/Y2KIndex.vue'
+import Y2KAbout from './pages/Y2KAbout.vue'
+import Y2KProjects from './pages/Y2KProjects.vue'
+import Y2KBlog from './pages/Y2KBlog.vue'
+import Y2KContact from './pages/Y2KContact.vue'
 
 export default {
   pages: {
     '/': Y2KIndex,
+    '/about': Y2KAbout,
+    '/projects': Y2KProjects,
+    '/blog': Y2KBlog,
+    '/contact': Y2KContact,
   },
 } satisfies StyleEntry

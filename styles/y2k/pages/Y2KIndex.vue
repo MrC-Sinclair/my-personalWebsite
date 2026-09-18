@@ -29,21 +29,8 @@
         <!-- ============ 关于 + 技能：7:5 错位浮岛 ============ -->
         <section id="about" data-section="about" class="section" aria-labelledby="about-title">
           <Y2KSectionHead id="about-title" :badge="t('nav.about')" :title="t('about.title')" />
-          <div class="about-grid">
-            <Y2KPlasticPanel variant="violet" class="about-main scroll-reveal">
-              <p class="about-intro">{{ t('about.description') }}</p>
-              <h3 class="about-sub">{{ t('about.experience') }}</h3>
-              <Y2KTimeline v-if="safeTimeline.length" :items="safeTimeline" />
-            </Y2KPlasticPanel>
-
-            <Y2KPlasticPanel
-              variant="cyan"
-              class="about-side scroll-reveal scroll-reveal-delay-2"
-            >
-              <h3 class="about-sub">{{ t('about.skills') }}</h3>
-              <Y2KSkillBubbles v-if="safeSkillGroups.length" :groups="safeSkillGroups" />
-            </Y2KPlasticPanel>
-          </div>
+          <!-- 关于内容抽成区块组件：「关于」子页复用同一块（见 Y2KAboutBlock） -->
+          <Y2KAboutBlock/>
         </section>
 
         <!-- 能量分隔线（纯 CSS 装饰） -->
@@ -150,8 +137,7 @@ import Y2KStarfield from '../components/Y2KStarfield.vue'
 import Y2KHero from '../components/Y2KHero.vue'
 import Y2KSectionHead from '../components/Y2KSectionHead.vue'
 import Y2KPlasticPanel from '../components/Y2KPlasticPanel.vue'
-import Y2KTimeline from '../components/Y2KTimeline.vue'
-import Y2KSkillBubbles from '../components/Y2KSkillBubbles.vue'
+import Y2KAboutBlock from '../components/Y2KAboutBlock.vue'
 import Y2KProjectCard from '../components/Y2KProjectCard.vue'
 import Y2KPostRow from '../components/Y2KPostRow.vue'
 import Y2KContactDeck from '../components/Y2KContactDeck.vue'
@@ -167,7 +153,8 @@ const { t, locale } = useI18n()
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getFeaturedPosts } = useBlog()
 const { getFeaturedProjects } = useProjects()
-const { socialLinks, skillGroups, timeline } = useAppInfo()
+// 技能分组与经历时间线已随「关于」区块下沉到 Y2KAboutBlock
+const { socialLinks } = useAppInfo()
 
 // 精选项目（useAsyncData 承载：SSG 预渲染即含数据，payload 下发避免水合不一致）
 const {
@@ -203,8 +190,6 @@ const safePosts = computed<BlogPost[]>(() =>
   Array.isArray(postsData.value) ? postsData.value : [],
 )
 const safeSocials = computed(() => (Array.isArray(socialLinks.value) ? socialLinks.value : []))
-const safeSkillGroups = computed(() => (Array.isArray(skillGroups.value) ? skillGroups.value : []))
-const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.value : []))
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const projectsLoading = computed(() => projectsPending.value && !projectsData.value)
@@ -236,28 +221,6 @@ useScrollReveal()
   width: min(100% - 2 * var(--space), var(--page-w));
   margin-inline: auto;
   padding-bottom: calc(var(--space) * 2);
-}
-
-/* —— 关于/技能：7:5 错位浮岛（桌面端右列下沉） —— */
-.about-grid {
-  display: grid;
-  gap: var(--gap);
-}
-
-.about-intro {
-  margin: 0 0 var(--gap);
-  color: var(--c-muted);
-}
-
-.about-sub {
-  margin: 0 0 14px;
-  font-family: var(--font-head);
-  font-size: var(--fs-title);
-  font-weight: 900;
-  background: linear-gradient(180deg, #ffffff 0%, #ccd6f6 44%, #7d89c9 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
 /* —— 精选项目：错位卡片网格 —— */
@@ -402,18 +365,6 @@ useScrollReveal()
   padding: 0;
   border: 0;
   white-space: nowrap;
-}
-
-/* —— 桌面端：关于/技能 7:5 分栏，右列下沉（错位签名） —— */
-@media (min-width: 900px) {
-  .about-grid {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    align-items: start;
-  }
-
-  .about-side {
-    margin-top: 48px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
