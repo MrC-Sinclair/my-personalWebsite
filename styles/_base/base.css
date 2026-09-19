@@ -1,0 +1,344 @@
+/* ============================================================
+   全局基础层（Base Layer）—— 多风格架构的共享底座
+   ------------------------------------------------------------
+   为什么存在这个文件：
+   阶段 3 移除了过渡层的 assets/css/main.css，但其中有四类内容**不是过渡层
+   的私产、而是全站共享的底座**，必须先抢救出来，否则 20 个风格会一起崩：
+
+   1. 全局 reset（盒模型 / 基础排版）
+      main.css 里的 Tailwind preflight 提供了 `box-sizing: border-box`、
+      `ul{list-style:none}`、`img{display:block}` 等。全项目 styles/ 里
+      **没有任何一处声明 box-sizing**，即 20 个风格全部隐式依赖它。
+      按红线 3（「全局 reset 不定义组件：reset 层只做盒模型与基础排版」），
+      它本来就该由共享层提供——这里按 Tailwind v4 preflight 逐条复刻。
+
+   2. 无障碍与安全区工具类：`.sr-only`（styles/ 28 个文件在用）、
+      `.safe-*`（14 个风格文件在用）。
+
+   3. 由共享 composable 驱动的动画契约：
+      `useScrollReveal()` 负责加 `.revealed`，但**初始态与过渡曲线必须由
+      CSS 提供**，即 `.scroll-reveal` 系列（30+ 风格文件在用）。
+
+   4. 页面切换过渡与滚动行为：`app.pageTransition` 用的 `.page-enter-*`、
+      锚点偏移 `[id]{scroll-margin-top}`、`html{scroll-behavior:smooth}`，
+      以及 `prefers-reduced-motion` 全局降级。
+
+   纪律：本文件**不得定义任何「组件长什么样」的规则**（卡片、按钮外观等），
+   只做盒模型、基础排版与共享行为。风格外观一律留在各风格自己的 CSS。
+   ============================================================ */
+
+/* ---------- 1. 全局 reset（复刻 Tailwind v4 preflight） ---------- */
+
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+html,
+:host {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+  /* 默认字体栈与过渡层 @theme 的 --font-sans 保持一致：
+     部分风格有元素继承默认字体（未在根上声明），换成别的栈会改变换行与行高。 */
+  font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+hr {
+  height: 0;
+  color: inherit;
+  border-top-width: 1px;
+}
+
+abbr:where([title]) {
+  text-decoration: underline dotted;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+code,
+kbd,
+samp,
+pre {
+  /* 同样与过渡层 @theme 的 --font-mono 保持一致（见上） */
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 1em;
+}
+
+small {
+  font-size: 80%;
+}
+
+sub,
+sup {
+  position: relative;
+  font-size: 75%;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+table {
+  text-indent: 0;
+  border-color: inherit;
+  border-collapse: collapse;
+}
+
+:-moz-focusring {
+  outline: auto;
+}
+
+progress {
+  vertical-align: baseline;
+}
+
+summary {
+  display: list-item;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+}
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  vertical-align: middle;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select,
+optgroup,
+textarea,
+::file-selector-button {
+  font: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  border-radius: 0;
+  background-color: transparent;
+  opacity: 1;
+}
+
+:where(select:is([multiple], [size])) optgroup {
+  font-weight: bolder;
+}
+
+:where(select:is([multiple], [size])) optgroup option {
+  padding-inline-start: 20px;
+}
+
+::file-selector-button {
+  margin-inline-end: 4px;
+}
+
+::placeholder {
+  color: color-mix(in oklab, currentcolor 50%, transparent);
+  opacity: 1;
+}
+
+textarea {
+  resize: vertical;
+}
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+[type='search'] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+[hidden]:where(:not([hidden='until-found'])) {
+  display: none !important;
+}
+
+/* ---------- 2. 无障碍与安全区工具类 ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* ---------- 3. 滚动进入动画契约（配合 useScrollReveal） ---------- */
+/* 初始态（透明/偏移）必须在 CSS 里给出：SSR 时元素就是终态之外的形态，
+   客户端进入视口后 useScrollReveal 追加 .revealed 触发过渡。 */
+
+.scroll-reveal {
+  opacity: 0;
+  transition:
+    opacity 400ms ease,
+    transform 400ms ease;
+}
+
+.scroll-reveal.scroll-reveal-up {
+  transform: translateY(20px);
+}
+
+.scroll-reveal.scroll-reveal-up-lg {
+  transform: translateY(30px);
+}
+
+.scroll-reveal.scroll-reveal-left {
+  transform: translateX(-20px);
+}
+
+.scroll-reveal.scroll-reveal-right {
+  transform: translateX(20px);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translate(0);
+}
+
+.scroll-reveal.scroll-reveal-delay-1 {
+  transition-delay: 80ms;
+}
+
+.scroll-reveal.scroll-reveal-delay-2 {
+  transition-delay: 160ms;
+}
+
+.scroll-reveal.scroll-reveal-delay-3 {
+  transition-delay: 240ms;
+}
+
+.scroll-reveal.scroll-reveal-delay-4 {
+  transition-delay: 320ms;
+}
+
+.scroll-reveal.scroll-reveal-delay-5 {
+  transition-delay: 400ms;
+}
+
+/* ---------- 4. 页面切换过渡 / 滚动行为 ---------- */
+
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* 锚点跳转偏移补偿（避免被固定 header 遮挡） */
+[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* 全局平滑滚动 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ---------- 5. 减少动效偏好 ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

@@ -93,18 +93,13 @@ function extractPageKeys(source: string): string[] {
 }
 
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/ui',
-    '@nuxt/content',
-    '@nuxtjs/i18n',
-    '@nuxt/image',
-    '@nuxt/eslint',
-    '@vite-pwa/nuxt',
-  ],
+  // 阶段 3：过渡层（@nuxt/ui / components/ / assets/css/main.css）已整体移除，
+  // 站点由「风格画廊（/）+ 20 个风格路由」构成，不再需要 Nuxt UI 与其 Tailwind 主题。
+  modules: ['@nuxt/content', '@nuxtjs/i18n', '@nuxt/image', '@nuxt/eslint', '@vite-pwa/nuxt'],
 
-  components: [{ path: '~/components', pathPrefix: false }],
-
-  css: ['~/assets/css/main.css', '~/styles/_base/tokens.css'],
+  // 全局样式层：base.css 提供 reset / 无障碍工具类 / 共享动画契约，
+  // tokens.css 提供风格变量契约的默认回落值。二者均与过渡层无关。
+  css: ['~/styles/_base/base.css', '~/styles/_base/tokens.css'],
 
   app: {
     baseURL: '/my-personalWebsite/',
@@ -175,12 +170,18 @@ export default defineNuxtConfig({
     },
   },
 
+  // 阶段 3：画廊已提升为根路径 `/`。旧的 `/styles` 保留 301 重定向（含英文前缀），
+  // 以免外部书签/分享链接失效。
+  routeRules: {
+    '/styles': { redirect: { to: '/', statusCode: 301 } },
+    '/en/styles': { redirect: { to: '/en', statusCode: 301 } },
+  },
+
   nitro: {
     prerender: {
-      // 风格预渲染路由清单 —— 由 styles/registry.ts 与 STYLE_ALL_PATHS 自动生成。
-      // 以前这里是 21 条手写路径，新增风格/子页时必须记得同步，漏了就静默不预渲染；
-      // 改成派生后新增风格只需改注册表。画廊页与各风格内部链接仍由预渲染爬虫自动发现。
-      routes: ['/styles', ...stylePrerenderRoutes()],
+      // 预渲染清单：根路径（风格画廊）+ 由 styles/registry.ts 派生的全部风格路由。
+      // 旧写法里这里是 '/styles'，阶段 3 后画廊搬到 '/'，故改为 '/'。
+      routes: ['/', ...stylePrerenderRoutes()],
     },
   },
 

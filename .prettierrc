@@ -7,6 +7,5 @@
   "bracketSpacing": true,
   "arrowParens": "always",
   "endOfLine": "lf",
-  "vueIndentScriptAndStyle": false,
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "vueIndentScriptAndStyle": false
 }
