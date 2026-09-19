@@ -3,19 +3,22 @@
   ------------------------------------------------------------
   圆滚滚的区块头：眉题做成小颗黏土胶囊（色随 tone 轮换），
   主标题厚重大字，右侧可挂一颗圆形黏土计数徽章（真实统计）。
+
+  标题层级由 level 决定：首页五个区块是同一页下的并列章节，用 h2；
+  子页只有一个区块，用 h1（否则整页没有一级标题）。
 -->
 <template>
   <div class="head">
     <p class="eyebrow" :class="`tone-${tone}`">{{ eyebrow }}</p>
     <div class="row">
-      <h2 class="title">{{ title }}</h2>
+      <component :is="headingTag" class="title">{{ title }}</component>
       <span v-if="count !== undefined" class="count">{{ count }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     /** 眉题（小黏土胶囊文案） */
     eyebrow: string
@@ -25,12 +28,17 @@ withDefaults(
     count?: number
     /** 眉题胶囊色相：粉 / 薄荷 / 奶油 / 丁香 / 天蓝 */
     tone?: 'pink' | 'mint' | 'butter' | 'lilac' | 'blue'
+    /** 标题层级：首页并列区块用 2，子页唯一区块用 1（默认 2） */
+    level?: 1 | 2
   }>(),
   {
     count: undefined,
     tone: 'lilac',
+    level: 2,
   },
 )
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

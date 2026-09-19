@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import ClaymorphismIndex from './pages/ClaymorphismIndex.vue'
+import ClaymorphismAbout from './pages/ClaymorphismAbout.vue'
+import ClaymorphismProjects from './pages/ClaymorphismProjects.vue'
+import ClaymorphismBlog from './pages/ClaymorphismBlog.vue'
+import ClaymorphismContact from './pages/ClaymorphismContact.vue'
 
 export default {
   pages: {
     '/': ClaymorphismIndex,
+    '/about': ClaymorphismAbout,
+    '/projects': ClaymorphismProjects,
+    '/blog': ClaymorphismBlog,
+    '/contact': ClaymorphismContact,
   },
 } satisfies StyleEntry
