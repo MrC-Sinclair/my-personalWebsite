@@ -1,11 +1,12 @@
 # 多风格 UI 架构（目标架构）
 
-> **状态：阶段 1 / 2 / 4 已完成，阶段 3 未开始**。本文档是架构总纲；新增风格的操作步骤见 [style-authoring-guide.md](./style-authoring-guide.md)。
+> **状态：阶段 1 / 2 / 3 / 4 全部完成**。本文档是架构总纲；新增风格的操作步骤见 [style-authoring-guide.md](./style-authoring-guide.md)。
 >
 > 当前落地情况：`styles/` 下已有 **20 个风格**目录（各含 tokens.css / components / pages / index.ts），
-> 画廊页 `/styles` 已上线，风格路由薄壳 `/style/[style]/[...slug]` 已跑通。
-> 各风格目前均只实现了首页（单页式锚点导航，见下文「当前信息架构的取舍」），
-> 因此注册表里 20 条记录的 `status` 全为 `partial`。
+> 每风格 5 页（首页 + about / projects / blog / contact），共 101 条路由；
+> 站点门脸为根路径 `/` 的风格画廊，风格路由薄壳 `/style/[style]/[...slug]` 已跑通。
+> 注册表 20 条记录的 `status` 全为 `ready`。
+> **过渡层（`components/`、旧 `pages/`、`layouts/default.vue`、`assets/css/main.css`、Nuxt UI）已于阶段 3 整体移除。**
 >
 > 参考实现：`D:\code\codeWork\Next-generation-UI\style-lab`——一套内容、四种界面风格（新粗野主义 / 新拟态 / 像素风 / 终端机）的纯静态验证项目，本文档的核心契约均来自该项目的已验证结论。
 
@@ -57,29 +58,30 @@ styles/                    ← 【风格区】每种风格一个目录
     index.ts               ← 风格入口：导出页面组件映射 + 元信息
 ```
 
-**现状（阶段 2 已完成）**：`styles/` 下已有 20 个风格目录，结构与上述约定一致：
+**现状（阶段 1 / 2 已完成）**：`styles/` 下已有 20 个风格目录，结构与上述约定一致：
 `registry.ts` + `_base/tokens.css` + `<id>/{tokens.css, components/, pages/, index.ts}`。
-现有 `components/`、`pages/`、`layouts/`、`assets/css/main.css` 仍属过渡层（过渡风格），随阶段 3 推进逐步淘汰。
+过渡层（`components/`、旧 `pages/`、`layouts/default.vue`、`assets/css/main.css`）已于阶段 3 整体移除；
 
-### 当前信息架构的取舍（重要）
+### 各风格的信息架构（阶段 4 后）
 
-各风格的 `index.ts` 目前**只导出 `/`** 一个页面（如 `styles/y2k/index.ts` 的 `pages: { '/': Y2KIndex }`），
-即每个风格是一个**单页式**长页面：导航全部是页内锚点（`#about` / `#projects` / `#posts` / `#contact`）
-加一个跳回 `/styles` 的入口。
+每个风格的 `index.ts` 导出 **5 个页面键**：`'/'` 与 `'/about'`、`'/projects'`、`'/blog'`、`'/contact'`
+（键名取自 `registry.ts` 的 `STYLE_SUB_PATHS`）。因此每个风格既有一个单页式首页（页内锚点导航
+`#about` / `#projects` / `#posts` / `#contact`），也有四个独立子页（路由导航 + `aria-current="page"`）。
 
-这是**有意的决策**，不是未完成：
+两种导航语义**不可混用**：首页导航指向页内锚点，子页导航指向路由（`/style/<id>/about` 等）。
+路由壳对未导出的 slug 抛 404，因此「导出即必须有对应 .vue 文件」由结构测试守住
+（`tests/styles-structure.test.ts`）。
 
-- 路由壳对未导出的 slug 抛 404，所以只要不导出 `/about` 等路径，就不存在「半成品子页」被访问到的问题；
-- 在审美打磨尚未定型的阶段铺开 20 × 4 个子页会产生大量返工——样式一改就要动 80 个文件；
-- 单页式同样能完整验证全部契约（token 消费、共享层调用、资源隔离、SSG 预渲染）。
-
-子页扩展（20 风格 × 4 页）排在审美定型之后，见第十一节的阶段 4。
+统一实现骨架（20 个风格一致）：`XxxSubNav`（路由导航）+ `XxxSubPage`（外壳）+ 4 个薄子页；
+首页与子页共用的「关于 / 联系」内容块抽成 `XxxAboutBlock` / `XxxContactBlock`。
+被二者共同使用的结构类集中到**风格级 `layout.css`**（随 `index.ts` 入口加载），
+以规避「插槽内容编译在父作用域、外壳 scoped CSS 选不中」的样式丢失。
 
 ## 五、路由与交付（每风格独立路由）
 
 ```
-/                          ← 迁移期：过渡风格站点；目标态：风格画廊或默认风格（阶段 3 定稿）
-/styles                    ← 风格画廊：列出注册表全部风格（名称 / tier / 状态 / 主色签名）
+/                          ← 风格画廊（站点门脸）：列出注册表全部风格（名称 / tier / 状态 / 主色签名）
+/styles                    ← 301 → /（阶段 3 前的旧画廊地址，保留重定向以免书签失效）
 /style/[style]/...         ← 风格路由薄壳：校验风格 id → 渲染该风格的页面组件
 ```
 
@@ -87,8 +89,8 @@ styles/                    ← 【风格区】每种风格一个目录
 
 - **薄壳路由**：`pages/style/[style]/[...slug].vue` 不含任何 UI，只做两件事——从注册表解析风格（未知 id 必须抛 404，`throw createError({ statusCode: 404 })`），按 slug 渲染该风格 `index.ts` 导出的页面组件映射
 - **SSG 预渲染**：预渲染路由清单由注册表驱动（风格 id × 页面映射枚举），保证 `nuxt generate` 为每个风格生成完整静态页。
-  当前实现在 `nuxt.config.ts` 的 `nitro.prerender.routes` 中**手工列出** 21 条（`/styles` + 20 个风格首页），
-  新增风格时必须同步维护（该文件内已有注释提醒）——这是当前的一处**手工同步点**，未来可改为由注册表生成
+  实现在 `nuxt.config.ts` 的 `stylePrerenderRoutes()`：扫描各 `styles/<id>/index.ts` 的 `pages` 映射键派生
+  `/style/<id>[/<子页>]`，再拼上根路径 `/`。**新增风格/子页只需改注册表与 index.ts，无需维护路由数组。**
 - **i18n 叠加**：沿用 `prefix_except_default` 策略，英文路径为 `/en/style/[id]/...`
 - **资源隔离**：每风格页面只加载自己的组件 chunk 与 `tokens.css`，不得全局注入其它风格的样式
 
@@ -162,7 +164,10 @@ styles/                    ← 【风格区】每种风格一个目录
 - **允许风格自定义私有变量**（如 liquid-glass 的 `--shadow-lg`），但必须留在该风格 `[data-style='<id>']` 作用域内、
   不得被其它风格引用——这与「UI 不跨风格复用」红线一致
 - **不是换值、是换性质**：风格可以改变 token 的性质而非数值——如像素风 `--transition: none`（关掉过渡才像素）、`--img-rendering: pixelated`
-- 现有 `assets/css/main.css` 的 `@theme` Design Token 归属过渡风格，随过渡层淘汰，不作为新风格的依赖
+- 过渡层的 `assets/css/main.css` 已随阶段 3 移除。其 `@theme` Design Token **从未被风格层引用**
+  （风格只用自己 `tokens.css` 里的变量）；而其中真正被全站共享的部分——全局 reset（盒模型 / 基础排版）、
+  `.sr-only`、`.safe-*` 安全区、`.scroll-reveal` 动画契约、页面切换过渡——已迁入 `styles/_base/base.css`。
+  该文件按红线 3（reset 层只做盒模型与基础排版、不定义组件）存在，不是过渡层残留。
 
 ## 八、风格注册表（`styles/registry.ts`）
 
@@ -181,8 +186,7 @@ styles/                    ← 【风格区】每种风格一个目录
 | `preview` | 画廊预览图路径（**当前 20 条均为空串，尚未产出预览图**） |
 
 **状态字段的用法**：`ready` / `partial` / `planned` 描述的是**页面完成度**，不是代码质量或可用性。
-当前 20 个风格都只实现了首页，故 `status` 全为 `partial`——这代表「子页待扩展」，
-与第十一节阶段 4 是同一件事，读到时不必当成缺陷。
+阶段 4 完成后 20 个风格均为「五页齐全」，故 `status` 全为 `ready`。
 
 ### tier 成本分级
 
@@ -224,7 +228,7 @@ styles/                    ← 【风格区】每种风格一个目录
 | 阶段 0 | 文档地基：本架构文档 + SOP + AGENTS.md 接入                               | ✅ 已完成    |
 | 阶段 1 | 搭骨架：`styles/registry.ts` + `_base/tokens.css` + 第一个风格落地（走通 SOP，验证全部契约） | ✅ 已完成    |
 | 阶段 2 | 批量扩风格至 20+，画廊页 `/styles` 上线，新交互行为只进共享层              | ✅ 已完成    |
-| 阶段 3 | 现有设计降级 / 淘汰：过渡层移除，`/` 的最终归属定稿                       | 未开始      |
+| 阶段 3 | 现有设计降级 / 淘汰：过渡层移除，`/` 的最终归属定稿                       | ✅ 已完成（2026-09-20） |
 | 阶段 4 | 子页扩展：20 风格 × 4 页（blog / projects / about / contact），`status` 由 `partial` 转 `ready` | ✅ 已完成（2026-09-20，100 个子页路由） |
 
 **迁移期纪律**（自本文档生效起）：
@@ -241,5 +245,26 @@ styles/                    ← 【风格区】每种风格一个目录
 以规避「插槽内容编译在父作用域、外壳 scoped CSS 选不中」的样式丢失。
 子页契约的唯一来源仍是 `styles/registry.ts` 的 `STYLE_SUB_PATHS`。
 
-> 阶段 3 尚未启动：过渡层（`components/`、`layouts/`、`assets/css/main.css`）的移除
-> 与 `/` 的最终归属仍需定稿。
+**阶段 3 已完成（2026-09-20）**：过渡层整体移除，`/` 定稿为风格画廊。
+
+- **`/` 的归属**：由过渡层个人站首页改为**风格画廊**（原 `/styles` 的画廊内容迁入 `pages/index.vue`）；
+  旧地址 `/styles`（含 `/en/styles`）保留 301 重定向到 `/`。
+- **删除**：`pages/index|about|contact`（旧页）、`pages/blog/`、`pages/projects/`、
+  `components/`（21 个组件）、`layouts/default.vue`、`assets/css/main.css`。
+- **保留**：`pages/style/[style]/[...slug].vue`（薄壳）、`layouts/style.vue`（风格裸布局）。
+- **共享 CSS 抢救**：`main.css` 里被风格层依赖的非过渡内容迁入 **`styles/_base/base.css`**
+  ——全局 reset（复刻 Tailwind preflight：`box-sizing` / 列表 / 标题 / 图片复位）、`.sr-only`、
+  `.safe-*`、`.scroll-reveal` 动画契约、页面切换过渡、`[id]` 锚点偏移、平滑滚动、
+  `prefers-reduced-motion` 降级。删除前已用「脚本探针 + 截图」比对 8 个风格，确认无布局回归。
+- **依赖清理**：移除 `@nuxt/ui` 模块、`@tailwindcss/vite`、`tailwindcss`、`prettier-plugin-tailwindcss`
+  及 `app.vue` 的 `<UApp>` 外壳。风格层与 Nuxt UI 本来零耦合（无 `U*` 组件、无 color-mode），
+  门脸的暗色改用 `prefers-color-scheme`，不再需要运行时主题依赖。
+- **顺带修掉两个被删除暴露出来的既有缺陷**：
+  1) `flat-design` / `metro` 的 `layout.css` 是**非 scoped 全局样式表**，其通用类名
+     （`.band` / `.wrap` / `.block` / `.empty`…）会命中**其它风格**的同名类 —— 实测
+     neo-brutalism 首页的 `.band` 被 flat-design 的 `padding` 覆盖，色带 321px ↔ 417px 随
+     样式表注入顺序漂移。已给两条 layout.css 的每条选择器加 `[data-style='<id>']` 前缀
+     （红线 1「UI 不跨风格复用」的应有之义）。
+  2) 过渡页面删除后，11 个风格首页共 15 处「查看全部 / CTA」仍指向 `/blog` `/projects` 等
+     已删路由，`error.vue` 也仍在引用 `AppHeader`/`UButton`。已把链接重指到各风格自己的
+     子页（`/style/<id>/<page>`），并把 `error.vue` 重写为自包含错误页。
