@@ -5,12 +5,15 @@
   + 头部下缘刻度尺 + 四角 HUD 括角（::before 用 8 段渐变
   画出四个 L 形括角，hover 时括角点亮）。业务内容全部由
   默认插槽承载，本组件不含任何数据逻辑。
+
+  标题层级由 level 决定：首页五个面板是同一页下的并列分区，用 h2；
+  子页只有一个面板，用 h1（否则整页没有一级标题）。
 -->
 <template>
   <section class="panel">
     <header class="panel-head">
       <span v-if="code" class="panel-code" aria-hidden="true">{{ code }}</span>
-      <h2 class="panel-title">{{ title }}</h2>
+      <component :is="headingTag" class="panel-title">{{ title }}</component>
       <span v-if="meta" class="panel-meta">{{ meta }}</span>
     </header>
 
@@ -21,14 +24,18 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   /** 面板编号（装饰性读数，如 SEC-01，渲染为 aria-hidden） */
   code?: string
   /** 面板标题（i18n 文案） */
   title: string
   /** 面板头右侧读数（如真实条目数，纯文本） */
   meta?: string
+  /** 标题层级：首页并列的 HUD 分区用 2，子页唯一面板用 1（默认 2） */
+  level?: 1 | 2
 }>()
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

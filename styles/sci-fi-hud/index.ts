@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import SciFiHudIndex from './pages/SciFiHudIndex.vue'
+import SciFiHudAbout from './pages/SciFiHudAbout.vue'
+import SciFiHudProjects from './pages/SciFiHudProjects.vue'
+import SciFiHudBlog from './pages/SciFiHudBlog.vue'
+import SciFiHudContact from './pages/SciFiHudContact.vue'
 
 export default {
   pages: {
     '/': SciFiHudIndex,
+    '/about': SciFiHudAbout,
+    '/projects': SciFiHudProjects,
+    '/blog': SciFiHudBlog,
+    '/contact': SciFiHudContact,
   },
 } satisfies StyleEntry
