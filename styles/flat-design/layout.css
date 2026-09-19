@@ -1,0 +1,160 @@
+/*
+ * Flat Design 风格共享结构样式
+ * ------------------------------------------------------------
+ * 与 tokens.css 同随风格入口加载（仅在该风格激活时生效）。
+ * 含：页面基座 .fd、全宽纯色色带 .band*、色带内槽 .band__*、
+ * 关于非对称两栏 .about-grid、小节标题 .minor-head、各内容网格
+ * .proj-grid / .post-grid / .social-grid。
+ * 这些类被首页与四个子页共同使用，抽成风格级共享样式，
+ * 避免每个页面各自重复定义（子页走插槽，外壳 scoped CSS 选不中插槽内层）。
+ */
+
+/* —— 页面骨架：浅底 + 系统无衬线，全部取自契约变量 —— */
+.fd {
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--c-text);
+  background: var(--c-bg);
+}
+
+/* —— 全宽纯色色带（本风格的布局轴：纵向色带分节） —— */
+.band {
+  padding: clamp(48px, 9vw, 96px) clamp(16px, 4vw, 40px);
+}
+
+.band--white {
+  background: var(--c-surface);
+}
+
+.band--gray {
+  background: var(--c-bg);
+}
+
+.band--dark {
+  background: var(--c-text);
+  color: #ffffff;
+}
+
+.band__inner {
+  max-width: var(--page-w);
+  margin-inline: auto;
+}
+
+/* 色带标题行：标题在左，「查看全部」在右（窄屏换行） */
+.band__head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px clamp(16px, 4vw, 40px);
+}
+
+/* 查看全部：强调色文字链接，hover 加深（纯颜色反馈） */
+.band__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--c-accent);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.band__more:hover {
+  color: #1b5a86;
+}
+
+/* 深色带语境：浅白文字 hover 提亮为向日葵黄 */
+.band__more--dark {
+  color: rgb(255 255 255 / 0.85);
+}
+
+.band__more--dark:hover {
+  color: var(--deco);
+}
+
+.band__more:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+.band__loading {
+  padding: 8px 0;
+}
+
+/* —— 关于区：经历与技能非对称两栏（窄屏单列回退） —— */
+.about-grid {
+  display: grid;
+  gap: clamp(32px, 5vw, 56px);
+}
+
+@media (min-width: 900px) {
+  .about-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+/* 小节标题：向日葵黄几何方块 + 大写字距 */
+.minor-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 clamp(16px, 2.5vw, 24px);
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.minor-head::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: var(--deco);
+  border-radius: var(--radius-sm);
+}
+
+/* —— 精选项目网格 ——
+   原为 1 → 2 → 3 列固定递进，但精选项目只有 1 条时，大屏下卡片仅占
+   1/3 而右侧空置 2/3。改为自动适配并居中：轨道宽度有上限，卡片不会
+   被拉伸变形；min(100%, 280px) 保证窄屏不溢出 */
+.proj-grid {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 420px));
+  justify-content: center;
+}
+
+/* —— 最新文章网格：1 → 2 列 —— */
+.post-grid {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .post-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* —— 社交卡片网格：1 → 2 列 —— */
+.social-grid {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .social-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

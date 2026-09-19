@@ -8,13 +8,13 @@
 <template>
   <div class="head" :class="`head--${tone}`">
     <span class="head__bar" aria-hidden="true" :style="barColor ? { background: barColor } : undefined"/>
-    <h2 class="head__title">{{ title }}</h2>
+    <component :is="headingTag" class="head__title">{{ title }}</component>
     <p v-if="subtitle" class="head__subtitle">{{ subtitle }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     /** 区块标题 */
     title: string
@@ -24,9 +24,13 @@ withDefaults(
     tone?: 'light' | 'dark'
     /** 色条颜色（风格签名装饰色，默认强调蓝） */
     barColor?: string
+    /** 标题层级：首页并列区块用 2，子页唯一区块用 1（默认 2） */
+    level?: 1 | 2
   }>(),
-  { subtitle: '', tone: 'light', barColor: '' },
+  { subtitle: '', tone: 'light', barColor: '', level: 2 },
 )
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>
