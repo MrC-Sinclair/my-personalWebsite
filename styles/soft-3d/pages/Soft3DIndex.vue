@@ -97,7 +97,7 @@
         </div>
 
         <div class="sec-foot">
-          <NuxtLink class="more" :to="localePath('/projects')">
+          <NuxtLink class="more" :to="localePath('/style/soft-3d/projects')">
             {{ t('home.viewAll') }}<span class="more-arrow" aria-hidden="true">→</span>
           </NuxtLink>
         </div>
@@ -140,7 +140,7 @@
         </div>
 
         <div class="sec-foot">
-          <NuxtLink class="more" :to="localePath('/blog')">
+          <NuxtLink class="more" :to="localePath('/style/soft-3d/blog')">
             {{ t('home.viewAll') }}<span class="more-arrow" aria-hidden="true">→</span>
           </NuxtLink>
         </div>

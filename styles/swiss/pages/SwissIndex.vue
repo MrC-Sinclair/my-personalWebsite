@@ -94,7 +94,7 @@
             <div class="section-body">
               <template v-if="latestPosts.length">
                 <SwissPostList :posts="latestPosts" />
-                <NuxtLink class="view-all" :to="localePath('/blog')">
+                <NuxtLink class="view-all" :to="localePath('/style/swiss/blog')">
                   {{ t('home.viewAll') }}
                   <span class="view-all-arrow" aria-hidden="true">↗</span>
                 </NuxtLink>

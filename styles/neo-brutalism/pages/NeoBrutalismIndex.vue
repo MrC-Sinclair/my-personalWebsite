@@ -43,7 +43,7 @@
       <section id="works" data-section="works" class="band span-full scroll-reveal">
         <header class="band-head">
           <NeoBrutalismSectionTitle :text="t('home.featuredProjects')" tone="ink" />
-          <NuxtLink class="view-all" :to="localePath('/projects')">
+          <NuxtLink class="view-all" :to="localePath('/style/neo-brutalism/projects')">
             {{ t('home.viewAll') }}<span class="view-arrow" aria-hidden="true">→</span>
           </NuxtLink>
         </header>
@@ -67,7 +67,7 @@
       <section id="posts" data-section="posts" class="band span-full scroll-reveal">
         <header class="band-head">
           <NeoBrutalismSectionTitle :text="t('home.latestPosts')" tone="ink" />
-          <NuxtLink class="view-all" :to="localePath('/blog')">
+          <NuxtLink class="view-all" :to="localePath('/style/neo-brutalism/blog')">
             {{ t('home.viewAll') }}<span class="view-arrow" aria-hidden="true">→</span>
           </NuxtLink>
         </header>

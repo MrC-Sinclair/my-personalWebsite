@@ -1,30 +1,20 @@
 <!--
-  全局错误页面 - 处理 404/500 等 HTTP 错误
+  全局错误页面 - 处理 404 / 500 等 HTTP 错误
 
-  展示错误状态码和错误信息，提供返回首页按钮。
-  包含 AppHeader 和 AppFooter 提供导航能力。
+  自包含原则（阶段 3 起）：过渡层删除后，本页不再引用 AppHeader /
+  AppFooter / MobileNavBar / UButton —— 那些组件已随过渡层移除。
+  配色与排版全部写在下方 scoped <style>，暗色走 prefers-color-scheme，
+  不依赖任何运行时主题模块。
 
-  Props：
-  - error: NuxtError - Nuxt 错误对象，包含 statusCode 和 statusMessage
-
-  使用场景：Nuxt 自动捕获路由错误和运行时错误时渲染
+  Props：error: NuxtError（含 statusCode / statusMessage）
 -->
 <template>
-  <div class="flex min-h-screen flex-col">
-    <AppHeader />
-    <main class="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
-      <h1 class="text-primary-600 dark:text-primary-400 mb-4 text-8xl font-bold">
-        {{ error?.statusCode || 404 }}
-      </h1>
-      <p class="text-text-secondary-light dark:text-text-secondary-dark mb-8 text-xl">
-        {{ error?.statusMessage || t('common.notFound') }}
-      </p>
-      <UButton :to="localePath('/')" variant="solid" size="lg">
-        {{ t('common.goHome') }}
-      </UButton>
+  <div class="err">
+    <main class="err__main">
+      <p class="err__code">{{ error?.statusCode || 404 }}</p>
+      <h1 class="err__msg">{{ error?.statusMessage || t('common.notFound') }}</h1>
+      <NuxtLink class="err__home" :to="localePath('/')">{{ t('common.goHome') }}</NuxtLink>
     </main>
-    <AppFooter />
-    <MobileNavBar />
   </div>
 </template>
 
@@ -43,3 +33,73 @@ useHead({
   meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 })
 </script>
+
+<style scoped>
+.err {
+  --bg: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --accent: #4f46e5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  color: var(--text);
+  text-align: center;
+  background: var(--bg);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    'PingFang SC',
+    'Microsoft YaHei',
+    sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  .err {
+    --bg: #0b1120;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --accent: #818cf8;
+  }
+}
+
+.err__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.err__code {
+  font-size: clamp(72px, 16vw, 140px);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.err__msg {
+  max-width: 40ch;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.err__home {
+  min-height: 44px;
+  padding: 12px 24px;
+  margin-top: 8px;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--accent);
+  border-radius: 9999px;
+  transition: opacity 150ms ease;
+}
+
+.err__home:hover {
+  opacity: 0.88;
+}
+</style>

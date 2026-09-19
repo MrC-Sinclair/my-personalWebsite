@@ -3,7 +3,7 @@
   ------------------------------------------------------------
   索引式目录：等宽日期 → 标题 + 元信息（分类 · 标签），
   整行 NuxtLink 进入文章详情页；悬停时强调色 + 箭头右移。
-  区块头附注位放「查看全部」入口（localePath('/blog')）。
+  区块头附注位放「查看全部」入口（localePath('/style/minimalism/blog')）。
   列表为空时显示带提示的静默空状态。
   数据来自共享层 useBlog（由页面获取后传入 props）。
 -->
@@ -15,7 +15,7 @@
     :title="t('home.latestPosts')"
   >
     <template #aside>
-      <NuxtLink class="more" :to="localePath('/blog')">
+      <NuxtLink class="more" :to="localePath('/style/minimalism/blog')">
         {{ t('home.viewAll') }}<span class="more-arrow" aria-hidden="true">→</span>
       </NuxtLink>
     </template>

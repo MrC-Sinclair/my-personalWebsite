@@ -40,7 +40,7 @@
           </template>
 
           <!-- 仅有二维码的平台：链到过渡层联系页查看 -->
-          <NuxtLink v-else-if="item.qrCode" class="link" :to="localePath('/contact')">
+          <NuxtLink v-else-if="item.qrCode" class="link" :to="localePath('/style/terminal/contact')">
             {{ t('contact.qrTip') }}<span aria-hidden="true">&nbsp;↗</span>
           </NuxtLink>
         </dd>

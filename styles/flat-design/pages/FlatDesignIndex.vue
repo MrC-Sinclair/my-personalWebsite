@@ -26,7 +26,7 @@
             :subtitle="t('projects.description')"
             bar-color="#d35400"
           />
-          <NuxtLink :to="localePath('/projects')" class="band__more">
+          <NuxtLink :to="localePath('/style/flat-design/projects')" class="band__more">
             {{ t('home.viewAll') }}
             <span aria-hidden="true">→</span>
           </NuxtLink>
@@ -58,7 +58,7 @@
             tone="dark"
             bar-color="#f1c40f"
           />
-          <NuxtLink :to="localePath('/blog')" class="band__more band__more--dark">
+          <NuxtLink :to="localePath('/style/flat-design/blog')" class="band__more band__more--dark">
             {{ t('home.viewAll') }}
             <span aria-hidden="true">→</span>
           </NuxtLink>

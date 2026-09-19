@@ -5,8 +5,7 @@
  *              站点配置（名称、社交链接等）为静态数据，后续可迁移到数据库或环境变量。
  */
 
-import type { SiteConfig, NavItem, SkillGroup, TimelineItem, SocialLinkItem } from '~/types/site'
-import IconFeishu from '~/components/icon/IconFeishu.vue'
+import type { SiteConfig, SkillGroup, TimelineItem, SocialLinkItem } from '~/types/site'
 
 export function useAppInfo() {
   const { t } = useI18n()
@@ -39,7 +38,7 @@ export function useAppInfo() {
     {
       name: t('contact.feishu'),
       url: null,
-      customIcon: IconFeishu,
+      icon: 'i-simple-icons-feishu',
       qrCode: `${baseURL}images/feishu-qr.jpg`,
     },
     {
@@ -49,14 +48,6 @@ export function useAppInfo() {
       value: siteConfig.value.social.wechat,
       qrCode: `${baseURL}images/wechat-qr.png`,
     },
-  ])
-
-  const navItems = computed<NavItem[]>(() => [
-    { label: t('nav.home'), to: '/' },
-    { label: t('nav.blog'), to: '/blog' },
-    { label: t('nav.projects'), to: '/projects' },
-    { label: t('nav.about'), to: '/about' },
-    { label: t('nav.contact'), to: '/contact' },
   ])
 
   const skillGroups = computed<SkillGroup[]>(() => [
@@ -108,7 +99,6 @@ export function useAppInfo() {
   return {
     siteConfig,
     socialLinks,
-    navItems,
     skillGroups,
     timeline,
   }

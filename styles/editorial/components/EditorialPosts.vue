@@ -45,7 +45,7 @@
     </ol>
 
     <div class="more-row">
-      <NuxtLink class="more" :to="localePath('/blog')">
+      <NuxtLink class="more" :to="localePath('/style/editorial/blog')">
         {{ t('home.viewBlog') }}<span class="more-arrow" aria-hidden="true">→</span>
       </NuxtLink>
     </div>

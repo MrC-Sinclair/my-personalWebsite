@@ -79,7 +79,7 @@
               :hint="t('blog.noResultsHint')"
             />
             <div class="view-all-wrap">
-              <NuxtLink class="view-all" :to="localePath('/blog')">
+              <NuxtLink class="view-all" :to="localePath('/style/glassmorphism/blog')">
                 {{ t('home.viewAll') }}<span class="all-arrow" aria-hidden="true">→</span>
               </NuxtLink>
             </div>

@@ -24,10 +24,10 @@
       <p class="hero-desc">{{ t('home.description') }}</p>
 
       <div class="hero-cta">
-        <NuxtLink class="btn btn--primary" :to="localePath('/blog')">
+        <NuxtLink class="btn btn--primary" :to="localePath('/style/glassmorphism/blog')">
           {{ t('home.viewBlog') }}
         </NuxtLink>
-        <NuxtLink class="btn btn--ghost" :to="localePath('/projects')">
+        <NuxtLink class="btn btn--ghost" :to="localePath('/style/glassmorphism/projects')">
           {{ t('home.viewProjects') }}
         </NuxtLink>
       </div>

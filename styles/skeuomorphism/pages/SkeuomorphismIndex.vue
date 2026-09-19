@@ -125,7 +125,7 @@
 
             <!-- 查看全部：皮革按钮 → 过渡层博客列表 -->
             <div class="rows-foot">
-              <NuxtLink class="view-all" :to="localePath('/blog')">
+              <NuxtLink class="view-all" :to="localePath('/style/skeuomorphism/blog')">
                 {{ t('home.viewAll') }}
                 <span class="view-all-arrow" aria-hidden="true">→</span>
               </NuxtLink>
