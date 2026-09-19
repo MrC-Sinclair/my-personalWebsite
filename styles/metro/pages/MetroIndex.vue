@@ -61,18 +61,7 @@
           <MetroSectionLabel id="about-label" :title="t('about.title')" class="scroll-reveal" />
 
           <div class="mosaic">
-            <MetroTile span="large" variant="violet" class="scroll-reveal">
-              <p class="about__heading">{{ t('about.description') }}</p>
-              <div>
-                <p class="about__exp-label">{{ t('about.experience') }}</p>
-                <ol class="about__timeline">
-                  <li v-for="item in safeTimeline" :key="item.period" class="about__row">
-                    <span class="about__period">{{ item.period }}</span>
-                    <span class="about__role">{{ item.title }} · {{ item.organization }}</span>
-                  </li>
-                </ol>
-              </div>
-            </MetroTile>
+            <MetroAboutBlock class="scroll-reveal" />
 
             <MetroSkillTile
               v-for="(group, index) in safeSkillGroups"
@@ -166,20 +155,7 @@
         <div class="wrap">
           <MetroSectionLabel id="contact-label" :title="t('contact.title')" class="scroll-reveal" />
 
-          <div class="mosaic">
-            <MetroTile span="full" variant="violet" class="scroll-reveal">
-              <span class="contact__kicker">{{ t('contact.socialLinks') }}</span>
-              <p class="contact__text">{{ t('contact.description') }}</p>
-            </MetroTile>
-
-            <MetroSocialTile
-              v-for="(link, index) in safeSocialLinks"
-              :key="link.name"
-              :link="link"
-              :variant="pickVariant(socialVariants, index)"
-              class="scroll-reveal"
-            />
-          </div>
+          <MetroContactBlock />
         </div>
       </section>
     </main>
@@ -204,7 +180,8 @@ import MetroSectionLabel from '../components/MetroSectionLabel.vue'
 import MetroSiteFooter from '../components/MetroSiteFooter.vue'
 import MetroSiteHeader from '../components/MetroSiteHeader.vue'
 import MetroSkillTile from '../components/MetroSkillTile.vue'
-import MetroSocialTile from '../components/MetroSocialTile.vue'
+import MetroAboutBlock from '../components/MetroAboutBlock.vue'
+import MetroContactBlock from '../components/MetroContactBlock.vue'
 import MetroTile from '../components/MetroTile.vue'
 import type { MetroTileVariant } from '../components/MetroTile.vue'
 
@@ -212,7 +189,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 
 // —— 共享业务层：站点信息 / 项目 / 博客 / 滚动动画 ——
-const { skillGroups, timeline, socialLinks } = useAppInfo()
+const { skillGroups } = useAppInfo()
 const { getFeaturedProjects } = useProjects()
 const { getFeaturedPosts } = useBlog()
 useScrollReveal()
@@ -251,14 +228,11 @@ onMounted(async () => {
 const safeProjects = computed(() => (Array.isArray(projects.value) ? projects.value : []))
 const safePosts = computed(() => (Array.isArray(posts.value) ? posts.value : []))
 const safeSkillGroups = computed(() => (Array.isArray(skillGroups.value) ? skillGroups.value : []))
-const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.value : []))
-const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socialLinks.value : []))
 
 // —— Tile 配色循环（Metro 经典色块的排布节奏） ——
 const skillVariants: MetroTileVariant[] = ['cobalt', 'green', 'purple', 'orange']
 const projectVariants: MetroTileVariant[] = ['magenta', 'cobalt', 'purple']
 const postVariants: MetroTileVariant[] = ['green', 'cobalt', 'red']
-const socialVariants: MetroTileVariant[] = ['cobalt', 'teal', 'purple', 'green']
 
 /** 按索引取配色，越界回退 cobalt */
 function pickVariant(list: MetroTileVariant[], index: number): MetroTileVariant {
@@ -284,28 +258,6 @@ function pickVariant(list: MetroTileVariant[], index: number): MetroTileVariant 
   flex: 1 0 auto;
   /* 底部为页脚前的信息版面留出呼吸 */
   padding-bottom: clamp(24px, 4vw, 56px);
-}
-
-.wrap {
-  max-width: var(--page-w);
-  margin-inline: auto;
-  padding-inline: clamp(16px, 4vw, 40px);
-}
-
-/* ================= Tile 网格 ================= */
-.mosaic {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-rows: clamp(138px, 15vw, 170px);
-  gap: var(--gap);
-}
-
-/* 移动端：降为双列（开始屏幕签名保留，仅回退布局） */
-@media (max-width: 768px) {
-  .mosaic {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: clamp(132px, 38vw, 150px);
-  }
 }
 
 /* ================= 开始屏幕：超大标题区 ================= */
@@ -390,117 +342,5 @@ function pickVariant(list: MetroTileVariant[], index: number): MetroTileVariant 
 }
 
 /* ================= 区块节奏：组距大于 Tile 沟槽 ================= */
-.block {
-  padding-block: clamp(20px, 3.5vw, 44px);
-}
-
-/* ================= 关于 Tile（2x2）内容 ================= */
-.about__heading {
-  margin: 0;
-  font-family: var(--font-head);
-  font-size: clamp(19px, 2vw, 26px);
-  font-weight: 400;
-  line-height: 1.4;
-}
-
-.about__exp-label {
-  margin: 0 0 10px;
-  font-size: var(--fs-small);
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.about__timeline {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.about__row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
-}
-
-.about__period {
-  font-family: var(--font-mono);
-  font-size: var(--fs-small);
-}
-
-.about__role {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-/* ================= 联系色带（整行 Tile）内容 ================= */
-.contact__kicker {
-  font-size: var(--fs-small);
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.contact__text {
-  margin: 0;
-  font-family: var(--font-head);
-  font-size: clamp(20px, 2.6vw, 32px);
-  font-weight: 300;
-  line-height: 1.3;
-}
-
-/* ================= 加载骨架与空状态 ================= */
-.skel {
-  background: var(--c-surface);
-  animation: metro-pulse 1.4s ease-in-out infinite;
-}
-
-.skel--wide {
-  grid-column: span 2;
-}
-
-@keyframes metro-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.55;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .skel {
-    animation: none;
-  }
-}
-
-.empty {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 0;
-  padding: clamp(20px, 3vw, 28px);
-  color: var(--c-muted);
-  background: var(--c-surface);
-}
-
-/* 空状态标记：橙色方块 + 近黑感叹号（对比度达标） */
-.empty__mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 44px;
-  height: 44px;
-  color: #1a1a1a;
-  font-size: 24px;
-  font-weight: 700;
-  background: var(--c-accent-2);
-}
+/* （.block 已抽到风格级 layout.css，首页与子页共用） */
 </style>
