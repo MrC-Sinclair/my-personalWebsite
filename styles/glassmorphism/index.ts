@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import GlassmorphismIndex from './pages/GlassmorphismIndex.vue'
+import GlassmorphismAbout from './pages/GlassmorphismAbout.vue'
+import GlassmorphismProjects from './pages/GlassmorphismProjects.vue'
+import GlassmorphismBlog from './pages/GlassmorphismBlog.vue'
+import GlassmorphismContact from './pages/GlassmorphismContact.vue'
 
 export default {
   pages: {
     '/': GlassmorphismIndex,
+    '/about': GlassmorphismAbout,
+    '/projects': GlassmorphismProjects,
+    '/blog': GlassmorphismBlog,
+    '/contact': GlassmorphismContact,
   },
 } satisfies StyleEntry

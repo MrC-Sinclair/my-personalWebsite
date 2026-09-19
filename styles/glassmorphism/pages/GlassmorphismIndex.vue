@@ -29,17 +29,7 @@
         <section id="about" data-section="about" class="sheet sheet--a scroll-reveal scroll-reveal-up">
           <GlassmorphismGlassPanel>
             <GlassmorphismSectionHead :eyebrow="t('nav.about')" :title="t('about.title')"/>
-            <p class="about-desc">{{ t('about.description') }}</p>
-            <div class="about-grid">
-              <div class="about-skills">
-                <h3 class="sub-title">{{ t('about.skills') }}</h3>
-                <GlassmorphismSkillCloud :groups="skillGroups"/>
-              </div>
-              <div class="about-exp">
-                <h3 class="sub-title">{{ t('about.experience') }}</h3>
-                <GlassmorphismTimeline :items="timeline"/>
-              </div>
-            </div>
+            <GlassmorphismAboutBlock/>
           </GlassmorphismGlassPanel>
         </section>
 
@@ -122,8 +112,7 @@ import GlassmorphismNav from '../components/GlassmorphismNav.vue'
 import GlassmorphismHero from '../components/GlassmorphismHero.vue'
 import GlassmorphismGlassPanel from '../components/GlassmorphismGlassPanel.vue'
 import GlassmorphismSectionHead from '../components/GlassmorphismSectionHead.vue'
-import GlassmorphismSkillCloud from '../components/GlassmorphismSkillCloud.vue'
-import GlassmorphismTimeline from '../components/GlassmorphismTimeline.vue'
+import GlassmorphismAboutBlock from '../components/GlassmorphismAboutBlock.vue'
 import GlassmorphismProjectCard from '../components/GlassmorphismProjectCard.vue'
 import GlassmorphismPostRow from '../components/GlassmorphismPostRow.vue'
 import GlassmorphismContactBoard from '../components/GlassmorphismContactBoard.vue'
@@ -141,7 +130,9 @@ const localePath = useLocalePath()
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
 const { getAllProjects, getFeaturedProjects } = useProjects()
-const { socialLinks, skillGroups, timeline } = useAppInfo()
+// （skillGroups / timeline 已随 GlassmorphismAboutBlock 抽出，
+//   本页只剩 heroChips 用到 skillGroups）
+const { socialLinks, skillGroups } = useAppInfo()
 
 // 滚动入场动画（共享层 composable，内部自带 mount/unmount 成对清理）
 useScrollReveal()
@@ -255,33 +246,6 @@ const navSections = computed(() => [
     width: 92%;
     align-self: flex-end;
   }
-}
-
-/* —— 关于板块 —— */
-.about-desc {
-  max-width: 68ch;
-  margin: 0 0 calc(var(--space) * 1.2);
-  color: var(--c-muted);
-}
-
-/* 左技能右经历：桌面 6/5 悬殊分栏 */
-.about-grid {
-  display: grid;
-  gap: var(--space);
-}
-
-@media (min-width: 900px) {
-  .about-grid {
-    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-    align-items: start;
-  }
-}
-
-.sub-title {
-  margin: 0 0 14px;
-  font-size: var(--fs-title);
-  font-weight: 800;
-  color: var(--c-text);
 }
 
 /* —— 项目网格 —— */

@@ -4,22 +4,29 @@
   统一的区块头形态：极光渐变光带（var(--deco)，签名装饰）
   + 玻璃小胶囊 eyebrow + 大号标题。各内容区块复用，
   保证「磨砂板上的发光排版」这一签名一致。
+
+  标题层级由 level 决定：首页各区块是同一页下的并列章节，用 h2；
+  子页只有一个区块，用 h1（否则整页没有一级标题）。
 -->
 <template>
   <div class="sec-head">
     <span class="glow-rule" aria-hidden="true"/>
     <p class="eyebrow">{{ eyebrow }}</p>
-    <h2 class="title">{{ title }}</h2>
+    <component :is="headingTag" class="title">{{ title }}</component>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   /** 眉题（小胶囊文案，来自 i18n） */
   eyebrow: string
   /** 区块主标题（来自 i18n） */
   title: string
+  /** 标题层级：首页并列区块用 2，子页唯一区块用 1（默认 2） */
+  level?: 1 | 2
 }>()
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>
