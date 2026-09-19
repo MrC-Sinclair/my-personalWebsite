@@ -7,16 +7,23 @@
  * 这些类被首页与四个子页共同使用，故抽成风格级共享样式，
  * 避免每个页面各自重复定义（子页走插槽，外壳的 scoped CSS 选不中
  * 插槽内层元素，必须有一份风格级共享定义）。
+ *
+ * 为什么每条选择器都带 [data-style='metro'] 前缀（重要）：
+ * 本文件是「非 scoped 的全局样式表」，一旦被加载就常驻浏览器、对全站生效。
+ * 裸写的 `.block` / `.wrap` / `.empty` 这类通用类名会命中其它风格的同名类
+ * （例如多个风格的页面里都存在 `.block` / `.empty`），造成跨风格样式污染，
+ * 且是否生效取决于样式表注入顺序 —— 表现为「同一个页面高度时有时无」。
+ * 加 [data-style] 前缀后规则只在本风格路由内生效，符合「UI 不跨风格复用」红线。
  */
 
-.wrap {
+[data-style='metro'] .wrap {
   max-width: var(--page-w);
   margin-inline: auto;
   padding-inline: clamp(16px, 4vw, 40px);
 }
 
 /* ================= Tile 网格（开始屏幕签名） ================= */
-.mosaic {
+[data-style='metro'] .mosaic {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: clamp(138px, 15vw, 170px);
@@ -25,19 +32,19 @@
 
 /* 移动端：降为双列（开始屏幕签名保留，仅回退布局） */
 @media (max-width: 768px) {
-  .mosaic {
+  [data-style='metro'] .mosaic {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: clamp(132px, 38vw, 150px);
   }
 }
 
 /* ================= 区块节奏：组距大于 Tile 沟槽 ================= */
-.block {
+[data-style='metro'] .block {
   padding-block: clamp(20px, 3.5vw, 44px);
 }
 
 /* 子页一级标题：沿用首页超大细字重签名（Segoe UI Light） */
-.page-h1 {
+[data-style='metro'] .page-h1 {
   margin: 0 0 clamp(16px, 2.5vw, 28px);
   font-family: var(--font-head);
   font-size: clamp(40px, 8vw, 96px);
@@ -48,12 +55,12 @@
 }
 
 /* ================= 加载骨架与空状态 ================= */
-.skel {
+[data-style='metro'] .skel {
   background: var(--c-surface);
   animation: metro-pulse 1.4s ease-in-out infinite;
 }
 
-.skel--wide {
+[data-style='metro'] .skel--wide {
   grid-column: span 2;
 }
 
@@ -69,12 +76,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skel {
+  [data-style='metro'] .skel {
     animation: none;
   }
 }
 
-.empty {
+[data-style='metro'] .empty {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -85,7 +92,7 @@
 }
 
 /* 空状态标记：橙色方块 + 近黑感叹号（对比度达标） */
-.empty__mark {
+[data-style='metro'] .empty__mark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
