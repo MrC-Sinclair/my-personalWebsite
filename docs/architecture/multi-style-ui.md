@@ -1,6 +1,6 @@
 # 多风格 UI 架构（目标架构）
 
-> **状态：阶段 1 / 2 已完成，阶段 3 未开始**。本文档是架构总纲；新增风格的操作步骤见 [style-authoring-guide.md](./style-authoring-guide.md)。
+> **状态：阶段 1 / 2 / 4 已完成，阶段 3 未开始**。本文档是架构总纲；新增风格的操作步骤见 [style-authoring-guide.md](./style-authoring-guide.md)。
 >
 > 当前落地情况：`styles/` 下已有 **20 个风格**目录（各含 tokens.css / components / pages / index.ts），
 > 画廊页 `/styles` 已上线，风格路由薄壳 `/style/[style]/[...slug]` 已跑通。
@@ -225,7 +225,7 @@ styles/                    ← 【风格区】每种风格一个目录
 | 阶段 1 | 搭骨架：`styles/registry.ts` + `_base/tokens.css` + 第一个风格落地（走通 SOP，验证全部契约） | ✅ 已完成    |
 | 阶段 2 | 批量扩风格至 20+，画廊页 `/styles` 上线，新交互行为只进共享层              | ✅ 已完成    |
 | 阶段 3 | 现有设计降级 / 淘汰：过渡层移除，`/` 的最终归属定稿                       | 未开始      |
-| 阶段 4 | 子页扩展：20 风格 × 4 页（blog / projects / about / contact），`status` 由 `partial` 转 `ready` | 未开始（排在审美定型之后） |
+| 阶段 4 | 子页扩展：20 风格 × 4 页（blog / projects / about / contact），`status` 由 `partial` 转 `ready` | ✅ 已完成（2026-09-20，100 个子页路由） |
 
 **迁移期纪律**（自本文档生效起）：
 
@@ -233,6 +233,13 @@ styles/                    ← 【风格区】每种风格一个目录
 - 过渡层组件只维护、不扩展——不为它新增页面或大功能
 - 评估新功能时先问：这个功能属于内容层、业务逻辑层还是风格表现层？只实现一次
 
-**阶段 4 的启动前提**：审美打磨定型。当前尚在逐风格迭代视觉细节（如 liquid-glass 的折射强度、
-各风格正文对比度、断词策略），此时铺开子页会导致每次样式调整都要改 80 个文件。
-定型后再做子页，收益最大。
+**阶段 4 已完成（2026-09-20）**：20 个风格全部补齐 blog / projects / about / contact 四个子页，
+共 100 个子页路由（`check-prerender.mjs` 报「已补齐 5 页: 20 个风格，待补齐: 0」）。
+每个风格采用同一套子页契约——`XxxSubNav`（路由导航 + `aria-current="page"`）+ `XxxSubPage`（外壳）
++ 4 个薄子页；首页与子页共用的「关于 / 联系」内容块抽成 `XxxAboutBlock` / `XxxContactBlock`，
+被二者共同使用的结构类集中到风格级 `layout.css`（随 `index.ts` 入口加载），
+以规避「插槽内容编译在父作用域、外壳 scoped CSS 选不中」的样式丢失。
+子页契约的唯一来源仍是 `styles/registry.ts` 的 `STYLE_SUB_PATHS`。
+
+> 阶段 3 尚未启动：过渡层（`components/`、`layouts/`、`assets/css/main.css`）的移除
+> 与 `/` 的最终归属仍需定稿。
