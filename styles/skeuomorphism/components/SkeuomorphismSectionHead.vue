@@ -4,6 +4,9 @@
   「钉在桌面上的区块题签」：斜贴的黄铜小铭牌（双铆钉、蚀刻
   徽章文字）+ 雕刻在木桌上的象牙大标题 + 缝线分隔线。
   id prop 供父级 aria-labelledby 指向标题。
+
+  标题层级由 level 决定：首页各区块是同一页下的并列章节，用 h2；
+  子页只有一个区块，用 h1（否则整页没有一级标题）。
 -->
 <template>
   <div class="head">
@@ -12,7 +15,7 @@
       {{ badge }}
       <span class="head-rivet" aria-hidden="true" />
     </span>
-    <h2 :id="id" class="head-title">{{ title }}</h2>
+    <component :is="headingTag" :id="id" class="head-title">{{ title }}</component>
     <span class="head-rule" aria-hidden="true" />
   </div>
 </template>
@@ -22,14 +25,18 @@
  * @file 拟物风格的区块标题组件
  * @description 黄铜铭牌徽章 + 雕刻大标题 + 缝线分隔线的区块题签。
  */
-defineProps<{
+const props = defineProps<{
   /** 徽章文字（黄铜铭牌上的小字，如「关于」） */
   badge: string
   /** 区块标题（雕刻在桌面上的大字） */
   title: string
   /** 标题元素 id（供父级 aria-labelledby 使用） */
   id?: string
+  /** 标题层级：首页并列区块用 2，子页唯一区块用 1（默认 2） */
+  level?: 1 | 2
 }>()
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

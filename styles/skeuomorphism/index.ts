@@ -9,9 +9,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import SkeuomorphismIndex from './pages/SkeuomorphismIndex.vue'
+import SkeuomorphismAbout from './pages/SkeuomorphismAbout.vue'
+import SkeuomorphismProjects from './pages/SkeuomorphismProjects.vue'
+import SkeuomorphismBlog from './pages/SkeuomorphismBlog.vue'
+import SkeuomorphismContact from './pages/SkeuomorphismContact.vue'
 
 export default {
   pages: {
     '/': SkeuomorphismIndex,
+    '/about': SkeuomorphismAbout,
+    '/projects': SkeuomorphismProjects,
+    '/blog': SkeuomorphismBlog,
+    '/contact': SkeuomorphismContact,
   },
 } satisfies StyleEntry
