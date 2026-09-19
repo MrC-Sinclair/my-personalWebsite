@@ -5,11 +5,14 @@
   凸起阴影，无边框）。头部为标题 + 可选引导语，主体为内容
   插槽。id / data-section 等属性通过 fallthrough 落在根元素上，
   供页内锚点与滚动监听使用。
+
+  标题层级由 level 决定：首页五个面板是同一页下的并列区块，用 h2；
+  子页只有一个面板，用 h1（否则整页没有一级标题）。
 -->
 <template>
   <section class="panel">
     <header class="panel-head">
-      <h2 class="panel-title">{{ title }}</h2>
+      <component :is="headingTag" class="panel-title">{{ title }}</component>
       <p v-if="lead" class="panel-lead">{{ lead }}</p>
     </header>
     <div class="panel-body">
@@ -19,12 +22,16 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   /** 面板标题 */
   title: string
   /** 面板标题下方的引导语（可选） */
   lead?: string
+  /** 标题层级：首页并列区块用 2，子页唯一面板用 1（默认 2） */
+  level?: 1 | 2
 }>()
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

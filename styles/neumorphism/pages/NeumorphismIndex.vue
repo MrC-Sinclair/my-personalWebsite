@@ -29,20 +29,7 @@
       <template v-else>
         <!-- ① 关于：工作 / 教育时间线 -->
         <NeumorphismPanel id="about" data-section="about" :title="t('about.title')">
-          <h3 class="block-title">{{ t('about.experience') }}</h3>
-          <ol class="timeline">
-            <li v-for="item in timeline" :key="item.title" class="tl-item">
-              <span class="tl-dot" aria-hidden="true"/>
-              <div class="tl-body">
-                <div class="tl-head">
-                  <h4 class="tl-title">{{ item.title }}</h4>
-                  <span class="tl-period">{{ item.period }}</span>
-                </div>
-                <p class="tl-org">{{ item.organization }}</p>
-                <p class="tl-desc">{{ item.description }}</p>
-              </div>
-            </li>
-          </ol>
+          <NeumorphismAboutBlock/>
         </NeumorphismPanel>
 
         <!-- ② 技能：内凹轨道 + 凸起填充块 -->
@@ -99,6 +86,7 @@ import type { Project } from '~/types/project'
 import NeumorphismTopBar from '../components/NeumorphismTopBar.vue'
 import NeumorphismHero from '../components/NeumorphismHero.vue'
 import NeumorphismPanel from '../components/NeumorphismPanel.vue'
+import NeumorphismAboutBlock from '../components/NeumorphismAboutBlock.vue'
 import NeumorphismSkillBars from '../components/NeumorphismSkillBars.vue'
 import NeumorphismProjectCard from '../components/NeumorphismProjectCard.vue'
 import NeumorphismPostCard from '../components/NeumorphismPostCard.vue'
@@ -113,7 +101,8 @@ const { t, locale } = useI18n()
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
 const { getFeaturedProjects } = useProjects()
-const { skillGroups, timeline, socialLinks } = useAppInfo()
+// （timeline 已随 NeumorphismAboutBlock 抽出，本页不再直接消费）
+const { skillGroups, socialLinks } = useAppInfo()
 
 // 文章列表（useAsyncData 承载：SSG 预渲染即含数据，payload 下发避免水合不一致）
 const {
@@ -190,83 +179,12 @@ const sections = computed(() => [
   padding: 8px 20px 72px;
 }
 
-/* —— 区块标题（面板内的小节标题） —— */
+/* —— 区块标题（面板内的小节标题：联系面板的「社交链接」仍用） —— */
 .block-title {
   margin: 0;
   font-size: var(--fs-base);
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--c-muted);
-}
-
-/* —— 时间线：凸起圆点 + 凹槽期间芯片 —— */
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tl-item {
-  position: relative;
-  padding-left: 32px;
-}
-
-.tl-dot {
-  position: absolute;
-  top: 7px;
-  left: 0;
-  width: 14px;
-  height: 14px;
-  background: var(--deco);
-  border-radius: 50%;
-  box-shadow: 2px 2px 5px #a3b1c6, -2px -2px 5px #ffffff;
-}
-
-.tl-body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.tl-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 14px;
-}
-
-.tl-title {
-  margin: 0;
-  font-size: var(--fs-base);
-  font-weight: 700;
-  color: var(--c-text);
-}
-
-.tl-period {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 12px;
-  font-family: var(--font-mono);
-  font-size: var(--fs-small);
-  color: var(--c-muted);
-  background: var(--c-bg);
-  border-radius: 999px;
-  box-shadow: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff;
-}
-
-.tl-org {
-  margin: 0;
-  font-size: var(--fs-small);
-  font-weight: 600;
-  color: var(--c-accent);
-}
-
-.tl-desc {
-  margin: 0;
   color: var(--c-muted);
 }
 

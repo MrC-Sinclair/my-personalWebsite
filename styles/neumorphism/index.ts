@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import NeumorphismIndex from './pages/NeumorphismIndex.vue'
+import NeumorphismAbout from './pages/NeumorphismAbout.vue'
+import NeumorphismProjects from './pages/NeumorphismProjects.vue'
+import NeumorphismBlog from './pages/NeumorphismBlog.vue'
+import NeumorphismContact from './pages/NeumorphismContact.vue'
 
 export default {
   pages: {
     '/': NeumorphismIndex,
+    '/about': NeumorphismAbout,
+    '/projects': NeumorphismProjects,
+    '/blog': NeumorphismBlog,
+    '/contact': NeumorphismContact,
   },
 } satisfies StyleEntry
