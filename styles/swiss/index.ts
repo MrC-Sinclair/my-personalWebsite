@@ -8,9 +8,17 @@
 import './tokens.css'
 import type { StyleEntry } from '~/styles/registry'
 import SwissIndex from './pages/SwissIndex.vue'
+import SwissAbout from './pages/SwissAbout.vue'
+import SwissProjects from './pages/SwissProjects.vue'
+import SwissBlog from './pages/SwissBlog.vue'
+import SwissContact from './pages/SwissContact.vue'
 
 export default {
   pages: {
     '/': SwissIndex,
+    '/about': SwissAbout,
+    '/projects': SwissProjects,
+    '/blog': SwissBlog,
+    '/contact': SwissContact,
   },
 } satisfies StyleEntry

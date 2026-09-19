@@ -4,27 +4,34 @@
   每个内容区块的开头：一条加粗的黑色规则线 + 红色编号 +
   超大左对齐标题 + 右对齐的补充信息（小号宽字距）。
   编号 / 标题 / 信息三者构成非对称的三栏，是全页统一的
-  「区块坐标系」。h2 带 id，供外层 section 的 aria-labelledby 引用。
+  「区块坐标系」。标题带 id，供外层 section 的 aria-labelledby 引用。
+
+  标题层级由 level 决定：首页四个区块是同一页下的并列章节，用 h2；
+  子页只有一个区块，用 h1（否则整页没有一级标题）。
 -->
 <template>
   <header class="sec-head">
     <span class="sec-no" aria-hidden="true">{{ pad(no) }}</span>
-    <h2 :id="headId" class="sec-title">{{ title }}</h2>
+    <component :is="headingTag" :id="headId" class="sec-title">{{ title }}</component>
     <span v-if="meta" class="sec-meta">{{ meta }}</span>
   </header>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   /** 区块序号（从 1 开始，展示时补零） */
   no: number
   /** 区块标题（i18n 文案，由调用方传入） */
   title: string
-  /** h2 的 id（供 aria-labelledby 引用） */
+  /** 标题元素的 id（供 aria-labelledby 引用） */
   headId: string
   /** 右对齐补充信息（计数 / 说明，i18n 文案，可省略） */
   meta?: string
+  /** 标题层级：首页并列区块用 2，子页唯一区块用 1（默认 2） */
+  level?: 1 | 2
 }>()
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 
 /** 编号格式化：补零到两位 */
 function pad(n: number): string {
