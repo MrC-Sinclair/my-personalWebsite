@@ -62,30 +62,7 @@
           class="rc-pos-about scroll-reveal"
           @activate="activate('win-about')"
         >
-          <p class="rc-about__intro">{{ t('about.description') }}</p>
-
-          <h3 class="rc-sub">{{ t('about.experience') }}</h3>
-          <ol class="rc-timeline">
-            <li v-for="item in safeTimeline" :key="item.period" class="rc-timeline__item">
-              <p class="rc-timeline__head">
-                <span class="rc-timeline__period">{{ item.period }}</span>
-                <span class="rc-timeline__title">{{ item.title }} · {{ item.organization }}</span>
-              </p>
-              <p class="rc-timeline__desc">{{ item.description }}</p>
-            </li>
-          </ol>
-
-          <h3 class="rc-sub">{{ t('about.skills') }}</h3>
-          <div class="rc-skills">
-            <div v-for="group in safeSkillGroups" :key="group.category" class="rc-skills__group">
-              <h4 class="rc-skills__label">{{ group.category }}</h4>
-              <ul class="rc-skills__well">
-                <li v-for="skill in safeSkillList(group)" :key="skill" class="rc-skills__item">
-                  {{ skill }}
-                </li>
-              </ul>
-            </div>
-          </div>
+          <RetroComputerAboutBlock/>
         </RetroComputerWindow>
 
         <!-- ============ 项目窗口：精选项目 ============ -->
@@ -147,32 +124,7 @@
           class="rc-pos-contact scroll-reveal"
           @activate="activate('win-contact')"
         >
-          <p class="rc-contact__intro">{{ t('contact.description') }}</p>
-
-          <h3 class="rc-sub">{{ t('contact.socialLinks') }}</h3>
-          <ul class="rc-contact__list">
-            <li v-for="link in safeSocialLinks" :key="link.name">
-              <a
-                v-if="link.url"
-                :href="link.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="rc-contact__row rc-contact__row--link"
-              >
-                <RetroComputerPixelIcon variant="floppy" />
-                <span class="rc-contact__name">{{ link.name }}</span>
-                <span class="rc-contact__value">{{ hostOf(link.url) }}</span>
-              </a>
-              <div v-else class="rc-contact__row">
-                <RetroComputerPixelIcon variant="mail" />
-                <span class="rc-contact__name">{{ link.name }}</span>
-                <span v-if="link.value" class="rc-contact__value">
-                  <span class="rc-contact__value-label">{{ t('contact.wechatId') }}</span>
-                  {{ link.value }}
-                </span>
-              </div>
-            </li>
-          </ul>
+          <RetroComputerContactBlock/>
         </RetroComputerWindow>
       </div>
     </main>
@@ -194,9 +146,10 @@
  */
 import type { BlogPost } from '~/types/blog'
 import type { Project } from '~/types/project'
-import type { SkillGroup } from '~/types/site'
 import type { RetroTaskbarWindow } from '../components/RetroComputerTaskbar.vue'
 import RetroComputerMenuBar from '../components/RetroComputerMenuBar.vue'
+import RetroComputerAboutBlock from '../components/RetroComputerAboutBlock.vue'
+import RetroComputerContactBlock from '../components/RetroComputerContactBlock.vue'
 import RetroComputerPixelIcon from '../components/RetroComputerPixelIcon.vue'
 import RetroComputerPostItem from '../components/RetroComputerPostItem.vue'
 import RetroComputerProjectItem from '../components/RetroComputerProjectItem.vue'
@@ -206,8 +159,9 @@ import RetroComputerWindow from '../components/RetroComputerWindow.vue'
 
 const { t } = useI18n()
 
-// —— 共享业务层：站点信息 / 项目 / 博客 / 滚动动画 ——
-const { skillGroups, timeline, socialLinks } = useAppInfo()
+// —— 共享业务层：项目 / 博客 / 滚动动画 ——
+// （站点信息 skillGroups / timeline / socialLinks 已随 About、Contact
+//   两个区块抽出，本页不再直接消费）
 const { getFeaturedProjects } = useProjects()
 const { getFeaturedPosts } = useBlog()
 useScrollReveal()
@@ -245,23 +199,6 @@ onMounted(async () => {
 // —— 防御：数组字段非数组时回退为空列表 ——
 const safeProjects = computed(() => (Array.isArray(projects.value) ? projects.value : []))
 const safePosts = computed(() => (Array.isArray(posts.value) ? posts.value : []))
-const safeSkillGroups = computed(() => (Array.isArray(skillGroups.value) ? skillGroups.value : []))
-const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.value : []))
-const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socialLinks.value : []))
-
-/** 防御：技能列表非数组时回退为空列表 */
-function safeSkillList(group: SkillGroup): string[] {
-  return Array.isArray(group.skills) ? group.skills : []
-}
-
-/** 外链域名展示（纯字符串解析，SSR 安全）；解析失败回退空串 */
-function hostOf(url: string): string {
-  try {
-    return new URL(url).host
-  } catch {
-    return ''
-  }
-}
 
 // —— 窗口激活状态（本风格表现层交互：点击/聚焦即激活置顶）——
 const activeWindow = ref('win-home')
@@ -395,98 +332,6 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
   margin-top: 20px;
 }
 
-/* ============ 窗口内容通用 ============ */
-.rc-about__intro,
-.rc-contact__intro {
-  margin: 0 0 14px;
-}
-
-/* 小节标题：深蓝下划线（像菜单分组线） */
-.rc-sub {
-  margin: 18px 0 10px;
-  padding-bottom: 4px;
-  border-bottom: 2px solid var(--c-accent);
-  font-family: var(--font-head);
-  font-size: var(--fs-title);
-}
-
-/* ============ 关于窗口：经历时间线 ============ */
-.rc-timeline {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.rc-timeline__item {
-  padding: 10px 12px;
-  box-shadow: inset 3px 0 0 0 var(--c-accent);
-}
-
-.rc-timeline__item:hover {
-  background: #d4d4d4;
-}
-
-.rc-timeline__item + .rc-timeline__item {
-  margin-top: 6px;
-}
-
-.rc-timeline__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-}
-
-.rc-timeline__period {
-  padding: 2px 8px;
-  background: var(--c-accent);
-  color: var(--c-on-accent);
-  font-family: var(--font-mono);
-  font-size: var(--fs-small);
-  white-space: nowrap;
-}
-
-.rc-timeline__title {
-  font-weight: 700;
-}
-
-.rc-timeline__desc {
-  margin: 6px 0 0;
-  color: var(--c-muted);
-}
-
-/* ============ 关于窗口：技能（白色凹陷槽，像文本输入框）============ */
-.rc-skills {
-  display: grid;
-  gap: 12px;
-}
-
-.rc-skills__label {
-  margin: 0 0 6px;
-  font-family: var(--font-head);
-  font-size: var(--fs-base);
-}
-
-.rc-skills__well {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 8px 10px;
-  background: #ffffff;
-  border: var(--border-w) solid;
-  border-color: var(--c-border) #ffffff #ffffff var(--c-border);
-  box-shadow: inset 1px 1px 0 0 #0a0a0a;
-  list-style: none;
-}
-
-.rc-skills__item {
-  color: var(--c-text);
-  font-family: var(--font-mono);
-  font-size: var(--fs-small);
-}
-
 /* ============ 加载态 / 空状态 ============ */
 .rc-loading {
   display: flex;
@@ -545,66 +390,6 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
   border-color: var(--c-border) #ffffff #ffffff var(--c-border);
   box-shadow: inset 1px 1px 0 0 #0a0a0a;
   color: var(--c-muted);
-}
-
-/* ============ 联系窗口：社交信息行 ============ */
-.rc-contact__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.rc-contact__list li + li {
-  margin-top: 6px;
-}
-
-.rc-contact__row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 8px 12px;
-  border: var(--border-w) solid transparent;
-  color: var(--c-text);
-}
-
-/* 外链行：悬停深蓝反白（瞬时切换） */
-.rc-contact__row--link {
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.rc-contact__row--link:hover {
-  background: var(--c-accent);
-  border-color: #dfdfdf #0a0a0a #0a0a0a #dfdfdf;
-  color: var(--c-on-accent);
-}
-
-.rc-contact__row--link:focus-visible {
-  outline: 2px dotted var(--c-text);
-  outline-offset: -3px;
-}
-
-.rc-contact__name {
-  flex: none;
-  font-weight: 700;
-}
-
-.rc-contact__value {
-  margin-left: auto;
-  overflow-wrap: anywhere;
-  font-family: var(--font-mono);
-  font-size: var(--fs-small);
-  text-align: right;
-}
-
-.rc-contact__value-label {
-  margin-right: 6px;
-  color: var(--c-muted);
-}
-
-.rc-contact__row--link:hover .rc-contact__value-label {
-  color: var(--c-on-accent);
 }
 
 /* ============ CRT 覆盖层：扫描线 + 暗角 + 扫描亮带 ============ */
