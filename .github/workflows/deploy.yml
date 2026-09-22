@@ -32,6 +32,7 @@ jobs:
   # -------------------- 构建任务 --------------------
   build:
     runs-on: ubuntu-latest # 使用 Ubuntu 最新版本作为运行环境
+    timeout-minutes: 60 # 预渲染 101 路由 × 2 语言，挂死时尽快失败而不是占满 6 小时配额
 
     steps:
       # 步骤 1：检出代码
@@ -39,20 +40,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 步骤 2：安装 pnpm 包管理器
-      # 项目使用 pnpm 管理依赖，需要先安装 pnpm
+      # 步骤 2：安装 Node.js 运行时
+      # 必须 ≥ 22.13：package.json 的 packageManager 锁定 pnpm@11.25.0，
+      # 其 engines 为 node >=22.13。旧配置这里是 20，导致下一步 Setup pnpm 直接失败。
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 步骤 3：安装 pnpm 包管理器
+      # 版本与 package.json 的 packageManager（pnpm@11.25.0）保持一致
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 11 # 使用 pnpm v11
 
-      # 步骤 3：安装 Node.js 运行时
-      # Nuxt 3 需要 Node.js 18+，这里使用 v20
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # 步骤 4：缓存 pnpm store
+      # 顺序上 pnpm 在 setup-node 之后，不能再靠 setup-node 的 cache: pnpm，
+      # 因此按 pnpm 官方做法显式缓存 store 目录
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
         with:
-          node-version: 20
-          cache: pnpm # 启用 pnpm 依赖缓存，加速后续构建
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       # 步骤 4：配置 GitHub Pages
       # 自动设置 GitHub Pages 所需的配置
