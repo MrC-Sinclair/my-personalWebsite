@@ -1,93 +1,86 @@
 # my-personalWebsite
 
-综合型个人网站，包含首页、技术博客、项目作品集、关于页面和联系方式五大核心模块。采用 Nuxt 3 SSG 静态生成 + GitHub Pages 部署方案，内容通过 Markdown 文件 + @nuxt/content v3 管理，UI 使用 Nuxt UI v3 组件库。完整适配移动端，支持 PWA 离线访问。
+**一站多风格的个人网站**：同一套内容与业务逻辑，20 种完全不同的 UI 风格。采用 Nuxt 3 SSG 静态生成 + GitHub Pages 部署，内容通过 Markdown + @nuxt/content v3 管理，中英双语，支持 PWA 离线访问。
+
+## 站点形态
+
+| 路由                                | 内容                                        |
+| ----------------------------------- | ------------------------------------------- |
+| `/`                                 | 风格画廊（20 个风格入口，站点的门脸）      |
+| `/style/<id>/`                      | 某风格的首页（单页式，导航为页内锚点）      |
+| `/style/<id>/about`                 | 关于                                        |
+| `/style/<id>/projects`              | 项目                                        |
+| `/style/<id>/blog`                  | 博客                                        |
+| `/style/<id>/contact`               | 联系                                        |
+
+20 风格 × 5 页 + 画廊 = **101 条路由**（预渲染清单由 `styles/registry.ts` 自动派生）。`/styles` 与 `/en/styles` 301 重定向到 `/`。
 
 ## 功能特性
 
-- **首页**：个人简介、最新博客预览、精选项目展示、社交链接
-- **博客系统**：Markdown 文章管理、分类/标签筛选、文章详情、全文搜索、移动端浮动目录
-- **项目集锦**：项目卡片展示（整体可点击）、项目详情页、技术栈标签、在线演示/GitHub 链接
-- **关于页面**：个人信息、技能树、工作经历时间线、教育背景
-- **联系表单**：静态表单提交（Formspree 第三方服务）
-- **国际化**：中英文双语支持，URL 策略 prefix_except_default
-- **主题切换**：亮色/暗色双模式，持久化到 localStorage
-- **响应式设计**：移动端优先，适配手机/平板/桌面
-- **移动端优化**：汉堡菜单动画、底部导航栏、浮动 TOC、抽屉式侧边栏、触控目标优化
-- **PWA**：支持添加到主屏幕、离线访问、自动更新
-- **无障碍**：WCAG AA 标准、prefers-reduced-motion 支持、安全区域适配
+- **20 种 UI 风格**：minimalism、liquid-glass、metro、swiss、editorial、flat-design、dashboard、terminal、cyberpunk、y2k、web2-glossy、pixel、retro-computer、sci-fi-hud、soft-3d、glassmorphism、claymorphism、neumorphism、skeuomorphism、neo-brutalism
+- **UI 不复用、业务逻辑复用**：风格层各写各的结构与 token；取数、滚动动画、格式化等行为只写一份在 `composables/` / `utils/`
+- **内容驱动**：blog 每个语种 14 篇，projects 目前 1 篇（中英各一份）
+- **国际化**：中英双语，URL 策略 `prefix_except_default`（中文无前缀，英文 `/en/`）
+- **PWA**：添加到主屏幕、离线访问、自动更新
+- **无障碍**：WCAG AA、prefers-reduced-motion、刘海屏安全区域适配
 
 ## 技术栈
 
 | 类别   | 技术                                            | 用途                       |
 | ------ | ----------------------------------------------- | -------------------------- |
 | 框架   | Nuxt 3 (^3.17.7, SSG 模式)                      | 全栈框架                   |
-| UI     | Nuxt UI v3 (^3.1.3) + Tailwind CSS v4 (^4.2.2) | 组件库 + 原子化 CSS        |
+| UI     | 无第三方 UI 库                                  | 每风格原生元素 + 独立 token |
 | 语言   | TypeScript ^5.8.3                               | 类型安全                   |
-| 内容   | @nuxt/content v3 (^3.6.3)                       | Markdown 渲染与搜索        |
+| 内容   | @nuxt/content v3 (^3.6.3)                       | Markdown 渲染              |
 | 国际化 | @nuxtjs/i18n ^9.5.5                             | 中/英双语                  |
-| 主题   | @nuxtjs/color-mode                              | 亮色/暗色切换              |
+| 图标   | @iconify-json/tabler + simple-icons             | 按需内联 SVG               |
 | 图片   | @nuxt/image ^1.10.0                             | 响应式图片优化（含 sizes） |
 | PWA    | @vite-pwa/nuxt ^1.1.1                           | 离线访问、添加到主屏幕     |
-| 数据库 | Drizzle ORM + PostgreSQL 17                     | 预留，Docker Compose 本地  |
 | 测试   | Vitest (^3.1.4)                                 | 单元测试                   |
 | 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                   |
 | 部署   | GitHub Actions → GitHub Pages                   | CI/CD + 静态托管           |
+
+> Nuxt UI 与 Tailwind 已随过渡层整体移除（阶段 3），风格层与它们零耦合。
 
 ## 项目结构
 
 ```
 my-personalWebsite/
-├── .github/workflows/deploy.yml   # GitHub Actions CI/CD 部署配置
-├── assets/css/main.css            # 全局样式入口（@theme Design Tokens + prefers-reduced-motion + safe-area）
-├── components/                    # Vue 组件
-│   ├── layout/                    # 布局组件（AppHeader, AppFooter, AppSidebar, MobileNavBar）
-│   ├── home/                      # 首页组件（HeroSection, LatestPosts, FeaturedProjects）
-│   ├── blog/                      # 博客组件（BlogCard, BlogDetail, BlogList, BlogToc, MobileToc）
-│   ├── project/                   # 项目组件（ProjectCard, ProjectDetail, ProjectGrid）
-│   ├── common/                    # 通用组件（ThemeToggle, LangSwitcher, SearchModal, ContactForm, SocialIcon）
-│   └── icon/                      # 自定义 SVG 图标（IconFeishu）
-├── composables/                   # 可组合函数（内容获取抽象层）
+├── .github/workflows/deploy.yml   # GitHub Actions CI/CD（Node 22 + pnpm 11 → pnpm generate）
+├── app.vue                        # Nuxt 应用入口
+├── error.vue                      # 全局错误页（自包含）
+├── composables/                   # 业务逻辑层（唯一来源）
 │   ├── useBlog.ts                 # 博客数据获取
 │   ├── useProjects.ts             # 项目数据获取
-│   ├── useSiteConfig.ts           # 站点配置与导航（导出 useAppInfo 函数）
+│   ├── useSiteConfig.ts           # 站点配置（导出 useAppInfo 函数）
 │   └── useScrollReveal.ts         # 滚动进入视口动画（IntersectionObserver）
 ├── content/                       # Markdown 内容文件
-│   ├── blog/zh/                   # 中文博客文章
-│   ├── blog/en/                   # 英文博客文章
-│   ├── projects/zh/               # 中文项目介绍
-│   └── projects/en/               # 英文项目介绍
-├── docker/docker-compose.yml      # 本地 PostgreSQL 开发环境
-├── drizzle/schema.ts              # 数据库 Schema（预留）
-├── i18n/                          # 国际化语言包
-│   ├── zh-CN.json                 # 中文
-│   └── en-US.json                 # 英文
-├── layouts/default.vue            # 默认布局（Header + main + Footer + MobileNavBar）
-├── pages/                         # 文件路由
-│   ├── index.vue                  # 首页
-│   ├── blog/index.vue             # 博客列表
-│   ├── blog/[slug].vue            # 博客详情
-│   ├── projects/index.vue          # 项目列表
-│   ├── projects/[slug].vue        # 项目详情
-│   ├── about.vue                  # 关于页面
-│   └── contact.vue                # 联系页面
+│   ├── blog/zh|en/                # 博客文章
+│   └── projects/zh|en/            # 项目介绍
+├── i18n/                          # 国际化语言包（各 134 key，双向零缺失）
+├── layouts/style.vue              # 风格裸布局
+├── pages/
+│   ├── index.vue                  # 风格画廊（/）
+│   └── style/[style]/[...slug].vue # 薄壳路由（不含 UI，未知风格/页面抛 404）
+├── styles/
+│   ├── registry.ts                # 风格注册表（20 个风格，status 全 ready）
+│   ├── _base/                     # base.css（reset + 工具类）+ tokens.css（变量契约）
+│   └── <id>/                      # index.ts + tokens.css + components/ + pages/
 ├── types/                         # TypeScript 类型定义
-│   ├── blog.ts                    # 博客相关类型
-│   ├── project.ts                 # 项目相关类型
-│   └── site.ts                    # 站点配置类型
-├── public/images/                 # 静态图片资源（二维码等）
-├── utils/format.ts                # 工具函数（日期格式化、阅读时长、slug 生成）
-├── app.vue                        # Nuxt 应用入口
-├── error.vue                      # 全局错误页
+├── utils/format.ts                # 工具函数（日期、阅读时长、slug）
+├── public/images/                 # 静态图片资源
 ├── content.config.ts              # @nuxt/content v3 collections 定义
-├── nuxt.config.ts                 # Nuxt 主配置（含 PWA）
-└── vitest.config.ts               # 单测配置
+├── nuxt.config.ts                 # Nuxt 主配置（含 PWA、i18n、预渲染路由）
+├── tests/                         # Vitest（styles-structure.test.ts 守结构契约）
+├── docs/architecture/             # multi-style-ui.md 总纲 + style-authoring-guide.md SOP
+└── docker/docker-compose.yml      # 本地 PostgreSQL（备用，当前未接入）
 ```
 
 ## 快速开始
 
 ### 环境要求
 
-- Node.js >= 20 LTS
+- **Node.js >= 22.13**（`packageManager: pnpm@11.25.0` 的 engines 要求；CI 同样锁 22）
 - pnpm（推荐）或 npm
 
 ### 安装与开发
@@ -110,10 +103,9 @@ pnpm preview
 
 复制 `.env.example` 为 `.env`，按需修改：
 
-| 变量                   | 说明                          | 默认值                           |
-| ---------------------- | ----------------------------- | -------------------------------- |
-| `NUXT_PUBLIC_SITE_URL` | 站点 URL                      | `https://yourusername.github.io` |
-| `DATABASE_URL`         | PostgreSQL 连接字符串（可选） | -                                |
+| 变量                   | 说明     | 默认值                           |
+| ---------------------- | -------- | -------------------------------- |
+| `NUXT_PUBLIC_SITE_URL` | 站点 URL | `https://yourusername.github.io` |
 
 ## 规范检查
 
@@ -135,9 +127,11 @@ pnpm test:watch    # 运行测试（监听模式）
 2. GitHub Actions 执行 `pnpm install → pnpm generate`
 3. 将 `.output/public/` 部署到 GitHub Pages
 
+> CI 里 **Setup Node 必须排在 Setup pnpm 之前**，且 Node 版本 ≥ 22.13，否则 `Setup pnpm` 会直接失败（2026-09-18 ~ 09-23 期间 CI 因此全红，线上版本停滞）。
+
 ### 手动部署到自有服务器（腾讯云轻量 + 宝塔）
 
-如需发布到自有服务器（当前生产环境），按以下步骤操作：
+如需发布到自有服务器，按以下步骤操作：
 
 ```bash
 # 1. 本地生成静态站点（先关闭 Nuxt 遥测询问）
@@ -161,18 +155,7 @@ pnpm generate
 - i18n 使用 `prefix_except_default` 策略（中文无前缀，英文 URL 带 `/en/`）
 - 图片优化使用 `@nuxt/image` 的 `ipx` provider，卡片组件配置 `sizes` 属性
 - PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段
-
-## 本地数据库（可选）
-
-如需启动本地 PostgreSQL 开发环境：
-
-```bash
-# 启动 Docker Compose
-docker compose -f docker/docker-compose.yml up -d
-
-# 停止
-docker compose -f docker/docker-compose.yml down
-```
+- 预渲染路由由 `stylePrerenderRoutes()` 从注册表派生，无需手工维护
 
 ## 开发规范
 
@@ -182,13 +165,13 @@ docker compose -f docker/docker-compose.yml down
 - **提交规范**：Conventional Commits（feat/fix/docs/style/refactor/test/chore）
 - **拼写检查**：cspell
 - **测试**：Vitest 单元测试，新增功能需同步更新测试
-- **组件命名**：自动导入 `pathPrefix: false`，组件名不带目录前缀
-- **移动端组件**：以 `Mobile` 前缀命名（如 MobileToc、MobileNavBar）
+- **组件命名**：`styles/<id>/` 下组件不走自动导入，一律显式 import 且带风格前缀
+- **样式作用域**：`styles/<id>/layout.css` 每条选择器必须加 `[data-style='<id>']` 前缀
 
 ## 架构要点
 
 1. **SSG 优先**：`nuxt generate` 生成纯静态站点，不依赖 Node.js 运行时
-2. **内容层抽象**：`composables/` 封装数据获取逻辑，组件不直接硬编码数据源
-3. **数据层预留**：Drizzle + PostgreSQL 可选，通过 composables 隔离
-4. **路由**：基于文件路由，`pages/` 目录结构即路由结构
-5. **移动端优先**：独立移动端交互组件，桌面端和移动端体验分离
+2. **三层分工**：内容层（content/ + i18n/）、业务逻辑层（composables/ + types/ + utils/）、风格表现层（styles/<id>/）
+3. **UI 不跨风格复用**：风格内部的重复可以抽组件（如 `XxxSubPage`），但不得跨风格引用
+4. **薄壳路由**：`pages/style/[style]/[...slug].vue` 不含 UI，只解析注册表与渲染对应页面组件
+5. **每个风格自带移动端方案**：导航、页脚、断点都在风格目录内，不复用跨风格组件
