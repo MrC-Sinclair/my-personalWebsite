@@ -182,6 +182,11 @@ export default defineNuxtConfig({
       // 预渲染清单：根路径（风格画廊）+ 由 styles/registry.ts 派生的全部风格路由。
       // 旧写法里这里是 '/styles'，阶段 3 后画廊搬到 '/'，故改为 '/'。
       routes: ['/', ...stylePrerenderRoutes()],
+      // 关闭链接爬取：清单本身已经是完整的 101 条路由（×2 语言由 i18n 展开），
+      // 不需要再跟着页面里的 <a> 走。爬取的坏处是会把页面里残存的死链
+      // （如已随过渡层删除的 /blog/<slug>、/projects/<slug>）也拉进来预渲染，
+      // 一旦 404 就让整个构建失败——2026-09-23 的 CI 就是这么挂的。
+      crawlLinks: false,
     },
   },
 
