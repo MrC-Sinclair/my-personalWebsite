@@ -49,11 +49,13 @@ jobs:
           node-version: 22
 
       # 步骤 3：安装 pnpm 包管理器
-      # 版本与 package.json 的 packageManager（pnpm@11.25.0）保持一致
+      # 版本与 package.json 的 packageManager（pnpm@11.25.0）保持一致。
+      # 不用 pnpm/action-setup：它在本仓库会 0 秒失败（实测 Node 22 装好后仍失败），
+      # 改用随 Node 自带的 npm 全局安装，链路更短、失败点更少。
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11 # 使用 pnpm v11
+        run: |
+          npm i -g pnpm@11.25.0
+          pnpm --version
 
       # 步骤 4：缓存 pnpm store
       # 顺序上 pnpm 在 setup-node 之后，不能再靠 setup-node 的 cache: pnpm，
@@ -70,22 +72,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      # 步骤 4：配置 GitHub Pages
+      # 步骤 5：配置 GitHub Pages
       # 自动设置 GitHub Pages 所需的配置
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      # 步骤 5：安装项目依赖
+      # 步骤 6：安装项目依赖
       # 根据 package.json 和 pnpm-lock.yaml 安装所有依赖
       - name: Install dependencies
         run: pnpm install
 
-      # 步骤 6：生成静态站点
+      # 步骤 7：生成静态站点
       # 执行 Nuxt 的静态生成命令，输出到 .output/public 目录
       - name: Generate static site
         run: pnpm generate
 
-      # 步骤 7：上传构建产物
+      # 步骤 8：上传构建产物
       # 将生成的静态文件打包为 artifact，供部署任务使用
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
