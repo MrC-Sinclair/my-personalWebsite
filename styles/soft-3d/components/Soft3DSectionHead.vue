@@ -11,7 +11,7 @@
     </div>
     <div class="section-head-text">
       <p v-if="eyebrow" class="section-head-eyebrow">{{ eyebrow }}</p>
-      <h2 class="section-head-title">{{ title }}</h2>
+      <component :is="headingTag" class="section-head-title">{{ title }}</component>
       <p v-if="description" class="section-head-desc">{{ description }}</p>
     </div>
   </div>
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import Soft3DOrb from './Soft3DOrb.vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     /** 眉题（可选，i18n 文案） */
     eyebrow?: string
@@ -30,13 +30,19 @@ withDefaults(
     description?: string
     /** 标题小球配色 */
     variant?: 'violet' | 'cyan' | 'pink' | 'mint' | 'sun'
+    /** 标题层级：子页把它当页头时用 1（否则整页没有一级标题），首页区块用 2 */
+    level?: 1 | 2
   }>(),
   {
     eyebrow: '',
     description: '',
     variant: 'violet',
+    level: 2,
   },
 )
+
+/** 子页整页只有一个主题标题，必须升为 h1；首页 hero 已有 h1，区块维持 h2 */
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

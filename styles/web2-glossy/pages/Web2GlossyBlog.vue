@@ -8,7 +8,7 @@
   <Web2GlossySubPage>
     <section class="section" aria-labelledby="blog-title">
       <div class="container">
-        <Web2GlossySectionHead id="blog-title" :badge="t('nav.blog')" :title="t('blog.title')"/>
+        <Web2GlossySectionHead id="blog-title" :badge="t('nav.blog')" :title="t('blog.title')" :level="1"/>
 
         <div v-if="loading" class="posts-list" role="status" :aria-label="t('common.loading')">
           <div v-for="n in 3" :key="n" class="skel skel--row" aria-hidden="true"/>

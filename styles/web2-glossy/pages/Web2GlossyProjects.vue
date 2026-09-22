@@ -12,6 +12,7 @@
           id="projects-title"
           :badge="t('projects.featured')"
           :title="t('projects.title')"
+          :level="1"
         />
 
         <div v-if="loading" class="projects-grid" role="status" :aria-label="t('common.loading')">

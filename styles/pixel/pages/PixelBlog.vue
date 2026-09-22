@@ -13,6 +13,7 @@
       head="QUEST LOG"
       :title="t('blog.title')"
       :meta="String(posts.length)"
+      :level="1"
     >
       <p v-if="loading" class="loading-art" role="status">
         [ ▓▓▓▓▓▓░░░░ ]<span class="blink">▉</span>

@@ -15,6 +15,7 @@
           :title="t('contact.title')"
           theme="light"
           align="center"
+          :level="1"
         />
         <p class="contact-inner__desc">{{ t('contact.description') }}</p>
 

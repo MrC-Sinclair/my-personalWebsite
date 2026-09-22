@@ -8,7 +8,7 @@
 <template>
   <div class="sect-head" :class="[`sect-head--${theme}`, { 'sect-head--center': align === 'center' }]">
     <span v-if="badge" class="sect-head__badge">{{ badge }}</span>
-    <h2 :id="headId" class="sect-head__title">{{ title }}</h2>
+    <component :is="headingTag" :id="headId" class="sect-head__title">{{ title }}</component>
     <span class="sect-head__shine" aria-hidden="true"/>
   </div>
 </template>
@@ -30,16 +30,22 @@ const props = withDefaults(
     align?: 'left' | 'center'
     /** 主题：default 浅色区块 / light 深蓝色带 */
     theme?: 'default' | 'light'
+    /** 标题层级：子页把它当页头时用 1（否则整页没有一级标题），首页区块用 2 */
+    level?: 1 | 2
   }>(),
   {
     badge: undefined,
     id: undefined,
     align: 'left',
     theme: 'default',
+    level: 2,
   },
 )
 
 const headId = computed(() => props.id)
+
+/** 子页整页只有一个主题标题，必须升为 h1；首页英雄区已有 h1，区块维持 h2 */
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

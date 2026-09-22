@@ -18,7 +18,7 @@
     <PixelAboutBlock :title="t('about.title')" />
 -->
 <template>
-  <PixelPanel head="ABOUT" :title="panelTitle">
+  <PixelPanel head="ABOUT" :title="panelTitle" :level="level">
     <p class="prose">{{ t('about.description') }}</p>
     <ul v-if="items.length" class="timeline">
       <li v-for="item in items" :key="`${item.period}-${item.title}`" class="tl-row">
@@ -40,15 +40,17 @@ import type { TimelineItem } from '~/types/site'
 import PixelPanel from './PixelPanel.vue'
 import PixelEmpty from './PixelEmpty.vue'
 
-/** 面板标题：默认取导航词，子页可传 about.title 覆盖 */
-const props = defineProps<{
+/** 面板标题：默认取导航词，子页可传 about.title 覆盖；
+ *  level 同理——子页把本块当页头用，标题需升为 h1 */
+const { title = '', level = 2 } = defineProps<{
   title?: string
+  level?: 1 | 2
 }>()
 
 const { t } = useI18n()
 const { timeline } = useAppInfo()
 
-const panelTitle = computed(() => props.title ?? t('nav.about'))
+const panelTitle = computed(() => title || t('nav.about'))
 
 /** 防御：timeline 非数组时退化为空列表（不渲染空 <ul>） */
 const items = computed<TimelineItem[]>(() => (Array.isArray(timeline.value) ? timeline.value : []))

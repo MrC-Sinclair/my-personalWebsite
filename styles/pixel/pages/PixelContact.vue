@@ -8,7 +8,13 @@
 -->
 <template>
   <PixelSubPage>
-    <PixelPanel id="contact" data-section="contact" head="CONTACT" :title="t('contact.title')">
+    <PixelPanel
+      id="contact"
+      data-section="contact"
+      head="CONTACT"
+      :title="t('contact.title')"
+      :level="1"
+    >
       <p class="prose prose--muted">{{ t('contact.description') }}</p>
       <PixelContactList :socials="socialLinks" />
     </PixelPanel>

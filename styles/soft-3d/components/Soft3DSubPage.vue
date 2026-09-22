@@ -27,6 +27,7 @@
           :title="title"
           :description="description"
           :variant="variant"
+          :level="1"
         />
 
         <slot/>

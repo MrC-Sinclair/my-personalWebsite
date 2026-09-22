@@ -8,7 +8,7 @@
 -->
 <template>
   <PixelSubPage>
-    <PixelAboutBlock id="about" data-section="about" :title="t('about.title')" />
+    <PixelAboutBlock id="about" data-section="about" :title="t('about.title')" :level="1" />
 
     <PixelPanel
       id="skills"

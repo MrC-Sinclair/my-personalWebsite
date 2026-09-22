@@ -13,6 +13,7 @@
       head="INVENTORY"
       :title="t('projects.title')"
       :meta="String(projects.length)"
+      :level="1"
     >
       <p v-if="loading" class="loading-art" role="status">
         [ ▓▓▓▓▓▓░░░░ ]<span class="blink">▉</span>

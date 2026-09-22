@@ -11,7 +11,7 @@
   <section class="panel">
     <header class="panel-head">
       <span v-if="head" class="panel-tag" aria-hidden="true">{{ head }}</span>
-      <h2 class="panel-title">{{ title }}</h2>
+      <component :is="headingTag" class="panel-title">{{ title }}</component>
       <span v-if="meta" class="panel-meta">{{ meta }}</span>
     </header>
     <div class="panel-body">
@@ -21,14 +21,19 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const { head = '', meta = '', title, level = 2 } = defineProps<{
   /** 面板头装饰词（游戏词汇，纯装饰，读屏跳过） */
   head?: string
   /** 面板标题（i18n 文案） */
   title: string
   /** 面板头右侧计数（语言无关的数字字符串） */
   meta?: string
+  /** 标题层级：子页把它当页头时用 1（否则整页没有一级标题），首页区块用 2 */
+  level?: 1 | 2
 }>()
+
+/** 子页整页只有一个主题标题，必须升为 h1；首页 hero 已有 h1，区块维持 h2 */
+const headingTag = computed(() => (level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

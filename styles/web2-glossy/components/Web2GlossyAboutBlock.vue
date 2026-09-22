@@ -15,7 +15,12 @@
   <div class="about-grid">
     <!-- 左：关于面板 + 经历时间线 -->
     <div class="panel about-main scroll-reveal">
-      <Web2GlossySectionHead id="about-title" :badge="t('nav.about')" :title="t('about.title')"/>
+      <Web2GlossySectionHead
+        id="about-title"
+        :badge="t('nav.about')"
+        :title="t('about.title')"
+        :level="level"
+      />
       <p class="about-main__intro">{{ t('about.description') }}</p>
 
       <h3 class="about-main__sub">{{ t('about.experience') }}</h3>
@@ -52,6 +57,9 @@ import Web2GlossySectionHead from './Web2GlossySectionHead.vue'
 import Web2GlossySkillPanel from './Web2GlossySkillPanel.vue'
 
 const { t } = useI18n()
+
+// 标题层级：子页把本块当页头用，标题升为 h1；首页已有英雄区 h1，维持 h2
+const { level = 2 } = defineProps<{ level?: 1 | 2 }>()
 
 // —— 共享层站点信息（数组字段一律 Array.isArray 防御） ——
 const { skillGroups, timeline } = useAppInfo()

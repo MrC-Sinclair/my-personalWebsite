@@ -8,7 +8,7 @@
   <Web2GlossySubPage>
     <section class="section" aria-labelledby="about-title">
       <div class="container">
-        <Web2GlossyAboutBlock/>
+        <Web2GlossyAboutBlock :level="1"/>
       </div>
     </section>
   </Web2GlossySubPage>
