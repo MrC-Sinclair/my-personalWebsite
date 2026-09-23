@@ -66,15 +66,29 @@ const pageComponent = computed<Component | null>(() => {
 })
 
 // 中文名/英文名按当前语言展示
-const displayName = computed(() => (locale.value.startsWith('zh') ? meta.value!.name : meta.value!.en))
+const displayName = computed(() =>
+  locale.value.startsWith('zh') ? meta.value!.name : meta.value!.en,
+)
+
+// SEO：页面级 canonical / og:url / og:locale（路由相关标签必须每页自设）
+const siteUrl = String(useRuntimeConfig().public.siteUrl || '')
+const baseURL = String(useRuntimeConfig().app.baseURL || '/')
+const pageUrl = computed(() => `${siteUrl}${baseURL}${route.path.slice(1)}`)
 
 useHead({
   title: () => `${displayName.value} · ${t('styles.pageTitleSuffix')}`,
-  meta: () => [
-    { name: 'description', content: meta.value!.note },
-    { property: 'og:title', content: `${displayName.value} · ${t('styles.pageTitleSuffix')}` },
-    { property: 'og:description', content: meta.value!.note },
-  ],
+  link: [{ rel: 'canonical', href: pageUrl.value }],
+  meta: () => {
+    const isZh = locale.value.startsWith('zh')
+    return [
+      { name: 'description', content: meta.value!.note },
+      { property: 'og:title', content: `${displayName.value} · ${t('styles.pageTitleSuffix')}` },
+      { property: 'og:description', content: meta.value!.note },
+      { property: 'og:url', content: pageUrl.value },
+      { property: 'og:locale', content: isZh ? 'zh_CN' : 'en_US' },
+      { property: 'og:locale:alternate', content: isZh ? 'en_US' : 'zh_CN' },
+    ]
+  },
 })
 </script>
 

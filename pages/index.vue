@@ -21,6 +21,7 @@ definePageMeta({ layout: false })
 const { t, locale, locales } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
+const route = useRoute()
 
 // 中文名/英文名按当前语言展示
 function displayName(item: StyleMeta) {
@@ -35,21 +36,36 @@ const statusKey: Record<StyleMeta['status'], string> = {
 }
 
 // 语言切换：按钮显示「目标语言」的名字（中文界面显示 English，反之亦然）
-const targetLocale = computed(
-  () =>
-    (locales.value as Array<{ code: string; name: string }>).find((l) => l.code !== locale.value),
+const targetLocale = computed(() =>
+  (locales.value as Array<{ code: string; name: string }>).find((l) => l.code !== locale.value),
 )
 function switchLocale() {
-  if (targetLocale.value) navigateTo(switchLocalePath(targetLocale.value.code))
+  // locales 的 code 只有 'zh' | 'en'（见 nuxt.config.ts i18n.locales），收窄类型
+  if (targetLocale.value) {
+    navigateTo(switchLocalePath(targetLocale.value.code as 'zh' | 'en'))
+  }
 }
+
+// SEO：页面级 canonical / og:url / og:locale（全局 head 只放静态标签，
+// 路由相关的必须每页自己设置，否则分享出去全是同一个 URL）
+const siteUrl = String(useRuntimeConfig().public.siteUrl || '')
+const baseURL = String(useRuntimeConfig().app.baseURL || '/')
+const pageUrl = computed(() => `${siteUrl}${baseURL}${route.path.slice(1)}`)
 
 useHead({
   title: () => `${t('styles.gallery.title')} · ${t('home.name')}`,
-  meta: () => [
-    { name: 'description', content: t('styles.gallery.description') },
-    { property: 'og:title', content: `${t('styles.gallery.title')} · ${t('home.name')}` },
-    { property: 'og:description', content: t('styles.gallery.description') },
-  ],
+  link: [{ rel: 'canonical', href: pageUrl.value }],
+  meta: () => {
+    const isZh = locale.value.startsWith('zh')
+    return [
+      { name: 'description', content: t('styles.gallery.description') },
+      { property: 'og:title', content: `${t('styles.gallery.title')} · ${t('home.name')}` },
+      { property: 'og:description', content: t('styles.gallery.description') },
+      { property: 'og:url', content: pageUrl.value },
+      { property: 'og:locale', content: isZh ? 'zh_CN' : 'en_US' },
+      { property: 'og:locale:alternate', content: isZh ? 'en_US' : 'zh_CN' },
+    ]
+  },
 })
 </script>
 

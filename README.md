@@ -18,6 +18,8 @@
 ## 功能特性
 
 - **20 种 UI 风格**：minimalism、liquid-glass、metro、swiss、editorial、flat-design、dashboard、terminal、cyberpunk、y2k、web2-glossy、pixel、retro-computer、sci-fi-hud、soft-3d、glassmorphism、claymorphism、neumorphism、skeuomorphism、neo-brutalism
+- **SEO**：构建时自动生成 `sitemap.xml`（中英双语 + hreflang alternate）与 `robots.txt`；每页 canonical / og:url / og:locale；OG 与 Twitter 分享卡指向 `public/og-image.png`
+- **品牌资源**：favicon（ico/svg/png）、apple-touch-icon、PWA 图标（192/512）由 `scripts/gen-brand-assets.mjs` 生成
 - **UI 不复用、业务逻辑复用**：风格层各写各的结构与 token；取数、滚动动画、格式化等行为只写一份在 `composables/` / `utils/`
 - **内容驱动**：blog 每个语种 14 篇，projects 目前 1 篇（中英各一份）
 - **国际化**：中英双语，URL 策略 `prefix_except_default`（中文无前缀，英文 `/en/`）
@@ -152,6 +154,8 @@ pnpm generate
 ### 关键配置
 
 - `nuxt.config.ts` 中 `app.baseURL` 设为 `/my-personalWebsite/`
+- 站点对外 URL 取 `NUXT_PUBLIC_SITE_URL`（默认 `https://mrc-sinclair.github.io`），sitemap / canonical / og:url 均由它拼接
+- `sitemap.xml` / `robots.txt` 由 nitro 的 `prerender:done` 钩子在构建时依据「真实预渲染成功的路由」自动生成，无需手工维护
 - i18n 使用 `prefix_except_default` 策略（中文无前缀，英文 URL 带 `/en/`）
 - 图片优化使用 `@nuxt/image` 的 `ipx` provider，卡片组件配置 `sizes` 属性
 - PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段
