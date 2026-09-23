@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { styleRegistry, STYLE_SUB_PATHS } from './styles/registry'
@@ -13,6 +13,54 @@ const SITE_URL = (process.env.NUXT_PUBLIC_SITE_URL || 'https://mrc-sinclair.gith
   '',
 )
 const SITE_BASE_URL = '/my-personalWebsite/'
+
+/** 读取 content 目录下的 slug 清单：content/blog/zh/*.md → ['xxx', ...] */
+function contentSlugs(kind: 'blog' | 'projects', localeDir: 'zh' | 'en'): string[] {
+  const dir = join(process.cwd(), 'content', kind, localeDir)
+  try {
+    return readdirSync(dir)
+      .filter((file) => file.endsWith('.md'))
+      .map((file) => file.replace(/\.md$/, ''))
+      .sort()
+  } catch {
+    console.warn(`[prerender] 读取 content/${kind}/${localeDir} 失败，跳过相应详情路由`)
+    return []
+  }
+}
+
+/**
+ * 详情路由清单：/style/<id>/blog/<slug> 与 /style/<id>/projects/<slug>。
+ * ------------------------------------------------------------
+ * 只给「导出了 detail 组件」的风格生成——否则预渲染会 404 拖垮整个构建
+ * （2026-09-23 的 CI 就是这么挂的）。判定方式同 pages 键：扫描 index.ts 源码。
+ * slug 取中英交集：任一语种缺了这篇，另一语种的页面会走 404，
+ * 这里只生成两边都有的，避免生成必然失败的路由。
+ */
+function styleDetailRoutes(): string[] {
+  const blogZh = contentSlugs('blog', 'zh')
+  const blogEn = contentSlugs('blog', 'en')
+  const projectZh = contentSlugs('projects', 'zh')
+  const projectEn = contentSlugs('projects', 'en')
+  const sharedBlog = blogZh.filter((slug) => blogEn.includes(slug))
+  const sharedProjects = projectZh.filter((slug) => projectEn.includes(slug))
+
+  const routes: string[] = []
+  for (const meta of styleRegistry) {
+    let source = ''
+    try {
+      source = readFileSync(join(process.cwd(), 'styles', meta.id, 'index.ts'), 'utf8')
+    } catch {
+      continue
+    }
+    // 去掉注释后再判断，避免注释里的 detail 字样造成误判
+    const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '')
+    if (!/\bdetail\s*:/.test(code)) continue
+
+    for (const slug of sharedBlog) routes.push(`/style/${meta.id}/blog/${slug}`)
+    for (const slug of sharedProjects) routes.push(`/style/${meta.id}/projects/${slug}`)
+  }
+  return [...new Set(routes)]
+}
 
 /**
  * 生成风格预渲染路由清单。
@@ -128,7 +176,10 @@ async function writeSitemapAndRobots(
   // （/__nuxt_content/...）也拉进预渲染，它们不是页面，不该进 sitemap。
   // 白名单依据 registry：'/'、'/en'、'/[en/]style/<id>[/sub]'。
   const styleIds = styleRegistry.map((meta) => meta.id).join('|')
-  const pagePattern = new RegExp(`^/(en/)?style/(${styleIds})(/(about|projects|blog|contact))?$`)
+  // 详情页（/blog/<slug>、/projects/<slug>）同样进 sitemap，它们是真实可读的内容页
+  const pagePattern = new RegExp(
+    `^/(en/)?style/(${styleIds})(/(about|projects|blog|contact))?(/(blog|projects)/[a-z0-9-]+)?$`,
+  )
   const isPage = (r: string) => r === '/' || r === '/en' || pagePattern.test(r)
   const pageRoutes = routes.filter(isPage)
   const zhRoutes = pageRoutes.filter((r) => r === '/' || !/^\/en(\/|$)/.test(r)).sort()
@@ -297,7 +348,7 @@ export default defineNuxtConfig({
     prerender: {
       // 预渲染清单：根路径（风格画廊）+ 由 styles/registry.ts 派生的全部风格路由。
       // 旧写法里这里是 '/styles'，阶段 3 后画廊搬到 '/'，故改为 '/'。
-      routes: ['/', ...stylePrerenderRoutes()],
+      routes: ['/', ...stylePrerenderRoutes(), ...styleDetailRoutes()],
       // 关闭链接爬取：清单本身已经是完整的 101 条路由（×2 语言由 i18n 展开），
       // 不需要再跟着页面里的 <a> 走。爬取的坏处是会把页面里残存的死链
       // （如已随过渡层删除的 /blog/<slug>、/projects/<slug>）也拉进来预渲染，

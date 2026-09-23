@@ -12,6 +12,7 @@ import Y2KAbout from './pages/Y2KAbout.vue'
 import Y2KProjects from './pages/Y2KProjects.vue'
 import Y2KBlog from './pages/Y2KBlog.vue'
 import Y2KContact from './pages/Y2KContact.vue'
+import Y2KDetailPage from './components/Y2KDetailPage.vue'
 
 export default {
   pages: {
@@ -21,4 +22,6 @@ export default {
     '/blog': Y2KBlog,
     '/contact': Y2KContact,
   },
+  // 详情阅读页：/style/y2k/blog/<slug> 与 /style/y2k/projects/<slug>
+  detail: Y2KDetailPage,
 } satisfies StyleEntry

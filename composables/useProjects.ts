@@ -71,6 +71,19 @@ export function useProjects() {
     }
   }
 
+  /** 上下一个项目：按列表顺序取相邻两项，供详情页底部导航用 */
+  async function getProjectNeighbors(
+    path: string,
+  ): Promise<{ prev: Project | null; next: Project | null }> {
+    const projects = await getAllProjects()
+    const index = projects.findIndex((project) => project.path === path)
+    if (index === -1) return { prev: null, next: null }
+    return {
+      prev: index > 0 ? projects[index - 1] : null,
+      next: index < projects.length - 1 ? projects[index + 1] : null,
+    }
+  }
+
   watch(locale, () => {
     projectsCache.value = null
   })
@@ -78,6 +91,7 @@ export function useProjects() {
   return {
     getAllProjects,
     getProjectBySlug,
+    getProjectNeighbors,
     getFeaturedProjects,
   }
 }

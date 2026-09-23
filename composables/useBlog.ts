@@ -128,6 +128,19 @@ export function useBlog() {
     }
   }
 
+  /** 上下篇：按列表顺序（日期倒序）取相邻两篇，供详情页底部导航用 */
+  async function getPostNeighbors(
+    path: string,
+  ): Promise<{ prev: BlogPost | null; next: BlogPost | null }> {
+    const posts = await getAllPosts()
+    const index = posts.findIndex((post) => post.path === path)
+    if (index === -1) return { prev: null, next: null }
+    return {
+      prev: index > 0 ? posts[index - 1] : null,
+      next: index < posts.length - 1 ? posts[index + 1] : null,
+    }
+  }
+
   watch(locale, () => {
     postsCache.value = null
   })
@@ -135,6 +148,7 @@ export function useBlog() {
   return {
     getAllPosts,
     getPostBySlug,
+    getPostNeighbors,
     getFeaturedPosts,
     getPostsByTag,
     getPostsByCategory,

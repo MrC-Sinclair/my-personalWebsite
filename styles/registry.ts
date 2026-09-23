@@ -17,6 +17,13 @@ import type { Component } from 'vue'
 /** 每个风格 index.ts 必须导出的默认结构：页面路径 → 页面组件 */
 export interface StyleEntry {
   pages: Record<string, Component>
+  /**
+   * 详情阅读页（可选）——文章 /blog/<slug> 与项目 /projects/<slug> 的正文页。
+   * 不在 pages 映射里，因为它的路径是动态的（slug 来自内容文件），
+   * 无法用固定键表达；由路由壳解析后渲染，并把数据以 prop 传入。
+   * 未导出的风格，其详情路由抛 404（可以逐个补齐，不存在半成品被访问）。
+   */
+  detail?: Component
 }
 
 /**

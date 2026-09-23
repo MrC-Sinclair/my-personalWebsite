@@ -7,7 +7,7 @@
   slug 换算复用共享层 contentSlug（不在风格里重写业务逻辑）。
 -->
 <template>
-  <NuxtLink class="prow" :to="localePath(`/blog/${contentSlug(post.path)}`)">
+  <NuxtLink class="prow" :to="postPath(contentSlug(post.path))">
     <span class="prow-index" aria-hidden="true">{{ padIndex }}</span>
     <span class="prow-main">
       <span class="prow-title">{{ post.title }}</span>
@@ -42,7 +42,8 @@ const props = withDefaults(
 )
 
 const { locale } = useI18n()
-const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { postPath } = useStyleContentPath()
 
 /** 序号格式化为两位数铭牌（01、02…） */
 const padIndex = computed(() => String(props.index + 1).padStart(2, '0'))
