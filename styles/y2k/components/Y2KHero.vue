@@ -34,8 +34,8 @@
       <p class="hero-desc">{{ t('home.description') }}</p>
 
       <div class="hero-actions">
-        <Y2KChromeButton href="#posts">{{ t('home.viewBlog') }}</Y2KChromeButton>
-        <Y2KChromeButton href="#projects" variant="plastic">
+        <Y2KChromeButton href="#posts" size="lg">{{ t('home.viewBlog') }}</Y2KChromeButton>
+        <Y2KChromeButton href="#projects" variant="plastic" size="lg">
           {{ t('home.viewProjects') }}
         </Y2KChromeButton>
       </div>

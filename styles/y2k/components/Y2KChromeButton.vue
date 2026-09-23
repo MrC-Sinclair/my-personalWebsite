@@ -10,20 +10,20 @@
   交互：hover 辉光增强 + 上浮 + 高光斜扫；active 内凹下沉。
 -->
 <template>
-  <NuxtLink v-if="to" class="y2k-btn" :class="`y2k-btn--${variant}`" :to="to">
+  <NuxtLink v-if="to" class="y2k-btn" :class="[`y2k-btn--${variant}`, `y2k-btn--${size}`]" :to="to">
     <slot />
   </NuxtLink>
   <a
     v-else-if="href"
     class="y2k-btn"
-    :class="`y2k-btn--${variant}`"
+    :class="[`y2k-btn--${variant}`, `y2k-btn--${size}`]"
     :href="href"
     :target="external ? '_blank' : undefined"
     :rel="external ? 'noopener' : undefined"
   >
     <slot />
   </a>
-  <button v-else type="button" class="y2k-btn" :class="`y2k-btn--${variant}`">
+  <button v-else type="button" class="y2k-btn" :class="[`y2k-btn--${variant}`, `y2k-btn--${size}`]">
     <slot />
   </button>
 </template>
@@ -33,24 +33,25 @@
  * @file Y2K 风格的铬金属/塑料按钮组件
  * @description 千禧年 3D 按钮质感：铬渐变、白高光、辉光投影。
  */
-withDefaults(
-  defineProps<{
-    /** 站内路由目标（渲染为 NuxtLink） */
-    to?: string
-    /** 页内锚点或外部链接（渲染为原生 a） */
-    href?: string
-    /** 外链时启用 target="_blank" + rel="noopener" */
-    external?: boolean
-    /** chrome = 金属铬（默认）；plastic = 半透明塑料气泡 */
-    variant?: 'chrome' | 'plastic'
-  }>(),
-  {
-    to: undefined,
-    href: undefined,
-    external: false,
-    variant: 'chrome',
-  },
-)
+// Vue 3.5 解构默认值写法（项目约定，不用 withDefaults）
+const {
+  to = undefined,
+  href = undefined,
+  external = false,
+  variant = 'chrome',
+  size = 'md',
+} = defineProps<{
+  /** 站内路由目标（渲染为 NuxtLink） */
+  to?: string
+  /** 页内锚点或外部链接（渲染为原生 a） */
+  href?: string
+  /** 外链时启用 target="_blank" + rel="noopener" */
+  external?: boolean
+  /** chrome = 金属铬（默认）；plastic = 半透明塑料气泡 */
+  variant?: 'chrome' | 'plastic'
+  /** md = 常规（默认）；lg = 首屏 CTA 级（更大字号与触控面） */
+  size?: 'md' | 'lg'
+}>()
 </script>
 
 <style scoped>
@@ -78,7 +79,8 @@ withDefaults(
     filter var(--transition);
 }
 
-/* —— 金属铬：多段灰白蓝过渡（硬金属质感） —— */
+/* —— 金属铬：多段灰白蓝过渡（硬金属质感）。
+      最暗停靠点 #6d7aba 与文字 #140b3c 的对比 = 4.5:1（原 #5f6cae 仅 3.71）—— */
 .y2k-btn--chrome {
   color: var(--c-on-accent);
   background: linear-gradient(
@@ -86,7 +88,7 @@ withDefaults(
     #f8faff 0%,
     #ccd6f6 34%,
     #8e9ad0 50%,
-    #5f6cae 60%,
+    #6d7aba 60%,
     #aeb9e8 84%,
     #e7ecff 100%
   );
@@ -96,18 +98,25 @@ withDefaults(
     0 10px 24px rgb(110 90 255 / 0.4);
 }
 
-/* —— 半透明塑料气泡 —— */
+/* —— 首屏 CTA 级尺寸：与巨型铬标题同框时保持存在感
+      （12px 铭牌小字在 hero 里会把 CTA 压成「隐约的暗色矩形」） —— */
+.y2k-btn--lg {
+  min-height: 56px;
+  padding: 14px 32px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+}
+
+/* —— 塑料气泡：糖果实底 + 顶部高光。
+      曾用半透明白叠底，在深空 #171048 上明度差只有约 2.6:1，
+      CTA 几乎隐形；改实底渐变后与背景 ≥ 3.5:1、白字 ≥ 7:1 —— */
 .y2k-btn--plastic {
-  color: var(--c-text);
-  background: linear-gradient(
-    180deg,
-    rgb(255 255 255 / 0.3) 0%,
-    rgb(255 255 255 / 0.08) 46%,
-    rgb(139 123 255 / 0.22) 100%
-  );
-  border-color: rgb(190 200 255 / 0.55);
+  color: #ffffff;
+  background: linear-gradient(180deg, #6a5ce2 0%, #5646cf 55%, #4335b0 100%);
+  border-color: rgb(235 240 255 / 0.8);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.65),
+    inset 0 0 14px rgb(255 255 255 / 0.12),
     0 8px 22px rgb(5 0 42 / 0.45);
 }
 
@@ -123,15 +132,11 @@ withDefaults(
 
 .y2k-btn--plastic:hover {
   transform: translateY(-2px);
-  background: linear-gradient(
-    180deg,
-    rgb(255 255 255 / 0.42) 0%,
-    rgb(255 255 255 / 0.14) 46%,
-    rgb(139 123 255 / 0.32) 100%
-  );
+  background: linear-gradient(180deg, #8d80ff 0%, #6a5ae8 55%, #5243c8 100%);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.7),
-    0 14px 30px rgb(139 92 255 / 0.4);
+    inset 0 1px 0 rgb(255 255 255 / 0.75),
+    inset 0 0 16px rgb(255 255 255 / 0.16),
+    0 14px 30px rgb(139 92 255 / 0.5);
 }
 
 /* active：塑料被按瘪（内凹 + 下沉） */

@@ -100,6 +100,7 @@ useHead({
           <NuxtLink
             :to="localePath(`/style/${item.id}`)"
             :style="{ '--accent': item.accent }"
+            :data-style="item.id"
             class="card"
           >
             <span class="card__band" aria-hidden="true" />
@@ -286,7 +287,9 @@ useHead({
   transform: translateY(-4px);
 }
 
-/* 顶部主色带：伪元素不占布局，hover 加厚不顶动内容 */
+/* 顶部主色带：伪元素不占布局，hover 加厚不顶动内容。
+   默认为风格 accent 纯色；下方「签名条」按 data-style 逐风格覆写为
+   该风格的材质意象（评审 Top10 #5：卖风格的页面自己不能最朴素） */
 .card__band {
   position: absolute;
   top: 0;
@@ -299,6 +302,142 @@ useHead({
 
 .card:hover .card__band {
   height: 8px;
+}
+
+/* ============================================================
+   20 风格签名条（横条即微缩的风格名片，全部 CSS 绘制）
+   ============================================================ */
+
+/* 极简：纯白条 + 左端一枚蓝点 */
+.card[data-style='minimalism'] .card__band {
+  background: radial-gradient(circle 2px at 12px 50%, #2b6ef2 0 2px, transparent 3px) #fff;
+}
+
+/* 液态玻璃：半透白板 + 上缘亮边 */
+.card[data-style='liquid-glass'] .card__band {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.95) 0%, rgb(168 178 226 / 0.4) 100%);
+}
+
+/* Metro：微软四色瓦片 */
+.card[data-style='metro'] .card__band {
+  background: linear-gradient(90deg, #f25022 0 25%, #7fba00 25% 50%, #00a4ef 50% 75%, #ffb900 75%);
+}
+
+/* 瑞士国际主义：红黑白三色纪律 */
+.card[data-style='swiss'] .card__band {
+  background: linear-gradient(
+    90deg,
+    #e30613 0 30%,
+    #111 30% 32%,
+    #f5f5f5 32% 68%,
+    #111 68% 70%,
+    #e30613 70% 72%
+  );
+}
+
+/* 杂志编辑排版：米纸 + 右端红句点 */
+.card[data-style='editorial'] .card__band {
+  background: radial-gradient(circle 2px at calc(100% - 12px) 50%, #c8321e 0 2px, transparent 3px)
+    #f6f1e7;
+}
+
+/* 扁平化：四色编码 + 直角平涂 */
+.card[data-style='flat-design'] .card__band {
+  background: linear-gradient(90deg, #2f80ed 0 40%, #27ae60 40% 65%, #9b51e0 65% 85%, #eb5757 85%);
+}
+
+/* 数据仪表盘：深藏青 + 蓝/琥珀数据条 */
+.card[data-style='dashboard'] .card__band {
+  background-color: #0f172a;
+  background-image:
+    repeating-linear-gradient(90deg, rgb(59 130 246 / 0.9) 0 6px, transparent 6px 11px),
+    linear-gradient(90deg, #f59e0b 0 14%, transparent 14%);
+}
+
+/* 终端机：纯黑屏 + 绿色块光标 */
+.card[data-style='terminal'] .card__band {
+  background: repeating-linear-gradient(90deg, #22c55e 0 8px, #04140a 8px 13px);
+}
+
+/* 赛博朋克：青粉霓虹斜纹 */
+.card[data-style='cyberpunk'] .card__band {
+  background: repeating-linear-gradient(
+    45deg,
+    #00e5ff 0 4px,
+    #0a0a14 4px 10px,
+    #ff2bd6 10px 14px,
+    #0a0a14 14px 20px
+  );
+}
+
+/* Y2K：铬银 × 霓虹 */
+.card[data-style='y2k'] .card__band {
+  background: linear-gradient(
+    90deg,
+    #f8faff 0%,
+    #8e9ad0 38%,
+    #ff5ce1 58%,
+    #8b7bff 78%,
+    #f8faff 100%
+  );
+}
+
+/* Web 2.0 光泽：Aqua 果冻条 */
+.card[data-style='web2-glossy'] .card__band {
+  background: linear-gradient(180deg, #7cc4ff 0%, #1d6fd1 55%, #0b4c9c 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7);
+}
+
+/* 像素风：双色棋盘点阵 */
+.card[data-style='pixel'] .card__band {
+  background: repeating-conic-gradient(#33ff66 0% 25%, #0f0f23 0% 50%) 0 0 / 6px 6px;
+}
+
+/* 复古电脑：Win95 桌面青 + 凸起银条 */
+.card[data-style='retro-computer'] .card__band {
+  background: linear-gradient(180deg, #fdfdfd 0 38%, #9a9a9a 38% 52%, #efefef 52% 62%, #0a8080 62%);
+}
+
+/* 科幻 HUD：军用刻度尺 */
+.card[data-style='sci-fi-hud'] .card__band {
+  background:
+    repeating-linear-gradient(90deg, #7ef2b6 0 2px, transparent 2px 9px) 0 0 / auto 100% repeat-x,
+    linear-gradient(90deg, #f59e0b 0 12%, transparent 12%),
+    #061a20;
+}
+
+/* 柔和 3D：柔光渐变球 */
+.card[data-style='soft-3d'] .card__band {
+  background: linear-gradient(90deg, #a78bfa 0%, #f0abfc 35%, #fda4af 65%, #7dd3fc 100%);
+}
+
+/* 玻璃拟态：磨砂白玻璃 */
+.card[data-style='glassmorphism'] .card__band {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.92) 0%, rgb(255 255 255 / 0.4) 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8);
+}
+
+/* 黏土拟态：粉紫黄黏土条 */
+.card[data-style='claymorphism'] .card__band {
+  background: linear-gradient(90deg, #c4b5fd 0%, #f9a8d4 50%, #fde68a 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.75);
+}
+
+/* 新拟态：浅灰蓝凸起双光 */
+.card[data-style='neumorphism'] .card__band {
+  background: linear-gradient(180deg, #ffffff 0%, #dfe6f3 45%, #c9d3e8 58%, #eef2fa 100%);
+}
+
+/* 拟物主义：皮革棕 + 米色缝线 */
+.card[data-style='skeuomorphism'] .card__band {
+  background:
+    repeating-linear-gradient(90deg, #e8d5b5 0 5px, transparent 5px 11px) 0 0 / auto 100% repeat-x,
+    #6b3f1d;
+}
+
+/* 新粗野主义：黑黄斜纹警戒条 */
+.card[data-style='neo-brutalism'] .card__band {
+  background: repeating-linear-gradient(45deg, #ffd60a 0 8px, #111 8px 16px);
 }
 
 .card__top {
