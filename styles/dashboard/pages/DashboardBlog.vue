@@ -27,7 +27,7 @@
           v-if="trend.values.length"
           :values="trend.values"
           :labels="trend.labels"
-          :aria-label="t('blog.publishedAt')"
+          :caption="t('blog.publishedAt')"
         />
         <DashboardEmptyState v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
       </DashboardPanel>

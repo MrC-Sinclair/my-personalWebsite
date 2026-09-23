@@ -7,6 +7,16 @@
  */
 
 import type { BlogPost, BlogListParams, BlogListResult } from '~/types/blog'
+// content v3 为各 collection 生成的 item 类型（声明在 @nuxt/content 模块内部，需显式导入）
+import type { BlogZhCollectionItem, BlogEnCollectionItem } from '@nuxt/content'
+
+/**
+ * content v3 为两个语种的 collection 生成的 item 类型。
+ * 之前 mapToBlogPost 的入参写成 Record<string, unknown>，与真实 collection item
+ * 不兼容（item 没有索引签名），只能靠一堆 as 断言绕过——改成真实类型后
+ * 字段访问本身就是类型安全的，断言可以全部去掉。
+ */
+type BlogContentItem = BlogZhCollectionItem | BlogEnCollectionItem
 
 export function useBlog() {
   const { locale } = useI18n()
@@ -34,14 +44,14 @@ export function useBlog() {
 
   async function getPostBySlug(
     slug: string,
-  ): Promise<{ post: BlogPost | null; content: Record<string, unknown> | null }> {
+  ): Promise<{ post: BlogPost | null; content: BlogContentItem | null }> {
     try {
       const collection = collectionName.value
       const contentPath = locale.value === 'zh' ? `/blog/zh/${slug}` : `/blog/en/${slug}`
       const data = await queryCollection(collection).path(contentPath).first()
 
       if (!data) return { post: null, content: null }
-      return { post: mapToBlogPost(data), content: data as Record<string, unknown> }
+      return { post: mapToBlogPost(data), content: data }
     } catch (error) {
       console.error('获取博客文章详情失败:', error)
       return { post: null, content: null }
@@ -104,17 +114,17 @@ export function useBlog() {
     }
   }
 
-  function mapToBlogPost(item: Record<string, unknown>): BlogPost {
+  function mapToBlogPost(item: BlogContentItem): BlogPost {
     return {
-      title: (item.title as string) || '',
-      description: item.description as string | undefined,
-      date: (item.date as string) || '',
-      updated: item.updated as string | undefined,
-      image: item.image as string | undefined,
-      tags: Array.isArray(item.tags) ? (item.tags as string[]) : [],
-      category: item.category as string | undefined,
-      draft: (item.draft as boolean) || false,
-      path: (item.path as string) || '',
+      title: item.title || '',
+      description: item.description,
+      date: item.date || '',
+      updated: item.updated,
+      image: item.image,
+      tags: Array.isArray(item.tags) ? item.tags : [],
+      category: item.category,
+      draft: item.draft || false,
+      path: item.path || '',
     }
   }
 

@@ -32,7 +32,7 @@
       <DashboardDonutChart
         v-if="skillStats.length"
         :items="skillStats"
-        :aria-label="t('about.skills')"
+        :caption="t('about.skills')"
       />
       <DashboardEmptyState v-else :message="t('projects.noResults')" />
     </DashboardPanel>

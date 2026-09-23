@@ -11,7 +11,7 @@
   <div class="contact-grid">
     <article v-for="item in socials" :key="item.name" class="contact-card">
       <header class="contact-head">
-        <span class="contact-chip" aria-hidden="true"/>
+        <span class="contact-chip" aria-hidden="true" />
         <h3 class="contact-name">{{ item.name }}</h3>
       </header>
 
@@ -31,13 +31,7 @@
       </p>
 
       <footer v-if="item.url || item.value" class="contact-foot">
-        <a
-          v-if="item.url"
-          class="contact-link"
-          :href="item.url"
-          target="_blank"
-          rel="noopener"
-        >
+        <a v-if="item.url" class="contact-link" :href="item.url" target="_blank" rel="noopener">
           {{ item.name }}<span class="contact-arrow" aria-hidden="true">↗</span>
         </a>
         <button v-else-if="item.value" type="button" class="contact-copy" @click="copy(item.value)">

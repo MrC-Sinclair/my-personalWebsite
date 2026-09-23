@@ -1,5 +1,9 @@
-/// <reference types="vite/client" />
+/// <reference types="vitest/importMeta" />
 /**
+ * 用 vitest 自带的 importMeta 类型（提供 import.meta.glob 声明）替代 vite/client：
+ * pnpm 严格结构下 vite 不在顶层 node_modules，/// <reference types="vite/client" />
+ * 会报 TS2688「找不到类型定义文件」。功能等价且无需新增依赖。
+ *
  * 多风格架构结构测试
  * ------------------------------------------------------------
  * 只做结构校验（不渲染组件）：
@@ -33,8 +37,13 @@ describe('多风格架构结构', () => {
 
   it.each(styleRegistry.map((item) => [item.id, item] as const))('%s 目录结构完整', (id) => {
     expect(existsSync(resolve(stylesRoot, id)), `styles/${id}/ 目录不存在`).toBe(true)
-    expect(existsSync(resolve(stylesRoot, id, 'tokens.css')), `styles/${id}/tokens.css 不存在`).toBe(true)
-    expect(existsSync(resolve(stylesRoot, id, 'index.ts')), `styles/${id}/index.ts 不存在`).toBe(true)
+    expect(
+      existsSync(resolve(stylesRoot, id, 'tokens.css')),
+      `styles/${id}/tokens.css 不存在`,
+    ).toBe(true)
+    expect(existsSync(resolve(stylesRoot, id, 'index.ts')), `styles/${id}/index.ts 不存在`).toBe(
+      true,
+    )
     expect(existsSync(resolve(stylesRoot, id, 'pages')), `styles/${id}/pages/ 不存在`).toBe(true)
   })
 

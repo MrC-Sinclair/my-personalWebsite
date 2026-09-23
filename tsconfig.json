@@ -18,6 +18,13 @@
       "@/*": ["./*"]
     }
   },
-  "exclude": ["node_modules", ".nuxt", ".output"],
+  "exclude": [
+    "node_modules",
+    ".nuxt",
+    ".output",
+    // drizzle/ 是数据库迁移的预留 Schema，drizzle-orm 并未安装
+    //（package.json 里没有该依赖），纳入检查会报 TS2307 模块找不到
+    "drizzle"
+  ],
   "extends": "./.nuxt/tsconfig.json"
 }

@@ -229,12 +229,11 @@ export default defineNuxtConfig({
     provider: 'ipx',
   },
 
-  fonts: {
-    providers: {
-      google: false,
-      googleicons: false,
-    },
-  },
+  // 这里原本有一段 `fonts: { providers: { google: false } }`，已删除：
+  // 该配置属于 @nuxt/fonts 模块，而 modules 里没有注册它，属于永不生效的死配置
+  //（TS 也报 InputConfig 上不存在 fonts）。各风格字体一律用系统字体栈
+  //（见 styles/<id>/tokens.css 的 --font-*，约定禁止引入字体文件），
+  // 本就不存在从 Google Fonts 拉字体的路径。
 
   pwa: {
     registerType: 'autoUpdate',

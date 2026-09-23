@@ -6,7 +6,12 @@
  *
  * @see composables/useBlog.ts - 博客数据获取（当前从 Markdown 读取）
  * @see composables/useProjects.ts - 项目数据获取（当前从 Markdown 读取）
+ *
+ * ⚠️ 本文件加了 @ts-nocheck：drizzle-orm 尚未安装（package.json 里没有该依赖，
+ *    安装它才意味着真正开始数据库迁移）。不豁免会持续报 TS2307「找不到
+ *    drizzle-orm/pg-core」，污染每次类型检查的结果。启用数据库时请删掉这行。
  */
+// @ts-nocheck
 
 import { pgTable, varchar, text, timestamp, boolean } from 'drizzle-orm/pg-core'
 

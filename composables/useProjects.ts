@@ -6,6 +6,11 @@
  */
 
 import type { Project } from '~/types/project'
+// content v3 为各 collection 生成的 item 类型（声明在 @nuxt/content 模块内部，需显式导入）
+import type { ProjectsZhCollectionItem, ProjectsEnCollectionItem } from '@nuxt/content'
+
+/** content v3 为两个语种 collection 生成的 item 类型（同 useBlog 的处理方式） */
+type ProjectContentItem = ProjectsZhCollectionItem | ProjectsEnCollectionItem
 
 export function useProjects() {
   const { locale } = useI18n()
@@ -33,14 +38,14 @@ export function useProjects() {
 
   async function getProjectBySlug(
     slug: string,
-  ): Promise<{ project: Project | null; content: Record<string, unknown> | null }> {
+  ): Promise<{ project: Project | null; content: ProjectContentItem | null }> {
     try {
       const collection = collectionName.value
       const contentPath = locale.value === 'zh' ? `/projects/zh/${slug}` : `/projects/en/${slug}`
       const data = await queryCollection(collection).path(contentPath).first()
 
       if (!data) return { project: null, content: null }
-      return { project: mapToProject(data), content: data as Record<string, unknown> }
+      return { project: mapToProject(data), content: data }
     } catch (error) {
       console.error('获取项目详情失败:', error)
       return { project: null, content: null }
@@ -52,17 +57,17 @@ export function useProjects() {
     return projects.filter((p) => p.featured).slice(0, limit)
   }
 
-  function mapToProject(item: Record<string, unknown>): Project {
+  function mapToProject(item: ProjectContentItem): Project {
     return {
-      title: (item.title as string) || '',
-      description: item.description as string | undefined,
-      date: (item.date as string) || '',
-      image: item.image as string | undefined,
-      tags: Array.isArray(item.tags) ? (item.tags as string[]) : [],
-      demoUrl: item.demoUrl as string | undefined,
-      githubUrl: item.githubUrl as string | undefined,
-      featured: (item.featured as boolean) || false,
-      path: (item.path as string) || '',
+      title: item.title || '',
+      description: item.description,
+      date: item.date || '',
+      image: item.image,
+      tags: Array.isArray(item.tags) ? item.tags : [],
+      demoUrl: item.demoUrl,
+      githubUrl: item.githubUrl,
+      featured: item.featured || false,
+      path: item.path || '',
     }
   }
 

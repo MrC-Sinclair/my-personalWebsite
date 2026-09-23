@@ -8,14 +8,17 @@
 <template>
   <div class="donut">
     <div class="donut-chart">
-      <svg viewBox="0 0 96 96" role="img" :aria-label="ariaLabel">
+      <svg viewBox="0 0 96 96" role="img" :aria-label="caption">
         <circle class="ring-track" cx="48" cy="48" r="38" fill="none" stroke-width="14" />
         <g transform="rotate(-90 48 48)">
           <circle
             v-for="seg in segments"
             :key="seg.label"
             class="ring-seg"
-            :class="{ 'is-active': activeIndex === null || seg.index === activeIndex, 'is-dim': activeIndex !== null && seg.index !== activeIndex }"
+            :class="{
+              'is-active': activeIndex === null || seg.index === activeIndex,
+              'is-dim': activeIndex !== null && seg.index !== activeIndex,
+            }"
             cx="48"
             cy="48"
             r="38"
@@ -38,7 +41,7 @@
         @mouseenter="activeIndex = seg.index"
         @mouseleave="activeIndex = null"
       >
-        <span class="legend-chip" :style="{ background: seg.color }" aria-hidden="true"/>
+        <span class="legend-chip" :style="{ background: seg.color }" aria-hidden="true" />
         <span class="legend-label">{{ seg.label }}</span>
         <span class="legend-value">{{ seg.value }} · {{ seg.percent }}%</span>
       </li>
@@ -50,12 +53,24 @@
 const props = defineProps<{
   /** 图表数据：label 为分组名，value 为真实计数 */
   items: Array<{ label: string; value: number }>
-  /** 环形图的无障碍描述（i18n） */
-  ariaLabel: string
+  /**
+   * 环形图的无障碍描述（i18n），渲染为 <svg role="img"> 的 aria-label。
+   * 原名 ariaLabel：模板里只能写 :aria-label（ESLint attribute-hyphenation），
+   * 而 Volar 又要求 camelCase 才能匹配类型——两边规则互相打架。
+   * 改为无连字符的 label 后，:label 同时满足 lint 与类型检查。
+   */
+  caption: string
 }>()
 
 /** 图表序列色 —— 风格签名装饰（前两位对应 --c-accent / --c-accent-2） */
-const PALETTE = ['var(--c-accent)', 'var(--c-accent-2)', '#34d399', '#a78bfa', '#f472b6', '#60a5fa'] as const
+const PALETTE = [
+  'var(--c-accent)',
+  'var(--c-accent-2)',
+  '#34d399',
+  '#a78bfa',
+  '#f472b6',
+  '#60a5fa',
+] as const
 
 /** 当前悬停的扇区下标（null = 无悬停） */
 const activeIndex = ref<number | null>(null)
@@ -77,7 +92,7 @@ const segments = computed(() => {
       label: item.label,
       value: item.value,
       color: PALETTE[index % PALETTE.length],
-      dash: `${((fraction * CIRCUMFERENCE).toFixed(2))} ${((CIRCUMFERENCE - fraction * CIRCUMFERENCE).toFixed(2))}`,
+      dash: `${(fraction * CIRCUMFERENCE).toFixed(2)} ${(CIRCUMFERENCE - fraction * CIRCUMFERENCE).toFixed(2)}`,
       offset: `${(-acc * CIRCUMFERENCE).toFixed(2)}`,
       percent: Math.round(fraction * 100),
     }

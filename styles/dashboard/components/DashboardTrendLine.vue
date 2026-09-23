@@ -13,7 +13,7 @@
       :viewBox="`0 0 ${WIDTH} ${HEIGHT}`"
       preserveAspectRatio="none"
       role="img"
-      :aria-label="ariaLabel"
+      :aria-label="caption"
     >
       <!-- 横向网格基线 -->
       <line
@@ -45,8 +45,9 @@ const props = defineProps<{
   values: number[]
   /** 横轴标签（两位数字月份） */
   labels: string[]
-  /** 趋势图的无障碍描述（i18n） */
-  ariaLabel: string
+  /** 趋势图的无障碍描述（i18n），渲染为 svg 的 aria-label。
+      同 DashboardDonutChart：prop 名不含连字符，避免 kebab/camel 规则冲突 */
+  caption: string
 }>()
 
 /** SVG 视口尺寸（配合 preserveAspectRatio="none" 拉伸铺满） */
