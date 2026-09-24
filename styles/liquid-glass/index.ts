@@ -12,6 +12,7 @@ import LiquidGlassAbout from './pages/LiquidGlassAbout.vue'
 import LiquidGlassProjects from './pages/LiquidGlassProjects.vue'
 import LiquidGlassBlog from './pages/LiquidGlassBlog.vue'
 import LiquidGlassContact from './pages/LiquidGlassContact.vue'
+import LiquidGlassDetailPage from './components/LiquidGlassDetailPage.vue'
 
 export default {
   pages: {
@@ -21,4 +22,6 @@ export default {
     '/blog': LiquidGlassBlog,
     '/contact': LiquidGlassContact,
   },
+  // 详情阅读页：/style/liquid-glass/blog/<slug> 与 /style/liquid-glass/projects/<slug>
+  detail: LiquidGlassDetailPage,
 } satisfies StyleEntry

@@ -38,6 +38,8 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 标签防御：只取前 4 个非空标签 */
 const displayTags = computed(() =>
@@ -50,8 +52,8 @@ const displayTags = computed(() =>
 /** 日期展示：共享层 formatDate 按当前语言格式化 */
 const displayDate = computed(() => formatDate(props.post.date, locale.value === 'zh' ? 'zh-CN' : 'en-US'))
 
-/** 由内容路径推导详情页路由（slug 推导统一走共享层 contentSlug） */
-const postRoute = computed(() => `/blog/${contentSlug(props.post.path)}`)
+/** 由内容路径推导详情页路由（风格内：/style/<id>/blog/<slug>） */
+const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(props.post.path)}`)
 </script>
 
 <style scoped>

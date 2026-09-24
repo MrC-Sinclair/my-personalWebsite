@@ -13,6 +13,8 @@ import MetroProjects from './pages/MetroProjects.vue'
 import MetroBlog from './pages/MetroBlog.vue'
 import MetroContact from './pages/MetroContact.vue'
 
+import MetroDetailPage from './components/MetroDetailPage.vue'
+
 export default {
   pages: {
     '/': MetroIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': MetroBlog,
     '/contact': MetroContact,
   },
+  // 详情阅读页：/style/metro/blog/<slug> 与 /style/metro/projects/<slug>
+  detail: MetroDetailPage,
 } satisfies StyleEntry

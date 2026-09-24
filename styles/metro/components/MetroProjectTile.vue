@@ -33,9 +33,13 @@ const props = defineProps<{
 }>()
 
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
-/** 详情页地址：slug 用共享层 contentSlug 从内容 path 推导，再拼详情路由 */
-const detailLink = computed(() => localePath(`/projects/${contentSlug(props.project.path)}`))
+/** 详情页地址：风格内路由 */
+const detailLink = computed(
+  () => localePath(`/style/${styleId.value}/projects/${contentSlug(props.project.path)}`),
+)
 
 /** 防御：tags 非数组时回退空列表，只取前三个 */
 const topTags = computed(() => (Array.isArray(props.project.tags) ? props.project.tags.slice(0, 3) : []))

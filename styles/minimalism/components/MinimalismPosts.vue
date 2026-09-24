@@ -52,6 +52,8 @@ defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 元信息行：分类 + 标签串（数组字段做防御，最多取 3 个标签） */
 function metaOf(post: BlogPost): string {
@@ -65,9 +67,9 @@ function metaOf(post: BlogPost): string {
   return parts.join(' · ')
 }
 
-/** 由内容路径推导详情页路由（slug 换算复用共享层 contentSlug，链接形态不变） */
+/** 由内容路径推导详情页路由（风格内：/style/<id>/blog/<slug>） */
 function postRoute(post: BlogPost): string {
-  return `/blog/${contentSlug(post.path)}`
+  return `/style/${styleId.value}/blog/${contentSlug(post.path)}`
 }
 </script>
 

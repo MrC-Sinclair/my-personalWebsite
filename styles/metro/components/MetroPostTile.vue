@@ -32,12 +32,16 @@ const props = defineProps<{
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 本地化发布日期（共享层 formatDate） */
 const formattedDate = computed(() => formatDate(props.post.date, locale.value))
 
-/** 详情页地址：slug 用共享层 contentSlug 从内容 path 推导，再拼详情路由 */
-const detailLink = computed(() => localePath(`/blog/${contentSlug(props.post.path)}`))
+/** 详情页地址：风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404 */
+const detailLink = computed(
+  () => localePath(`/style/${styleId.value}/blog/${contentSlug(props.post.path)}`),
+)
 
 /** 防御：tags 非数组时回退空串，只取前两个 */
 const tagText = computed(() =>

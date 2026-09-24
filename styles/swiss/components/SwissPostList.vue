@@ -42,6 +42,8 @@ defineProps<{
 }>()
 
 const { locale } = useI18n()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 const localePath = useLocalePath()
 
 /** 编号格式化：补零到两位 */
@@ -49,9 +51,9 @@ function pad(n: number): string {
   return String(n).padStart(2, '0')
 }
 
-/** 文章详情路由（slug 换算复用共享层 contentSlug，链接形态不变） */
+/** 文章详情路由（风格内：/style/<id>/blog/<slug>） */
 function postPath(post: BlogPost): string {
-  return `/blog/${contentSlug(post.path)}`
+  return `/style/${styleId.value}/blog/${contentSlug(post.path)}`
 }
 
 /** 行尾分类信息：优先分类，无则取首个标签（数组字段防御） */

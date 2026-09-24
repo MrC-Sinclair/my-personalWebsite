@@ -69,6 +69,8 @@ defineProps<{
 }>()
 
 const { t, locale } = useI18n()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 const localePath = useLocalePath()
 
 /** 编号格式化：补零到两位 */
@@ -76,9 +78,9 @@ function pad(n: number): string {
   return String(n).padStart(2, '0')
 }
 
-/** 项目详情路由（slug 换算复用共享层 contentSlug，链接形态不变） */
+/** 项目详情路由（风格内：/style/<id>/projects/<slug>） */
 function projectPath(project: Project): string {
-  return `/projects/${contentSlug(project.path)}`
+  return `/style/${styleId.value}/projects/${contentSlug(project.path)}`
 }
 
 /** 技术栈标签转斜杠分隔文本（数组字段防御，最多取 4 个） */

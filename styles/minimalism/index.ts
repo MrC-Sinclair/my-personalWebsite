@@ -12,6 +12,7 @@ import MinimalismAbout from './pages/MinimalismAbout.vue'
 import MinimalismProjects from './pages/MinimalismProjects.vue'
 import MinimalismBlog from './pages/MinimalismBlog.vue'
 import MinimalismContact from './pages/MinimalismContact.vue'
+import MinimalismDetailPage from './components/MinimalismDetailPage.vue'
 
 export default {
   pages: {
@@ -21,4 +22,6 @@ export default {
     '/blog': MinimalismBlog,
     '/contact': MinimalismContact,
   },
+  // 详情阅读页：/style/minimalism/blog/<slug> 与 /style/minimalism/projects/<slug>
+  detail: MinimalismDetailPage,
 } satisfies StyleEntry

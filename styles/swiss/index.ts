@@ -13,6 +13,8 @@ import SwissProjects from './pages/SwissProjects.vue'
 import SwissBlog from './pages/SwissBlog.vue'
 import SwissContact from './pages/SwissContact.vue'
 
+import SwissDetailPage from './components/SwissDetailPage.vue'
+
 export default {
   pages: {
     '/': SwissIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': SwissBlog,
     '/contact': SwissContact,
   },
+  // 详情阅读页：/style/swiss/blog/<slug> 与 /style/swiss/projects/<slug>
+  detail: SwissDetailPage,
 } satisfies StyleEntry
