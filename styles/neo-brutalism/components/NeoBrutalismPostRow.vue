@@ -7,7 +7,10 @@
   数据来自共享层 useBlog（页面传入），slug 换算复用共享层 contentSlug。
 -->
 <template>
-  <NuxtLink class="row" :to="localePath(`/blog/${contentSlug(post.path)}`)">
+  <NuxtLink
+    class="row"
+    :to="localePath(`/style/${styleId}/blog/${contentSlug(post.path)}`)"
+  >
     <span class="date-box">{{ formatDate(post.date, locale) }}</span>
     <!-- div 包裹保证 h3 嵌套合法（a 元素透明内容模型继承 li 的流内容） -->
     <div class="main">
@@ -32,6 +35,8 @@ const props = defineProps<{
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 防御性归一化：tags 数组字段用 Array.isArray 检查 */
 const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? props.post.tags : []))

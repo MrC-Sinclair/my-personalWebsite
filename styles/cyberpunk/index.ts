@@ -13,6 +13,8 @@ import CyberpunkProjects from './pages/CyberpunkProjects.vue'
 import CyberpunkBlog from './pages/CyberpunkBlog.vue'
 import CyberpunkContact from './pages/CyberpunkContact.vue'
 
+import CyberpunkDetailPage from './components/CyberpunkDetailPage.vue'
+
 export default {
   pages: {
     '/': CyberpunkIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': CyberpunkBlog,
     '/contact': CyberpunkContact,
   },
+  // 详情阅读页：/style/cyberpunk/blog/<slug> 与 /style/cyberpunk/projects/<slug>
+  detail: CyberpunkDetailPage,
 } satisfies StyleEntry

@@ -13,6 +13,8 @@ import NeoBrutalismProjects from './pages/NeoBrutalismProjects.vue'
 import NeoBrutalismBlog from './pages/NeoBrutalismBlog.vue'
 import NeoBrutalismContact from './pages/NeoBrutalismContact.vue'
 
+import NeoBrutalismDetailPage from './components/NeoBrutalismDetailPage.vue'
+
 export default {
   pages: {
     '/': NeoBrutalismIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': NeoBrutalismBlog,
     '/contact': NeoBrutalismContact,
   },
+  // 详情阅读页：/style/neo-brutalism/blog/<slug> 与 /style/neo-brutalism/projects/<slug>
+  detail: NeoBrutalismDetailPage,
 } satisfies StyleEntry

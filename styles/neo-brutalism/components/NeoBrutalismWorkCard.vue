@@ -8,7 +8,11 @@
   数据来自共享层 useProjects（页面传入）。
 -->
 <template>
-  <NuxtLink class="work" :class="`is-tone-${index % 3}`" :to="localePath(`/projects/${contentSlug(project.path)}`)">
+  <NuxtLink
+    class="work"
+    :class="`is-tone-${index % 3}`"
+    :to="localePath(`/style/${styleId}/projects/${contentSlug(project.path)}`)"
+  >
     <article class="card">
       <span class="no" aria-hidden="true">{{ no }}</span>
       <div class="body">
@@ -61,6 +65,8 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 巨大编号：01 起，两位补零（纯算术，SSR 安全） */
 const no = computed(() => String(props.index + 1).padStart(2, '0'))

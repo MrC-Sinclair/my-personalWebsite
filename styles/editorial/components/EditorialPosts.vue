@@ -65,6 +65,8 @@ defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 两位编号（01、02…） */
 function padNo(n: number): string {
@@ -79,9 +81,9 @@ function displayTags(post: BlogPost): string[] {
     .slice(0, 3)
 }
 
-/** 由内容路径推导详情页路由（slug 换算复用共享层 contentSlug） */
+/** 由内容路径推导详情页路由（风格内：/style/<id>/blog/<slug>） */
 function postRoute(post: BlogPost): string {
-  return `/blog/${contentSlug(post.path)}`
+  return `/style/${styleId.value}/blog/${contentSlug(post.path)}`
 }
 </script>
 

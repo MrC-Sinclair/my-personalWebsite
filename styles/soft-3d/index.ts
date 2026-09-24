@@ -14,6 +14,8 @@ import Soft3DProjects from './pages/Soft3DProjects.vue'
 import Soft3DBlog from './pages/Soft3DBlog.vue'
 import Soft3DContact from './pages/Soft3DContact.vue'
 
+import Soft3DDetailPage from './components/Soft3DDetailPage.vue'
+
 export default {
   pages: {
     '/': Soft3DIndex,
@@ -22,4 +24,6 @@ export default {
     '/blog': Soft3DBlog,
     '/contact': Soft3DContact,
   },
+  // 详情阅读页：/style/soft-3d/blog/<slug> 与 /style/soft-3d/projects/<slug>
+  detail: Soft3DDetailPage,
 } satisfies StyleEntry

@@ -51,6 +51,8 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 十六进制索引徽标：0x01、0x02…（纯视图装饰，确定性推导） */
 const hexIndex = computed(() => `0x${(props.index + 1).toString(16).toUpperCase().padStart(2, '0')}`)
@@ -68,8 +70,8 @@ const displayDate = computed(() =>
   formatDate(props.post.date, locale.value === 'zh' ? 'zh-CN' : 'en-US'),
 )
 
-/** 由内容路径推导详情页路由（slug 换算复用共享层 contentSlug） */
-const postRoute = computed(() => `/blog/${contentSlug(props.post.path)}`)
+/** 由内容路径推导详情页路由（风格内：/style/<id>/blog/<slug>） */
+const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(props.post.path)}`)
 </script>
 
 <style scoped>

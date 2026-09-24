@@ -13,6 +13,8 @@ import EditorialProjects from './pages/EditorialProjects.vue'
 import EditorialBlog from './pages/EditorialBlog.vue'
 import EditorialContact from './pages/EditorialContact.vue'
 
+import EditorialDetailPage from './components/EditorialDetailPage.vue'
+
 export default {
   pages: {
     '/': EditorialIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': EditorialBlog,
     '/contact': EditorialContact,
   },
+  // 详情阅读页：/style/editorial/blog/<slug> 与 /style/editorial/projects/<slug>
+  detail: EditorialDetailPage,
 } satisfies StyleEntry
