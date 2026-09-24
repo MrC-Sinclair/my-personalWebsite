@@ -12,7 +12,10 @@
     <span class="card-no" aria-hidden="true">{{ no }}</span>
 
     <h3 class="card-title">
-      <NuxtLink class="card-link" :to="localePath(`/projects/${contentSlug(project.path)}`)">
+      <NuxtLink
+        class="card-link"
+        :to="localePath(`/style/${styleId}/projects/${contentSlug(project.path)}`)"
+      >
         {{ project.title }}
       </NuxtLink>
     </h3>
@@ -61,6 +64,8 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 右上角编号：01 / 02 …（装饰） */
 const no = computed(() => String(props.index + 1).padStart(2, '0'))

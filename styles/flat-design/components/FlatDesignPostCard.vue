@@ -45,6 +45,8 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 当前色调（主色 + 加深色，经 CSS 变量注入） */
 const tone = computed(() => flatTone(props.toneIndex))
@@ -52,8 +54,10 @@ const tone = computed(() => flatTone(props.toneIndex))
 /** 本地化发布日期（共享层 formatDate） */
 const formattedDate = computed(() => formatDate(props.post.date, locale.value))
 
-/** 详情页地址：slug 换算复用共享层 contentSlug，再拼本地化详情路由 */
-const detailLink = computed(() => localePath(`/blog/${contentSlug(props.post.path)}`))
+/** 详情页地址：风格内路由（/style/<id>/blog/<slug>） */
+const detailLink = computed(
+  () => localePath(`/style/${styleId.value}/blog/${contentSlug(props.post.path)}`),
+)
 
 /** 防御：tags 非数组时回退空串，只取前三个 */
 const tagText = computed(() =>

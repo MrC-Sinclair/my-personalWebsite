@@ -13,7 +13,10 @@
 
     <div class="row-main">
       <h3 class="row-title">
-        <NuxtLink class="row-link" :to="localePath(`/blog/${contentSlug(post.path)}`)">
+        <NuxtLink
+          class="row-link"
+          :to="localePath(`/style/${styleId}/blog/${contentSlug(post.path)}`)"
+        >
           {{ post.title }}
         </NuxtLink>
       </h3>
@@ -41,6 +44,8 @@ const props = defineProps<{
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 标签摘要：最多显示前 2 个（防御性处理非数组字段） */
 const metaTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tags.slice(0, 2) : []))

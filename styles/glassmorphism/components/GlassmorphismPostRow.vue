@@ -8,7 +8,11 @@
   复用共享层 contentSlug。
 -->
 <template>
-  <NuxtLink class="post-row" :to="localePath(`/blog/${contentSlug(post.path)}`)" :aria-label="`${t('blog.readMore')}：${post.title}`">
+  <NuxtLink
+    class="post-row"
+    :to="localePath(`/style/${styleId}/blog/${contentSlug(post.path)}`)"
+    :aria-label="`${t('blog.readMore')}：${post.title}`"
+  >
     <time class="row-date" :datetime="post.date">{{ formatDate(post.date, locale) }}</time>
     <span class="row-main">
       <span class="row-title">{{ post.title }}</span>
@@ -31,6 +35,8 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 // 数组字段防御：tags 必须是数组才渲染
 const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tags : []))

@@ -13,6 +13,8 @@ import ClaymorphismProjects from './pages/ClaymorphismProjects.vue'
 import ClaymorphismBlog from './pages/ClaymorphismBlog.vue'
 import ClaymorphismContact from './pages/ClaymorphismContact.vue'
 
+import ClaymorphismDetailPage from './components/ClaymorphismDetailPage.vue'
+
 export default {
   pages: {
     '/': ClaymorphismIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': ClaymorphismBlog,
     '/contact': ClaymorphismContact,
   },
+  // 详情阅读页：/style/claymorphism/blog/<slug> 与 /style/claymorphism/projects/<slug>
+  detail: ClaymorphismDetailPage,
 } satisfies StyleEntry

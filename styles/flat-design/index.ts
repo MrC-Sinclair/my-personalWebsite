@@ -15,6 +15,8 @@ import FlatDesignProjects from './pages/FlatDesignProjects.vue'
 import FlatDesignBlog from './pages/FlatDesignBlog.vue'
 import FlatDesignContact from './pages/FlatDesignContact.vue'
 
+import FlatDesignDetailPage from './components/FlatDesignDetailPage.vue'
+
 export default {
   pages: {
     '/': FlatDesignIndex,
@@ -23,4 +25,6 @@ export default {
     '/blog': FlatDesignBlog,
     '/contact': FlatDesignContact,
   },
+  // 详情阅读页：/style/flat-design/blog/<slug> 与 /style/flat-design/projects/<slug>
+  detail: FlatDesignDetailPage,
 } satisfies StyleEntry

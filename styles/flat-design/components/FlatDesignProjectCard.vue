@@ -63,6 +63,8 @@ const props = defineProps<{
 }>()
 
 const { t, locale } = useI18n()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 const localePath = useLocalePath()
 
 /** 当前色调（主色 + 加深色，经 CSS 变量注入） */
@@ -72,7 +74,9 @@ const tone = computed(() => flatTone(props.toneIndex))
 const variant = computed(() => ((props.toneIndex % 4) + 4) % 4)
 
 /** 详情页地址：slug 换算复用共享层 contentSlug，再拼本地化详情路由 */
-const detailLink = computed(() => localePath(`/projects/${contentSlug(props.project.path)}`))
+const detailLink = computed(
+  () => localePath(`/style/${styleId.value}/projects/${contentSlug(props.project.path)}`),
+)
 
 /** 本地化日期（共享层 formatDate） */
 const formattedDate = computed(() => formatDate(props.project.date, locale.value))

@@ -13,6 +13,8 @@ import NeumorphismProjects from './pages/NeumorphismProjects.vue'
 import NeumorphismBlog from './pages/NeumorphismBlog.vue'
 import NeumorphismContact from './pages/NeumorphismContact.vue'
 
+import NeumorphismDetailPage from './components/NeumorphismDetailPage.vue'
+
 export default {
   pages: {
     '/': NeumorphismIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': NeumorphismBlog,
     '/contact': NeumorphismContact,
   },
+  // 详情阅读页：/style/neumorphism/blog/<slug> 与 /style/neumorphism/projects/<slug>
+  detail: NeumorphismDetailPage,
 } satisfies StyleEntry

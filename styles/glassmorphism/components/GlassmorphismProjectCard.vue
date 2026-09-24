@@ -8,7 +8,10 @@
   contentSlug。
 -->
 <template>
-  <NuxtLink class="project-card" :to="localePath(`/projects/${contentSlug(project.path)}`)">
+  <NuxtLink
+    class="project-card"
+    :to="localePath(`/style/${styleId}/projects/${contentSlug(project.path)}`)"
+  >
     <div class="card-top">
       <h3 class="card-title">{{ project.title }}</h3>
       <span v-if="project.featured" class="featured-badge">{{ t('projects.featured') }}</span>
@@ -56,6 +59,8 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 // 数组字段防御：tags 必须是数组才渲染
 const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.project.tags : []))

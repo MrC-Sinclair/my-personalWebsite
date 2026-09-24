@@ -43,6 +43,8 @@ const props = withDefaults(
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 标签防御：只取前 2 个非空标签 */
 const displayTags = computed(() =>
@@ -52,8 +54,8 @@ const displayTags = computed(() =>
     .slice(0, 2),
 )
 
-/** 由内容路径推导详情页路由（slug 换算复用共享层 contentSlug） */
-const postRoute = computed(() => `/blog/${contentSlug(props.post.path)}`)
+/** 由内容路径推导详情页路由（风格内：/style/<id>/blog/<slug>） */
+const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(props.post.path)}`)
 </script>
 
 <style scoped>

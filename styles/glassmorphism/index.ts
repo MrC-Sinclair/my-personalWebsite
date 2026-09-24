@@ -13,6 +13,8 @@ import GlassmorphismProjects from './pages/GlassmorphismProjects.vue'
 import GlassmorphismBlog from './pages/GlassmorphismBlog.vue'
 import GlassmorphismContact from './pages/GlassmorphismContact.vue'
 
+import GlassmorphismDetailPage from './components/GlassmorphismDetailPage.vue'
+
 export default {
   pages: {
     '/': GlassmorphismIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': GlassmorphismBlog,
     '/contact': GlassmorphismContact,
   },
+  // 详情阅读页：/style/glassmorphism/blog/<slug> 与 /style/glassmorphism/projects/<slug>
+  detail: GlassmorphismDetailPage,
 } satisfies StyleEntry
