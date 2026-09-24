@@ -22,6 +22,8 @@ import TerminalProjects from './pages/TerminalProjects.vue'
 import TerminalBlog from './pages/TerminalBlog.vue'
 import TerminalContact from './pages/TerminalContact.vue'
 
+import TerminalDetailPage from './components/TerminalDetailPage.vue'
+
 export default {
   pages: {
     '/': TerminalIndex,
@@ -30,4 +32,6 @@ export default {
     '/blog': TerminalBlog,
     '/contact': TerminalContact,
   },
+  // 详情阅读页：/style/terminal/blog/<slug> 与 /style/terminal/projects/<slug>
+  detail: TerminalDetailPage,
 } satisfies StyleEntry

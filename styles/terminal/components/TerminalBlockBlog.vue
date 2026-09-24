@@ -13,7 +13,10 @@
     <li v-for="(post, i) in safePosts" :key="post.path || i" class="post">
       <span class="post-date">{{ dateText(post) }}</span>
       <span class="post-title">
-        <NuxtLink class="post-link" :to="localePath(`/blog/${slugOf(post)}`)">
+        <NuxtLink
+          class="post-link"
+          :to="localePath(`/style/${styleId}/blog/${slugOf(post)}`)"
+        >
           {{ post.title }}
         </NuxtLink>
       </span>
@@ -38,6 +41,8 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 防御：数组字段用 Array.isArray 检查，异常时回落为空列表 */
 const safePosts = computed(() => (Array.isArray(props.posts) ? props.posts : []))

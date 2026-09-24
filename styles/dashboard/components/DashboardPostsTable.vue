@@ -21,7 +21,10 @@
         <tr v-for="post in posts" :key="post.path">
           <td class="td-mono">{{ formatDate(post.date, locale) }}</td>
           <td class="td-title">
-            <NuxtLink class="row-link" :to="localePath(`/blog/${slugOf(post.path)}`)">
+            <NuxtLink
+              class="row-link"
+              :to="localePath(`/style/${styleId}/blog/${slugOf(post.path)}`)"
+            >
               {{ post.title }}
             </NuxtLink>
           </td>
@@ -49,6 +52,8 @@ defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 从内容路径提取 slug（收敛到共享层 contentSlug，多风格唯一实现，链接形态不变） */
 function slugOf(path: string): string {

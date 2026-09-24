@@ -14,7 +14,7 @@
     <span class="item-slot" aria-hidden="true">{{ slotNo }}</span>
     <div class="item-body">
       <h3 class="item-name">
-        <NuxtLink class="item-link" :to="localePath(`/projects/${slug}`)">
+        <NuxtLink class="item-link" :to="localePath(`/style/${styleId}/projects/${slug}`)">
           {{ project.title }}
         </NuxtLink>
       </h3>
@@ -57,11 +57,13 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 编号格：01 起的两位数（语言无关） */
 const slotNo = computed(() => String(props.index + 1).padStart(2, '0'))
 
-/** 从内容路径提取 slug（复用共享层 contentSlug，详情页链接形态不变） */
+/** 从内容路径提取 slug（复用共享层 contentSlug）；详情走风格内路由 */
 const slug = computed(() => contentSlug(props.project.path))
 
 /** 元信息行：日期 + 前 3 个标签（tags 防御性处理） */

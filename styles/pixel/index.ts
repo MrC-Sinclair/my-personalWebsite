@@ -13,6 +13,8 @@ import PixelProjects from './pages/PixelProjects.vue'
 import PixelBlog from './pages/PixelBlog.vue'
 import PixelContact from './pages/PixelContact.vue'
 
+import PixelDetailPage from './components/PixelDetailPage.vue'
+
 export default {
   pages: {
     '/': PixelIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': PixelBlog,
     '/contact': PixelContact,
   },
+  // 详情阅读页：/style/pixel/blog/<slug> 与 /style/pixel/projects/<slug>
+  detail: PixelDetailPage,
 } satisfies StyleEntry

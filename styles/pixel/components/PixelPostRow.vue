@@ -12,7 +12,10 @@
     <span class="row-cursor" aria-hidden="true">▶</span>
     <span class="row-date">{{ dateText }}</span>
     <span class="row-title">
-      <NuxtLink class="row-link" :to="localePath(`/blog/${slug}`)">{{ post.title }}</NuxtLink>
+      <NuxtLink
+        class="row-link"
+        :to="localePath(`/style/${styleId}/blog/${slug}`)"
+      >{{ post.title }}</NuxtLink>
     </span>
     <span v-if="post.category" class="row-badge">{{ post.category }}</span>
     <span v-else class="row-badge row-badge--none" aria-hidden="true">···</span>
@@ -30,6 +33,8 @@ const props = defineProps<{
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 从内容路径提取 slug（复用共享层 contentSlug，详情页链接形态不变） */
 const slug = computed(() => contentSlug(props.post.path))

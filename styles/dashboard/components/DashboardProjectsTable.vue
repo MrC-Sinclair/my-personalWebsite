@@ -22,7 +22,10 @@
       <tbody>
         <tr v-for="project in projects" :key="project.path">
           <td class="td-title">
-            <NuxtLink class="row-link" :to="localePath(`/projects/${slugOf(project.path)}`)">
+            <NuxtLink
+              class="row-link"
+              :to="localePath(`/style/${styleId}/projects/${slugOf(project.path)}`)"
+            >
               {{ project.title }}
             </NuxtLink>
             <span v-if="project.featured" class="badge">{{ t('projects.featured') }}</span>
@@ -72,6 +75,8 @@ defineProps<{
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 从内容路径提取 slug（收敛到共享层 contentSlug，多风格唯一实现，链接形态不变） */
 function slugOf(path: string): string {

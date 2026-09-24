@@ -13,6 +13,8 @@ import DashboardProjects from './pages/DashboardProjects.vue'
 import DashboardBlog from './pages/DashboardBlog.vue'
 import DashboardContact from './pages/DashboardContact.vue'
 
+import DashboardDetailPage from './components/DashboardDetailPage.vue'
+
 export default {
   pages: {
     '/': DashboardIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': DashboardBlog,
     '/contact': DashboardContact,
   },
+  // 详情阅读页：/style/dashboard/blog/<slug> 与 /style/dashboard/projects/<slug>
+  detail: DashboardDetailPage,
 } satisfies StyleEntry

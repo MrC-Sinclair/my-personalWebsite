@@ -13,7 +13,10 @@
       <p class="work-title">
         <span class="work-idx" aria-hidden="true">[{{ i + 1 }}]</span>
         <template v-if="slugOf(project)">
-          <NuxtLink class="work-link" :to="localePath(`/projects/${slugOf(project)}`)">
+          <NuxtLink
+            class="work-link"
+            :to="localePath(`/style/${styleId}/projects/${slugOf(project)}`)"
+          >
             {{ project.title }}
           </NuxtLink>
         </template>
@@ -65,6 +68,8 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 防御：数组字段用 Array.isArray 检查，异常时回落为空列表 */
 const safeProjects = computed(() => (Array.isArray(props.projects) ? props.projects : []))
