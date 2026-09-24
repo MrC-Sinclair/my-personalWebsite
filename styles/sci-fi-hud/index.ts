@@ -13,6 +13,8 @@ import SciFiHudProjects from './pages/SciFiHudProjects.vue'
 import SciFiHudBlog from './pages/SciFiHudBlog.vue'
 import SciFiHudContact from './pages/SciFiHudContact.vue'
 
+import SciFiHudDetailPage from './components/SciFiHudDetailPage.vue'
+
 export default {
   pages: {
     '/': SciFiHudIndex,
@@ -21,4 +23,6 @@ export default {
     '/blog': SciFiHudBlog,
     '/contact': SciFiHudContact,
   },
+  // 详情阅读页：/style/sci-fi-hud/blog/<slug> 与 /style/sci-fi-hud/projects/<slug>
+  detail: SciFiHudDetailPage,
 } satisfies StyleEntry

@@ -10,6 +10,8 @@ import Web2GlossyProjects from './pages/Web2GlossyProjects.vue'
 import Web2GlossyBlog from './pages/Web2GlossyBlog.vue'
 import Web2GlossyContact from './pages/Web2GlossyContact.vue'
 
+import Web2GlossyDetailPage from './components/Web2GlossyDetailPage.vue'
+
 export default {
   pages: {
     '/': Web2GlossyIndex,
@@ -18,4 +20,6 @@ export default {
     '/blog': Web2GlossyBlog,
     '/contact': Web2GlossyContact,
   },
+  // 详情阅读页：/style/web2-glossy/blog/<slug> 与 /style/web2-glossy/projects/<slug>
+  detail: Web2GlossyDetailPage,
 } satisfies StyleEntry

@@ -18,7 +18,10 @@
 
     <div class="paper-body">
       <h3 class="paper-title">
-        <NuxtLink class="paper-link" :to="localePath(`/projects/${slugOf(project.path)}`)">
+        <NuxtLink
+          class="paper-link"
+          :to="localePath(`/style/${styleId}/projects/${slugOf(project.path)}`)"
+        >
           {{ project.title }}
         </NuxtLink>
       </h3>
@@ -73,6 +76,8 @@ const props = withDefaults(
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 防御：tags 非数组时回退为空列表 */
 const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.project.tags : []))

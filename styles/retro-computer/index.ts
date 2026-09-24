@@ -14,6 +14,8 @@ import RetroComputerProjects from './pages/RetroComputerProjects.vue'
 import RetroComputerBlog from './pages/RetroComputerBlog.vue'
 import RetroComputerContact from './pages/RetroComputerContact.vue'
 
+import RetroComputerDetailPage from './components/RetroComputerDetailPage.vue'
+
 export default {
   pages: {
     '/': RetroComputerIndex,
@@ -22,4 +24,6 @@ export default {
     '/blog': RetroComputerBlog,
     '/contact': RetroComputerContact,
   },
+  // 详情阅读页：/style/retro-computer/blog/<slug> 与 /style/retro-computer/projects/<slug>
+  detail: RetroComputerDetailPage,
 } satisfies StyleEntry

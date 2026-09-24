@@ -7,7 +7,11 @@
   悬浮时被扶正抬离桌面、箭头右移。
 -->
 <template>
-  <NuxtLink class="note" :style="{ '--tilt': `${tilt}deg` }" :to="localePath(`/blog/${slugOf(post.path)}`)">
+  <NuxtLink
+    class="note"
+    :style="{ '--tilt': `${tilt}deg` }"
+    :to="localePath(`/style/${styleId}/blog/${slugOf(post.path)}`)"
+  >
     <span class="note-holes" aria-hidden="true">
       <span class="note-hole" />
       <span class="note-hole" />
@@ -52,6 +56,8 @@ withDefaults(
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 从内容路径提取 slug（收敛到共享层 contentSlug，多风格唯一实现，链接形态不变） */
 function slugOf(path: string): string {

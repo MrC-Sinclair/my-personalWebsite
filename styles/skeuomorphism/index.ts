@@ -14,6 +14,8 @@ import SkeuomorphismProjects from './pages/SkeuomorphismProjects.vue'
 import SkeuomorphismBlog from './pages/SkeuomorphismBlog.vue'
 import SkeuomorphismContact from './pages/SkeuomorphismContact.vue'
 
+import SkeuomorphismDetailPage from './components/SkeuomorphismDetailPage.vue'
+
 export default {
   pages: {
     '/': SkeuomorphismIndex,
@@ -22,4 +24,6 @@ export default {
     '/blog': SkeuomorphismBlog,
     '/contact': SkeuomorphismContact,
   },
+  // 详情阅读页：/style/skeuomorphism/blog/<slug> 与 /style/skeuomorphism/projects/<slug>
+  detail: SkeuomorphismDetailPage,
 } satisfies StyleEntry

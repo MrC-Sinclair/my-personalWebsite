@@ -82,6 +82,8 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
+const { styleId } = useStyleContentPath()
 
 /** 载荷编号：两位补零（装饰读数） */
 const code = computed(() => String(props.index + 1).padStart(2, '0'))
@@ -95,7 +97,10 @@ const displayTags = computed(() =>
 )
 
 /** 由内容路径推导详情页路由（slug 换算复用共享层 contentSlug） */
-const projectRoute = computed(() => `/projects/${contentSlug(props.project.path)}`)
+/** 由内容路径推导详情页路由（风格内：/style/<id>/projects/<slug>） */
+const projectRoute = computed(
+  () => `/style/${styleId.value}/projects/${contentSlug(props.project.path)}`,
+)
 </script>
 
 <style scoped>
