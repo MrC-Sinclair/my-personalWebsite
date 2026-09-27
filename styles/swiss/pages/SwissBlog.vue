@@ -4,6 +4,9 @@
   壳由 SwissSubPage 提供；主体是编号区块头 + 文章行列表。
   子页相对首页的唯一数据差异：首页取最新 5 条并给「查看全部」，
   本页取全量——已经在列表页了，不需要再看全部的入口。
+
+  标签筛选：行为在共享层 useBlogTagFilter（?tag= 同步），这里只把筛选后的
+  列表喂给 SwissPostList，视觉由 SwissTagFilter 负责。
 -->
 <template>
   <SwissSubPage>
@@ -21,7 +24,15 @@
           <div v-for="i in 3" :key="i" class="skeleton-row" />
         </div>
 
-        <SwissPostList v-else-if="posts.length" :posts="posts" />
+        <template v-else-if="filteredPosts.length">
+          <SwissTagFilter
+            :tags="tags"
+            :active-tag="activeTag"
+            :total="posts.length"
+            @select="select"
+          />
+          <SwissPostList :posts="filteredPosts" />
+        </template>
 
         <div v-else class="empty">
           <p class="empty-main">{{ t('blog.noResults') }}</p>
@@ -37,6 +48,7 @@ import type { BlogPost } from '~/types/blog'
 import SwissSubPage from '../components/SwissSubPage.vue'
 import SwissSectionHead from '../components/SwissSectionHead.vue'
 import SwissPostList from '../components/SwissPostList.vue'
+import SwissTagFilter from '../components/SwissTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -59,6 +71,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)
