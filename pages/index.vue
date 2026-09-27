@@ -13,7 +13,7 @@
   数据源仅 styles/registry.ts：新增风格注册后自动出现，无需改本页。
 -->
 <script setup lang="ts">
-import { styleRegistry, type StyleMeta } from '~/styles/registry'
+import { styleRegistry, TIER_LABEL_EN, type StyleMeta } from '~/styles/registry'
 
 // 门脸自带页头页脚，不套任何布局
 definePageMeta({ layout: false })
@@ -26,6 +26,18 @@ const route = useRoute()
 // 中文名/英文名按当前语言展示
 function displayName(item: StyleMeta) {
   return locale.value.startsWith('zh') ? item.name : item.en
+}
+
+// 一句话描述与成本标签同样按语言取：registry 里这两项原文是中文，
+// 英文站直接渲染会整页露中文（2026-09-27 修英文版时补齐 noteEn / TIER_LABEL_EN）
+function displayNote(item: StyleMeta) {
+  return locale.value.startsWith('zh') ? item.note : item.noteEn
+}
+
+function displayTierLabel(item: StyleMeta) {
+  return locale.value.startsWith('zh')
+    ? item.tierLabel
+    : (TIER_LABEL_EN[item.tierLabel] ?? item.tierLabel)
 }
 
 // 完成度徽章：状态 → i18n key（阶段 4 后 20 个风格均为 ready）
@@ -117,10 +129,10 @@ useHead({
               </span>
             </span>
 
-            <span class="card__note">{{ item.note }}</span>
+            <span class="card__note">{{ displayNote(item) }}</span>
 
             <span class="card__foot">
-              <span>{{ t('styles.gallery.tier') }} {{ item.tier }} · {{ item.tierLabel }}</span>
+              <span>{{ t('styles.gallery.tier') }} {{ item.tier }} · {{ displayTierLabel(item) }}</span>
               <span class="card__enter">{{ t('styles.gallery.enter') }} →</span>
             </span>
           </NuxtLink>

@@ -51,8 +51,14 @@ export interface StyleMeta {
   tier: 1 | 2 | 3
   /** 档位说明 */
   tierLabel: string
-  /** 一句话风格描述 */
+  /** 一句话风格描述（中文） */
   note: string
+  /**
+   * 一句话风格描述（英文）——画廊卡片与页面 meta description 都按 locale 取用。
+   * 2026-09-27 补：英文站此前全量 404（预渲染清单没列 /en 路由），修通后
+   * 暴露出 note / tierLabel 只有中文，英文页照样显示中文，故补齐英文版本。
+   */
+  noteEn: string
   /** 页面完成度：ready = 五页齐全；partial = 仅部分页面；planned = 仅登记未开工 */
   status: 'ready' | 'partial' | 'planned'
   /**
@@ -66,6 +72,23 @@ export interface StyleMeta {
   preview: string
 }
 
+/**
+ * tierLabel 的英文对照表。
+ * ------------------------------------------------------------
+ * tierLabel 是「中文短标签」，同一个 tier 下不同风格还会带各自的额外成本
+ * （+ 点阵字体 / + 雷达动画 …），因此不做成按 tier 取值，而是按原文映射。
+ */
+export const TIER_LABEL_EN: Record<string, string> = {
+  纯结构与样式: 'Structure & styles only',
+  '+ 3D 感绘制': '+ 3D rendering',
+  '+ 质感绘制': '+ Material rendering',
+  '+ 点阵字体': '+ Pixel font',
+  '+ 交互脚本': '+ Interaction scripts',
+  '+ CRT 质感绘制': '+ CRT rendering',
+  '+ 雷达动画': '+ Radar animation',
+  '+ 材质纹理绘制': '+ Texture rendering',
+}
+
 export const styleRegistry: StyleMeta[] = [
   {
     id: 'liquid-glass',
@@ -74,6 +97,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '半透明玻璃层叠、背景模糊与光线折射，UI 像漂浮在玻璃表面',
+    noteEn: 'Layered translucent glass, background blur and light refraction — UI floating on glass',
     status: 'ready',
     accent: '#5ee3ff',
     preview: '',
@@ -85,6 +109,8 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '粗黑边框、硬阴影、高饱和撞色、巨型标题，海报式拼贴',
+    noteEn:
+      'Heavy black borders, hard shadows, clashing saturated colors and oversized headlines — a poster collage',
     status: 'ready',
     accent: '#ffe600',
     preview: '',
@@ -96,6 +122,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 2,
     tierLabel: '+ 3D 感绘制',
     note: '3D 物体感、漂浮卡片、柔和阴影与 Z 轴层级，UI 摆在空间里',
+    noteEn: 'Solid 3D objects, floating cards, soft shadows and Z-axis layers — UI placed in space',
     status: 'ready',
     accent: '#a78bfa',
     preview: '',
@@ -107,6 +134,8 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '大量留白、低饱和、克制的排版层级，只留最重要的信息',
+    noteEn:
+      'Generous whitespace, low saturation, restrained hierarchy — only the information that matters',
     status: 'ready',
     accent: '#4f6b8f',
     preview: '',
@@ -118,6 +147,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '暗色霓虹、发光边框、数据流与网格，来自未来控制台的 UI',
+    noteEn: 'Dark neon, glowing borders, data streams and grids — UI from a future console',
     status: 'ready',
     accent: '#22d3ee',
     preview: '',
@@ -129,6 +159,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '巨大标题、杂志网格、非对称多栏，把网站排成一本高级杂志',
+    noteEn: 'Huge headlines, magazine grids, asymmetric columns — the site laid out like a magazine',
     status: 'ready',
     accent: '#8e2318',
     preview: '',
@@ -140,6 +171,8 @@ export const styleRegistry: StyleMeta[] = [
     tier: 2,
     tierLabel: '+ 质感绘制',
     note: '金属铬、透明塑料、蓝紫彩虹渐变与气泡高光，2000 年想象中的未来',
+    noteEn:
+      'Chrome metal, clear plastic, blue-purple gradients and bubble highlights — the future as imagined in 2000',
     status: 'ready',
     accent: '#8b7bff',
     preview: '',
@@ -151,6 +184,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '渐变、大圆角、Glossy 高光按钮，一切东西都像刚打过蜡',
+    noteEn: 'Gradients, big rounded corners, glossy buttons — everything looks freshly waxed',
     status: 'ready',
     accent: '#1e6fd9',
     preview: '',
@@ -162,6 +196,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 2,
     tierLabel: '+ 点阵字体',
     note: '硬边缘、有限色板、游戏 HUD——不是换值，是换性质',
+    noteEn: 'Hard edges, a limited palette, game HUD — not a different value, a different nature',
     status: 'ready',
     accent: '#ffcd75',
     preview: '',
@@ -173,6 +208,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 3,
     tierLabel: '+ 交互脚本',
     note: '黑底绿字等宽文本流，UI 几乎消失，只剩命令与光标',
+    noteEn: 'Green monospace on black; the UI nearly vanishes, leaving only commands and a cursor',
     status: 'ready',
     accent: '#7cffb2',
     preview: '',
@@ -184,6 +220,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: 'KPI 卡片、图表、密集信息网格，可快速扫描的控制中心',
+    noteEn: 'KPI cards, charts and dense information grids — a control center built for scanning',
     status: 'ready',
     accent: '#38bdf8',
     preview: '',
@@ -195,6 +232,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '严格网格、强 Typography、非对称大留白，黑白加一个强调色',
+    noteEn: 'A strict grid, strong typography, asymmetric whitespace — black, white and one accent',
     status: 'ready',
     accent: '#e30613',
     preview: '',
@@ -206,6 +244,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 2,
     tierLabel: '+ CRT 质感绘制',
     note: '灰色窗口、像素图标、扫描线，像打开一台 90 年代的电脑',
+    noteEn: 'Grey windows, pixel icons and scanlines — like switching on a 1990s computer',
     status: 'ready',
     accent: '#000080',
     preview: '',
@@ -217,6 +256,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 2,
     tierLabel: '+ 雷达动画',
     note: 'HUD 仪表、雷达、数据流与扫描线，宇宙飞船驾驶舱控制面板',
+    noteEn: 'HUD gauges, radar, data streams and scanlines — a spaceship cockpit control panel',
     status: 'ready',
     accent: '#4af0c6',
     preview: '',
@@ -228,6 +268,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '超大圆角、厚重卡片、柔和阴影与 Pastel 色，软黏土捏出来的界面',
+    noteEn: 'Huge radii, chunky cards, soft shadows and pastels — an interface molded from clay',
     status: 'ready',
     accent: '#7d3fc9',
     preview: '',
@@ -239,6 +280,8 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '同色背景、双向阴影的凸起与内凹，从一块材料里压出来的形体',
+    noteEn:
+      'One background color, dual shadows for convex and concave — forms pressed from a single material',
     status: 'ready',
     accent: '#3b55c8',
     preview: '',
@@ -250,6 +293,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '半透明卡片、Backdrop Blur、彩色渐变背景穿透与柔光',
+    noteEn: 'Translucent cards, backdrop blur, colorful gradients bleeding through soft light',
     status: 'ready',
     accent: '#6d28d9',
     preview: '',
@@ -261,6 +305,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 2,
     tierLabel: '+ 材质纹理绘制',
     note: '皮革、木纹、金属、纸张的真实材质纹理与拟真光影',
+    noteEn: 'Real textures — leather, wood, metal, paper — rendered with lifelike lighting',
     status: 'ready',
     accent: '#b8893a',
     preview: '',
@@ -272,6 +317,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '大面积 Tile 色块、强 Typography，UI 是一张实时变化的信息版面',
+    noteEn: 'Large color tiles and strong typography — the UI as a live information board',
     status: 'ready',
     accent: '#1ba1e2',
     preview: '',
@@ -283,6 +329,7 @@ export const styleRegistry: StyleMeta[] = [
     tier: 1,
     tierLabel: '纯结构与样式',
     note: '纯色几何、无纹理少阴影，UI 直接呈现为数字图形',
+    noteEn: 'Flat color geometry with no texture or shadow — UI presented as digital graphics',
     status: 'ready',
     accent: '#2471a3',
     preview: '',

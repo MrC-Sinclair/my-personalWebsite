@@ -181,12 +181,18 @@ async function writeSitemapAndRobots(
     `^/(en/)?style/(${styleIds})(/(about|projects|blog|contact))?(/(blog|projects)/[a-z0-9-]+)?$`,
   )
   const isPage = (r: string) => r === '/' || r === '/en' || pagePattern.test(r)
-  const pageRoutes = routes.filter(isPage)
-  const zhRoutes = pageRoutes.filter((r) => r === '/' || !/^\/en(\/|$)/.test(r)).sort()
+  const pageRoutes = [...new Set(routes.filter(isPage))].sort()
 
-  // 英文路由从中文路由对称推导（/en + 路径）：i18n 的 prefix_except_default
-  // 策略保证 SSG 必为每个中文页生成 /en 版本，因此无需依赖实际预渲染集合
-  //（node-server preset 下本机 build 不会展开 en 路由，generate（CI）则会）。
+  // 中英两组的 URL 均取自「真实预渲染成功的路由」，不再互相推导。
+  // ------------------------------------------------------------
+  // 这里曾经从中文路由对称推导英文 URL（/en + 路径），理由是「i18n 保证必生成
+  // 英文版」。实测（2026-09-27）：该假设不成立——@nuxtjs/i18n v9 只在
+  // strategy === 'prefix' 时才自动注入本地化路由，prefix_except_default 下
+  // 一个都不注入。结果 sitemap 写了 400 条线上 404 的英文 URL。
+  // 现在以产物为准：英文路由真的渲染出来了才收录，缺哪条就少哪条。
+  const zhRoutes = pageRoutes.filter((r) => r === '/' || !/^\/en(\/|$)/.test(r))
+  const enSet = new Set(pageRoutes.filter((r) => r === '/en' || r.startsWith('/en/')))
+
   const urlFor = (r: string) => `${SITE_URL}${SITE_BASE_URL}${r === '/' ? '' : r.slice(1)}`
   const escapeXml = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -194,14 +200,20 @@ async function writeSitemapAndRobots(
   const entries = zhRoutes
     .map((r) => {
       const enRoute = r === '/' ? '/en' : `/en${r}`
-      // hreflang sitemap 规范：中英两个 URL 各自成条目，均带双向 alternate
+      const hasEn = enSet.has(enRoute)
+      // hreflang sitemap 规范：中英两个 URL 各自成条目，均带双向 alternate。
+      // 英文版缺失时只收录中文条目，且不写指向 404 的 alternate。
       const alternates =
         `\n    <xhtml:link rel="alternate" hreflang="zh-CN" href="${escapeXml(urlFor(r))}"/>` +
-        `\n    <xhtml:link rel="alternate" hreflang="en-US" href="${escapeXml(urlFor(enRoute))}"/>`
-      return [
-        `  <url>\n    <loc>${escapeXml(urlFor(r))}</loc>${alternates}\n  </url>`,
-        `  <url>\n    <loc>${escapeXml(urlFor(enRoute))}</loc>${alternates}\n  </url>`,
-      ]
+        (hasEn
+          ? `\n    <xhtml:link rel="alternate" hreflang="en-US" href="${escapeXml(urlFor(enRoute))}"/>`
+          : '')
+      return hasEn
+        ? [
+            `  <url>\n    <loc>${escapeXml(urlFor(r))}</loc>${alternates}\n  </url>`,
+            `  <url>\n    <loc>${escapeXml(urlFor(enRoute))}</loc>${alternates}\n  </url>`,
+          ]
+        : [`  <url>\n    <loc>${escapeXml(urlFor(r))}</loc>${alternates}\n  </url>`]
     })
     .flat()
     .join('\n')
@@ -216,11 +228,30 @@ async function writeSitemapAndRobots(
   await mkdir(publicDir, { recursive: true })
   await writeFile(join(publicDir, 'sitemap.xml'), sitemap, 'utf8')
   await writeFile(join(publicDir, 'robots.txt'), robots, 'utf8')
-  console.log(`[seo] sitemap.xml（${zhRoutes.length} 条 URL）与 robots.txt 已写入 ${publicDir}`)
+  console.log(
+    `[seo] sitemap.xml（zh ${zhRoutes.length} + en ${enSet.size} = ${zhRoutes.length + enSet.size} 条 URL）与 robots.txt 已写入 ${publicDir}`,
+  )
 }
 
 /** 产物 public 目录：build:before 时由 nitro 实例填充（generate 模式即 .output/public） */
 let outputPublicDir = ''
+
+/** 中文路由清单：根路径（风格画廊）+ registry 派生的风格页 + 内容详情页 */
+const baseZhRoutes = ['/', ...stylePrerenderRoutes(), ...styleDetailRoutes()]
+
+/**
+ * 双语展开：中文路由 → 追加 /en 前缀版本。
+ * ------------------------------------------------------------
+ * 必须显式列英文路由，不能指望 i18n 自动展开——@nuxtjs/i18n v9 只有
+ * strategy === 'prefix' 时才往 prerender.routes 注入本地化路由
+ * （见其 prepareStrategy），prefix_except_default 下一个都不注入。
+ * 本站用的是 prefix_except_default，2026-09-27 实测线上 /en/** 全量 404
+ * 就是这个原因（sitemap 还因此多写了 400 条死链）。
+ */
+const allLocaleRoutes = [
+  ...baseZhRoutes,
+  ...baseZhRoutes.map((route) => (route === '/' ? '/en' : `/en${route}`)),
+]
 
 export default defineNuxtConfig({
   // 阶段 3：过渡层（@nuxt/ui / components/ / assets/css/main.css）已整体移除，
@@ -346,9 +377,9 @@ export default defineNuxtConfig({
       },
     },
     prerender: {
-      // 预渲染清单：根路径（风格画廊）+ 由 styles/registry.ts 派生的全部风格路由。
+      // 预渲染清单：中文路由 + 显式展开的英文路由（双语共 802 条）。
       // 旧写法里这里是 '/styles'，阶段 3 后画廊搬到 '/'，故改为 '/'。
-      routes: ['/', ...stylePrerenderRoutes(), ...styleDetailRoutes()],
+      routes: allLocaleRoutes,
       // 关闭链接爬取：清单本身已经是完整的 101 条路由（×2 语言由 i18n 展开），
       // 不需要再跟着页面里的 <a> 走。爬取的坏处是会把页面里残存的死链
       // （如已随过渡层删除的 /blog/<slug>、/projects/<slug>）也拉进来预渲染，

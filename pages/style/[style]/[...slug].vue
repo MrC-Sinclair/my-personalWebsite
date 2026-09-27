@@ -168,7 +168,8 @@ const detailTitle = computed(() =>
 const detailDescription = computed(() => {
   const view = detailView.value
   if (view && view.doc.description) return view.doc.description
-  return meta.value!.note
+  // 风格描述按语言取：英文页用 noteEn，否则 meta description 会是中文
+  return locale.value.startsWith('zh') ? meta.value!.note : meta.value!.noteEn
 })
 
 useHead({
