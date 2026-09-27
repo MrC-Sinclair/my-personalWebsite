@@ -12,7 +12,7 @@
  * 风格层只负责长什么样（标签栏的视觉），筛选行为本身不进风格组件。
  */
 
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
+import { computed, onMounted, ref, toValue, type MaybeRefOrGetter } from 'vue'
 import type { BlogPost } from '~/types/blog'
 import { collectTags, filterPostsByTag, type TagCount } from '~/utils/tags'
 
@@ -31,8 +31,24 @@ export function useBlogTagFilter(posts: MaybeRefOrGetter<BlogPost[]>) {
   /** 全部标签（按文章数降序） */
   const tags = computed<TagCount[]>(() => collectTags(list.value))
 
+  /**
+   * 是否已完成挂载。
+   * ------------------------------------------------------------
+   * SSG 场景下必须靠它把关：预渲染 `/style/<id>/blog` 时 URL 上没有 query，
+   * 产物 HTML 是「全量列表」；访客带 `?tag=xxx` 打开时，客户端首次渲染若
+   * 直接读 route.query，就会渲染出「过滤后的列表」，与 SSR HTML 结构不一致
+   * → hydration 不匹配（控制台报错 + 首屏闪一下）。
+   * 因此 SSR 与客户端首次渲染都按「未筛选」处理，mount 之后再跟随 query，
+   * 这属于正常的响应式更新，不是 hydration 冲突；SEO 看到的也仍是全量列表。
+   */
+  const mounted = ref(false)
+  onMounted(() => {
+    mounted.value = true
+  })
+
   /** 当前选中的标签；空串表示未筛选 */
   const activeTag = computed<string>(() => {
+    if (!mounted.value) return ''
     const value = route.query?.[TAG_QUERY_KEY]
     return typeof value === 'string' ? value : ''
   })

@@ -9,7 +9,7 @@
  * route 必须是**响应式**的（reactive），否则 computed 不会随 query 变化重算。
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { defineComponent, h, reactive, ref } from 'vue'
+import { defineComponent, effectScope, h, reactive, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import type { BlogPost } from '~/types/blog'
 import { useBlogTagFilter } from '~/composables/useBlogTagFilter'
@@ -101,6 +101,20 @@ describe('useBlogTagFilter', () => {
     const wrapper = mountFilter()
     wrapper.vm.select('AI')
     expect(replaceCalls[0].query).toEqual({ page: '2', tag: 'AI' })
+  })
+
+  it('★ 挂载前不跟随 query（SSG 产物不带 query，避免 hydration 不匹配）', () => {
+    // 预渲染出的 HTML 永远是「全量列表」，访客带 ?tag= 打开时若首渲染就过滤，
+    // 会与 SSR HTML 结构不一致 → hydration mismatch。这条用例守住该行为。
+    route.query = { tag: 'AI' }
+    // 无组件实例时 Vue 会对 onMounted 告警，这条用例不关心它
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const scope = effectScope()
+    const filter = scope.run(() => useBlogTagFilter(posts))!
+    expect(filter.activeTag.value).toBe('')
+    expect(filter.filteredPosts.value).toHaveLength(3)
+    scope.stop()
+    warn.mockRestore()
   })
 
   it('数据源是 getter 时也能跟随更新', () => {
