@@ -1,7 +1,9 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { styleRegistry, STYLE_SUB_PATHS } from './styles/registry'
+import { buildSitemapXml } from './utils/sitemap'
+import { buildFeedXml, readBlogEntries, toFeedItems } from './utils/feed'
 
 /**
  * 站点对外 URL（canonical / og:url / sitemap 用）。
@@ -13,6 +15,13 @@ const SITE_URL = (process.env.NUXT_PUBLIC_SITE_URL || 'https://mrc-sinclair.gith
   '',
 )
 const SITE_BASE_URL = '/my-personalWebsite/'
+
+/**
+ * RSS feed 的文章链接指向哪个风格的详情页。
+ * 同一篇文章在 20 个风格下都有阅读页，feed 只能给一个 canonical 视图，
+ * 选 minimalism：正文排版最中性、可读性最好，其余风格是"换个皮肤看同一篇"。
+ */
+const FEED_STYLE_ID = 'minimalism'
 
 /** 读取 content 目录下的 slug 清单：content/blog/zh/*.md → ['xxx', ...] */
 function contentSlugs(kind: 'blog' | 'projects', localeDir: 'zh' | 'en'): string[] {
@@ -156,81 +165,89 @@ function extractPageKeys(source: string): string[] {
  * 依据「真实预渲染成功的路由」生成 sitemap.xml 与 robots.txt。
  * ------------------------------------------------------------
  * 为什么在 nitro prerender:done 里做：路由清单由 registry 派生 +
- * i18n 展开，直接复用预渲染结果可以保证 sitemap 与实际产物严格一致，
+ * 双语展开，直接复用预渲染结果可以保证 sitemap 与实际产物严格一致，
  * 不会出现「清单里有、产物里没有」的死链 URL。
- * 中英双语用 xhtml:link alternate 互指（zh 无前缀，en 带 /en）。
+ *
+ * 生成逻辑本身在 utils/sitemap.ts（纯函数，有单测守着），这里只负责
+ * 取数、调用、落盘。
  */
 async function writeSitemapAndRobots(
   publicDir: string,
   prerendered: Array<{ route: string }>,
 ): Promise<void> {
-  const normalize = (route: string) => {
-    let r = route.startsWith(SITE_BASE_URL) ? route.slice(SITE_BASE_URL.length - 1) : route
-    if (r !== '/' && r.endsWith('/')) r = r.slice(0, -1)
-    return r
-  }
-
-  const routes = [...new Set(prerendered.map((item) => normalize(item.route)))]
-
-  // 只保留真实页面路由：@nuxt/content 会把 collection 的 SQL dump 端点
-  // （/__nuxt_content/...）也拉进预渲染，它们不是页面，不该进 sitemap。
-  // 白名单依据 registry：'/'、'/en'、'/[en/]style/<id>[/sub]'。
-  const styleIds = styleRegistry.map((meta) => meta.id).join('|')
-  // 详情页（/blog/<slug>、/projects/<slug>）同样进 sitemap，它们是真实可读的内容页
-  const pagePattern = new RegExp(
-    `^/(en/)?style/(${styleIds})(/(about|projects|blog|contact))?(/(blog|projects)/[a-z0-9-]+)?$`,
-  )
-  const isPage = (r: string) => r === '/' || r === '/en' || pagePattern.test(r)
-  const pageRoutes = [...new Set(routes.filter(isPage))].sort()
-
-  // 中英两组的 URL 均取自「真实预渲染成功的路由」，不再互相推导。
-  // ------------------------------------------------------------
-  // 这里曾经从中文路由对称推导英文 URL（/en + 路径），理由是「i18n 保证必生成
-  // 英文版」。实测（2026-09-27）：该假设不成立——@nuxtjs/i18n v9 只在
-  // strategy === 'prefix' 时才自动注入本地化路由，prefix_except_default 下
-  // 一个都不注入。结果 sitemap 写了 400 条线上 404 的英文 URL。
-  // 现在以产物为准：英文路由真的渲染出来了才收录，缺哪条就少哪条。
-  const zhRoutes = pageRoutes.filter((r) => r === '/' || !/^\/en(\/|$)/.test(r))
-  const enSet = new Set(pageRoutes.filter((r) => r === '/en' || r.startsWith('/en/')))
-
-  const urlFor = (r: string) => `${SITE_URL}${SITE_BASE_URL}${r === '/' ? '' : r.slice(1)}`
-  const escapeXml = (s: string) =>
-    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-
-  const entries = zhRoutes
-    .map((r) => {
-      const enRoute = r === '/' ? '/en' : `/en${r}`
-      const hasEn = enSet.has(enRoute)
-      // hreflang sitemap 规范：中英两个 URL 各自成条目，均带双向 alternate。
-      // 英文版缺失时只收录中文条目，且不写指向 404 的 alternate。
-      const alternates =
-        `\n    <xhtml:link rel="alternate" hreflang="zh-CN" href="${escapeXml(urlFor(r))}"/>` +
-        (hasEn
-          ? `\n    <xhtml:link rel="alternate" hreflang="en-US" href="${escapeXml(urlFor(enRoute))}"/>`
-          : '')
-      return hasEn
-        ? [
-            `  <url>\n    <loc>${escapeXml(urlFor(r))}</loc>${alternates}\n  </url>`,
-            `  <url>\n    <loc>${escapeXml(urlFor(enRoute))}</loc>${alternates}\n  </url>`,
-          ]
-        : [`  <url>\n    <loc>${escapeXml(urlFor(r))}</loc>${alternates}\n  </url>`]
-    })
-    .flat()
-    .join('\n')
-
-  const sitemap =
-    `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ` +
-    `xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${entries}\n</urlset>\n`
+  const { xml, zhCount, enCount } = buildSitemapXml({
+    routes: prerendered.map((item) => item.route),
+    styleIds: styleRegistry.map((meta) => meta.id),
+    siteUrl: SITE_URL,
+    baseUrl: SITE_BASE_URL,
+  })
 
   const robots = `User-agent: *\nAllow: /\n\n` + `Sitemap: ${SITE_URL}${SITE_BASE_URL}sitemap.xml\n`
 
   await mkdir(publicDir, { recursive: true })
-  await writeFile(join(publicDir, 'sitemap.xml'), sitemap, 'utf8')
+  await writeFile(join(publicDir, 'sitemap.xml'), xml, 'utf8')
   await writeFile(join(publicDir, 'robots.txt'), robots, 'utf8')
   console.log(
-    `[seo] sitemap.xml（zh ${zhRoutes.length} + en ${enSet.size} = ${zhRoutes.length + enSet.size} 条 URL）与 robots.txt 已写入 ${publicDir}`,
+    `[seo] sitemap.xml（zh ${zhCount} + en ${enCount} = ${zhCount + enCount} 条 URL）与 robots.txt 已写入 ${publicDir}`,
   )
+}
+
+/**
+ * 生成中英两个 RSS feed（feed.xml 与 en/feed.xml）。
+ * ------------------------------------------------------------
+ * 内容是构建期从 content/blog/<locale>/*.md 的 frontmatter 读出来的，
+ * 与 sitemap 同批落盘，因此不需要额外的预渲染路由，也不依赖运行时。
+ * 生成逻辑见 utils/feed.ts（纯函数，有单测）。
+ */
+async function writeFeeds(publicDir: string): Promise<void> {
+  // 构建时间由这里传入（而不是在 feed.ts 里 new Date()），保证同一份内容
+  // 产出同一份 feed，便于 CI 核对与排查
+  const lastBuildDate = new Date().toUTCString()
+  const linkOptions = { siteUrl: SITE_URL, baseUrl: SITE_BASE_URL, styleId: FEED_STYLE_ID }
+
+  const feeds = [
+    {
+      file: 'feed.xml',
+      dir: join('content', 'blog', 'zh'),
+      localePrefix: '',
+      title: 'Sinclair-CXP · 技术博客',
+      description: '前端 / 跨端开发与工程实践的技术笔记（文章链接在 Minimalism 风格视图下打开）',
+      language: 'zh-CN',
+      feedPath: 'feed.xml',
+    },
+    {
+      file: join('en', 'feed.xml'),
+      dir: join('content', 'blog', 'en'),
+      localePrefix: 'en/',
+      title: 'Sinclair-CXP · Tech Blog',
+      description:
+        'Notes on frontend & cross-platform development (links open in the Minimalism style view)',
+      language: 'en-US',
+      feedPath: 'en/feed.xml',
+    },
+  ]
+
+  await mkdir(publicDir, { recursive: true })
+
+  for (const feed of feeds) {
+    const entries = readBlogEntries(join(process.cwd(), feed.dir))
+    const items = toFeedItems(entries, { ...linkOptions, localePrefix: feed.localePrefix })
+    const xml = buildFeedXml(
+      {
+        title: feed.title,
+        description: feed.description,
+        siteUrl: `${SITE_URL}${SITE_BASE_URL}${feed.localePrefix}`,
+        feedUrl: `${SITE_URL}${SITE_BASE_URL}${feed.feedPath}`,
+        language: feed.language,
+        lastBuildDate,
+      },
+      items,
+    )
+    const target = join(publicDir, feed.file)
+    await mkdir(dirname(target), { recursive: true })
+    await writeFile(target, xml, 'utf8')
+    console.log(`[seo] ${feed.file}（${items.length} 篇文章）已写入`)
+  }
 }
 
 /** 产物 public 目录：build:before 时由 nitro 实例填充（generate 模式即 .output/public） */
@@ -374,6 +391,7 @@ export default defineNuxtConfig({
           throw new Error('[seo] outputPublicDir 未初始化：build:before 未执行')
         }
         await writeSitemapAndRobots(outputPublicDir, result.prerenderedRoutes)
+        await writeFeeds(outputPublicDir)
       },
     },
     prerender: {
