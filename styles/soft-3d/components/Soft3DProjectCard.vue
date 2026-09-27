@@ -13,12 +13,15 @@
     <!-- 渐变体积盖面：项目首字母做成浮雕 3D 字形 -->
     <div class="project-card-cover" :class="`project-card-cover-${variant}`">
       <span class="project-card-glyph" aria-hidden="true">{{ glyph }}</span>
-      <span class="project-card-shine" aria-hidden="true"/>
+      <span class="project-card-shine" aria-hidden="true" />
     </div>
 
     <div class="project-card-body">
       <div class="project-card-top">
-        <h3 class="project-card-title">{{ project.title }}</h3>
+        <!-- 标题链接进详情；整卡不包链接是因为卡内有 demo/github 外链（a 不能嵌套 a） -->
+        <h3 class="project-card-title">
+          <NuxtLink class="project-card-link" :to="detailLink">{{ project.title }}</NuxtLink>
+        </h3>
         <time v-if="project.date" class="project-card-date">{{
           formatDate(project.date, locale === 'zh' ? 'zh-CN' : 'en-US')
         }}</time>
@@ -47,7 +50,8 @@
           target="_blank"
           rel="noopener"
         >
-          {{ t('projects.github') }}<span class="project-card-link-arrow" aria-hidden="true">↗</span>
+          {{ t('projects.github')
+          }}<span class="project-card-link-arrow" aria-hidden="true">↗</span>
         </a>
       </footer>
     </div>
@@ -55,6 +59,7 @@
 </template>
 
 <script setup lang="ts">
+import { contentSlug } from '~/utils/content'
 import type { Project } from '~/types/project'
 
 const props = withDefaults(
@@ -70,6 +75,11 @@ const props = withDefaults(
 )
 
 const { t, locale } = useI18n()
+// 详情链接走风格内路由（/style/soft-3d/projects/<slug>）
+const { projectPath } = useStyleContentPath()
+
+/** 标题链接：slug 换算复用共享层 contentSlug */
+const detailLink = computed(() => projectPath(contentSlug(props.project.path)))
 
 /** 盖面浮雕字形：取项目标题首字符（数据派生，非硬编码文案） */
 const glyph = computed(() => props.project.title.trim().charAt(0).toUpperCase())
@@ -86,12 +96,18 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: linear-gradient(168deg, color-mix(in srgb, var(--c-accent) 8%, var(--c-surface)), var(--c-surface) 52%);
+  background: linear-gradient(
+    168deg,
+    color-mix(in srgb, var(--c-accent) 8%, var(--c-surface)),
+    var(--c-surface) 52%
+  );
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 
 /* 桌面 hover：轻微透视倾斜 + 上浮（空间纵深签名） */
@@ -151,7 +167,11 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   left: 0;
   width: 58%;
   height: 46%;
-  background: radial-gradient(ellipse at top left, rgb(255 255 255 / 0.42), rgb(255 255 255 / 0) 68%);
+  background: radial-gradient(
+    ellipse at top left,
+    rgb(255 255 255 / 0.42),
+    rgb(255 255 255 / 0) 68%
+  );
   pointer-events: none;
 }
 
@@ -190,6 +210,17 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   font-weight: 700;
   color: var(--c-text);
   overflow-wrap: break-word;
+}
+
+/* 标题链接：hover 时才显出可点（默认继承标题色） */
+.project-card-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.project-card-link:hover {
+  color: var(--c-accent);
 }
 
 .project-card-date {
@@ -252,7 +283,10 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   background: color-mix(in srgb, var(--c-accent) 13%, transparent);
   border: 1px solid color-mix(in srgb, var(--c-accent) 42%, transparent);
   border-radius: 999px;
-  transition: color var(--transition), background var(--transition), transform var(--transition),
+  transition:
+    color var(--transition),
+    background var(--transition),
+    transform var(--transition),
     box-shadow var(--transition);
 }
 

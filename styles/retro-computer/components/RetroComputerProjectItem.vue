@@ -4,13 +4,17 @@
   项目窗口里的一个「文件条目」：像素文件夹图标 + 项目名 +
   精选徽章（深蓝底白字）+ 摘要 + 技术栈（白色凹陷槽里的等宽
   词条）+ 日期 + 在线演示 / GitHub 外链（悬停深蓝反白）。
+  标题进入风格内项目详情页（/style/retro-computer/projects/<slug>）；
+  整条不包链接，因为条目内已有外链 <a>（a 不能嵌套 a）。
   数据来自共享层 useProjects()；tags 用 Array.isArray 防御。
 -->
 <template>
   <article class="rc-proj">
     <header class="rc-proj__head">
       <RetroComputerPixelIcon variant="folder" />
-      <h3 class="rc-proj__title">{{ project.title }}</h3>
+      <h3 class="rc-proj__title">
+        <NuxtLink class="rc-proj__title-link" :to="detailLink">{{ project.title }}</NuxtLink>
+      </h3>
       <span v-if="project.featured" class="rc-proj__badge">{{ t('projects.featured') }}</span>
     </header>
 
@@ -53,6 +57,7 @@
  * @description 数据来自共享层 useProjects()；日期格式化调用共享层
  *              formatDate（业务逻辑只写一份）；tags 防御非数组输入。
  */
+import { contentSlug } from '~/utils/content'
 import type { Project } from '~/types/project'
 import RetroComputerPixelIcon from './RetroComputerPixelIcon.vue'
 
@@ -62,6 +67,11 @@ const props = defineProps<{
 }>()
 
 const { t, locale } = useI18n()
+// 详情链接走风格内路由（/style/retro-computer/projects/<slug>）
+const { projectPath } = useStyleContentPath()
+
+/** 标题链接：slug 换算复用共享层 contentSlug */
+const detailLink = computed(() => projectPath(contentSlug(props.project.path)))
 
 /** 按当前语言格式化的项目日期（共享层工具函数） */
 const formattedDate = computed(() => formatDate(props.project.date, locale.value))
@@ -103,6 +113,17 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   font-size: var(--fs-title);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* 标题链接：默认继承标题色，hover 才显出可点（该风格无过渡动画） */
+.rc-proj__title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rc-proj__title-link:hover {
+  color: #0000c8;
+  text-decoration: underline;
 }
 
 .rc-proj__badge {

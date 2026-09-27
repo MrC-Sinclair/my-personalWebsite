@@ -7,7 +7,7 @@
   日期用共享层 utils/formatDate 按当前语言格式化。
 -->
 <template>
-  <article class="prow">
+  <NuxtLink class="prow" :to="detailLink">
     <time class="prow__date" :datetime="post.date">{{ formattedDate }}</time>
 
     <div class="prow__main">
@@ -18,8 +18,8 @@
       </ul>
     </div>
 
-    <span class="prow__indicator" aria-hidden="true"/>
-  </article>
+    <span class="prow__indicator" aria-hidden="true" />
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
@@ -28,6 +28,7 @@
  * @description 数据来自共享层 useBlog()；tags 用 Array.isArray 防御；
  *              日期格式化调用共享层 formatDate（业务逻辑只写一份）。
  */
+import { contentSlug } from '~/utils/content'
 import type { BlogPost } from '~/types/blog'
 
 const props = defineProps<{
@@ -36,6 +37,11 @@ const props = defineProps<{
 }>()
 
 const { locale } = useI18n()
+// 整卡链接走风格内路由（/style/web2-glossy/blog/<slug>）
+const { postPath } = useStyleContentPath()
+
+/** 整卡链接：slug 换算复用共享层 contentSlug */
+const detailLink = computed(() => postPath(contentSlug(props.post.path)))
 
 /** 按当前语言格式化的发布日期（共享层工具函数） */
 const formattedDate = computed(() => formatDate(props.post.date, locale.value))
@@ -51,6 +57,9 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   display: flex;
   align-items: flex-start;
   gap: var(--gap);
+  /* 整卡是链接：去掉 a 的默认下划线与链接色 */
+  color: inherit;
+  text-decoration: none;
   padding: 16px 20px;
   overflow: hidden;
   border: 1px solid var(--c-border);

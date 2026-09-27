@@ -3,11 +3,11 @@
   ------------------------------------------------------------
   一枚「漂浮的刊物」：左侧悬浮日期球体（球内为月份的
   等宽数字，数据派生），右侧为分类 / 标题 / 摘要 / 标签。
-  卡片为展示体（不链接详情页：详情路径转换属共享层能力，
-  当前缺失，见交付报告），hover 仅做上浮与影子加深。
+  整卡由 NuxtLink 包裹进入风格内详情页（/style/soft-3d/blog/<slug>），
+  hover 做上浮与影子加深。
 -->
 <template>
-  <article class="post">
+  <NuxtLink class="post" :to="detailLink">
     <div class="post-orb" aria-hidden="true">
       <span class="post-orb-month">{{ monthLabel }}</span>
     </div>
@@ -27,10 +27,11 @@
         <li v-for="tag in safeTags" :key="tag" class="post-tag">{{ tag }}</li>
       </ul>
     </div>
-  </article>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
+import { contentSlug } from '~/utils/content'
 import type { BlogPost } from '~/types/blog'
 
 const props = withDefaults(
@@ -46,6 +47,11 @@ const props = withDefaults(
 )
 
 const { t, locale } = useI18n()
+// 详情链接走风格内路由（/style/soft-3d/blog/<slug>）
+const { postPath } = useStyleContentPath()
+
+/** 整卡链接：slug 换算复用共享层 contentSlug */
+const detailLink = computed(() => postPath(contentSlug(props.post.path)))
 
 /** 数组防御：标签非数组回退为空 */
 const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tags : []))
@@ -63,12 +69,21 @@ const monthLabel = computed(() => {
   align-items: flex-start;
   gap: var(--gap);
   height: 100%;
+  /* 整卡是链接：去掉 a 的默认下划线与链接色 */
+  color: inherit;
+  text-decoration: none;
   padding: var(--space);
-  background: linear-gradient(150deg, color-mix(in srgb, var(--c-accent-2) 7%, var(--c-surface)), var(--c-surface) 55%);
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--c-accent-2) 7%, var(--c-surface)),
+    var(--c-surface) 55%
+  );
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 
 /* 悬浮：刊物被托起端详 */
@@ -92,7 +107,13 @@ const monthLabel = computed(() => {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 26%, #cffafe 0%, #67e8f9 34%, #22d3ee 66%, #0e7490 100%);
+  background: radial-gradient(
+    circle at 32% 26%,
+    #cffafe 0%,
+    #67e8f9 34%,
+    #22d3ee 66%,
+    #0e7490 100%
+  );
   box-shadow:
     inset -6px -9px 14px rgb(9 5 40 / 0.45),
     inset 2px 3px 6px rgb(255 255 255 / 0.35),

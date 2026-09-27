@@ -3,11 +3,12 @@
   ------------------------------------------------------------
   文章窗口里的一个「文档条目」：像素文档图标 + 标题 + 摘要 +
   元信息行（发布日期 / 标签，等宽字体，白色凹陷槽）。
+  整条由 NuxtLink 包裹进入风格内详情页（/style/retro-computer/blog/<slug>），
   悬停时底色变化、图标右移 1px（瞬时切换，符合本风格性格）。
   数据来自共享层 useBlog()；tags 用 Array.isArray 防御。
 -->
 <template>
-  <article class="rc-post">
+  <NuxtLink class="rc-post" :to="detailLink">
     <span class="rc-post__icon">
       <RetroComputerPixelIcon variant="doc" />
     </span>
@@ -23,7 +24,7 @@
         </span>
       </p>
     </div>
-  </article>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
@@ -32,6 +33,7 @@
  * @description 数据来自共享层 useBlog()；日期格式化调用共享层
  *              formatDate（业务逻辑只写一份）；tags 防御非数组输入。
  */
+import { contentSlug } from '~/utils/content'
 import type { BlogPost } from '~/types/blog'
 import RetroComputerPixelIcon from './RetroComputerPixelIcon.vue'
 
@@ -41,6 +43,11 @@ const props = defineProps<{
 }>()
 
 const { locale } = useI18n()
+// 详情链接走风格内路由（/style/retro-computer/blog/<slug>）
+const { postPath } = useStyleContentPath()
+
+/** 整条链接：slug 换算复用共享层 contentSlug */
+const detailLink = computed(() => postPath(contentSlug(props.post.path)))
 
 /** 按当前语言格式化的发布日期（共享层工具函数） */
 const formattedDate = computed(() => formatDate(props.post.date, locale.value))
@@ -55,6 +62,9 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   display: flex;
   gap: 10px;
   padding: 12px;
+  /* 整条是链接：去掉 a 的默认下划线与链接色 */
+  color: inherit;
+  text-decoration: none;
   border: var(--border-w) solid transparent;
 }
 

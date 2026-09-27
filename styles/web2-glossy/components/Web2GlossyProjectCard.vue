@@ -3,9 +3,9 @@
   Web2GlossyProjectCard - Web 2.0 光泽风格的项目卡片
   ------------------------------------------------------------
   白色光泽面板 + 纯 CSS「浏览器截图」缩略图（窗口栏三圆点 +
-  蓝色渐变画布 + 斜向高光扫过）；卡片本体不伪装成可点击链接
-  （本风格未实现项目详情页，不提供假跳转），真实交互集中在
-  「在线演示 / GitHub」凝胶外链按钮上（hover 光泽扫过 + 按压下沉）。
+  蓝色渐变画布 + 斜向高光扫过）。标题进入风格内项目详情页
+  （/style/web2-glossy/projects/<slug>）；整卡不包链接，因为卡内的
+  「在线演示 / GitHub」凝胶按钮本身就是 <a>（a 不能嵌套 a）。
   wide 模式：首屏大卡，附「精选」橙色徽章，网格中横跨两列。
 -->
 <template>
@@ -16,13 +16,15 @@
 
     <!-- 纯 CSS 浏览器窗口缩略图（无图片资源） -->
     <div class="pcard__thumb" aria-hidden="true">
-      <span class="pcard__chrome"><i/></span>
-      <span class="pcard__canvas"/>
-      <span class="pcard__sheen"/>
+      <span class="pcard__chrome"><i /></span>
+      <span class="pcard__canvas" />
+      <span class="pcard__sheen" />
     </div>
 
     <div class="pcard__body">
-      <h3 class="pcard__title">{{ project.title }}</h3>
+      <h3 class="pcard__title">
+        <NuxtLink class="pcard__link" :to="detailLink">{{ project.title }}</NuxtLink>
+      </h3>
       <p v-if="project.description" class="pcard__desc">{{ project.description }}</p>
 
       <ul v-if="safeTags.length" class="pcard__tags">
@@ -33,7 +35,12 @@
         <Web2GlossyGelButton v-if="project.demoUrl" :href="project.demoUrl" external>
           {{ t('projects.demo') }}
         </Web2GlossyGelButton>
-        <Web2GlossyGelButton v-if="project.githubUrl" :href="project.githubUrl" external variant="ghost">
+        <Web2GlossyGelButton
+          v-if="project.githubUrl"
+          :href="project.githubUrl"
+          external
+          variant="ghost"
+        >
           {{ t('projects.github') }}
         </Web2GlossyGelButton>
       </div>
@@ -46,6 +53,7 @@
  * @file Web 2.0 光泽风格的项目卡片组件
  * @description 数据来自共享层 useProjects()；tags 用 Array.isArray 防御。
  */
+import { contentSlug } from '~/utils/content'
 import type { Project } from '~/types/project'
 import Web2GlossyGelButton from './Web2GlossyGelButton.vue'
 
@@ -62,6 +70,11 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
+// 详情链接走风格内路由（/style/web2-glossy/projects/<slug>）
+const { projectPath } = useStyleContentPath()
+
+/** 标题链接：slug 换算复用共享层 contentSlug */
+const detailLink = computed(() => projectPath(contentSlug(props.project.path)))
 
 /** 防御：tags 非数组时回退为空列表 */
 const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.project.tags : []))
@@ -193,7 +206,12 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   bottom: -25%;
   left: -32%;
   width: 34%;
-  background: linear-gradient(90deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.4), rgb(255 255 255 / 0));
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0),
+    rgb(255 255 255 / 0.4),
+    rgb(255 255 255 / 0)
+  );
   transform: skewX(-20deg) translateX(-160%);
   transition: transform 560ms ease;
   pointer-events: none;
@@ -217,6 +235,19 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   font-weight: 800;
   line-height: 1.3;
   color: var(--c-text);
+}
+
+/* 标题链接：默认继承标题色，hover 才显出可点 */
+.pcard__link {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.pcard__link:hover {
+  color: #1d6fae;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .pcard__desc {
