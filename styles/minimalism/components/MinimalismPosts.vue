@@ -14,7 +14,7 @@
     :eyebrow="t('nav.blog')"
     :title="t('home.latestPosts')"
   >
-    <template #aside>
+    <template v-if="showMore" #aside>
       <NuxtLink class="more" :to="localePath('/style/minimalism/blog')">
         {{ t('home.viewAll') }}<span class="more-arrow" aria-hidden="true">→</span>
       </NuxtLink>
@@ -45,9 +45,16 @@ import type { BlogPost } from '~/types/blog'
 import { contentSlug } from '~/utils/content'
 import MinimalismSection from './MinimalismSection.vue'
 
-defineProps<{
+// Vue 3.5 支持 props 解构默认值（不用 withDefaults，会触发编译器警告）
+const {
+  posts,
+  // blog 子页本身就是全量列表，再给「查看全部」会指向自己，故默认开、子页关
+  showMore = true,
+} = defineProps<{
   /** 最新文章列表（来自共享层 useBlog，按日期倒序） */
   posts: BlogPost[]
+  /** 是否显示右上角「查看全部」入口 */
+  showMore?: boolean
 }>()
 
 const { t, locale } = useI18n()

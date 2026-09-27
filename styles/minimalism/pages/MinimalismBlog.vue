@@ -3,11 +3,22 @@
   ------------------------------------------------------------
   壳由 MinimalismSubPage 提供；主体复用 MinimalismPosts。
   首页只列「最新 N 条」，本页列出全部文章——子页相对首页的唯一数据差异。
+
+  标签筛选：行为在共享层 useBlogTagFilter（URL query 同步），本页只把
+  筛选后的列表喂给 MinimalismPosts，视觉由 MinimalismTagFilter 负责。
 -->
 <template>
   <MinimalismSubPage :title="t('nav.blog')">
     <p v-if="loading" class="loading" role="status">{{ t('common.loading') }}</p>
-    <MinimalismPosts v-else :posts="posts" />
+    <template v-else>
+      <MinimalismTagFilter
+        :tags="tags"
+        :active-tag="activeTag"
+        :total="posts.length"
+        @select="select"
+      />
+      <MinimalismPosts :posts="filteredPosts" :show-more="false" />
+    </template>
   </MinimalismSubPage>
 </template>
 
@@ -15,6 +26,7 @@
 import type { BlogPost } from '~/types/blog'
 import MinimalismSubPage from '../components/MinimalismSubPage.vue'
 import MinimalismPosts from '../components/MinimalismPosts.vue'
+import MinimalismTagFilter from '../components/MinimalismTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -37,6 +49,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 const loading = computed(() => pending.value && !postsData.value)
 </script>

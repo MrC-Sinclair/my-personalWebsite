@@ -35,7 +35,11 @@
     "noResultsHint": "Try adjusting your search keywords or category filters",
     "allCategories": "All Categories",
     "breadcrumb": "Blog",
-    "backToList": "Back to List"
+    "backToList": "Back to List",
+    "allTags": "All",
+    "filterByTag": "Filter by tag",
+    "clearFilter": "Clear filter",
+    "postsUnit": "posts"
   },
   "projects": {
     "title": "Projects",

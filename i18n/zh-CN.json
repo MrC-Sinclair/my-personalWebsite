@@ -35,7 +35,11 @@
     "noResultsHint": "尝试调整搜索关键词或分类筛选",
     "allCategories": "全部分类",
     "breadcrumb": "博客",
-    "backToList": "返回列表"
+    "backToList": "返回列表",
+    "allTags": "全部",
+    "filterByTag": "按标签筛选",
+    "clearFilter": "清除筛选",
+    "postsUnit": "篇"
   },
   "projects": {
     "title": "项目集锦",
