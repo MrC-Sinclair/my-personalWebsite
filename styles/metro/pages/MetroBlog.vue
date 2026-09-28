@@ -19,7 +19,7 @@
         </div>
 
         <!-- 空状态 -->
-        <p v-else-if="safePosts.length === 0" class="empty">
+        <p v-else-if="filteredPosts.length === 0" class="empty">
           <span class="empty__mark" aria-hidden="true">!</span>
           <span>
             {{ t('blog.noResults') }}
@@ -28,15 +28,23 @@
           </span>
         </p>
 
-        <div v-else class="mosaic">
-          <MetroPostTile
-            v-for="(post, index) in safePosts"
-            :key="post.path"
-            :post="post"
-            :span="index === 1 ? 'wide' : 'sm'"
-            :variant="pickVariant(postVariants, index)"
+        <template v-else>
+          <MetroTagFilter
+            :tags="tags"
+            :active-tag="activeTag"
+            :total="safePosts.length"
+            @select="select"
           />
-        </div>
+          <div class="mosaic">
+            <MetroPostTile
+              v-for="(post, index) in filteredPosts"
+              :key="post.path"
+              :post="post"
+              :span="index === 1 ? 'wide' : 'sm'"
+              :variant="pickVariant(postVariants, index)"
+            />
+          </div>
+        </template>
       </div>
     </section>
   </MetroSubPage>
@@ -46,6 +54,7 @@
 import type { BlogPost } from '~/types/blog'
 import MetroPostTile from '../components/MetroPostTile.vue'
 import MetroSubPage from '../components/MetroSubPage.vue'
+import MetroTagFilter from '../components/MetroTagFilter.vue'
 import type { MetroTileVariant } from '../components/MetroTile.vue'
 
 const { t, locale } = useI18n()
@@ -63,6 +72,9 @@ const {
 watch(locale, () => refresh())
 
 const safePosts = computed(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(safePosts)
 
 const postVariants: MetroTileVariant[] = ['green', 'cobalt', 'red']
 

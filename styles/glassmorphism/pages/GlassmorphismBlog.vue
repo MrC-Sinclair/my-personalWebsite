@@ -17,9 +17,17 @@
           :message="t('common.loading')"
         />
 
-        <div v-else-if="posts.length" class="post-list">
-          <GlassmorphismPostRow v-for="post in posts" :key="post.path" :post="post" />
-        </div>
+        <template v-else-if="filteredPosts.length">
+          <GlassmorphismTagFilter
+            :tags="tags"
+            :active-tag="activeTag"
+            :total="posts.length"
+            @select="select"
+          />
+          <div class="post-list">
+            <GlassmorphismPostRow v-for="post in filteredPosts" :key="post.path" :post="post" />
+          </div>
+        </template>
 
         <GlassmorphismPlaceholder
           v-else
@@ -39,6 +47,7 @@ import GlassmorphismGlassPanel from '../components/GlassmorphismGlassPanel.vue'
 import GlassmorphismSectionHead from '../components/GlassmorphismSectionHead.vue'
 import GlassmorphismPostRow from '../components/GlassmorphismPostRow.vue'
 import GlassmorphismPlaceholder from '../components/GlassmorphismPlaceholder.vue'
+import GlassmorphismTagFilter from '../components/GlassmorphismTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -61,6 +70,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)

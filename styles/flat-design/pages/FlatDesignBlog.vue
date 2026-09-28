@@ -22,14 +22,22 @@
         <div v-if="pending" class="band__loading">
           <FlatDesignSkeleton />
         </div>
-        <div v-else-if="posts.length" class="post-grid">
-          <FlatDesignPostCard
-            v-for="(post, i) in posts"
-            :key="post.path"
-            :post="post"
-            :tone-index="i"
+        <template v-else-if="filteredPosts.length">
+          <FlatDesignTagFilter
+            :tags="tags"
+            :active-tag="activeTag"
+            :total="posts.length"
+            @select="select"
           />
-        </div>
+          <div class="post-grid">
+            <FlatDesignPostCard
+              v-for="(post, i) in filteredPosts"
+              :key="post.path"
+              :post="post"
+              :tone-index="i"
+            />
+          </div>
+        </template>
         <FlatDesignEmpty
           v-else
           :message="t('blog.noResults')"
@@ -47,6 +55,7 @@ import FlatDesignPostCard from '../components/FlatDesignPostCard.vue'
 import FlatDesignSectionHead from '../components/FlatDesignSectionHead.vue'
 import FlatDesignSkeleton from '../components/FlatDesignSkeleton.vue'
 import FlatDesignSubPage from '../components/FlatDesignSubPage.vue'
+import FlatDesignTagFilter from '../components/FlatDesignTagFilter.vue'
 
 const { t, locale } = useI18n()
 const { getAllPosts } = useBlog()
@@ -63,4 +72,7 @@ const {
 watch(locale, () => refresh())
 
 const posts = computed(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 </script>

@@ -11,7 +11,7 @@
         eyebrow="04"
         :level="1"
         :title="t('blog.title')"
-        :count="posts.length"
+        :count="filteredPosts.length"
         tone="lilac"
       />
 
@@ -21,14 +21,22 @@
         <div v-for="i in 3" :key="i" class="skeleton skeleton-row" />
       </div>
 
-      <div v-else-if="posts.length" class="post-stack">
-        <ClaymorphismPostCard
-          v-for="(post, index) in posts"
-          :key="post.path"
-          :post="post"
-          :tone="toneOf(index + 2)"
+      <template v-else-if="filteredPosts.length">
+        <ClaymorphismTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
         />
-      </div>
+        <div class="post-stack">
+          <ClaymorphismPostCard
+            v-for="(post, index) in filteredPosts"
+            :key="post.path"
+            :post="post"
+            :tone="toneOf(index + 2)"
+          />
+        </div>
+      </template>
 
       <ClaymorphismEmptyState
         v-else
@@ -45,6 +53,7 @@ import ClaymorphismSubPage from '../components/ClaymorphismSubPage.vue'
 import ClaymorphismSectionHead from '../components/ClaymorphismSectionHead.vue'
 import ClaymorphismPostCard from '../components/ClaymorphismPostCard.vue'
 import ClaymorphismEmptyState from '../components/ClaymorphismEmptyState.vue'
+import ClaymorphismTagFilter from '../components/ClaymorphismTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -67,6 +76,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)
