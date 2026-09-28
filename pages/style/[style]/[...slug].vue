@@ -30,7 +30,13 @@ const styleId = computed(() => String(route.params.style ?? ''))
 // slug 段：/style/xxx → []；/style/xxx/about → ['about']；/style/xxx/blog/foo → ['blog','foo']
 const slugSegments = computed(() => {
   const parts = route.params.slug
-  return Array.isArray(parts) ? parts : parts ? [parts] : []
+  const list = Array.isArray(parts) ? parts : parts ? [parts] : []
+  // ★ 过滤空段：GitHub Pages 会把目录式 URL 301 到带尾斜杠版本
+  //   （/style/x/blog → /style/x/blog/），vue-router 的可重复参数因此多出一个
+  //   空串段，拼出的页面键是 '/blog/'，在 pages 映射里不存在 → 整页 404。
+  //   静态 HTML 是对的（curl 一直 200），但客户端 hydration 后页面变成 404——
+  //   这个 bug 只有真实浏览器能发现。
+  return list.filter((seg) => seg !== '')
 })
 
 /** 详情类型：第二段路径存在且首段是 blog / projects 时进入详情页 */
