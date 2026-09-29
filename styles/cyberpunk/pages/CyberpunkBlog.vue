@@ -10,7 +10,7 @@
       class="scroll-reveal scroll-reveal-up"
       :eyebrow="t('nav.blog')"
       :title="t('blog.title')"
-      :meta="String(posts.length)"
+      :meta="String(filteredPosts.length)"
       tone="cyan"
       flip
     >
@@ -22,14 +22,22 @@
         :hint="t('blog.noResultsHint')"
       />
 
-      <div v-else class="post-list">
-        <CyberpunkPostRow
-          v-for="(post, index) in posts"
-          :key="post.path"
-          :post="post"
-          :index="index"
+      <template v-else>
+        <CyberpunkTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
         />
-      </div>
+        <div class="post-list">
+          <CyberpunkPostRow
+            v-for="(post, index) in filteredPosts"
+            :key="post.path"
+            :post="post"
+            :index="index"
+          />
+        </div>
+      </template>
     </CyberpunkPanel>
   </CyberpunkSubPage>
 </template>
@@ -40,6 +48,7 @@ import CyberpunkSubPage from '../components/CyberpunkSubPage.vue'
 import CyberpunkPanel from '../components/CyberpunkPanel.vue'
 import CyberpunkPostRow from '../components/CyberpunkPostRow.vue'
 import CyberpunkEmpty from '../components/CyberpunkEmpty.vue'
+import CyberpunkTagFilter from '../components/CyberpunkTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -62,6 +71,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

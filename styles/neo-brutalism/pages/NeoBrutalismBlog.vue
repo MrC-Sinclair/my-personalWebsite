@@ -9,16 +9,24 @@
     <section class="band scroll-reveal">
       <header class="band-head">
         <NeoBrutalismSectionTitle :text="t('blog.title')" tone="ink"/>
-        <p class="count">{{ posts.length }}</p>
+        <p class="count">{{ filteredPosts.length }}</p>
       </header>
 
       <NeoBrutalismEmpty v-if="loading" :message="t('common.loading')"/>
 
-      <ol v-else-if="posts.length" class="post-list">
-        <li v-for="post in posts" :key="post.path">
-          <NeoBrutalismPostRow :post="post"/>
-        </li>
-      </ol>
+      <template v-else-if="filteredPosts.length">
+        <NeoBrutalismTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
+        />
+        <ol class="post-list">
+          <li v-for="post in filteredPosts" :key="post.path">
+            <NeoBrutalismPostRow :post="post"/>
+          </li>
+        </ol>
+      </template>
 
       <NeoBrutalismEmpty
         v-else
@@ -35,6 +43,7 @@ import NeoBrutalismSubPage from '../components/NeoBrutalismSubPage.vue'
 import NeoBrutalismSectionTitle from '../components/NeoBrutalismSectionTitle.vue'
 import NeoBrutalismPostRow from '../components/NeoBrutalismPostRow.vue'
 import NeoBrutalismEmpty from '../components/NeoBrutalismEmpty.vue'
+import NeoBrutalismTagFilter from '../components/NeoBrutalismTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -57,6 +66,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

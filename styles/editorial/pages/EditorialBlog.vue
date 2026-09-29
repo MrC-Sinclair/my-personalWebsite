@@ -8,7 +8,15 @@
   <EditorialSubPage>
     <EditorialEmpty v-if="loading" :message="t('common.loading')"/>
 
-    <EditorialPosts v-else-if="posts.length" :posts="posts"/>
+    <template v-else-if="filteredPosts.length">
+      <EditorialTagFilter
+        :tags="tags"
+        :active-tag="activeTag"
+        :total="posts.length"
+        @select="select"
+      />
+      <EditorialPosts :posts="filteredPosts"/>
+    </template>
 
     <EditorialEmpty
       v-else
@@ -23,6 +31,7 @@ import type { BlogPost } from '~/types/blog'
 import EditorialSubPage from '../components/EditorialSubPage.vue'
 import EditorialPosts from '../components/EditorialPosts.vue'
 import EditorialEmpty from '../components/EditorialEmpty.vue'
+import EditorialTagFilter from '../components/EditorialTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -45,6 +54,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

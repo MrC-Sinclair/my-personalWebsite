@@ -19,9 +19,17 @@
         <div class="skeleton skeleton-b" />
       </div>
 
-      <div v-else-if="posts.length" class="post-list">
-        <NeumorphismPostCard v-for="post in posts" :key="post.path" :post="post" />
-      </div>
+      <template v-else-if="filteredPosts.length">
+        <NeumorphismTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
+        />
+        <div class="post-list">
+          <NeumorphismPostCard v-for="post in filteredPosts" :key="post.path" :post="post" />
+        </div>
+      </template>
 
       <div v-else class="empty" role="status">
         <p class="empty-title">{{ t('blog.noResults') }}</p>
@@ -36,6 +44,7 @@ import type { BlogPost } from '~/types/blog'
 import NeumorphismSubPage from '../components/NeumorphismSubPage.vue'
 import NeumorphismPanel from '../components/NeumorphismPanel.vue'
 import NeumorphismPostCard from '../components/NeumorphismPostCard.vue'
+import NeumorphismTagFilter from '../components/NeumorphismTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -58,6 +67,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)
