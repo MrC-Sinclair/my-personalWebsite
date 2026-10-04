@@ -19,6 +19,39 @@ export interface TagCount {
   count: number
 }
 
+/** 分类及其文章数（与 TagCount 同构，dashboard 的分类切片面板用） */
+export interface CategoryCount {
+  label: string
+  count: number
+}
+
+/**
+ * 聚合全部分类及文章数（排序规则与 collectTags 一致）。
+ * ------------------------------------------------------------
+ * dashboard 风格早先在自己的 blog 页里内联写过一份分类筛选，属于「业务逻辑
+ * 写死在风格组件」的违规；抽到这里后由共享层 useBlogFilters 统一提供。
+ */
+export function collectCategories(posts: BlogPost[]): CategoryCount[] {
+  const counter = new Map<string, number>()
+  for (const post of posts) {
+    const category = typeof post.category === 'string' ? post.category.trim() : ''
+    if (!category) continue
+    counter.set(category, (counter.get(category) ?? 0) + 1)
+  }
+  return [...counter.entries()]
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => (b.count - a.count) || (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
+}
+
+/**
+ * 按分类过滤文章。category 为空串时返回原列表。
+ * 与标签筛选是**正交**的两个维度：同时指定时取交集（AND）。
+ */
+export function filterPostsByCategory(posts: BlogPost[], category: string): BlogPost[] {
+  if (!category) return posts
+  return posts.filter((post) => typeof post.category === 'string' && post.category === category)
+}
+
 /** 取一篇文章的标签数组（防御脏数据：非数组、非字符串都过滤掉） */
 function tagsOf(post: BlogPost): string[] {
   if (!Array.isArray(post.tags)) return []
