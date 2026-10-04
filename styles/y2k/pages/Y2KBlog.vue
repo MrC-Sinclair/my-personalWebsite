@@ -14,7 +14,7 @@
         {{ t('common.loading') }}
       </p>
 
-      <p v-else-if="!posts.length" class="empty empty--stack" role="status">
+      <p v-else-if="!filteredPosts.length" class="empty empty--stack" role="status">
         <span class="empty-orb" aria-hidden="true">✦</span>
         <span class="empty-text">
           {{ t('blog.noResults') }}
@@ -22,15 +22,23 @@
         </span>
       </p>
 
-      <div v-else class="rows">
-        <Y2KPostRow
-          v-for="(post, i) in posts"
-          :key="post.path"
-          :post="post"
-          :index="i"
-          class="scroll-reveal"
+      <template v-else>
+        <Y2KTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
         />
-      </div>
+        <div class="rows">
+          <Y2KPostRow
+            v-for="(post, i) in filteredPosts"
+            :key="post.path"
+            :post="post"
+            :index="i"
+            class="scroll-reveal"
+          />
+        </div>
+      </template>
     </section>
   </Y2KSubPage>
 </template>
@@ -40,6 +48,7 @@ import type { BlogPost } from '~/types/blog'
 import Y2KSubPage from '../components/Y2KSubPage.vue'
 import Y2KSectionHead from '../components/Y2KSectionHead.vue'
 import Y2KPostRow from '../components/Y2KPostRow.vue'
+import Y2KTagFilter from '../components/Y2KTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -62,6 +71,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

@@ -7,7 +7,15 @@
 <template>
   <TerminalSubPage :title="t('nav.blog')">
     <p v-if="loading" class="loading" role="status">{{ t('common.loading') }}</p>
-    <TerminalBlockBlog v-else :posts="posts" />
+    <template v-else>
+      <TerminalTagFilter
+        :tags="tags"
+        :active-tag="activeTag"
+        :total="posts.length"
+        @select="select"
+      />
+      <TerminalBlockBlog :posts="filteredPosts" />
+    </template>
   </TerminalSubPage>
 </template>
 
@@ -15,6 +23,7 @@
 import type { BlogPost } from '~/types/blog'
 import TerminalSubPage from '../components/TerminalSubPage.vue'
 import TerminalBlockBlog from '../components/TerminalBlockBlog.vue'
+import TerminalTagFilter from '../components/TerminalTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -37,6 +46,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 const loading = computed(() => pending.value && !postsData.value)
 </script>

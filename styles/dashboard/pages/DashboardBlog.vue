@@ -40,28 +40,38 @@
         :meta="String(filteredPosts.length)"
       >
         <template #actions>
+          <!-- 分类切片条：维度之一，数据来自共享层 -->
           <div class="filter" role="group" :aria-label="t('blog.categories')">
             <button
               type="button"
               class="filter-chip"
               :class="{ 'is-active': activeCategory === '' }"
               :aria-pressed="activeCategory === ''"
-              @click="activeCategory = ''"
+              @click="selectCategory('')"
             >
               {{ t('blog.allCategories') }}
             </button>
             <button
-              v-for="stat in categoryStats"
+              v-for="stat in categories"
               :key="stat.label"
               type="button"
               class="filter-chip"
               :class="{ 'is-active': activeCategory === stat.label }"
               :aria-pressed="activeCategory === stat.label"
-              @click="activeCategory = stat.label"
+              @click="selectCategory(stat.label)"
             >
               {{ stat.label }}
             </button>
           </div>
+
+          <!-- 标签切片条：另一个维度，与分类取交集 -->
+          <DashboardTagFilter
+            class="tag-filter"
+            :tags="tags"
+            :active-tag="activeTag"
+            :total="posts.length"
+            @select="selectTag"
+          />
         </template>
 
         <DashboardPostsTable
@@ -86,6 +96,7 @@ import DashboardPanel from '../components/DashboardPanel.vue'
 import DashboardTrendLine from '../components/DashboardTrendLine.vue'
 import DashboardPostsTable from '../components/DashboardPostsTable.vue'
 import DashboardEmptyState from '../components/DashboardEmptyState.vue'
+import DashboardTagFilter from '../components/DashboardTagFilter.vue'
 import { useDashboardStats } from '../composables/useDashboardStats'
 
 const { t, locale } = useI18n()
@@ -110,19 +121,25 @@ watch(locale, () => {
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
 
-const { categoryStats, trend, trendTotal } = useDashboardStats(posts)
+// categoryStats 已改由共享层 useBlogFilters 的 categories 提供
+const { trend, trendTotal } = useDashboardStats(posts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)
 
-// —— 分类筛选器（视图侧过滤已获取的列表） ——
-/** 当前筛选的分类（空字符串 = 全部分类） */
-const activeCategory = ref('')
-const filteredPosts = computed(() =>
-  activeCategory.value
-    ? posts.value.filter((post) => post.category === activeCategory.value)
-    : posts.value,
-)
+// —— 分类 + 标签筛选（共享层：候选清单 + ?category= / ?tag= 同步 + 过滤后的列表） ——
+// 这里早先是页面内联的一份分类筛选（activeCategory + 自己 filter），属于
+// 「业务逻辑写死在风格组件」的违规；现由 useBlogFilters 统一提供，
+// 两个维度正交（同时指定取交集）。仪表盘的分类切片面板是它的特色，予以保留。
+const {
+  tags,
+  categories,
+  activeTag,
+  activeCategory,
+  filteredPosts,
+  selectTag,
+  selectCategory,
+} = useBlogFilters(posts)
 </script>
 
 <style scoped>
