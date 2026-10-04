@@ -11,18 +11,26 @@ export function useAppInfo() {
   const { t } = useI18n()
   const {
     app: { baseURL },
+    public: { siteUrl },
   } = useRuntimeConfig()
 
   const siteConfig = computed<SiteConfig>(() => ({
     name: t('home.name'),
     description: t('home.description'),
-    url: 'https://yourusername.github.io',
+    // 站点地址不再硬编码：与 canonical / og:url 同源（runtimeConfig.public.siteUrl）。
+    // 这里原先写的是 https://yourusername.github.io 这种占位值，属于假数据。
+    url: String(siteUrl || ''),
     author: t('footer.author'),
-    email: 'your@email.com',
+    // 站内不展示邮箱（联系页走社交二维码与留言表单），因此留空而不是填假的
+    // your@email.com。将来要展示邮箱时，在这里填真实地址即可。
+    email: '',
     social: {
       github: 'https://github.com/MrC-Sinclair',
-      dingtalk: '钉钉',
-      feishu: '飞书',
+      // 钉钉/飞书没有可点的主页链接（只有二维码），故留空；
+      // 二维码路径在下面的 socialLinks 里拼。原先这里填的是「钉钉」「飞书」
+      // 这种中文名，与「social 装 URL」的语义不符。
+      dingtalk: '',
+      feishu: '',
       wechat: 'c2256843428',
     },
   }))
