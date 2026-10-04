@@ -11,12 +11,20 @@
       code="SEC-04"
       :level="1"
       :title="t('blog.title')"
-      :meta="String(posts.length)"
+      :meta="String(filteredPosts.length)"
       class="scroll-reveal scroll-reveal-up"
     >
       <SciFiHudLoader v-if="loading" />
 
-      <SciFiHudPostStream v-else-if="posts.length" :posts="posts" />
+      <template v-else-if="filteredPosts.length">
+        <SciFiHudTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
+        />
+        <SciFiHudPostStream :posts="filteredPosts" />
+      </template>
 
       <SciFiHudEmpty
         v-else
@@ -34,6 +42,7 @@ import SciFiHudPanel from '../components/SciFiHudPanel.vue'
 import SciFiHudPostStream from '../components/SciFiHudPostStream.vue'
 import SciFiHudLoader from '../components/SciFiHudLoader.vue'
 import SciFiHudEmpty from '../components/SciFiHudEmpty.vue'
+import SciFiHudTagFilter from '../components/SciFiHudTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -56,6 +65,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示数据流占位 */
 const loading = computed(() => pending.value && !postsData.value)

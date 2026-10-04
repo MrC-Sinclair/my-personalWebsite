@@ -23,21 +23,29 @@
 
       <!-- 空状态（含提示文案） -->
       <SkeuomorphismEmptyNote
-        v-else-if="posts.length === 0"
+        v-else-if="filteredPosts.length === 0"
         :message="t('blog.noResults')"
         :hint="t('blog.noResultsHint')"
       />
 
-      <div v-else class="rows">
-        <SkeuomorphismNoteRow
-          v-for="(post, i) in posts"
-          :key="post.path"
-          :post="post"
-          :index="i"
-          :tilt="i % 2 === 0 ? -0.5 : 0.6"
-          class="scroll-reveal"
+      <template v-else>
+        <SkeuomorphismTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
         />
-      </div>
+        <div class="rows">
+          <SkeuomorphismNoteRow
+            v-for="(post, i) in filteredPosts"
+            :key="post.path"
+            :post="post"
+            :index="i"
+            :tilt="i % 2 === 0 ? -0.5 : 0.6"
+            class="scroll-reveal"
+          />
+        </div>
+      </template>
     </section>
   </SkeuomorphismSubPage>
 </template>
@@ -48,6 +56,7 @@ import SkeuomorphismSubPage from '../components/SkeuomorphismSubPage.vue'
 import SkeuomorphismSectionHead from '../components/SkeuomorphismSectionHead.vue'
 import SkeuomorphismNoteRow from '../components/SkeuomorphismNoteRow.vue'
 import SkeuomorphismEmptyNote from '../components/SkeuomorphismEmptyNote.vue'
+import SkeuomorphismTagFilter from '../components/SkeuomorphismTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -70,6 +79,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)

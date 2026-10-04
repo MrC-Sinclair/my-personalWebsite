@@ -18,13 +18,19 @@
       <span>{{ t('common.loading') }}</span>
     </div>
 
-    <p v-else-if="!posts.length" class="rc-empty">
+    <p v-else-if="!filteredPosts.length" class="rc-empty">
       <RetroComputerPixelIcon variant="doc" />
       <span>{{ t('blog.noResults') }}</span>
     </p>
 
     <template v-else>
-      <RetroComputerPostItem v-for="post in posts" :key="post.path" :post="post" />
+      <RetroComputerTagFilter
+        :tags="tags"
+        :active-tag="activeTag"
+        :total="posts.length"
+        @select="select"
+      />
+      <RetroComputerPostItem v-for="post in filteredPosts" :key="post.path" :post="post" />
     </template>
   </RetroComputerSubPage>
 </template>
@@ -34,6 +40,7 @@ import type { BlogPost } from '~/types/blog'
 import RetroComputerSubPage from '../components/RetroComputerSubPage.vue'
 import RetroComputerPixelIcon from '../components/RetroComputerPixelIcon.vue'
 import RetroComputerPostItem from '../components/RetroComputerPostItem.vue'
+import RetroComputerTagFilter from '../components/RetroComputerTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -57,10 +64,14 @@ watch(locale, () => {
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
 
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)
 
-const statusText = computed(() => `${posts.value.length} ${t('blog.title')}`)
+// 窗口状态条跟着筛选结果走（老系统的状态条就是显示当前条目数）
+const statusText = computed(() => `${filteredPosts.value.length} ${t('blog.title')}`)
 </script>
 
 <style scoped>

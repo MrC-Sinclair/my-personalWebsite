@@ -11,12 +11,19 @@
     :description="t('blog.description')"
     variant="mint"
   >
+    <Soft3DTagFilter
+      :tags="tags"
+      :active-tag="activeTag"
+      :total="posts.length"
+      @select="select"
+    />
+
     <div class="post-grid">
       <Soft3DEmpty v-if="loading" class="post-item" loading :message="t('common.loading')"/>
 
       <template v-else>
         <div
-          v-for="(post, i) in posts"
+          v-for="(post, i) in filteredPosts"
           :key="post.path"
           class="reveal-wrap scroll-reveal scroll-reveal-up"
           :class="revealClass(i)"
@@ -27,7 +34,7 @@
         </div>
 
         <Soft3DEmpty
-          v-if="!posts.length"
+          v-if="!filteredPosts.length"
           class="post-item"
           :message="t('blog.noResults')"
           :hint="t('blog.noResultsHint')"
@@ -42,6 +49,7 @@ import type { BlogPost } from '~/types/blog'
 import Soft3DSubPage from '../components/Soft3DSubPage.vue'
 import Soft3DPostCard from '../components/Soft3DPostCard.vue'
 import Soft3DEmpty from '../components/Soft3DEmpty.vue'
+import Soft3DTagFilter from '../components/Soft3DTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -64,6 +72,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

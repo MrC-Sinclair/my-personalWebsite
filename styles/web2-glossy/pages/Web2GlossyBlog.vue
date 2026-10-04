@@ -14,7 +14,7 @@
           <div v-for="n in 3" :key="n" class="skel skel--row" aria-hidden="true"/>
         </div>
 
-        <div v-else-if="!posts.length" class="empty">
+        <div v-else-if="!filteredPosts.length" class="empty">
           <span class="empty__dot" aria-hidden="true">!</span>
           <span>
             {{ t('blog.noResults') }}
@@ -23,14 +23,22 @@
           </span>
         </div>
 
-        <div v-else class="posts-list">
-          <Web2GlossyPostRow
-            v-for="post in posts"
-            :key="post.path"
-            :post="post"
-            class="scroll-reveal"
+        <template v-else>
+          <Web2GlossyTagFilter
+            :tags="tags"
+            :active-tag="activeTag"
+            :total="posts.length"
+            @select="select"
           />
-        </div>
+          <div class="posts-list">
+            <Web2GlossyPostRow
+              v-for="post in filteredPosts"
+              :key="post.path"
+              :post="post"
+              class="scroll-reveal"
+            />
+          </div>
+        </template>
       </div>
     </section>
   </Web2GlossySubPage>
@@ -41,6 +49,7 @@ import type { BlogPost } from '~/types/blog'
 import Web2GlossySubPage from '../components/Web2GlossySubPage.vue'
 import Web2GlossySectionHead from '../components/Web2GlossySectionHead.vue'
 import Web2GlossyPostRow from '../components/Web2GlossyPostRow.vue'
+import Web2GlossyTagFilter from '../components/Web2GlossyTagFilter.vue'
 
 const { t, locale } = useI18n()
 
@@ -63,6 +72,9 @@ watch(locale, () => {
 })
 
 const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+
+// —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
+const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)
