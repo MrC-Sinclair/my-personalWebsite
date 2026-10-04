@@ -2,9 +2,12 @@
   Web2GlossyPostRow - Web 2.0 光泽风格的文章行条目
   ------------------------------------------------------------
   白色光泽行卡：左侧日期胶囊（凝胶小按钮质感）+ 标题/摘要 +
-  标签胶囊；hover 时整行提亮并浮出左侧蓝色指示条（本风格未实现
-  文章详情页，行条目不做假链接，仅保留列表 hover 反馈）。
+  标签胶囊；hover 时整行提亮并浮出左侧蓝色指示条。
+  整行是真链接（NuxtLink → 风格内文章详情页 /style/<id>/blog/<slug>，
+  路径由共享层 useStyleContentPath + contentSlug 换算），
   日期用共享层 utils/formatDate 按当前语言格式化。
+  （本文件早期注释写过「未实现详情页所以不做链接」，阶段 4 后详情页
+  20/20 已铺齐，该说明已失效。）
 -->
 <template>
   <NuxtLink class="prow" :to="detailLink">

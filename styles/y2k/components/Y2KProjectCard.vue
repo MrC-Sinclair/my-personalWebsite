@@ -3,12 +3,15 @@
   ------------------------------------------------------------
   「镭射光盘」项目卡：纯 CSS 绘制一张彩虹光晕 CD 光盘
   （conic-gradient 镭射膜 + 中心孔），悬浮时光盘旋转 + 彩虹
-  扫光划过。卡片本体不伪装成整卡链接（本风格未实现项目详情
-  页，不提供假跳转，与 web2-glossy 同一口径），真实交互集中在：
-  标题链接（NuxtLink → 过渡层项目详情）与「在线演示 / GitHub」
-  铬按钮外链。tags 用 Array.isArray 防御，slug 换算复用共享层
-  contentSlug（不在风格里重写业务逻辑）。wide 模式：首屏大卡，
-  桌面端横向布局并横跨两列，附「精选」品红徽章。
+  扫光划过。卡片本体不伪装成整卡链接（与 web2-glossy 同一口径：
+  整卡点击会与标题链接、两个外链按钮抢事件），真实交互集中在：
+  标题链接（NuxtLink → 风格内项目详情页 /style/<id>/projects/<slug>，
+  路径由共享层 useStyleContentPath + contentSlug 换算）与
+  「在线演示 / GitHub」铬按钮外链。tags 用 Array.isArray 防御，
+  slug 换算复用共享层 contentSlug（不在风格里重写业务逻辑）。
+  （本文件早期注释写过「本风格未实现项目详情页」「→ 过渡层项目详情」，
+  阶段 4 后详情页 20/20 已铺齐、过渡层也已整体删除，说明已失效。）
+  wide 模式：首屏大卡，桌面端横向布局并横跨两列，附「精选」品红徽章。
 -->
 <template>
   <article class="card" :class="{ 'card--wide': wide }">
