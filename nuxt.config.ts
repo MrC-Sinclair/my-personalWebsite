@@ -1,9 +1,11 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { styleRegistry, STYLE_SUB_PATHS } from './styles/registry'
 import { buildSitemapXml } from './utils/sitemap'
 import { buildFeedXml, readBlogEntries, toFeedItems } from './utils/feed'
+import { styleOgSvg } from './utils/og'
 
 /**
  * 站点对外 URL（canonical / og:url / sitemap 用）。
@@ -199,6 +201,61 @@ async function writeSitemapAndRobots(
  * 与 sitemap 同批落盘，因此不需要额外的预渲染路由，也不依赖运行时。
  * 生成逻辑见 utils/feed.ts（纯函数，有单测）。
  */
+/**
+ * 为每个风格生成一张 OG 分享图（public/og/<id>.png）。
+ * ------------------------------------------------------------
+ * 此前全站 802 页共用一张 og-image.png：分享任何风格页出去，卡片都长一样。
+ * 现在按风格出图（用该风格的 accent 色与英文名），页面级 og:image 覆盖全局值。
+ *
+ * 用 sharp（@nuxt/image 的依赖）把 SVG 转 PNG。pnpm 严格结构下 sharp 不在顶层
+ * node_modules，按 .pnpm 路径解析；解析不到就**跳过生成并告警**——分享图是
+ * 增强项，不该因为它让构建失败。
+ */
+/**
+ * 定位 sharp：pnpm 严格结构下它不在顶层 node_modules，
+ * 只能到 node_modules/.pnpm/sharp@<ver>/node_modules/sharp 去找。
+ * 不写死版本号（升级后会自动匹配到新目录）；找不到返回 null，由调用方降级。
+ */
+function resolveSharpPath(): string | null {
+  const pnpmDir = join(process.cwd(), 'node_modules', '.pnpm')
+  try {
+    const entry = readdirSync(pnpmDir).find((name) => name.startsWith('sharp@'))
+    return entry ? join(pnpmDir, entry, 'node_modules', 'sharp') : null
+  } catch {
+    return null
+  }
+}
+
+async function writeStyleOgImages(publicDir: string): Promise<void> {
+  const sharpPath = resolveSharpPath()
+  if (!sharpPath) {
+    console.warn('[seo] 未找到 sharp，跳过风格 OG 图（页面回退到全局 og-image.png）')
+    return
+  }
+
+  let sharp: unknown = null
+  try {
+    // sharp 是 CJS，ESM 的 `import()` 无法直接导入目录，走 createRequire
+    sharp = createRequire(import.meta.url)(sharpPath)
+  } catch (error) {
+    console.warn(`[seo] sharp 加载失败，跳过风格 OG 图：${(error as Error).message}`)
+    return
+  }
+
+  const ogDir = join(publicDir, 'og')
+  await mkdir(ogDir, { recursive: true })
+
+  for (const meta of styleRegistry) {
+    const svg = Buffer.from(styleOgSvg({ id: meta.id, en: meta.en, accent: meta.accent }))
+    await (sharp as (input: Buffer) => { png(): { toFile(path: string): Promise<unknown> } })(
+      svg,
+    )
+      .png()
+      .toFile(join(ogDir, `${meta.id}.png`))
+  }
+  console.log(`[seo] ${styleRegistry.length} 张风格 OG 图已写入 ${ogDir}`)
+}
+
 async function writeFeeds(publicDir: string): Promise<void> {
   // 构建时间由这里传入（而不是在 feed.ts 里 new Date()），保证同一份内容
   // 产出同一份 feed，便于 CI 核对与排查
@@ -392,6 +449,7 @@ export default defineNuxtConfig({
         }
         await writeSitemapAndRobots(outputPublicDir, result.prerenderedRoutes)
         await writeFeeds(outputPublicDir)
+        await writeStyleOgImages(outputPublicDir)
       },
     },
     prerender: {

@@ -18,6 +18,7 @@ import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import type { Component } from 'vue'
 import { styleRegistry, type StyleEntry } from '~/styles/registry'
 import type { DetailView } from '~/types/detail'
+import { OG_HEIGHT, OG_WIDTH } from '~/utils/og'
 
 // 使用裸布局：不注入过渡层的导航/页脚
 definePageMeta({ layout: 'style' })
@@ -178,6 +179,13 @@ const detailDescription = computed(() => {
   return locale.value.startsWith('zh') ? meta.value!.note : meta.value!.noteEn
 })
 
+/**
+ * 该风格的 OG 分享图（构建期由 nuxt.config.ts 生成：og/<id>.png）。
+ * 覆盖 nuxt.config 里的全局 og-image.png——分享任何风格页/文章页出去，
+ * 卡片都带上这个风格的配色与名字。
+ */
+const ogImage = computed(() => `${siteUrl}${baseURL}og/${styleId.value}.png`)
+
 useHead({
   title: () => detailTitle.value,
   link: [{ rel: 'canonical', href: pageUrl.value }],
@@ -190,6 +198,11 @@ useHead({
       { property: 'og:url', content: pageUrl.value },
       { property: 'og:locale', content: isZh ? 'zh_CN' : 'en_US' },
       { property: 'og:locale:alternate', content: isZh ? 'en_US' : 'zh_CN' },
+      { property: 'og:image', content: ogImage.value },
+      { property: 'og:image:width', content: String(OG_WIDTH) },
+      { property: 'og:image:height', content: String(OG_HEIGHT) },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:image', content: ogImage.value },
     ]
   },
 })
