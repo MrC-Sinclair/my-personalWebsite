@@ -112,6 +112,12 @@ function linkText(url: string): string {
 }
 
 .crow-link {
+  /* 触控目标：23px 差一点够不到 WCAG 2.2 AA 的 24×24（2.5.8），
+     改成 inline-flex 并补 2px 内边距（像素风没有补间，视觉不变） */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 0;
   color: var(--c-text);
   text-decoration: none;
 }

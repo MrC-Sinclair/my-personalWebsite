@@ -114,7 +114,12 @@ const { activeId } = useActiveSection()
 }
 
 .side-name {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  /* 触控目标：行高只有 22px，达不到 WCAG 2.2 AA 的 24×24（2.5.8），
+     上下各补一点内边距把它顶到 26px，视觉上不变胖 */
+  min-height: 24px;
+  padding: 2px 0;
   font-family: var(--font-head);
   font-size: var(--fs-base);
   font-weight: 700;

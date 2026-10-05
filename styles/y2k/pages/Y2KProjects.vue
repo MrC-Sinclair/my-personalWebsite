@@ -8,7 +8,7 @@
 <template>
   <Y2KSubPage>
     <section class="section" aria-labelledby="projects-title">
-      <Y2KSectionHead id="projects-title" :badge="t('projects.featured')" :title="t('projects.title')"/>
+      <Y2KSectionHead id="projects-title" :badge="t('projects.featured')" :title="t('projects.title')" :level="1"/>
 
       <p v-if="loading" class="empty" role="status">
         <span class="empty-orb" aria-hidden="true">✦</span>

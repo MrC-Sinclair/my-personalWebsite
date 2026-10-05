@@ -11,7 +11,7 @@
       <span class="head-badge-star" aria-hidden="true">✦</span>
       {{ badge }}
     </p>
-    <h2 :id="id" class="head-title">{{ title }}</h2>
+    <component :is="headingTag" :id="id" class="head-title">{{ title }}</component>
     <span class="head-line" aria-hidden="true" />
   </div>
 </template>
@@ -20,21 +20,29 @@
 /**
  * @file Y2K 风格的区块标题组件
  * @description 彩虹徽章 + 铬字标题 + 星芒分隔线的区块头。
+ *
+ * 标题层级由 level 决定：首页多个并列分区用 h2；子页只有一个区块头，
+ * 必须传 1 —— 否则整页没有一级标题（项目红线：每页有且仅有一个 h1）。
  */
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    /** h2 的 id（供区块 aria-labelledby 引用） */
+    /** 标题标签的 id（供区块 aria-labelledby 引用） */
     id?: string
     /** 徽章文案（i18n 文案） */
     badge?: string
     /** 标题文案（i18n 文案） */
     title: string
+    /** 标题层级：子页唯一区块头用 1，首页并列分区用 2（默认 2） */
+    level?: 1 | 2
   }>(),
   {
     id: undefined,
     badge: undefined,
+    level: 2,
   },
 )
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

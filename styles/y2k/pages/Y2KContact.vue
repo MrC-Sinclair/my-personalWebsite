@@ -8,7 +8,7 @@
 <template>
   <Y2KSubPage>
     <section class="section" aria-labelledby="contact-title">
-      <Y2KSectionHead id="contact-title" :badge="t('nav.contact')" :title="t('contact.title')"/>
+      <Y2KSectionHead id="contact-title" :badge="t('nav.contact')" :title="t('contact.title')" :level="1"/>
       <Y2KPlasticPanel variant="pink" class="contact-panel scroll-reveal">
         <p class="contact-intro">{{ t('contact.description') }}</p>
         <Y2KContactDeck v-if="safeSocials.length" :socials="safeSocials"/>

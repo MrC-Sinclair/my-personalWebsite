@@ -7,7 +7,7 @@
 <template>
   <Y2KSubPage>
     <section class="section" :aria-labelledby="'about-title'">
-      <Y2KSectionHead id="about-title" :badge="t('nav.about')" :title="t('about.title')"/>
+      <Y2KSectionHead id="about-title" :badge="t('nav.about')" :title="t('about.title')" :level="1"/>
       <Y2KAboutBlock/>
     </section>
   </Y2KSubPage>
