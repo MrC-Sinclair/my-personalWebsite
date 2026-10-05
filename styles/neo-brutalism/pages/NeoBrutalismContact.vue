@@ -7,6 +7,7 @@
 -->
 <template>
   <NeoBrutalismSubPage>
+    <NeoBrutalismSectionTitle :text="t('contact.title')" tone="ink" :level="1"/>
     <NeoBrutalismContactBoard class="contact-band scroll-reveal" :socials="socialLinks"/>
   </NeoBrutalismSubPage>
 </template>
@@ -14,6 +15,10 @@
 <script setup lang="ts">
 import NeoBrutalismSubPage from '../components/NeoBrutalismSubPage.vue'
 import NeoBrutalismContactBoard from '../components/NeoBrutalismContactBoard.vue'
+import NeoBrutalismSectionTitle from '../components/NeoBrutalismSectionTitle.vue'
+
+// 本页原本不直接用 i18n，补页头后需要取标题文案
+const { t } = useI18n()
 
 // —— 共享层站点信息（社交链接） ——
 const { socialLinks } = useAppInfo()

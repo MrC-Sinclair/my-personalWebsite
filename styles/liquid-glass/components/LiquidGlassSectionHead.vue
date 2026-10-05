@@ -10,21 +10,31 @@
   <div class="head">
     <div class="text">
       <p class="eyebrow">{{ eyebrow }}</p>
-      <h2 class="title">{{ title }}</h2>
+      <component :is="headingTag" class="title">{{ title }}</component>
     </div>
     <span v-if="meta" class="meta">{{ meta }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  /** 眉标（栏目归属小字） */
-  eyebrow: string
-  /** 区块标题 */
-  title: string
-  /** 可选计数徽标 */
-  meta?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    /** 眉标（栏目归属小字） */
+    eyebrow: string
+    /** 区块标题 */
+    title: string
+    /** 可选计数徽标 */
+    meta?: string
+    /** 标题层级：子页唯一区块头用 1，首页并列分区用 2（默认 2） */
+    level?: 1 | 2
+  }>(),
+  {
+    meta: '',
+    level: 2,
+  },
+)
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

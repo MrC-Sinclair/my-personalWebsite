@@ -6,7 +6,7 @@
 -->
 <template>
   <LiquidGlassSubPage>
-    <LiquidGlassPanel :eyebrow="t('nav.about')" :title="t('about.title')">
+    <LiquidGlassPanel :eyebrow="t('nav.about')" :title="t('about.title')" :level="1">
       <LiquidGlassAboutBlock/>
     </LiquidGlassPanel>
   </LiquidGlassSubPage>

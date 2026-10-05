@@ -11,21 +11,31 @@
     <div class="rule" aria-hidden="true"/>
     <div class="row">
       <span class="no" aria-hidden="true">{{ no }}</span>
-      <h2 class="title">{{ title }}</h2>
+      <component :is="headingTag" class="title" :data-level="String(level)">{{ title }}</component>
       <p v-if="note" class="note">{{ note }}</p>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  /** 区块编号（如 '01'，纯装饰） */
-  no: string
-  /** 栏目标题（i18n 文案） */
-  title: string
-  /** 注释式小字（页边注，i18n 文案，可选） */
-  note?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    /** 区块编号（如 '01'，纯装饰） */
+    no: string
+    /** 栏目标题（i18n 文案） */
+    title: string
+    /** 注释式小字（页边注，i18n 文案，可选） */
+    note?: string
+    /** 标题层级：子页唯一区块头用 1，首页并列分区用 2（默认 2） */
+    level?: 1 | 2
+  }>(),
+  {
+    note: '',
+    level: 2,
+  },
+)
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

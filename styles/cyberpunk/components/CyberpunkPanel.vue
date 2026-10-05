@@ -18,7 +18,7 @@
         <span class="head-notch" aria-hidden="true"/>
         <div class="head-text">
           <p v-if="eyebrow" class="head-eyebrow">{{ eyebrow }}</p>
-          <h2 class="head-title">{{ title }}</h2>
+          <component :is="headingTag" class="head-title">{{ title }}</component>
         </div>
         <span v-if="meta" class="head-meta">{{ meta }}</span>
       </header>
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     /** 面板主标题（i18n 文案） */
     title: string
@@ -43,14 +43,19 @@ withDefaults(
     tone?: 'cyan' | 'magenta' | 'violet'
     /** 镜像切角方向（默认右上 + 左下切角） */
     flip?: boolean
+    /** 标题层级：子页唯一面板用 1，首页并列面板用 2（默认 2） */
+    level?: 1 | 2
   }>(),
   {
     eyebrow: '',
     meta: '',
     tone: 'cyan',
     flip: false,
+    level: 2,
   },
 )
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

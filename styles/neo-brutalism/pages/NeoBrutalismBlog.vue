@@ -8,7 +8,7 @@
   <NeoBrutalismSubPage>
     <section class="band scroll-reveal">
       <header class="band-head">
-        <NeoBrutalismSectionTitle :text="t('blog.title')" tone="ink"/>
+        <NeoBrutalismSectionTitle :text="t('blog.title')" tone="ink" :level="1"/>
         <p class="count">{{ filteredPosts.length }}</p>
       </header>
 

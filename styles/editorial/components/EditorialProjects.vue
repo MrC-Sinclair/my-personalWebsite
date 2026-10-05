@@ -10,7 +10,12 @@
 -->
 <template>
   <section id="projects" class="section" data-section="projects">
-    <EditorialSectionHead :no="'02'" :title="t('home.featuredProjects')" :note="t('projects.description')" />
+    <EditorialSectionHead
+      :no="'02'"
+      :title="t('home.featuredProjects')"
+      :note="t('projects.description')"
+      :level="level"
+    />
 
     <EditorialEmpty v-if="!projects.length" :message="t('projects.noResults')" />
 
@@ -81,10 +86,17 @@ import { contentSlug } from '~/utils/content'
 import EditorialSectionHead from './EditorialSectionHead.vue'
 import EditorialEmpty from './EditorialEmpty.vue'
 
-defineProps<{
-  /** 精选项目列表（来自共享层 useProjects） */
-  projects: Project[]
-}>()
+withDefaults(
+  defineProps<{
+    /** 精选项目列表（来自共享层 useProjects） */
+    projects: Project[]
+    /** 标题层级：projects 子页用它当页头，传 1；首页是并列分区，默认 2 */
+    level?: 1 | 2
+  }>(),
+  {
+    level: 2,
+  },
+)
 
 const { t } = useI18n()
 const localePath = useLocalePath()

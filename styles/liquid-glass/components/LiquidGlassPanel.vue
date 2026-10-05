@@ -14,7 +14,7 @@
     <header class="head">
       <p class="eyebrow">{{ eyebrow }}</p>
       <div class="title-row">
-        <h2 class="title">{{ title }}</h2>
+        <component :is="headingTag" class="title">{{ title }}</component>
         <span v-if="meta" class="meta">{{ meta }}</span>
       </div>
     </header>
@@ -25,14 +25,24 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  /** 面板眉标（小字引导，如栏目归属） */
-  eyebrow: string
-  /** 面板标题 */
-  title: string
-  /** 可选的计数/说明徽标（如条目数量） */
-  meta?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    /** 面板眉标（小字引导，如栏目归属） */
+    eyebrow: string
+    /** 面板标题 */
+    title: string
+    /** 可选的计数/说明徽标（如条目数量） */
+    meta?: string
+    /** 标题层级：子页唯一面板用 1，首页并列面板用 2（默认 2） */
+    level?: 1 | 2
+  }>(),
+  {
+    meta: '',
+    level: 2,
+  },
+)
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

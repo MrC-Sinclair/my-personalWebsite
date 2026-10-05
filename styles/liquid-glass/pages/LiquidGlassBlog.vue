@@ -15,7 +15,7 @@
         :eyebrow="t('nav.blog')"
         :title="t('blog.title')"
         :meta="String(filteredPosts.length)"
-      />
+       :level="1"/>
 
       <LiquidGlassEmpty v-if="loading" :message="t('common.loading')"/>
 

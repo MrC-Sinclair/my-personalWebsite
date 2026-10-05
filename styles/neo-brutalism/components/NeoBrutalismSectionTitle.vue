@@ -6,19 +6,27 @@
   ink（黑底纸字）/ paper（纸底黑字，用于黑块内部）/ accent（海报黄底黑字）。
 -->
 <template>
-  <h2 class="nb-title" :class="`is-${tone}`">{{ text }}</h2>
+  <component :is="headingTag" class="nb-title" :class="`is-${tone}`">{{ text }}</component>
 </template>
 
 <script setup lang="ts">
 /** 标题墨色：ink = 黑底反白；paper = 纸底黑字（黑块内用）；accent = 海报黄底 */
-withDefaults(defineProps<{
-  /** 标题文案（i18n） */
-  text: string
-  /** 墨色档位，默认 ink */
-  tone?: 'ink' | 'paper' | 'accent'
-}>(), {
-  tone: 'ink',
-})
+const props = withDefaults(
+  defineProps<{
+    /** 标题文案（i18n） */
+    text: string
+    /** 墨色档位，默认 ink */
+    tone?: 'ink' | 'paper' | 'accent'
+    /** 标题层级：子页唯一区块头用 1，首页并列分区用 2（默认 2） */
+    level?: 1 | 2
+  }>(),
+  {
+    tone: 'ink',
+    level: 2,
+  },
+)
+
+const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>

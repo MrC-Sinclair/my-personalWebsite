@@ -15,7 +15,7 @@
         :total="posts.length"
         @select="select"
       />
-      <EditorialPosts :posts="filteredPosts"/>
+      <EditorialPosts :posts="filteredPosts" :level="1"/>
     </template>
 
     <EditorialEmpty

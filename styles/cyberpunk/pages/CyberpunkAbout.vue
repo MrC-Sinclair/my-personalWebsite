@@ -6,11 +6,18 @@
 -->
 <template>
   <CyberpunkSubPage>
-    <CyberpunkAboutBlock/>
+    <!-- 子页页头：AboutBlock 内只有 h3 小标题，整页缺 h1，用面板壳补一级标题 -->
+    <CyberpunkPanel :title="t('about.title')" tone="cyan" :level="1">
+      <CyberpunkAboutBlock/>
+    </CyberpunkPanel>
   </CyberpunkSubPage>
 </template>
 
 <script setup lang="ts">
 import CyberpunkSubPage from '../components/CyberpunkSubPage.vue'
 import CyberpunkAboutBlock from '../components/CyberpunkAboutBlock.vue'
+import CyberpunkPanel from '../components/CyberpunkPanel.vue'
+
+// 本页原本不直接用 i18n，补页头后需要取标题文案
+const { t } = useI18n()
 </script>

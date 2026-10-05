@@ -12,8 +12,7 @@
       :title="t('blog.title')"
       :meta="String(filteredPosts.length)"
       tone="cyan"
-      flip
-    >
+      flip :level="1">
       <CyberpunkEmpty v-if="loading" :message="t('common.loading')"/>
 
       <CyberpunkEmpty

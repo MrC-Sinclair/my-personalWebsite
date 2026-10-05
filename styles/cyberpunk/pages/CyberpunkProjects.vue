@@ -11,8 +11,7 @@
       :eyebrow="t('nav.projects')"
       :title="t('projects.title')"
       :meta="String(projects.length)"
-      tone="magenta"
-    >
+      tone="magenta" :level="1">
       <CyberpunkEmpty v-if="loading" :message="t('common.loading')"/>
 
       <CyberpunkEmpty v-else-if="!projects.length" :message="t('projects.noResults')"/>

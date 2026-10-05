@@ -7,7 +7,8 @@
 -->
 <template>
   <EditorialSubPage>
-    <EditorialContact/>
+    <!-- 页头在 EditorialContact 内部，层级传 1（同上） -->
+    <EditorialContact :level="1"/>
   </EditorialSubPage>
 </template>
 

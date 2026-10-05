@@ -6,7 +6,9 @@
 -->
 <template>
   <EditorialSubPage>
-    <EditorialProfile/>
+    <!-- 页头在 EditorialProfile 内部（它自带一个刊头），这里把层级传成 1：
+         子页需要 h1，首页则是并列分区用 h2 -->
+    <EditorialProfile :level="1"/>
   </EditorialSubPage>
 </template>
 

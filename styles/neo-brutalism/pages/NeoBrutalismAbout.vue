@@ -8,6 +8,8 @@
 -->
 <template>
   <NeoBrutalismSubPage>
+    <!-- 子页页头：区块里只有 h3，整页缺 h1 -->
+    <NeoBrutalismSectionTitle :text="t('about.title')" tone="ink" :level="1"/>
     <NeoBrutalismAboutBlock class="scroll-reveal"/>
     <NeoBrutalismSkillsBlock class="scroll-reveal" :groups="skillGroups"/>
     <NeoBrutalismTimeline class="scroll-reveal" :items="timeline"/>
@@ -19,6 +21,10 @@ import NeoBrutalismSubPage from '../components/NeoBrutalismSubPage.vue'
 import NeoBrutalismAboutBlock from '../components/NeoBrutalismAboutBlock.vue'
 import NeoBrutalismSkillsBlock from '../components/NeoBrutalismSkillsBlock.vue'
 import NeoBrutalismTimeline from '../components/NeoBrutalismTimeline.vue'
+import NeoBrutalismSectionTitle from '../components/NeoBrutalismSectionTitle.vue'
+
+// 本页原本不直接用 i18n，补页头后需要取标题文案
+const { t } = useI18n()
 
 // —— 共享层站点信息（技能分组与经历时间线） ——
 const { skillGroups, timeline } = useAppInfo()

@@ -7,7 +7,7 @@
 -->
 <template>
   <LiquidGlassSubPage>
-    <LiquidGlassPanel :eyebrow="t('nav.contact')" :title="t('contact.socialLinks')">
+    <LiquidGlassPanel :eyebrow="t('nav.contact')" :title="t('contact.socialLinks')" :level="1">
       <div class="contact-body scroll-reveal scroll-reveal-up">
         <p class="contact-desc">{{ t('contact.description') }}</p>
         <LiquidGlassContactGrid :socials="socialLinks"/>

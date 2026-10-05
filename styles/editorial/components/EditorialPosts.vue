@@ -11,7 +11,12 @@
 -->
 <template>
   <section id="posts" class="section" data-section="posts">
-    <EditorialSectionHead :no="'03'" :title="t('home.latestPosts')" :note="t('blog.description')" />
+    <EditorialSectionHead
+      :no="'03'"
+      :title="t('home.latestPosts')"
+      :note="t('blog.description')"
+      :level="level"
+    />
 
     <EditorialEmpty
       v-if="!posts.length"
@@ -58,10 +63,17 @@ import { contentSlug } from '~/utils/content'
 import EditorialSectionHead from './EditorialSectionHead.vue'
 import EditorialEmpty from './EditorialEmpty.vue'
 
-defineProps<{
-  /** 最新文章列表（来自共享层 useBlog） */
-  posts: BlogPost[]
-}>()
+withDefaults(
+  defineProps<{
+    /** 最新文章列表（来自共享层 useBlog） */
+    posts: BlogPost[]
+    /** 标题层级：blog 子页用它当页头，传 1；首页是并列分区，默认 2 */
+    level?: 1 | 2
+  }>(),
+  {
+    level: 2,
+  },
+)
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()

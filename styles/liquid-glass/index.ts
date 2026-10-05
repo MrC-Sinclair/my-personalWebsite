@@ -6,6 +6,8 @@
  *              '/' → /style/liquid-glass，未导出的页面由壳抛 404。
  */
 import './tokens.css'
+// 风格级布局补丁：裁剪装饰层造成的横向溢出（见 layout.css 文件头说明）
+import './layout.css'
 import type { StyleEntry } from '~/styles/registry'
 import LiquidGlassIndex from './pages/LiquidGlassIndex.vue'
 import LiquidGlassAbout from './pages/LiquidGlassAbout.vue'

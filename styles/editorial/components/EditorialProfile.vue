@@ -9,7 +9,7 @@
 -->
 <template>
   <section id="about" class="section" data-section="about">
-    <EditorialSectionHead :no="'01'" :title="t('about.title')" />
+    <EditorialSectionHead :no="'01'" :title="t('about.title')" :level="level"/>
 
     <div class="body">
       <!-- 左栏：导语 + 技能目录 -->
@@ -51,6 +51,10 @@ import type { SkillGroup } from '~/types/site'
 import EditorialSectionHead from './EditorialSectionHead.vue'
 
 const { t } = useI18n()
+
+// 标题层级：本组件自带刊头，about 子页把它当页头用 → 传 1；
+// 首页是并列分区 → 默认 2。
+withDefaults(defineProps<{ level?: 1 | 2 }>(), { level: 2 })
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { skillGroups, timeline } = useAppInfo()

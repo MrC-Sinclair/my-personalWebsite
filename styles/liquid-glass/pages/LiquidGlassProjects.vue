@@ -13,7 +13,7 @@
         :eyebrow="t('nav.projects')"
         :title="t('projects.title')"
         :meta="String(projects.length)"
-      />
+       :level="1"/>
 
       <LiquidGlassEmpty v-if="loading" :message="t('common.loading')"/>
 

@@ -10,7 +10,7 @@
 -->
 <template>
   <section id="contact" class="section" data-section="contact">
-    <EditorialSectionHead :no="'04'" :title="t('contact.title')" />
+    <EditorialSectionHead :no="'04'" :title="t('contact.title')" :level="level"/>
 
     <div class="body">
       <!-- 左栏：邀请语 + 外部链接 -->
@@ -65,6 +65,9 @@ import { useClipboardCopy } from '~/composables/useClipboardCopy'
 import EditorialSectionHead from './EditorialSectionHead.vue'
 
 const { t } = useI18n()
+
+// 同 EditorialProfile：contact 子页把本组件自带的刊头当页头用 → 传 1
+withDefaults(defineProps<{ level?: 1 | 2 }>(), { level: 2 })
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { socialLinks } = useAppInfo()

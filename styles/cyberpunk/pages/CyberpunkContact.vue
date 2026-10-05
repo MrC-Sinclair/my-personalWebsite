@@ -12,8 +12,7 @@
       class="scroll-reveal scroll-reveal-up"
       :eyebrow="t('nav.contact')"
       :title="t('contact.socialLinks')"
-      tone="violet"
-    >
+      tone="violet" :level="1">
       <p class="contact-desc">{{ t('contact.description') }}</p>
       <CyberpunkContactDeck :socials="socialLinks"/>
     </CyberpunkPanel>

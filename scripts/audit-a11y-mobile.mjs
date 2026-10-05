@@ -11,7 +11,15 @@
  * 用法：MSYS_NO_PATHCONV=1 node .workbuddy/audit-a11y-mobile.mjs [baseURL]
  */
 const BASE = process.argv[2] || 'https://mrc-sinclair.github.io/my-personalWebsite'
-const STYLES = ['minimalism', 'y2k', 'terminal', 'dashboard', 'pixel']
+// 默认全量审计 20 个风格 × 5 个页面（100 页，约 8 分钟）；
+// 只想抽查时用 AUDIT_STYLES 覆盖，例如 AUDIT_STYLES=y2k,pixel
+const ALL_STYLES = [
+  'minimalism', 'liquid-glass', 'metro', 'swiss', 'flat-design',
+  'glassmorphism', 'claymorphism', 'neumorphism', 'cyberpunk', 'editorial',
+  'neo-brutalism', 'soft-3d', 'sci-fi-hud', 'skeuomorphism', 'web2-glossy',
+  'retro-computer', 'dashboard', 'pixel', 'terminal', 'y2k',
+]
+const STYLES = process.env.AUDIT_STYLES ? process.env.AUDIT_STYLES.split(',') : ALL_STYLES
 const PAGES = ['', '/about', '/projects', '/blog', '/contact']
 const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 3, mobile: true }
 

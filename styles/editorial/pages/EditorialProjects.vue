@@ -8,7 +8,7 @@
   <EditorialSubPage>
     <EditorialEmpty v-if="loading" :message="t('common.loading')"/>
 
-    <EditorialProjects v-else-if="projects.length" :projects="projects"/>
+    <EditorialProjects v-else-if="projects.length" :projects="projects" :level="1"/>
 
     <EditorialEmpty v-else :message="t('projects.noResults')"/>
   </EditorialSubPage>
