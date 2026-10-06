@@ -16,7 +16,7 @@ on:
 # ==================== 权限配置 ====================
 # GitHub Actions 需要的权限（用于部署到 GitHub Pages）
 permissions:
-  contents: read # 读取仓库内容的权限（用于 checkout）
+  contents: write # ⚠️ 临时：失败时把构建日志推到 ci-log 分支（排障完要改回 read）
   pages: write # 写入 GitHub Pages 的权限（用于部署）
   id-token: write # 用于 OIDC 身份验证（GitHub Pages 部署需要）
 
@@ -84,8 +84,23 @@ jobs:
 
       # 步骤 7：生成静态站点
       # 执行 Nuxt 的静态生成命令，输出到 .output/public 目录
+      # ⚠️ 临时排障：CI 日志匿名下载要认证，本机又是 Windows 复现不出 Linux 行为，
+      #    因此把 generate 的输出存成 gen.log，失败时推到 ci-log 分支供本地 fetch 阅读。
+      #    set -o pipefail 不可少：否则管道里 pnpm 失败也会被 tee 的 0 退出码掩盖。
       - name: Generate static site
-        run: pnpm generate
+        run: |
+          set -o pipefail
+          pnpm generate 2>&1 | tee gen.log
+
+      - name: Upload build log on failure
+        if: failure()
+        run: |
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@example.com"
+          git checkout -B ci-log
+          git add -f gen.log
+          git commit -m "ci: generate 日志" || echo "日志无变化"
+          git push -f origin ci-log || echo "日志推送失败"
 
       # 步骤 8：上传构建产物
       # 将生成的静态文件打包为 artifact，供部署任务使用
