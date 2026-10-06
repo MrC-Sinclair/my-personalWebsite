@@ -21,10 +21,14 @@ permissions:
   id-token: write # 用于 OIDC 身份验证（GitHub Pages 部署需要）
 
 # ==================== 并发控制 ====================
-# 防止同一工作流多次同时运行造成冲突
+# ⚠️ 组名**不能**叫 pages：GitHub 自带的 "pages build and deployment" workflow
+#    也用 `pages` 这个组，两者会互斥——本项目已观察到推送后同时触发两套
+#    workflow，内置的（Jekyll）必然失败，而我们的 run 被取消或长时间排队。
+# cancel-in-progress: true —— 连续推送时只跑最新一个，不让队列积压
+#    （802 页 × 2 语言预渲染一次要 5~10 分钟，积压 5 个就是近一小时）
 concurrency:
-  group: pages # 同一组的工作流共享并发限制
-  cancel-in-progress: false # 不取消正在运行的部署，等待完成后再执行新的
+  group: deploy-pages-nuxt
+  cancel-in-progress: true
 
 # ==================== 任务定义 ====================
 # 工作流包含两个任务：build（构建）和 deploy（部署）
