@@ -63,17 +63,23 @@ async function main() {
       let url = `${BASE}${LOCALE_PREFIX}/style/${style}${suffix}`
       if (DETAIL) {
         const listUrl = `${BASE}${LOCALE_PREFIX}/style/${style}/${DETAIL}`
-        const html = await fetch(listUrl).then((r) => r.text())
-        const m = html.match(
-          new RegExp(`href="([^"]*/style/${style}/${DETAIL}/[^"#?]+)"`),
-        )
-        if (!m) {
-          console.log(`${style.padEnd(12)} ${DETAIL.padEnd(10)} (列表页无详情链接)`)
-          continue
+        let href = ''
+        if (process.env.AUDIT_SLUG) {
+          // 直接指定 slug：dev 环境下 node 的 fetch 会走系统代理，抓 localhost 会挂住
+          href = `${LOCALE_PREFIX}/style/${style}/${DETAIL}/${process.env.AUDIT_SLUG}`
+        } else {
+          const html = await fetch(listUrl).then((r) => r.text())
+          const m = html.match(
+            new RegExp(`href="([^"]*/style/${style}/${DETAIL}/[^"#?]+)"`),
+          )
+          if (!m) {
+            console.log(`${style.padEnd(12)} ${DETAIL.padEnd(10)} (列表页无详情链接)`)
+            continue
+          }
+          href = m[1]
         }
         // ⚠️ 列表页里的 href 是**含 baseURL 的根路径**（/my-personalWebsite/style/...），
         //    不能直接 `BASE + href`——那会把子路径拼两遍导致 404。用 origin 拼。
-        const href = m[1]
         url = href.startsWith('http') ? href : new URL(href, new URL(BASE).origin).href
       }
       await send('Page.navigate', { url })
