@@ -325,6 +325,55 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ---------- 6. Markdown 正文的代码块 ---------- */
+
+/*
+ * 代码块必须能自身横向滚动，否则会把整页撑宽。
+ * 实测：博客详情页（正文含 13 个 <pre>）在 390px 视口下被撑到 865px ——
+ * <pre> 不换行，它的 min-content 宽度一路上报到 grid/flex 祖先，
+ * 让 .detail / .prose / .flow 全部变成 833px 宽。
+ * 加上 overflow-x: auto 后该元素成为滚动容器，min-content 归零，可自由收缩。
+ *
+ * 这是**共性行为**不是风格表现，所以放共享层：20 个风格一次生效。
+ */
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/*
+ * 表格同理：多列表格的 min-content 是所有列宽之和（实测到 720px），
+ * 会把整条 grid/flex 祖先链一起撑到 833px。
+ * 用 table-layout: fixed + 单元格内断行，让表格服从容器宽度而不是相反
+ * （不用 `display: block` 那个 hack——那会破坏表格的视觉结构）。
+ */
+table {
+  width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
+}
+
+th,
+td {
+  overflow-wrap: break-word;
+}
+
+/*
+ * ★ 关键：grid / flex 子项默认 `min-width: auto`，其最小值是内容的
+ *   min-content —— 正文里任何一个不可断的元素（代码块、多列表格、长串）
+ *   都会顺着这条链把整页撑宽，而且**撑宽的元素本身看起来毫无异常**
+ *   （它们的 clientWidth == scrollWidth，只有 html 的 scrollWidth 才暴露）。
+ *
+ *   实测：博客详情页在 390px 视口下被撑到 865px，正文容器 833px。
+ *   显式给子项 min-width: 0，让它们服从容器宽度。
+ */
+article,
+main,
+.prose,
+.prose * {
+  min-width: 0;
+}
+
 /* ---------- 5. 减少动效偏好 ---------- */
 
 @media (prefers-reduced-motion: reduce) {

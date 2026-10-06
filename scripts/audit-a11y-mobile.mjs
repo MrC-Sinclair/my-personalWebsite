@@ -11,6 +11,9 @@
  * 用法：MSYS_NO_PATHCONV=1 node .workbuddy/audit-a11y-mobile.mjs [baseURL]
  */
 const BASE = process.argv[2] || 'https://mrc-sinclair.github.io/my-personalWebsite'
+// AUDIT_LOCALE=en 时审英文站（i18n 用 prefix_except_default：英文路径带 /en 前缀）。
+// 802 页里英文占一半，只审中文等于漏掉一半。
+const LOCALE_PREFIX = process.env.AUDIT_LOCALE === 'en' ? '/en' : ''
 // 默认全量审计 20 个风格 × 5 个页面（100 页，约 8 分钟）；
 // 只想抽查时用 AUDIT_STYLES 覆盖，例如 AUDIT_STYLES=y2k,pixel
 const ALL_STYLES = [
@@ -20,7 +23,10 @@ const ALL_STYLES = [
   'retro-computer', 'dashboard', 'pixel', 'terminal', 'y2k',
 ]
 const STYLES = process.env.AUDIT_STYLES ? process.env.AUDIT_STYLES.split(',') : ALL_STYLES
-const PAGES = ['', '/about', '/projects', '/blog', '/contact']
+// AUDIT_DETAIL=blog|projects：不审列表页，改为进入该栏目的**第一篇详情页**。
+// 详情路由占全站 802 页里的大头（约 560 页），此前从没被审计过。
+const DETAIL = process.env.AUDIT_DETAIL || ''
+const PAGES = DETAIL ? [''] : ['', '/about', '/projects', '/blog', '/contact']
 const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 3, mobile: true }
 
 async function main() {
@@ -51,9 +57,27 @@ async function main() {
   const rows = []
   for (const style of STYLES) {
     for (const suffix of PAGES) {
-      const url = `${BASE}/style/${style}${suffix}`
+      // 详情模式：列表页是 SSG 静态 HTML，直接 fetch 抓第一条详情链接。
+      // （早先用 CDP 二次导航取链接会挂住：navigate 后 ws 上的 pending promise
+      //   可能永不 resolve，脚本被 SIGTERM）
+      let url = `${BASE}${LOCALE_PREFIX}/style/${style}${suffix}`
+      if (DETAIL) {
+        const listUrl = `${BASE}${LOCALE_PREFIX}/style/${style}/${DETAIL}`
+        const html = await fetch(listUrl).then((r) => r.text())
+        const m = html.match(
+          new RegExp(`href="([^"]*/style/${style}/${DETAIL}/[^"#?]+)"`),
+        )
+        if (!m) {
+          console.log(`${style.padEnd(12)} ${DETAIL.padEnd(10)} (列表页无详情链接)`)
+          continue
+        }
+        // ⚠️ 列表页里的 href 是**含 baseURL 的根路径**（/my-personalWebsite/style/...），
+        //    不能直接 `BASE + href`——那会把子路径拼两遍导致 404。用 origin 拼。
+        const href = m[1]
+        url = href.startsWith('http') ? href : new URL(href, new URL(BASE).origin).href
+      }
       await send('Page.navigate', { url })
-      await new Promise((r) => setTimeout(r, 4500))
+      await new Promise((r) => setTimeout(r, DETAIL ? 5000 : 4500))
       const res = await send('Runtime.evaluate', {
         expression: `(() => {
           const doc = document.documentElement;
