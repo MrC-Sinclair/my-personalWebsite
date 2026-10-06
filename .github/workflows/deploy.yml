@@ -80,7 +80,9 @@ jobs:
       # 步骤 6：安装项目依赖
       # 根据 package.json 和 pnpm-lock.yaml 安装所有依赖
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          set -o pipefail
+          pnpm install 2>&1 | tee install.log
 
       # 步骤 7：生成静态站点
       # 执行 Nuxt 的静态生成命令，输出到 .output/public 目录
@@ -98,8 +100,9 @@ jobs:
           git config user.name "ci-bot"
           git config user.email "ci-bot@example.com"
           git checkout -B ci-log
-          git add -f gen.log
-          git commit -m "ci: generate 日志" || echo "日志无变化"
+          # 两个日志都可能不存在（失败点越靠前，缺失的文件越多），用 || true 兜住
+          git add -f install.log gen.log 2>/dev/null || true
+          git commit -m "ci: 构建日志 $(date -u +%Y%m%dT%H%M%SZ)" || echo "日志无变化"
           git push -f origin ci-log || echo "日志推送失败"
 
       # 步骤 8：上传构建产物
