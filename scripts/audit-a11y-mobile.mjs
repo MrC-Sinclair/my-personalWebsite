@@ -30,7 +30,10 @@ const PAGES = DETAIL ? [''] : ['', '/about', '/projects', '/blog', '/contact']
 const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 3, mobile: true }
 
 async function main() {
-  const list = await (await fetch('http://127.0.0.1:9222/json/list')).json()
+  // CDP 端口：默认的 9222 实例**会被用坏**（表现为脚本挂住不退出），
+// 这时换一个端口起新实例即可，不用去杀可能正在被你正常使用的 Chrome。
+const CDP_PORT = process.env.CDP_PORT || '9222'
+const list = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`)).json()
   const page = list.find((t) => t.type === 'page')
   const ws = new WebSocket(page.webSocketDebuggerUrl)
   let seq = 0

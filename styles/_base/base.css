@@ -366,9 +366,15 @@ td {
  *
  *   实测：博客详情页在 390px 视口下被撑到 865px，正文容器 833px。
  *   显式给子项 min-width: 0，让它们服从容器宽度。
+ *
+ *   类名要覆盖全：不是每个风格都用 <article>——dashboard 用的是 div.detail，
+ *   漏掉它就会继续溢出 474px（实测）。宁可多列几个类名，min-width: 0
+ *   对非 grid/flex 子项没有任何副作用。
  */
 article,
 main,
+.detail,
+.doc,
 .prose,
 .prose * {
   min-width: 0;
