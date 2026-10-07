@@ -2,7 +2,7 @@
 # GitHub Actions 工作流：自动部署到 GitHub Pages
 # ============================================================
 # 触发时机：当推送到 main 分支时自动执行
-# 执行流程：构建 → 生成静态文件 → 部署到 GitHub Pages
+# 执行流程：质量门禁（lint / test / spellcheck）→ 构建 → 部署到 GitHub Pages
 # ============================================================
 
 name: Deploy to GitHub Pages
@@ -31,8 +31,60 @@ concurrency:
   cancel-in-progress: true
 
 # ==================== 任务定义 ====================
-# 工作流包含两个任务：build（构建）和 deploy（部署）
+# 工作流包含三个任务：quality（质量门禁）、build（构建）和 deploy（部署）
+# quality 与 build 并行跑，deploy 需要两者都成功——坏代码不会推上线
 jobs:
+  # -------------------- 质量门禁任务 --------------------
+  # 2026-10-07 补：此前 CI 只做 build + deploy，lint / test / spellcheck 全靠
+  # 本地自觉，坏代码会一路推上线。这里把三道检查固化成独立 job：
+  #   - 与 build 并行，不拖长总时长（构建本身要 5~10 分钟）
+  #   - deploy 的 needs 包含 quality，任一检查红掉就不会发布
+  # 注意：Install 会触发 postinstall（nuxi prepare），ESLint 与 Vitest 都依赖
+  # .nuxt/tsconfig.json，跳过 install 会让两者报找不到模块。
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15 # 三道检查加起来约 2~3 分钟，15 分钟足够兜住卡死
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 版本要求同 build（Node ≥ 22.13，pnpm 11.25.0），两处必须一致
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        run: |
+          npm i -g pnpm@11.25.0
+          pnpm --version
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      # 与 build 共用同一 cache key，同一 run 内第二个 job 直接命中
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Spellcheck
+        run: pnpm spellcheck
+
   # -------------------- 构建任务 --------------------
   build:
     runs-on: ubuntu-latest # 使用 Ubuntu 最新版本作为运行环境
@@ -106,7 +158,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }} # 部署完成后显示的 URL
 
     runs-on: ubuntu-latest
-    needs: build # 依赖构建任务，必须等 build 完成后才能执行
+    needs: [build, quality] # 构建与质量门禁都通过才部署
 
     steps:
       # 步骤 1：部署到 GitHub Pages
