@@ -23,19 +23,12 @@ import {
   type CategoryCount,
   type TagCount,
 } from '~/utils/tags'
+import { readStringQuery } from '~/utils/route'
 
 /** URL query 里承载标签的键名 */
 export const TAG_QUERY_KEY = 'tag'
 /** URL query 里承载分类的键名 */
 export const CATEGORY_QUERY_KEY = 'category'
-
-/** 读取 query 里的字符串参数（多值只取第一个） */
-function readQuery(query: Record<string, unknown> | undefined, key: string): string {
-  const value = query?.[key]
-  if (typeof value === 'string') return value
-  if (Array.isArray(value) && typeof value[0] === 'string') return value[0]
-  return ''
-}
 
 /**
  * 标签 + 分类筛选。传入文章数据源（ref / getter / 数组均可）。
@@ -61,10 +54,10 @@ export function useBlogFilters(posts: MaybeRefOrGetter<BlogPost[]>) {
   })
 
   const activeTag = computed<string>(() =>
-    mounted.value ? readQuery(route.query, TAG_QUERY_KEY) : '',
+    mounted.value ? readStringQuery(route.query, TAG_QUERY_KEY) : '',
   )
   const activeCategory = computed<string>(() =>
-    mounted.value ? readQuery(route.query, CATEGORY_QUERY_KEY) : '',
+    mounted.value ? readStringQuery(route.query, CATEGORY_QUERY_KEY) : '',
   )
 
   /** 标签清单（按文章数降序） */

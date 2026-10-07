@@ -122,7 +122,10 @@
     "gpage",
     "menlo",
     "jintian",
-    "consolas"
+    "consolas",
+    "unstub",
+    "haystack",
+    "postgres"
   ],
   "ignorePaths": [
     "node_modules",

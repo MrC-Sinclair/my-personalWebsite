@@ -17,7 +17,15 @@
         :total="posts.length"
         @select="select"
       />
-      <MinimalismPosts :posts="filteredPosts" :show-more="false" />
+      <!-- 关键词搜索：数据源是标签筛选后的列表，两个维度正交叠加（交集） -->
+      <MinimalismSearch
+        :query="query"
+        :result-count="resultCount"
+        :total="totalCount"
+        @update="setQuery"
+        @clear="clear"
+      />
+      <MinimalismPosts :posts="results" :show-more="false" />
     </template>
   </MinimalismSubPage>
 </template>
@@ -27,6 +35,7 @@ import type { BlogPost } from '~/types/blog'
 import MinimalismSubPage from '../components/MinimalismSubPage.vue'
 import MinimalismPosts from '../components/MinimalismPosts.vue'
 import MinimalismTagFilter from '../components/MinimalismTagFilter.vue'
+import MinimalismSearch from '../components/MinimalismSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -52,6 +61,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 const loading = computed(() => pending.value && !postsData.value)
 </script>
