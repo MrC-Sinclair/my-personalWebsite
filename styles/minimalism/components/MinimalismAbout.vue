@@ -108,10 +108,15 @@ const timelineItems = computed(() => (Array.isArray(timeline.value) ? timeline.v
   min-width: 0;
   line-height: 1.9;
   color: var(--c-text);
-  /* 用 break-word 而非 anywhere：放不下时把整个技能名（如 ECharts）
-     移到下一行，而不是在词中间劈开（anywhere 会折成 EC/harts）；
-     极长的单词仍可断开，防溢出能力不丢 */
   overflow-wrap: break-word;
+}
+
+/* 技能名做成原子盒：::before 的「·」与词之间没有空格断点，
+   「·ECharts」作为整体放不下时 overflow-wrap 会在词中劈开
+   （实测断成 ECh/arts）。inline-block 让整个技能名不可内断、
+   整体换行，极长词仍由 break-word 兜底防溢出 */
+.def-item {
+  display: inline-block;
 }
 
 .def-item + .def-item::before {

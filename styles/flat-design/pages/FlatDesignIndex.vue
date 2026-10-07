@@ -107,6 +107,9 @@ import FlatDesignFooter from '../components/FlatDesignFooter.vue'
 /** 首页展示的最新文章数量 */
 const POSTS_LIMIT = 4
 
+/** 首页展示的精选项目数量：网格两列，取 4 条凑满 2×2，避免奇数张孤卡 */
+const PROJECTS_LIMIT = 4
+
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 
@@ -130,7 +133,7 @@ const {
   pending: projectsPending,
   refresh: refreshProjects,
 } = await useAsyncData<Project[]>('flat-design-projects', async () => {
-  const list = await getFeaturedProjects()
+  const list = await getFeaturedProjects(PROJECTS_LIMIT)
   return Array.isArray(list) ? list : []
 })
 
