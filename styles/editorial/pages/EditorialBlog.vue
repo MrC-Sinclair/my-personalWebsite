@@ -8,21 +8,28 @@
   <EditorialSubPage>
     <EditorialEmpty v-if="loading" :message="t('common.loading')"/>
 
-    <template v-else-if="filteredPosts.length">
+    <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
+    <template v-else>
       <EditorialTagFilter
         :tags="tags"
         :active-tag="activeTag"
         :total="posts.length"
         @select="select"
       />
-      <EditorialPosts :posts="filteredPosts" :level="1"/>
+      <EditorialSearch
+        :query="query"
+        :result-count="resultCount"
+        :total="totalCount"
+        @update="setQuery"
+        @clear="clear"
+      />
+      <EditorialPosts v-if="results.length" :posts="results" :level="1"/>
+      <EditorialEmpty
+        v-else
+        :message="t('blog.noResults')"
+        :hint="t('blog.noResultsHint')"
+      />
     </template>
-
-    <EditorialEmpty
-      v-else
-      :message="t('blog.noResults')"
-      :hint="t('blog.noResultsHint')"
-    />
   </EditorialSubPage>
 </template>
 
@@ -32,6 +39,7 @@ import EditorialSubPage from '../components/EditorialSubPage.vue'
 import EditorialPosts from '../components/EditorialPosts.vue'
 import EditorialEmpty from '../components/EditorialEmpty.vue'
 import EditorialTagFilter from '../components/EditorialTagFilter.vue'
+import EditorialSearch from '../components/EditorialSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -57,6 +65,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

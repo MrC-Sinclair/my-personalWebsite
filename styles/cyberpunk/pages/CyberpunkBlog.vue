@@ -10,7 +10,7 @@
       class="scroll-reveal scroll-reveal-up"
       :eyebrow="t('nav.blog')"
       :title="t('blog.title')"
-      :meta="String(filteredPosts.length)"
+      :meta="String(resultCount)"
       tone="cyan"
       flip :level="1">
       <CyberpunkEmpty v-if="loading" :message="t('common.loading')"/>
@@ -22,20 +22,33 @@
       />
 
       <template v-else>
+        <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
         <CyberpunkTagFilter
           :tags="tags"
           :active-tag="activeTag"
           :total="posts.length"
           @select="select"
         />
-        <div class="post-list">
+        <CyberpunkSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+        <div v-if="results.length" class="post-list">
           <CyberpunkPostRow
-            v-for="(post, index) in filteredPosts"
+            v-for="(post, index) in results"
             :key="post.path"
             :post="post"
             :index="index"
           />
         </div>
+        <CyberpunkEmpty
+          v-else
+          :message="t('blog.noResults')"
+          :hint="t('blog.noResultsHint')"
+        />
       </template>
     </CyberpunkPanel>
   </CyberpunkSubPage>
@@ -48,6 +61,7 @@ import CyberpunkPanel from '../components/CyberpunkPanel.vue'
 import CyberpunkPostRow from '../components/CyberpunkPostRow.vue'
 import CyberpunkEmpty from '../components/CyberpunkEmpty.vue'
 import CyberpunkTagFilter from '../components/CyberpunkTagFilter.vue'
+import CyberpunkSearch from '../components/CyberpunkSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -73,6 +87,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

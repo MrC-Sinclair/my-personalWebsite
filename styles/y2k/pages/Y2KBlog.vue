@@ -14,14 +14,7 @@
         {{ t('common.loading') }}
       </p>
 
-      <p v-else-if="!filteredPosts.length" class="empty empty--stack" role="status">
-        <span class="empty-orb" aria-hidden="true">✦</span>
-        <span class="empty-text">
-          {{ t('blog.noResults') }}
-          <span class="empty-hint">{{ t('blog.noResultsHint') }}</span>
-        </span>
-      </p>
-
+      <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
       <template v-else>
         <Y2KTagFilter
           :tags="tags"
@@ -29,15 +22,29 @@
           :total="posts.length"
           @select="select"
         />
-        <div class="rows">
+        <Y2KSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+        <div v-if="results.length" class="rows">
           <Y2KPostRow
-            v-for="(post, i) in filteredPosts"
+            v-for="(post, i) in results"
             :key="post.path"
             :post="post"
             :index="i"
             class="scroll-reveal"
           />
         </div>
+        <p v-else class="empty empty--stack" role="status">
+          <span class="empty-orb" aria-hidden="true">✦</span>
+          <span class="empty-text">
+            {{ t('blog.noResults') }}
+            <span class="empty-hint">{{ t('blog.noResultsHint') }}</span>
+          </span>
+        </p>
       </template>
     </section>
   </Y2KSubPage>
@@ -49,6 +56,7 @@ import Y2KSubPage from '../components/Y2KSubPage.vue'
 import Y2KSectionHead from '../components/Y2KSectionHead.vue'
 import Y2KPostRow from '../components/Y2KPostRow.vue'
 import Y2KTagFilter from '../components/Y2KTagFilter.vue'
+import Y2KSearch from '../components/Y2KSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -74,6 +82,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

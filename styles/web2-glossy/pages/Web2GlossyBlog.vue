@@ -14,15 +14,7 @@
           <div v-for="n in 3" :key="n" class="skel skel--row" aria-hidden="true"/>
         </div>
 
-        <div v-else-if="!filteredPosts.length" class="empty">
-          <span class="empty__dot" aria-hidden="true">!</span>
-          <span>
-            {{ t('blog.noResults') }}
-            <br >
-            {{ t('blog.noResultsHint') }}
-          </span>
-        </div>
-
+        <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
         <template v-else>
           <Web2GlossyTagFilter
             :tags="tags"
@@ -30,13 +22,28 @@
             :total="posts.length"
             @select="select"
           />
-          <div class="posts-list">
+          <Web2GlossySearch
+            :query="query"
+            :result-count="resultCount"
+            :total="totalCount"
+            @update="setQuery"
+            @clear="clear"
+          />
+          <div v-if="results.length" class="posts-list">
             <Web2GlossyPostRow
-              v-for="post in filteredPosts"
+              v-for="post in results"
               :key="post.path"
               :post="post"
               class="scroll-reveal"
             />
+          </div>
+          <div v-else class="empty">
+            <span class="empty__dot" aria-hidden="true">!</span>
+            <span>
+              {{ t('blog.noResults') }}
+              <br >
+              {{ t('blog.noResultsHint') }}
+            </span>
           </div>
         </template>
       </div>
@@ -50,6 +57,7 @@ import Web2GlossySubPage from '../components/Web2GlossySubPage.vue'
 import Web2GlossySectionHead from '../components/Web2GlossySectionHead.vue'
 import Web2GlossyPostRow from '../components/Web2GlossyPostRow.vue'
 import Web2GlossyTagFilter from '../components/Web2GlossyTagFilter.vue'
+import Web2GlossySearch from '../components/Web2GlossySearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -75,6 +83,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)
