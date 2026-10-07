@@ -3,10 +3,17 @@
 > **状态：阶段 1 / 2 / 3 / 4 全部完成**。本文档是架构总纲；新增风格的操作步骤见 [style-authoring-guide.md](./style-authoring-guide.md)。
 >
 > 当前落地情况：`styles/` 下已有 **20 个风格**目录（各含 tokens.css / components / pages / index.ts），
-> 每风格 5 页（首页 + about / projects / blog / contact），共 101 条路由；
+> 每风格 5 页（首页 + about / projects / blog / contact）+ **详情阅读页**（`detail`，文章/项目正文，
+> 由路由壳按内容 slug 解析），共 101 条路由；
 > 站点门脸为根路径 `/` 的风格画廊，风格路由薄壳 `/style/[style]/[...slug]` 已跑通。
 > 注册表 20 条记录的 `status` 全为 `ready`。
 > **过渡层（`components/`、旧 `pages/`、`layouts/default.vue`、`assets/css/main.css`、Nuxt UI）已于阶段 3 整体移除。**
+>
+> **阶段 4 之后的增量**（2026-09-20 ~ 10-07，均遵循本文档的三层分工）：
+> 博客标签/分类筛选（`?tag=` / `?category=`，useBlogFilters）→ 关键词搜索（`?q=`，useBlogSearch + utils/search）
+> → 中英 RSS feed → sitemap/robots 自动生成 + 每风格 OG 分享图 → 英文站 404 修复（预渲染清单必须显式展开 /en 路由）
+> → CI 质量门禁（lint / test / spellcheck 不过不部署）。
+> 这些能力全部落在共享层，风格层只各自实现 UI；新增风格时按 SOP 接线即可。
 >
 > 参考实现：`D:\code\codeWork\Next-generation-UI\style-lab`——一套内容、四种界面风格（新粗野主义 / 新拟态 / 像素风 / 终端机）的纯静态验证项目，本文档的核心契约均来自该项目的已验证结论。
 
@@ -120,8 +127,8 @@ styles/                    ← 【风格区】每种风格一个目录
 
 - 数据获取：`composables/`（useBlog、useProjects、useAppInfo…）
 - 数据转换：`utils/`——「把原始数据变成能直接进模板的值」的纯函数
-- 通用交互行为（共享 composable，禁止各风格重写）：`useClipboardCopy`（复制 + 已复制反馈 + 定时器清理）、`useActiveSection`（滚动激活区块 scroll spy）、`useScrollReveal`（进入动画）
-- 数据转换（共享 util，禁止各风格重写）：`contentSlug`（内容路径 → 裸 slug）、`formatDate`（日期本地化，短语言码 zh/en 自动归一化）
+- 通用交互行为（共享 composable，禁止各风格重写）：`useClipboardCopy`（复制 + 已复制反馈 + 定时器清理）、`useActiveSection`（滚动激活区块 scroll spy）、`useScrollReveal`（进入动画）、`useBlogFilters` / `useBlogTagFilter`（标签 + 分类筛选，`?tag=` / `?category=` 双向同步）、`useBlogSearch`（关键词搜索，`?q=` 双向同步 + 防抖写 URL + onUnmounted 清理）
+- 数据转换（共享 util，禁止各风格重写）：`contentSlug`（内容路径 → 裸 slug）、`formatDate`（日期本地化，短语言码 zh/en 自动归一化）、`collectTags` / `collectCategories` / `filterPostsByTag` / `filterPostsByCategory`（标签/分类聚合与过滤）、`filterPostsByQuery`（搜索匹配：关键词 AND、标题命中优先、跨环境大小写归一）、`readStringQuery`（route.query 安全取值）
 - 类型定义：`types/`
 
 **禁止**：任何 DOM 结构、class 名、样式出现在共享层。

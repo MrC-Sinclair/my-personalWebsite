@@ -21,7 +21,8 @@
 - **SEO**：构建时自动生成 `sitemap.xml`（中英双语 + hreflang alternate）与 `robots.txt`；每页 canonical / og:url / og:locale；OG 与 Twitter 分享卡指向 `public/og-image.png`
 - **品牌资源**：favicon（ico/svg/png）、apple-touch-icon、PWA 图标（192/512）由 `scripts/gen-brand-assets.mjs` 生成
 - **UI 不复用、业务逻辑复用**：风格层各写各的结构与 token；取数、滚动动画、格式化等行为只写一份在 `composables/` / `utils/`
-- **内容驱动**：blog 每个语种 14 篇，projects 目前 1 篇（中英各一份）
+- **内容驱动**：blog 每个语种 14 篇，projects 每个语种 4 篇
+- **博客筛选与搜索**：标签/分类筛选（`?tag=` / `?category=`）+ 关键词搜索（`?q=`，匹配标题/摘要/分类/标签/slug，标题命中优先），维度正交可叠加，行为全在共享层
 - **国际化**：中英双语，URL 策略 `prefix_except_default`（中文无前缀，英文 `/en/`）
 - **PWA**：添加到主屏幕、离线访问、自动更新
 - **无障碍**：WCAG AA、prefers-reduced-motion、刘海屏安全区域适配
@@ -55,6 +56,9 @@ my-personalWebsite/
 │   ├── useBlog.ts                 # 博客数据获取
 │   ├── useProjects.ts             # 项目数据获取
 │   ├── useSiteConfig.ts           # 站点配置（导出 useAppInfo 函数）
+│   ├── useBlogFilters.ts          # 标签 + 分类筛选（?tag= / ?category=）
+│   ├── useBlogTagFilter.ts        # 标签筛选（useBlogFilters 的薄包装）
+│   ├── useBlogSearch.ts           # 关键词搜索（?q=，配 utils/search.ts）
 │   └── useScrollReveal.ts         # 滚动进入视口动画（IntersectionObserver）
 ├── content/                       # Markdown 内容文件
 │   ├── blog/zh|en/                # 博客文章
