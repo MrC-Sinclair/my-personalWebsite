@@ -28,6 +28,7 @@
           </span>
         </p>
 
+        <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
         <template v-else>
           <MetroTagFilter
             :tags="tags"
@@ -35,9 +36,16 @@
             :total="safePosts.length"
             @select="select"
           />
+          <MetroSearch
+            :query="query"
+            :result-count="resultCount"
+            :total="totalCount"
+            @update="setQuery"
+            @clear="clear"
+          />
           <div class="mosaic">
             <MetroPostTile
-              v-for="(post, index) in filteredPosts"
+              v-for="(post, index) in results"
               :key="post.path"
               :post="post"
               :span="index === 1 ? 'wide' : 'sm'"
@@ -55,6 +63,7 @@ import type { BlogPost } from '~/types/blog'
 import MetroPostTile from '../components/MetroPostTile.vue'
 import MetroSubPage from '../components/MetroSubPage.vue'
 import MetroTagFilter from '../components/MetroTagFilter.vue'
+import MetroSearch from '../components/MetroSearch.vue'
 import type { MetroTileVariant } from '../components/MetroTile.vue'
 
 const { t, locale } = useI18n()
@@ -75,6 +84,10 @@ const safePosts = computed(() => (Array.isArray(postsData.value) ? postsData.val
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(safePosts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 const postVariants: MetroTileVariant[] = ['green', 'cobalt', 'red']
 

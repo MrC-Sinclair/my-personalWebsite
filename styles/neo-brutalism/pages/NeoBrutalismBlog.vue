@@ -9,30 +9,37 @@
     <section class="band scroll-reveal">
       <header class="band-head">
         <NeoBrutalismSectionTitle :text="t('blog.title')" tone="ink" :level="1"/>
-        <p class="count">{{ filteredPosts.length }}</p>
+        <p class="count">{{ resultCount }}</p>
       </header>
 
       <NeoBrutalismEmpty v-if="loading" :message="t('common.loading')"/>
 
-      <template v-else-if="filteredPosts.length">
+      <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
+      <template v-else>
         <NeoBrutalismTagFilter
           :tags="tags"
           :active-tag="activeTag"
           :total="posts.length"
           @select="select"
         />
-        <ol class="post-list">
-          <li v-for="post in filteredPosts" :key="post.path">
+        <NeoBrutalismSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+        <ol v-if="results.length" class="post-list">
+          <li v-for="post in results" :key="post.path">
             <NeoBrutalismPostRow :post="post"/>
           </li>
         </ol>
+        <NeoBrutalismEmpty
+          v-else
+          :message="t('blog.noResults')"
+          :hint="t('blog.noResultsHint')"
+        />
       </template>
-
-      <NeoBrutalismEmpty
-        v-else
-        :message="t('blog.noResults')"
-        :hint="t('blog.noResultsHint')"
-      />
     </section>
   </NeoBrutalismSubPage>
 </template>
@@ -44,6 +51,7 @@ import NeoBrutalismSectionTitle from '../components/NeoBrutalismSectionTitle.vue
 import NeoBrutalismPostRow from '../components/NeoBrutalismPostRow.vue'
 import NeoBrutalismEmpty from '../components/NeoBrutalismEmpty.vue'
 import NeoBrutalismTagFilter from '../components/NeoBrutalismTagFilter.vue'
+import NeoBrutalismSearch from '../components/NeoBrutalismSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -69,6 +77,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

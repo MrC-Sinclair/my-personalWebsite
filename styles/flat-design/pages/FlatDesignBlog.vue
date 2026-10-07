@@ -22,27 +22,31 @@
         <div v-if="pending" class="band__loading">
           <FlatDesignSkeleton />
         </div>
-        <template v-else-if="filteredPosts.length">
+        <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
+        <template v-else>
           <FlatDesignTagFilter
             :tags="tags"
             :active-tag="activeTag"
             :total="posts.length"
             @select="select"
           />
-          <div class="post-grid">
+          <FlatDesignSearch
+            :query="query"
+            :result-count="resultCount"
+            :total="totalCount"
+            @update="setQuery"
+            @clear="clear"
+          />
+          <div v-if="results.length" class="post-grid">
             <FlatDesignPostCard
-              v-for="(post, i) in filteredPosts"
+              v-for="(post, i) in results"
               :key="post.path"
               :post="post"
               :tone-index="i"
             />
           </div>
+          <FlatDesignEmpty v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
         </template>
-        <FlatDesignEmpty
-          v-else
-          :message="t('blog.noResults')"
-          :hint="t('blog.noResultsHint')"
-        />
       </div>
     </section>
   </FlatDesignSubPage>
@@ -56,6 +60,7 @@ import FlatDesignSectionHead from '../components/FlatDesignSectionHead.vue'
 import FlatDesignSkeleton from '../components/FlatDesignSkeleton.vue'
 import FlatDesignSubPage from '../components/FlatDesignSubPage.vue'
 import FlatDesignTagFilter from '../components/FlatDesignTagFilter.vue'
+import FlatDesignSearch from '../components/FlatDesignSearch.vue'
 
 const { t, locale } = useI18n()
 const { getAllPosts } = useBlog()
@@ -75,4 +80,8 @@ const posts = computed(() => (Array.isArray(postsData.value) ? postsData.value :
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 </script>
