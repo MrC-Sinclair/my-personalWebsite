@@ -37,7 +37,7 @@
         class="cell"
         :eyebrow="t('nav.blog')"
         :title="t('blog.title')"
-        :meta="String(filteredPosts.length)"
+        :meta="String(resultCount)"
       >
         <template #actions>
           <!-- 分类切片条：维度之一，数据来自共享层 -->
@@ -72,13 +72,19 @@
             :total="posts.length"
             @select="selectTag"
           />
+
+          <!-- 关键词搜索：第三个维度，与分类、标签取交集 -->
+          <DashboardSearch
+            class="search"
+            :query="query"
+            :result-count="resultCount"
+            :total="totalCount"
+            @update="setQuery"
+            @clear="clear"
+          />
         </template>
 
-        <DashboardPostsTable
-          v-if="filteredPosts.length"
-          :posts="filteredPosts"
-          :caption="t('blog.title')"
-        />
+        <DashboardPostsTable v-if="results.length" :posts="results" :caption="t('blog.title')" />
         <DashboardEmptyState
           v-else
           :message="t('blog.noResults')"
@@ -97,6 +103,7 @@ import DashboardTrendLine from '../components/DashboardTrendLine.vue'
 import DashboardPostsTable from '../components/DashboardPostsTable.vue'
 import DashboardEmptyState from '../components/DashboardEmptyState.vue'
 import DashboardTagFilter from '../components/DashboardTagFilter.vue'
+import DashboardSearch from '../components/DashboardSearch.vue'
 import { useDashboardStats } from '../composables/useDashboardStats'
 
 const { t, locale } = useI18n()
@@ -140,6 +147,10 @@ const {
   selectTag,
   selectCategory,
 } = useBlogFilters(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取分类+标签筛选后的列表：三维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 </script>
 
 <style scoped>

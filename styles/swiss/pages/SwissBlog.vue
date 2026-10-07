@@ -24,20 +24,27 @@
           <div v-for="i in 3" :key="i" class="skeleton-row" />
         </div>
 
-        <template v-else-if="filteredPosts.length">
+        <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
+        <template v-else>
           <SwissTagFilter
             :tags="tags"
             :active-tag="activeTag"
             :total="posts.length"
             @select="select"
           />
-          <SwissPostList :posts="filteredPosts" />
+          <SwissSearch
+            :query="query"
+            :result-count="resultCount"
+            :total="totalCount"
+            @update="setQuery"
+            @clear="clear"
+          />
+          <SwissPostList v-if="results.length" :posts="results" />
+          <div v-else class="empty">
+            <p class="empty-main">{{ t('blog.noResults') }}</p>
+            <p class="empty-hint">{{ t('blog.noResultsHint') }}</p>
+          </div>
         </template>
-
-        <div v-else class="empty">
-          <p class="empty-main">{{ t('blog.noResults') }}</p>
-          <p class="empty-hint">{{ t('blog.noResultsHint') }}</p>
-        </div>
       </div>
     </section>
   </SwissSubPage>
@@ -49,6 +56,7 @@ import SwissSubPage from '../components/SwissSubPage.vue'
 import SwissSectionHead from '../components/SwissSectionHead.vue'
 import SwissPostList from '../components/SwissPostList.vue'
 import SwissTagFilter from '../components/SwissTagFilter.vue'
+import SwissSearch from '../components/SwissSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -74,6 +82,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)

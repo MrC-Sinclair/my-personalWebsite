@@ -12,26 +12,33 @@
       data-section="posts"
       head="QUEST LOG"
       :title="t('blog.title')"
-      :meta="String(filteredPosts.length)"
+      :meta="String(resultCount)"
       :level="1"
     >
       <p v-if="loading" class="loading-art" role="status">
         [ ▓▓▓▓▓▓░░░░ ]<span class="blink">▉</span>
       </p>
 
-      <template v-else-if="filteredPosts.length">
+      <template v-else>
+        <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
         <PixelTagFilter
           :tags="tags"
           :active-tag="activeTag"
           :total="posts.length"
           @select="select"
         />
-        <ol class="stack">
-          <PixelPostRow v-for="post in filteredPosts" :key="post.path" :post="post" />
+        <PixelSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+        <ol v-if="results.length" class="stack">
+          <PixelPostRow v-for="post in results" :key="post.path" :post="post" />
         </ol>
+        <PixelEmpty v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
       </template>
-
-      <PixelEmpty v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
     </PixelPanel>
   </PixelSubPage>
 </template>
@@ -43,6 +50,7 @@ import PixelPanel from '../components/PixelPanel.vue'
 import PixelPostRow from '../components/PixelPostRow.vue'
 import PixelEmpty from '../components/PixelEmpty.vue'
 import PixelTagFilter from '../components/PixelTagFilter.vue'
+import PixelSearch from '../components/PixelSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -68,6 +76,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

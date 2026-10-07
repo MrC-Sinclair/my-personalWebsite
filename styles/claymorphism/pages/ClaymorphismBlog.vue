@@ -11,7 +11,7 @@
         eyebrow="04"
         :level="1"
         :title="t('blog.title')"
-        :count="filteredPosts.length"
+        :count="resultCount"
         tone="lilac"
       />
 
@@ -21,28 +21,35 @@
         <div v-for="i in 3" :key="i" class="skeleton skeleton-row" />
       </div>
 
-      <template v-else-if="filteredPosts.length">
+      <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
+      <template v-else>
         <ClaymorphismTagFilter
           :tags="tags"
           :active-tag="activeTag"
           :total="posts.length"
           @select="select"
         />
-        <div class="post-stack">
+        <ClaymorphismSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+        <div v-if="results.length" class="post-stack">
           <ClaymorphismPostCard
-            v-for="(post, index) in filteredPosts"
+            v-for="(post, index) in results"
             :key="post.path"
             :post="post"
             :tone="toneOf(index + 2)"
           />
         </div>
+        <ClaymorphismEmptyState
+          v-else
+          :message="t('blog.noResults')"
+          :hint="t('blog.noResultsHint')"
+        />
       </template>
-
-      <ClaymorphismEmptyState
-        v-else
-        :message="t('blog.noResults')"
-        :hint="t('blog.noResultsHint')"
-      />
     </section>
   </ClaymorphismSubPage>
 </template>
@@ -54,6 +61,7 @@ import ClaymorphismSectionHead from '../components/ClaymorphismSectionHead.vue'
 import ClaymorphismPostCard from '../components/ClaymorphismPostCard.vue'
 import ClaymorphismEmptyState from '../components/ClaymorphismEmptyState.vue'
 import ClaymorphismTagFilter from '../components/ClaymorphismTagFilter.vue'
+import ClaymorphismSearch from '../components/ClaymorphismSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -79,6 +87,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)
