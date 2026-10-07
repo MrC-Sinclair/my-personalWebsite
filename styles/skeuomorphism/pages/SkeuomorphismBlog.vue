@@ -21,13 +21,7 @@
         <div v-for="n in 4" :key="n" class="skel skel--row" aria-hidden="true" />
       </div>
 
-      <!-- 空状态（含提示文案） -->
-      <SkeuomorphismEmptyNote
-        v-else-if="filteredPosts.length === 0"
-        :message="t('blog.noResults')"
-        :hint="t('blog.noResultsHint')"
-      />
-
+      <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
       <template v-else>
         <SkeuomorphismTagFilter
           :tags="tags"
@@ -35,9 +29,16 @@
           :total="posts.length"
           @select="select"
         />
-        <div class="rows">
+        <SkeuomorphismSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+        <div v-if="results.length" class="rows">
           <SkeuomorphismNoteRow
-            v-for="(post, i) in filteredPosts"
+            v-for="(post, i) in results"
             :key="post.path"
             :post="post"
             :index="i"
@@ -45,6 +46,11 @@
             class="scroll-reveal"
           />
         </div>
+        <SkeuomorphismEmptyNote
+          v-else
+          :message="t('blog.noResults')"
+          :hint="t('blog.noResultsHint')"
+        />
       </template>
     </section>
   </SkeuomorphismSubPage>
@@ -57,6 +63,7 @@ import SkeuomorphismSectionHead from '../components/SkeuomorphismSectionHead.vue
 import SkeuomorphismNoteRow from '../components/SkeuomorphismNoteRow.vue'
 import SkeuomorphismEmptyNote from '../components/SkeuomorphismEmptyNote.vue'
 import SkeuomorphismTagFilter from '../components/SkeuomorphismTagFilter.vue'
+import SkeuomorphismSearch from '../components/SkeuomorphismSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -82,6 +89,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)

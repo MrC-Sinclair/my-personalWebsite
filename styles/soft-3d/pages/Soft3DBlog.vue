@@ -17,13 +17,20 @@
       :total="posts.length"
       @select="select"
     />
+    <Soft3DSearch
+      :query="query"
+      :result-count="resultCount"
+      :total="totalCount"
+      @update="setQuery"
+      @clear="clear"
+    />
 
     <div class="post-grid">
       <Soft3DEmpty v-if="loading" class="post-item" loading :message="t('common.loading')"/>
 
       <template v-else>
         <div
-          v-for="(post, i) in filteredPosts"
+          v-for="(post, i) in results"
           :key="post.path"
           class="reveal-wrap scroll-reveal scroll-reveal-up"
           :class="revealClass(i)"
@@ -34,7 +41,7 @@
         </div>
 
         <Soft3DEmpty
-          v-if="!filteredPosts.length"
+          v-if="!results.length"
           class="post-item"
           :message="t('blog.noResults')"
           :hint="t('blog.noResultsHint')"
@@ -50,6 +57,7 @@ import Soft3DSubPage from '../components/Soft3DSubPage.vue'
 import Soft3DPostCard from '../components/Soft3DPostCard.vue'
 import Soft3DEmpty from '../components/Soft3DEmpty.vue'
 import Soft3DTagFilter from '../components/Soft3DTagFilter.vue'
+import Soft3DSearch from '../components/Soft3DSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -75,6 +83,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)

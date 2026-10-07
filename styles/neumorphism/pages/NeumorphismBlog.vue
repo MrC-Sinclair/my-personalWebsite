@@ -19,22 +19,29 @@
         <div class="skeleton skeleton-b" />
       </div>
 
-      <template v-else-if="filteredPosts.length">
+      <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
+      <template v-else>
         <NeumorphismTagFilter
           :tags="tags"
           :active-tag="activeTag"
           :total="posts.length"
           @select="select"
         />
-        <div class="post-list">
-          <NeumorphismPostCard v-for="post in filteredPosts" :key="post.path" :post="post" />
+        <NeumorphismSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+        <div v-if="results.length" class="post-list">
+          <NeumorphismPostCard v-for="post in results" :key="post.path" :post="post" />
+        </div>
+        <div v-else class="empty" role="status">
+          <p class="empty-title">{{ t('blog.noResults') }}</p>
+          <p class="empty-hint">{{ t('blog.noResultsHint') }}</p>
         </div>
       </template>
-
-      <div v-else class="empty" role="status">
-        <p class="empty-title">{{ t('blog.noResults') }}</p>
-        <p class="empty-hint">{{ t('blog.noResultsHint') }}</p>
-      </div>
     </NeumorphismPanel>
   </NeumorphismSubPage>
 </template>
@@ -45,6 +52,7 @@ import NeumorphismSubPage from '../components/NeumorphismSubPage.vue'
 import NeumorphismPanel from '../components/NeumorphismPanel.vue'
 import NeumorphismPostCard from '../components/NeumorphismPostCard.vue'
 import NeumorphismTagFilter from '../components/NeumorphismTagFilter.vue'
+import NeumorphismSearch from '../components/NeumorphismSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -70,6 +78,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(() => pending.value && !postsData.value)
