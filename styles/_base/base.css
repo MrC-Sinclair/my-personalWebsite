@@ -342,6 +342,27 @@ pre {
 }
 
 /*
+ * 语法高亮 token 前景色的接线（必须做一次，否则高亮等于没开）
+ *
+ * shiki 以「压缩类 + CSS 变量」输出颜色：每个 token 是
+ * <span class="sXxx">，颜色写在页面注入的 <style> 里（.sXxx{--shiki-default:#..;
+ * --shiki-dark:#..}）。但把变量接到 color 上的规则由 shiki 自己提供，形如
+ * `html .default .shiki span { color: var(--shiki-default) }` 与
+ * `html .dark .shiki span { color: var(--shiki-dark) }` —— 它们靠 <html> 上的
+ * .default / .dark 类切换，那是给 color-mode 准备的。本站没有 color-mode
+ * （Nuxt UI 已随过渡层移除），两条规则**永远不匹配**，于是代码块一直是纯文本色。
+ *
+ * 所以这里补一条默认接线（亮底风格直接用）。暗底风格在自己的 CSS 里覆盖成
+ * var(--shiki-dark)——取哪套是风格的外观决策，不放共享层。
+ *
+ * 代码块背景同样留给风格：span 上没有背景，pre 的底色由各风格的 :deep(pre) 决定。
+ */
+pre.shiki span,
+code.shiki span {
+  color: var(--shiki-default);
+}
+
+/*
  * 表格同理：多列表格的 min-content 是所有列宽之和（实测到 720px），
  * 会把整条 grid/flex 祖先链一起撑到 833px。
  * 用 table-layout: fixed + 单元格内断行，让表格服从容器宽度而不是相反

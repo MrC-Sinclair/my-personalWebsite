@@ -291,7 +291,10 @@ const projectLinks = computed(() => {
   overflow-x: auto;
   border: 1px solid rgb(255 255 255 / 0.3);
   border-radius: var(--radius-sm);
-  background: rgb(31 20 60 / 0.35);
+  /* 原为 /0.35：透出背后的浅色玻璃后合成出 rgb(162 161 184) 中灰，
+     亮色 token（注释灰 #66707B）在上面只有 2.0:1、暗色 token 也不够。
+     加深到 /0.85 让代码块明确落在深底一侧，再取 shiki 暗色 token 即可达标 */
+  background: rgb(31 20 60 / 0.85);
 }
 
 .prose :deep(pre code) {
@@ -333,6 +336,12 @@ const projectLinks = computed(() => {
   display: grid;
   gap: 14px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+
+/* 代码块 token 取 shiki 的暗色变量：本风格的代码块是深底，
+   共享层默认给的是亮色变量（深字），压在深底上会看不见 */
+:deep(.shiki span) {
+  color: var(--shiki-dark);
 }
 
 .nav-item {

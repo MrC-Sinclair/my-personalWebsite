@@ -24,6 +24,7 @@
 - **UI 不复用、业务逻辑复用**：风格层各写各的结构与 token；取数、滚动动画、格式化等行为只写一份在 `composables/` / `utils/`
 - **内容驱动**：blog 每个语种 14 篇，projects 每个语种 4 篇
 - **博客筛选与搜索**：标签/分类筛选（`?tag=` / `?category=`）+ 关键词搜索（`?q=`，匹配标题/摘要/分类/标签/slug，标题命中优先），维度正交可叠加，行为全在共享层
+- **代码块语法高亮**：shiki 双主题（`github-light/dark-high-contrast`）。⚠️ shiki 只输出 CSS 变量，把它接到 `color` 上的规则由共享层 `styles/_base/base.css` 提供（shiki 自带的挂在 `html .default/.dark`，本站没有 color-mode 永不生效）；各风格再按自己代码块的底色明暗决定取亮色还是暗色变量——20 个风格实测最低对比度 4.58:1。改动这块请看 `tests/code-highlight.test.ts` 的守门断言
 - **国际化**：中英双语，URL 策略 `prefix_except_default`（中文无前缀，英文 `/en/`）
 - **PWA**：添加到主屏幕、离线访问、自动更新
 - **无障碍**：WCAG AA、prefers-reduced-motion、刘海屏安全区域适配

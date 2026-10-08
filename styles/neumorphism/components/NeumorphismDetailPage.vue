@@ -285,6 +285,10 @@ const projectLinks = computed(() => {
   margin: 0 0 1.4em;
   overflow-x: auto;
   border-radius: var(--radius-sm);
+  /* 原本没有背景色（靠内阴影做凹槽，露出页面底 #E0E5EC）：注释灰 #66707B
+     在上面只有 3.98:1。给代码块一层比页面底更亮的 #f5f7fa（4.69:1），
+     凹槽感由 var(--shadow-press) 继续承担，凸起/凹陷关系不变 */
+  background: #f5f7fa;
   box-shadow: var(--shadow-press);
 }
 

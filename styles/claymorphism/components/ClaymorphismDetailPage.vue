@@ -297,7 +297,9 @@ const projectLinks = computed(() => {
   margin: 0 0 1.4em;
   overflow-x: auto;
   border-radius: var(--radius-sm);
-  background: var(--c-bg);
+  /* 原为 var(--c-bg)（淡紫 #F2E8FA）：注释灰 #66707B 在上面只有 4.25:1。
+     提亮到 #f8f2fd → 4.58:1，黏土的淡紫调保持不变 */
+  background: #f8f2fd;
   box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.5);
 }
 

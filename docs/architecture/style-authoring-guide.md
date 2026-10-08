@@ -165,6 +165,10 @@ export default {
 - [ ] `pnpm generate` 构建通过，该风格全部路由生成静态页
 - [ ] **真实浏览器截图**（移动端 + 桌面端各一）：jsdom 不算布局，分栏 / 单列 / 溢出必须截图确认
 - [ ] 注册表条目完整（id / name / en / tier / tierLabel / note / status / preview）
+- [ ] **代码块可读**：详情组件的 `:deep(pre)` 给了明确底色；深底的话必须加
+      `:deep(.shiki span) { color: var(--shiki-dark) }`（共享层默认给的是亮色变量，
+      深底上会变成深字压深底）。用 `.workbuddy/probe-code.mjs <styleId>` 实测，
+      最低 token 对比度 ≥ 4.5:1
 - [ ] cspell 通过
 
 ## 5. 排错速查
@@ -177,3 +181,4 @@ export default {
 | 组件自动导入解析失败 / 同名冲突 | `styles/` 下组件必须显式 import，组件名带风格前缀                 |
 | 切换语言后风格页文案缺失     | i18n key 未在 `zh-CN.json` / `en-US.json` 中成对声明               |
 | 预渲染缺该风格页面           | 预渲染路由清单由注册表驱动，检查注册表条目与页面映射是否完整       |
+| 代码块一片纯文本、没有颜色   | shiki 只输出 CSS 变量，需要共享层 `styles/_base/base.css` 的 `.shiki span` 接线（删了就静默失效）；深底风格还要自己覆盖成 `var(--shiki-dark)` |

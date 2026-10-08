@@ -298,7 +298,10 @@ const projectLinks = computed(() => {
   padding: 16px 18px;
   margin: 0 0 1.4em;
   overflow-x: auto;
-  background: var(--c-surface);
+  /* 原为 var(--c-surface)（米色纸面 #ECE4D3）：语法高亮的注释灰 #66707B
+     在上面只有 3.98:1，不到 WCAG AA。提亮到接近纸白的 #f7f4ec 后 4.58:1，
+     纸感不变（仍是暖调，没有跳成纯白） */
+  background: #f7f4ec;
   border: 1px solid var(--c-border);
 }
 

@@ -464,6 +464,30 @@ export default defineNuxtConfig({
     },
   },
 
+  // Markdown 代码块语法高亮（@nuxt/content 内置 shiki）
+  content: {
+    build: {
+      markdown: {
+        highlight: {
+          // 双主题：亮底风格取 --shiki-default，暗底风格取 --shiki-dark。
+          // 必须显式声明——默认的 github-light/github-dark 是普通对比度，
+          // 注释色（#6A737D）在多数风格的代码块底色上不到 4.5:1；
+          // high-contrast 版是官方可达性专供，实测代码 token 对比度 7~11:1。
+          //
+          // ⚠️ shiki 双主题只输出 CSS 变量（--shiki-default / --shiki-dark），
+          // 真正把它接到 color 上的规则挂在 `html .default` / `html .dark`，
+          // 而本站没有 color-mode（Nuxt UI 已随过渡层移除）→ 两条都不生效，
+          // 代码块会一直是纯文本色。接线放在 styles/_base/base.css，
+          // 由各风格决定取亮色还是暗色变量。
+          theme: {
+            default: 'github-light-high-contrast',
+            dark: 'github-dark-high-contrast',
+          },
+        },
+      },
+    },
+  },
+
   runtimeConfig: {
     public: {
       // 页面级 canonical / og:url 拼接用（NUXT_PUBLIC_SITE_URL 可覆盖默认 GitHub Pages 域）

@@ -386,4 +386,10 @@ const projectLinks = computed(() => {
   font-weight: 700;
   color: var(--c-text);
 }
+
+/* 代码块 token 取 shiki 的暗色变量：本风格的代码块是深底，
+   共享层默认给的是亮色变量（深字），压在深底上会看不见 */
+:deep(.shiki span) {
+  color: var(--shiki-dark);
+}
 </style>
