@@ -14,7 +14,15 @@
         :total="posts.length"
         @select="select"
       />
-      <TerminalBlockBlog :posts="filteredPosts" />
+      <!-- 关键词搜索：一行 shell 命令的样子（~/blog $ grep …） -->
+      <TerminalSearch
+        :query="query"
+        :result-count="resultCount"
+        :total="totalCount"
+        @update="setQuery"
+        @clear="clear"
+      />
+      <TerminalBlockBlog :posts="results" />
     </template>
   </TerminalSubPage>
 </template>
@@ -24,6 +32,7 @@ import type { BlogPost } from '~/types/blog'
 import TerminalSubPage from '../components/TerminalSubPage.vue'
 import TerminalBlockBlog from '../components/TerminalBlockBlog.vue'
 import TerminalTagFilter from '../components/TerminalTagFilter.vue'
+import TerminalSearch from '../components/TerminalSearch.vue'
 
 const { t, locale } = useI18n()
 
@@ -49,6 +58,10 @@ const posts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? posts
 
 // —— 标签筛选（共享层：标签清单 + ?tag= 同步 + 过滤后的列表） ——
 const { tags, activeTag, filteredPosts, select } = useBlogTagFilter(posts)
+
+// —— 关键词搜索（共享层：?q= 同步 + 匹配 + 计数）——
+// 数据源取标签筛选后的列表：两个维度正交，叠加即交集，互不感知
+const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSearch(filteredPosts)
 
 const loading = computed(() => pending.value && !postsData.value)
 </script>
