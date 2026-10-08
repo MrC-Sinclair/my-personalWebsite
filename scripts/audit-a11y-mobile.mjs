@@ -152,6 +152,16 @@ const list = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`)).json(
     (r) => r.overflow > 0 || r.h1 !== 1 || r.small > 0 || r.imgNoAlt > 0 || r.title?.startsWith('404'),
   )
   console.log(`\n共 ${rows.length} 页，${bad.length} 页有问题`)
+
+  // ★ 退出码必须反映结果：接进 CI 后靠它判定成败。
+  // 早先这里只 console 不设 exitCode，脚本永远以 0 退出——
+  // 哪怕审计出 100 页全有问题，CI 也是绿的，门禁形同虚设。
+  if (bad.length > 0) process.exitCode = 1
 }
 
-main().catch((error) => console.error(error))
+main().catch((error) => {
+  console.error(error)
+  // 脚本自身出错（连不上 Chrome / dev server 没起来）同样要红，
+  // 否则「审计根本没跑」也会被当成通过
+  process.exitCode = 1
+})

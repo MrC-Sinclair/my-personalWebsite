@@ -85,6 +85,69 @@ jobs:
       - name: Spellcheck
         run: pnpm spellcheck
 
+  # -------------------- 真实浏览器回归（移动端 + 无障碍）--------------------
+  # 为什么需要它：样式跨风格泄漏这类 bug，lint / 单测 / 构建**全都抓不到**
+  #   —— 真实例子：flat-design 的非 scoped layout.css 曾把 neo-brutalism 的
+  #      色带从 321px 撑到 417px，还随样式注入顺序时有时无。
+  # 这里跑 scripts/audit-a11y-mobile.mjs：移动端视口下量横向溢出、h1 数量、
+  # 触控目标尺寸、图片 alt——全是确定性数值断言，不需要基线图、没有像素
+  # diff 的跨平台抖动（字体渲染差异会让像素 diff 在 CI 上全红）。
+  #
+  # 抽样而非全量：全量 100 页约 8 分钟且每个页面都要 dev 首次编译，
+  # CI 上划不来；抽样 6 个布局差异最大的风格（表格 / 极简 / 定宽像素 /
+  # 网格 / 玻璃 / 黏土），全量留给本地改版后跑。
+  #
+  # 暂不放进 deploy 的 needs：先在真实 CI 里观察是否 flaky，稳定后再考虑卡发布。
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        run: |
+          npm i -g pnpm@11.25.0
+          pnpm --version
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: 移动端 + 无障碍审计
+        env:
+          AUDIT_STYLES: dashboard,terminal,pixel,swiss,y2k,claymorphism
+        run: |
+          pnpm dev &
+          # 等 dev server 就绪（首次编译需要一点时间）
+          for i in $(seq 1 90); do
+            curl -sf "http://localhost:3000/my-personalWebsite/" > /dev/null && break
+            sleep 2
+          done
+          chrome --headless=new --no-sandbox --disable-component-update --no-first-run --remote-debugging-port=9222 &
+          sleep 3
+          node scripts/audit-a11y-mobile.mjs http://localhost:3000/my-personalWebsite
+
   # -------------------- 构建任务 --------------------
   build:
     runs-on: ubuntu-latest # 使用 Ubuntu 最新版本作为运行环境
