@@ -20,6 +20,7 @@
 - **20 种 UI 风格**：minimalism、liquid-glass、metro、swiss、editorial、flat-design、dashboard、terminal、cyberpunk、y2k、web2-glossy、pixel、retro-computer、sci-fi-hud、soft-3d、glassmorphism、claymorphism、neumorphism、skeuomorphism、neo-brutalism
 - **SEO**：构建时自动生成 `sitemap.xml`（中英双语 + hreflang alternate）与 `robots.txt`；每页 canonical / og:url / og:locale；OG 与 Twitter 分享卡指向 `public/og-image.png`
 - **品牌资源**：favicon（ico/svg/png）、apple-touch-icon、PWA 图标（192/512）由 `scripts/gen-brand-assets.mjs` 生成
+- **风格预览图**：画廊页每张卡的真实首页缩略图由 `scripts/gen-style-previews.mjs` 生成（CDP 截图，需 dev server + 调试端口 9222 的 Chrome）；内容改版后重跑一次刷新
 - **UI 不复用、业务逻辑复用**：风格层各写各的结构与 token；取数、滚动动画、格式化等行为只写一份在 `composables/` / `utils/`
 - **内容驱动**：blog 每个语种 14 篇，projects 每个语种 4 篇
 - **博客筛选与搜索**：标签/分类筛选（`?tag=` / `?category=`）+ 关键词搜索（`?q=`，匹配标题/摘要/分类/标签/slug，标题命中优先），维度正交可叠加，行为全在共享层
@@ -130,8 +131,12 @@ pnpm test:watch    # 运行测试（监听模式）
 项目使用 GitHub Actions 自动构建部署到 GitHub Pages：
 
 1. 推送代码到 `main` 分支触发自动部署
-2. GitHub Actions 执行 `pnpm install → pnpm generate`
-3. 将 `.output/public/` 部署到 GitHub Pages
+2. GitHub Actions 并行跑**质量门禁**（`pnpm lint` / `pnpm test` / `pnpm spellcheck`）与构建（`pnpm install → pnpm generate`）
+3. 两个 job 都通过才部署 `.output/public/` 到 GitHub Pages——检查红掉时不会发布
+
+> 质量门禁是 2026-10-07 加的（此前 CI 只做 build + deploy，坏代码能一路推上线）。
+> Actions 列表里还会有个 GitHub 自带的 `pages build and deployment`（Jekyll）一直 failure，
+> 那是因为本站不是 Jekyll 站点，**属无害噪声**，不用管。
 
 > CI 里 **Setup Node 必须排在 Setup pnpm 之前**，且 Node 版本 ≥ 22.13，否则 `Setup pnpm` 会直接失败（2026-09-18 ~ 09-23 期间 CI 因此全红，线上版本停滞）。
 

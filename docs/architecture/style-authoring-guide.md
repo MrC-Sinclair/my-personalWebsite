@@ -112,7 +112,9 @@ export default {
 
 - `accent` 填该风格 `tokens.css` 的 `--c-accent` 值（画廊页用它给卡片打色彩签名）
 - `status`：4 个子页都做完才是 `ready`；只做了首页填 `partial`
-- `preview`：暂无预览图时填空串
+- `preview`：新增风格做完后跑 `scripts/gen-style-previews.mjs` 生成缩略图
+  （需 dev server + `--remote-debugging-port=9222` 的 Chrome 在跑），
+  然后填 `'/previews/<id>.jpg'`；还没出图时填空串，画廊卡会跳过图片不报错
 
 ### 第 7 步：验收
 
