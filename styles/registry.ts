@@ -100,7 +100,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Layered translucent glass, background blur and light refraction — UI floating on glass',
     status: 'ready',
     accent: '#5ee3ff',
-    preview: '',
+    preview: '/previews/liquid-glass.jpg',
   },
   {
     id: 'neo-brutalism',
@@ -113,7 +113,7 @@ export const styleRegistry: StyleMeta[] = [
       'Heavy black borders, hard shadows, clashing saturated colors and oversized headlines — a poster collage',
     status: 'ready',
     accent: '#ffe600',
-    preview: '',
+    preview: '/previews/neo-brutalism.jpg',
   },
   {
     id: 'soft-3d',
@@ -125,7 +125,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Solid 3D objects, floating cards, soft shadows and Z-axis layers — UI placed in space',
     status: 'ready',
     accent: '#a78bfa',
-    preview: '',
+    preview: '/previews/soft-3d.jpg',
   },
   {
     id: 'minimalism',
@@ -138,7 +138,7 @@ export const styleRegistry: StyleMeta[] = [
       'Generous whitespace, low saturation, restrained hierarchy — only the information that matters',
     status: 'ready',
     accent: '#4f6b8f',
-    preview: '',
+    preview: '/previews/minimalism.jpg',
   },
   {
     id: 'cyberpunk',
@@ -150,7 +150,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Dark neon, glowing borders, data streams and grids — UI from a future console',
     status: 'ready',
     accent: '#22d3ee',
-    preview: '',
+    preview: '/previews/cyberpunk.jpg',
   },
   {
     id: 'editorial',
@@ -162,7 +162,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Huge headlines, magazine grids, asymmetric columns — the site laid out like a magazine',
     status: 'ready',
     accent: '#8e2318',
-    preview: '',
+    preview: '/previews/editorial.jpg',
   },
   {
     id: 'y2k',
@@ -175,7 +175,7 @@ export const styleRegistry: StyleMeta[] = [
       'Chrome metal, clear plastic, blue-purple gradients and bubble highlights — the future as imagined in 2000',
     status: 'ready',
     accent: '#8b7bff',
-    preview: '',
+    preview: '/previews/y2k.jpg',
   },
   {
     id: 'web2-glossy',
@@ -187,7 +187,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Gradients, big rounded corners, glossy buttons — everything looks freshly waxed',
     status: 'ready',
     accent: '#1e6fd9',
-    preview: '',
+    preview: '/previews/web2-glossy.jpg',
   },
   {
     id: 'pixel',
@@ -199,7 +199,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Hard edges, a limited palette, game HUD — not a different value, a different nature',
     status: 'ready',
     accent: '#ffcd75',
-    preview: '',
+    preview: '/previews/pixel.jpg',
   },
   {
     id: 'terminal',
@@ -211,7 +211,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Green monospace on black; the UI nearly vanishes, leaving only commands and a cursor',
     status: 'ready',
     accent: '#7cffb2',
-    preview: '',
+    preview: '/previews/terminal.jpg',
   },
   {
     id: 'dashboard',
@@ -223,7 +223,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'KPI cards, charts and dense information grids — a control center built for scanning',
     status: 'ready',
     accent: '#38bdf8',
-    preview: '',
+    preview: '/previews/dashboard.jpg',
   },
   {
     id: 'swiss',
@@ -235,7 +235,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'A strict grid, strong typography, asymmetric whitespace — black, white and one accent',
     status: 'ready',
     accent: '#e30613',
-    preview: '',
+    preview: '/previews/swiss.jpg',
   },
   {
     id: 'retro-computer',
@@ -247,7 +247,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Grey windows, pixel icons and scanlines — like switching on a 1990s computer',
     status: 'ready',
     accent: '#000080',
-    preview: '',
+    preview: '/previews/retro-computer.jpg',
   },
   {
     id: 'sci-fi-hud',
@@ -259,7 +259,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'HUD gauges, radar, data streams and scanlines — a spaceship cockpit control panel',
     status: 'ready',
     accent: '#4af0c6',
-    preview: '',
+    preview: '/previews/sci-fi-hud.jpg',
   },
   {
     id: 'claymorphism',
@@ -271,7 +271,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Huge radii, chunky cards, soft shadows and pastels — an interface molded from clay',
     status: 'ready',
     accent: '#7d3fc9',
-    preview: '',
+    preview: '/previews/claymorphism.jpg',
   },
   {
     id: 'neumorphism',
@@ -284,7 +284,7 @@ export const styleRegistry: StyleMeta[] = [
       'One background color, dual shadows for convex and concave — forms pressed from a single material',
     status: 'ready',
     accent: '#3b55c8',
-    preview: '',
+    preview: '/previews/neumorphism.jpg',
   },
   {
     id: 'glassmorphism',
@@ -296,7 +296,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Translucent cards, backdrop blur, colorful gradients bleeding through soft light',
     status: 'ready',
     accent: '#6d28d9',
-    preview: '',
+    preview: '/previews/glassmorphism.jpg',
   },
   {
     id: 'skeuomorphism',
@@ -308,7 +308,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Real textures — leather, wood, metal, paper — rendered with lifelike lighting',
     status: 'ready',
     accent: '#b8893a',
-    preview: '',
+    preview: '/previews/skeuomorphism.jpg',
   },
   {
     id: 'metro',
@@ -320,7 +320,7 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Large color tiles and strong typography — the UI as a live information board',
     status: 'ready',
     accent: '#1ba1e2',
-    preview: '',
+    preview: '/previews/metro.jpg',
   },
   {
     id: 'flat-design',
@@ -332,6 +332,6 @@ export const styleRegistry: StyleMeta[] = [
     noteEn: 'Flat color geometry with no texture or shadow — UI presented as digital graphics',
     status: 'ready',
     accent: '#2471a3',
-    preview: '',
+    preview: '/previews/flat-design.jpg',
   },
 ]

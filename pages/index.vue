@@ -47,6 +47,14 @@ const statusKey: Record<StyleMeta['status'], string> = {
   planned: 'styles.gallery.statusPlanned',
 }
 
+// 预览图：registry 的 preview 是 public/ 下的绝对路径（/previews/<id>.jpg），
+// 站点部署在 /my-personalWebsite/ 子路径下，站内引用必须拼上 baseURL
+// （与上方 og:url 的拼法同一理由）
+function previewSrc(preview: string) {
+  if (!preview) return ''
+  return `${baseURL}${preview.replace(/^\//, '')}`
+}
+
 // 语言切换：按钮显示「目标语言」的名字（中文界面显示 English，反之亦然）
 const targetLocale = computed(() =>
   (locales.value as Array<{ code: string; name: string }>).find((l) => l.code !== locale.value),
@@ -116,6 +124,18 @@ useHead({
             class="card"
           >
             <span class="card__band" aria-hidden="true" />
+            <!-- 真实首页缩略图：preview 为空串时不渲染（保持「无图可用」的兼容） -->
+            <span v-if="item.preview" class="card__shot">
+              <img
+                class="card__img"
+                :src="previewSrc(item.preview)"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width="1200"
+                height="750"
+              >
+            </span>
             <span class="card__top">
               <span class="card__names">
                 <span class="card__name">
@@ -314,6 +334,29 @@ useHead({
 
 .card:hover .card__band {
   height: 8px;
+}
+
+/* —— 真实首页缩略图：让「卖风格」的页面自己先亮出风格 —— */
+.card__shot {
+  display: block;
+  margin: 0 0 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.card__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* 固定纵横比兜底：图未加载时也不塌陷布局（与生成尺寸 1200×750 一致） */
+  aspect-ratio: 1200 / 750;
+  object-fit: cover;
+  transition: transform 250ms ease;
+}
+
+.card:hover .card__img {
+  transform: scale(1.03);
 }
 
 /* ============================================================
