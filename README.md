@@ -21,6 +21,7 @@
 - **SEO**：构建时自动生成 `sitemap.xml`（中英双语 + hreflang alternate）与 `robots.txt`；每页 canonical / og:url / og:locale；OG 与 Twitter 分享卡指向 `public/og-image.png`
 - **品牌资源**：favicon（ico/svg/png）、apple-touch-icon、PWA 图标（192/512）由 `scripts/gen-brand-assets.mjs` 生成
 - **风格预览图**：画廊页每张卡的真实首页缩略图由 `scripts/gen-style-previews.mjs` 生成（CDP 截图，需 dev server + 调试端口 9222 的 Chrome）；内容改版后重跑一次刷新
+- **详情页层级导航**：面包屑（风格首页 › 列表 › 当前标题，末级 `aria-current="page"` 且不是链接）+ 上下篇导航。层级与路径由共享层 `useDetailBreadcrumb` / `utils/breadcrumb.ts` 算，20 个风格各自渲染成自己的样子
 - **UI 不复用、业务逻辑复用**：风格层各写各的结构与 token；取数、滚动动画、格式化等行为只写一份在 `composables/` / `utils/`
 - **内容驱动**：blog 每个语种 14 篇，projects 每个语种 4 篇
 - **博客筛选与搜索**：标签/分类筛选（`?tag=` / `?category=`）+ 关键词搜索（`?q=`，匹配标题/摘要/分类/标签/slug，标题命中优先），维度正交可叠加，行为全在共享层

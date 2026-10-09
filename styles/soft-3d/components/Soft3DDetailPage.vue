@@ -17,6 +17,15 @@
     variant="violet"
   >
     <article class="detail">
+      <!-- 面包屑：首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">›</span>
+        </template>
+      </nav>
+
       <div class="meta">
         <span class="badge badge--date">{{ formatDate(view.doc.date) }}</span>
         <span v-if="category" class="badge badge--cat">{{ category }}</span>
@@ -81,6 +90,9 @@ import { isProjectDoc } from '~/types/detail'
 import Soft3DSubPage from './Soft3DSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
+
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -365,5 +377,46 @@ const projectLinks = computed(() => {
    共享层默认给的是亮色变量（深字），压在深底上会看不见 */
 :deep(.shiki span) {
   color: var(--shiki-dark);
+}
+
+/* —— 面包屑：软 3D 小胶囊 —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: var(--fs-small);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  font-weight: 700;
+  color: var(--c-muted);
+  text-decoration: none;
+  border-radius: 999px;
+  background: var(--c-surface);
+  box-shadow:
+    0 4px 10px rgb(0 0 0 / 0.28),
+    inset 0 2px 0 rgb(255 255 255 / 0.14);
+  transition:
+    color var(--transition),
+    transform var(--transition);
+}
+
+.crumb:hover {
+  color: var(--c-text);
+  transform: translateY(-2px);
+}
+
+.crumb--current {
+  color: var(--c-text);
+}
+
+.crumb-sep {
+  font-weight: 700;
+  color: var(--c-muted);
 }
 </style>

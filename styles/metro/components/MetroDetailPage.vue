@@ -11,10 +11,14 @@
 <template>
   <MetroSubPage>
     <article class="detail">
-      <NuxtLink class="back tile" :to="listPath">
-        <span class="back-mark" aria-hidden="true">◀</span>
-        <span class="back-text">{{ t(listTitleKey) }}</span>
-      </NuxtLink>
+      <!-- 面包屑：风格首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">›</span>
+        </template>
+      </nav>
 
       <header class="head tile tile--accent">
         <span class="eyebrow">{{ kindLabel }}</span>
@@ -74,18 +78,11 @@ import MetroSubPage from './MetroSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
-const { t } = useI18n()
-const localePath = useLocalePath()
-const { styleId } = useStyleContentPath()
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
-const listPath = computed(() =>
-  localePath(
-    props.view.kind === 'post'
-      ? `/style/${styleId.value}/blog`
-      : `/style/${styleId.value}/projects`,
-  ),
-)
-const listTitleKey = computed(() => (props.view.kind === 'post' ? 'blog.title' : 'projects.title'))
+const { t } = useI18n()
+
 const kindLabel = computed(() =>
   props.view.kind === 'post' ? t('nav.blog') : t('nav.projects'),
 )
@@ -362,5 +359,42 @@ const projectLinks = computed(() => {
    共享层默认给的是亮色变量（深字），压在深底上会看不见 */
 :deep(.shiki span) {
   color: var(--shiki-dark);
+}
+
+/* —— 面包屑：直角磁贴 —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  font-size: var(--fs-small);
+  /* .detail 是 grid，轨道会被同级元素的 min-content 撑到 791px（远超视口），
+     nav 跟着变宽后一行排开、右侧被裁。用视口宽度兜底，窄屏一定换行 */
+  max-width: min(100%, calc(100vw - 48px));
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  color: var(--c-text);
+  text-decoration: none;
+  background: var(--c-surface);
+  transition: background var(--transition);
+}
+
+.crumb:hover {
+  background: var(--c-accent);
+  color: var(--c-on-accent);
+}
+
+.crumb--current {
+  color: var(--c-muted);
+}
+
+.crumb-sep {
+  padding: 0 2px;
+  color: var(--c-muted);
 }
 </style>

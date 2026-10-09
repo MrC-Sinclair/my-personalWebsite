@@ -14,10 +14,14 @@
   <Y2KSubPage>
     <article class="detail">
       <!-- 返回栏：回到对应列表 -->
-      <NuxtLink class="detail-back" :to="listPath">
-        <span class="detail-back-arrow" aria-hidden="true">◄</span>
-        {{ t(listTitleKey) }}
-      </NuxtLink>
+      <!-- 面包屑：风格首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">◄</span>
+        </template>
+      </nav>
 
       <header class="detail-head">
         <h1 class="detail-title">{{ view.doc.title }}</h1>
@@ -80,17 +84,10 @@ import Y2KChromeButton from './Y2KChromeButton.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
+
 const { t } = useI18n()
-const localePath = useLocalePath()
-
-const route = useRoute()
-const styleId = computed(() => String(route.params.style ?? ''))
-
-// 列表返回地址：详情页在风格内，列表页也在风格内
-const listPath = computed(() =>
-  localePath(props.view.kind === 'post' ? `/style/${styleId.value}/blog` : `/style/${styleId.value}/projects`),
-)
-const listTitleKey = computed(() => (props.view.kind === 'post' ? 'blog.title' : 'projects.title'))
 
 const tags = computed(() => props.view.doc.tags ?? [])
 
@@ -378,5 +375,45 @@ const projectLinks = computed(() => {
    共享层默认给的是亮色变量（深字），压在深底上会看不见 */
 :deep(.shiki span) {
   color: var(--shiki-dark);
+}
+
+/* —— 面包屑：塑料小按钮 —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+  font-size: var(--fs-small);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 13px;
+  font-weight: 700;
+  color: var(--c-text);
+  text-decoration: none;
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.9), rgb(214 226 255 / 0.85));
+  box-shadow: 0 2px 6px rgb(120 140 255 / 0.35);
+  transition: transform var(--transition);
+}
+
+.crumb:hover {
+  transform: translateY(-2px);
+}
+
+.crumb--current {
+  color: var(--c-muted);
+  background: none;
+  border-color: var(--c-border);
+  box-shadow: none;
+}
+
+.crumb-sep {
+  font-weight: 700;
+  color: var(--c-accent);
 }
 </style>

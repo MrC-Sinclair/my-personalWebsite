@@ -19,10 +19,14 @@
   >
     <div class="detail">
       <!-- 返回：凸起斜面按钮 -->
-      <NuxtLink class="rc-btn back" :to="listPath">
-        <span class="back-mark" aria-hidden="true">&lt;&lt;</span>
-        {{ t(listTitleKey) }}
-      </NuxtLink>
+      <!-- 面包屑：风格首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">\</span>
+        </template>
+      </nav>
 
       <!-- 元信息：下凹输入框（该风格「把内容塞进表单控件」的转译） -->
       <div class="field">
@@ -90,18 +94,10 @@ import RetroComputerSubPage from './RetroComputerSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
-const { t } = useI18n()
-const localePath = useLocalePath()
-const { styleId } = useStyleContentPath()
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
-const listPath = computed(() =>
-  localePath(
-    props.view.kind === 'post'
-      ? `/style/${styleId.value}/blog`
-      : `/style/${styleId.value}/projects`,
-  ),
-)
-const listTitleKey = computed(() => (props.view.kind === 'post' ? 'blog.title' : 'projects.title'))
+const { t } = useI18n()
 
 /** 窗口底部状态条：仿老系统的文件信息行 */
 const statusText = computed(() => `${formatDate(props.view.doc.date)} · ${props.view.doc.title}`)
@@ -357,5 +353,41 @@ const projectLinks = computed(() => {
    共享层默认给的是亮色变量（深字），压在深底上会看不见 */
 :deep(.shiki span) {
   color: var(--shiki-dark);
+}
+
+/* —— 面包屑：地址栏（该风格把一切塞进表单控件） —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  border: 2px solid var(--c-border);
+  box-shadow: inset 2px 2px 0 rgb(0 0 0 / 0.35);
+  background: var(--c-surface);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 4px;
+  color: var(--c-accent);
+  text-decoration: none;
+}
+
+.crumb:hover {
+  color: var(--c-text);
+  text-decoration: underline;
+}
+
+.crumb--current {
+  color: var(--c-text);
+}
+
+.crumb-sep {
+  color: var(--c-muted);
 }
 </style>

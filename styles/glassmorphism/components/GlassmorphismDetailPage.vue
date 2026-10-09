@@ -12,10 +12,14 @@
 <template>
   <GlassmorphismSubPage>
     <article class="detail glass">
-      <NuxtLink class="back" :to="listPath">
-        <span aria-hidden="true">←</span>
-        {{ t(listTitleKey) }}
-      </NuxtLink>
+      <!-- 面包屑：风格首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">›</span>
+        </template>
+      </nav>
 
       <header class="head">
         <h1 class="title">{{ view.doc.title }}</h1>
@@ -78,18 +82,10 @@ import GlassmorphismSubPage from './GlassmorphismSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
-const { t } = useI18n()
-const localePath = useLocalePath()
-const { styleId } = useStyleContentPath()
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
-const listPath = computed(() =>
-  localePath(
-    props.view.kind === 'post'
-      ? `/style/${styleId.value}/blog`
-      : `/style/${styleId.value}/projects`,
-  ),
-)
-const listTitleKey = computed(() => (props.view.kind === 'post' ? 'blog.title' : 'projects.title'))
+const { t } = useI18n()
 
 const tags = computed(() => props.view.doc.tags ?? [])
 
@@ -381,5 +377,45 @@ const projectLinks = computed(() => {
   .nav-item:hover {
     transform: none;
   }
+}
+
+/* —— 面包屑：磨砂玻璃小片 —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: var(--fs-small);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  color: var(--c-text);
+  text-decoration: none;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(6px);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
+}
+
+.crumb:hover {
+  border-color: rgb(255 255 255 / 0.6);
+  background: rgb(255 255 255 / 0.26);
+}
+
+.crumb--current {
+  color: var(--c-text);
+  opacity: 0.75;
+}
+
+.crumb-sep {
+  color: var(--c-text);
+  opacity: 0.55;
 }
 </style>

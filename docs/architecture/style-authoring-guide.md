@@ -165,6 +165,8 @@ export default {
 - [ ] `pnpm generate` 构建通过，该风格全部路由生成静态页
 - [ ] **真实浏览器截图**（移动端 + 桌面端各一）：jsdom 不算布局，分栏 / 单列 / 溢出必须截图确认
 - [ ] 注册表条目完整（id / name / en / tier / tierLabel / note / status / preview）
+- [ ] **详情页面包屑**：用共享层 `useDetailBreadcrumb(() => props.view)` 拿 `items`，
+      渲染成 `<nav aria-label="面包屑">`，末级（当前标题）标 `aria-current="page"` 且不是链接
 - [ ] **代码块可读**：详情组件的 `:deep(pre)` 给了明确底色；深底的话必须加
       `:deep(.shiki span) { color: var(--shiki-dark) }`（共享层默认给的是亮色变量，
       深底上会变成深字压深底）。用 `.workbuddy/probe-code.mjs <styleId>` 实测，

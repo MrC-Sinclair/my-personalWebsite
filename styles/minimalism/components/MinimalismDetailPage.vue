@@ -12,11 +12,14 @@
 <template>
   <MinimalismSubPage :title="view.doc.title">
     <article class="detail">
-      <!-- 返回栏：回到对应列表 -->
-      <NuxtLink class="back" :to="listPath">
-        <span class="back-arrow" aria-hidden="true">←</span>
-        {{ t(listTitleKey) }}
-      </NuxtLink>
+      <!-- 面包屑：风格首页 > 列表 > 当前（层级由共享层给，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">/</span>
+        </template>
+      </nav>
 
       <!-- 元信息行：日期 · 分类 · 标签 -->
       <p class="meta">
@@ -83,17 +86,9 @@ import MinimalismSubPage from './MinimalismSubPage.vue'
 const props = defineProps<{ view: DetailView }>()
 
 const { t } = useI18n()
-const localePath = useLocalePath()
-const { styleId } = useStyleContentPath()
 
-const listPath = computed(() =>
-  localePath(
-    props.view.kind === 'post'
-      ? `/style/${styleId.value}/blog`
-      : `/style/${styleId.value}/projects`,
-  ),
-)
-const listTitleKey = computed(() => (props.view.kind === 'post' ? 'blog.title' : 'projects.title'))
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
 const tags = computed(() => props.view.doc.tags ?? [])
 
@@ -120,29 +115,35 @@ const projectLinks = computed(() => {
   gap: var(--gap);
 }
 
-/* —— 返回栏：下划线文字链（极简不做按钮） —— */
-.back {
-  display: inline-flex;
+/* —— 面包屑：发丝线风格的斜杠分隔，末级是正文色 —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  align-self: flex-start;
-  min-height: 40px;
   font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
   color: var(--c-muted);
   text-decoration: none;
   transition: color var(--transition);
 }
 
-.back:hover {
+.crumb:hover {
   color: var(--c-text);
 }
 
-.back-arrow {
-  transition: transform var(--transition);
+.crumb--current {
+  color: var(--c-text);
 }
 
-.back:hover .back-arrow {
-  transform: translateX(-3px);
+.crumb-sep {
+  opacity: 0.45;
 }
 
 /* —— 元信息：灰阶两级 + 点分隔符 —— */

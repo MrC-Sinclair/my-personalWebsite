@@ -11,10 +11,14 @@
 <template>
   <ClaymorphismSubPage>
     <article class="detail clay">
-      <NuxtLink class="back" :to="listPath">
-        <span class="back-mark" aria-hidden="true">←</span>
-        {{ t(listTitleKey) }}
-      </NuxtLink>
+      <!-- 面包屑：风格首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">›</span>
+        </template>
+      </nav>
 
       <header class="head">
         <h1 class="title">{{ view.doc.title }}</h1>
@@ -73,18 +77,10 @@ import ClaymorphismSubPage from './ClaymorphismSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
-const { t } = useI18n()
-const localePath = useLocalePath()
-const { styleId } = useStyleContentPath()
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
-const listPath = computed(() =>
-  localePath(
-    props.view.kind === 'post'
-      ? `/style/${styleId.value}/blog`
-      : `/style/${styleId.value}/projects`,
-  ),
-)
-const listTitleKey = computed(() => (props.view.kind === 'post' ? 'blog.title' : 'projects.title'))
+const { t } = useI18n()
 
 const tags = computed(() => props.view.doc.tags ?? [])
 
@@ -395,5 +391,49 @@ const projectLinks = computed(() => {
   .back:hover .back-mark {
     transform: none;
   }
+}
+
+/* —— 面包屑：黏土小胶囊 —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: var(--fs-small);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  font-weight: 700;
+  color: var(--c-muted);
+  text-decoration: none;
+  border-radius: 999px;
+  background: var(--c-surface);
+  box-shadow:
+    0 6px 14px rgb(120 110 190 / 0.14),
+    inset 0 2px 0 rgb(255 255 255 / 0.65);
+  transition:
+    color var(--transition),
+    transform var(--transition);
+}
+
+.crumb:hover {
+  color: var(--c-text);
+  transform: translateY(-2px);
+}
+
+.crumb--current {
+  font-weight: 800;
+  color: var(--c-text);
+}
+
+.crumb-sep {
+  padding: 0 2px;
+  font-weight: 700;
+  color: var(--c-muted);
+  opacity: 0.7;
 }
 </style>

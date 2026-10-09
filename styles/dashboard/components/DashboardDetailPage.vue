@@ -16,6 +16,15 @@
     :description="view.doc.description ?? ''"
   >
     <div class="detail">
+      <!-- 面包屑：首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">/</span>
+        </template>
+      </nav>
+
       <!-- 元信息：KPI 风格的数据格 -->
       <div class="kpis">
         <div class="kpi">
@@ -94,6 +103,9 @@ import { isProjectDoc } from '~/types/detail'
 import DashboardSubPage from './DashboardSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
+
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -423,5 +435,40 @@ const projectLinks = computed(() => {
    共享层默认给的是亮色变量（深字），压在深底上会看不见 */
 :deep(.shiki span) {
   color: var(--shiki-dark);
+}
+
+/* —— 面包屑：等宽路径条（仪表盘的读数语义） —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--c-accent);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.crumb:hover {
+  color: var(--c-accent-2);
+}
+
+.crumb--current {
+  color: var(--c-text);
+}
+
+.crumb-sep {
+  color: var(--c-muted);
 }
 </style>

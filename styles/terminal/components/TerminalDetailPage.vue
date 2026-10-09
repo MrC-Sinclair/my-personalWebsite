@@ -13,6 +13,16 @@
 <template>
   <TerminalSubPage :title="view.doc.title">
     <article class="detail">
+      <!-- 面包屑：做成 shell 路径（~ 是风格首页），层级由共享层算 -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <span class="crumb-prompt" aria-hidden="true">~</span>
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">/</span>
+        </template>
+      </nav>
+
       <!-- 文件头输出块：cat 命令的输出形态 -->
       <div class="outfile">
         <p class="line">
@@ -90,6 +100,9 @@ import TerminalSubPage from './TerminalSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
+
 const { t } = useI18n()
 const localePath = useLocalePath()
 const { styleId } = useStyleContentPath()
@@ -144,6 +157,40 @@ const projectLinks = computed(() => {
 }
 
 /* —— 命令行输出块：等宽 + 提示符 —— */
+/* —— 面包屑：shell 路径（~ 起头，/ 分隔）—— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+}
+
+.crumb-prompt {
+  color: var(--c-muted);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--c-accent);
+  text-decoration: none;
+}
+
+.crumb:hover {
+  text-decoration: underline;
+}
+
+.crumb--current {
+  color: var(--c-text);
+}
+
+.crumb-sep {
+  color: var(--c-muted);
+}
+
 .outfile {
   display: flex;
   flex-direction: column;

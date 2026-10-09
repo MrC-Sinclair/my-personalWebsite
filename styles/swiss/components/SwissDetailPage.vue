@@ -12,6 +12,15 @@
 <template>
   <SwissSubPage>
     <article class="detail">
+      <!-- 面包屑：首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">/</span>
+        </template>
+      </nav>
+
       <!-- 页头行：编号 + 标题 -->
       <header class="head">
         <div class="head-line">
@@ -88,6 +97,9 @@ import SwissSubPage from './SwissSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
+
 const { t } = useI18n()
 const localePath = useLocalePath()
 const { styleId } = useStyleContentPath()
@@ -128,6 +140,38 @@ const projectLinks = computed(() => {
   flex-direction: column;
   gap: var(--gap);
   padding-block: calc(var(--space) * 1.5);
+}
+
+/* —— 面包屑：瑞士平面——无装饰、红色斜杠、粗体 —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  color: var(--c-text);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.crumb:hover {
+  color: var(--c-accent);
+}
+
+.crumb--current {
+  color: var(--c-muted);
+}
+
+.crumb-sep {
+  font-weight: 700;
+  color: var(--c-accent);
 }
 
 .head-line {

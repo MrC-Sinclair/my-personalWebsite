@@ -11,6 +11,15 @@
 <template>
   <EditorialSubPage>
     <article class="detail">
+      <!-- 面包屑：首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">/</span>
+        </template>
+      </nav>
+
       <header class="head">
         <p class="kicker">
           <span class="kicker-num">{{ kindNumber }}</span>
@@ -85,6 +94,9 @@ import { isProjectDoc } from '~/types/detail'
 import EditorialSubPage from './EditorialSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
+
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -227,6 +239,44 @@ const projectLinks = computed(() => {
 .rule {
   height: 3px;
   background: var(--c-text);
+}
+
+/* —— 面包屑：杂志小注（小型大写 + 红色斜杠） —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+  font-family: var(--font-head);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  color: var(--c-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--transition);
+}
+
+.crumb:hover {
+  color: var(--c-accent);
+  border-bottom-color: var(--c-accent);
+}
+
+.crumb--current {
+  color: var(--c-text);
+}
+
+.crumb-sep {
+  font-weight: 700;
+  color: var(--c-accent);
 }
 
 .prose :deep(h2) {

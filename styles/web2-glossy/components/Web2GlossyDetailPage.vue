@@ -12,10 +12,14 @@
 <template>
   <Web2GlossySubPage>
     <article class="detail">
-      <NuxtLink class="back" :to="listPath">
-        <span class="back-mark" aria-hidden="true">«</span>
-        {{ t(listTitleKey) }}
-      </NuxtLink>
+      <!-- 面包屑：风格首页 > 列表 > 当前（层级由共享层算，这里只负责画） -->
+      <nav class="crumbs" :aria-label="t('common.breadcrumb')">
+        <template v-for="(item, i) in items" :key="item.label">
+          <NuxtLink v-if="item.to" class="crumb" :to="item.to">{{ item.label }}</NuxtLink>
+          <span v-else class="crumb crumb--current" aria-current="page">{{ item.label }}</span>
+          <span v-if="i < items.length - 1" class="crumb-sep" aria-hidden="true">›</span>
+        </template>
+      </nav>
 
       <header class="head card">
         <span class="ribbon">{{ kindLabel }}</span>
@@ -77,18 +81,11 @@ import Web2GlossySubPage from './Web2GlossySubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
-const { t } = useI18n()
-const localePath = useLocalePath()
-const { styleId } = useStyleContentPath()
+/** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
+const { items } = useDetailBreadcrumb(() => props.view)
 
-const listPath = computed(() =>
-  localePath(
-    props.view.kind === 'post'
-      ? `/style/${styleId.value}/blog`
-      : `/style/${styleId.value}/projects`,
-  ),
-)
-const listTitleKey = computed(() => (props.view.kind === 'post' ? 'blog.title' : 'projects.title'))
+const { t } = useI18n()
+
 const kindLabel = computed(() => t(props.view.kind === 'post' ? 'nav.blog' : 'nav.projects'))
 
 const tags = computed(() => props.view.doc.tags ?? [])
@@ -434,5 +431,42 @@ const projectLinks = computed(() => {
    共享层默认给的是亮色变量（深字），压在深底上会看不见 */
 :deep(.shiki span) {
   color: var(--shiki-dark);
+}
+
+/* —— 面包屑：糖果渐变胶囊 —— */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: var(--fs-small);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  font-weight: 700;
+  color: var(--c-on-accent);
+  text-decoration: none;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--c-accent-2), var(--c-accent));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55);
+  transition: filter var(--transition);
+}
+
+.crumb:hover {
+  filter: brightness(1.12);
+}
+
+.crumb--current {
+  font-weight: 700;
+  color: var(--c-muted);
+}
+
+.crumb-sep {
+  font-weight: 700;
+  color: var(--c-accent);
 }
 </style>
