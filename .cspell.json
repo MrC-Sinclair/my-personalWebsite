@@ -125,7 +125,19 @@
     "consolas",
     "unstub",
     "haystack",
-    "postgres"
+    "postgres",
+    "ardot",
+    "codebuddy",
+    "miora",
+    "flexbox",
+    "deflicker",
+    "timelapse",
+    "lightroom",
+    "rawtherapee",
+    "therapee",
+    "rawpy",
+    "tifffile",
+    "konanok"
   ],
   "ignorePaths": [
     "node_modules",
