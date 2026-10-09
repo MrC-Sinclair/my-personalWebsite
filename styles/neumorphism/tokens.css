@@ -47,6 +47,15 @@
   --shadow: 9px 9px 18px #a3b1c6, -9px -9px 18px #ffffff;
   --shadow-press: inset 5px 5px 11px #a3b1c6, inset -5px -5px 11px #ffffff;
 
+  /* —— 表面渐变（本风格自有扩展，非 _base 契约） ——
+     新拟态的正统设定是「表面与背景同色」，代价是信息区块的边界感弱
+     （评审 P2：滚动时分不清卡片到哪结束）。解法不是加边框（会破坏
+     「零边框、全靠光影」的语法），而是给表面一层极轻的受光渐变：
+     凸起面左上亮右下暗，内凹面相反，两端与底色各差约 7% 明度，
+     读作「同一块材料被压出了弧度」而不是「贴了另一块材料」。 */
+  --surface-raised: linear-gradient(145deg, #e9edf3 0%, #d7dee7 100%);
+  --surface-sunken: linear-gradient(145deg, #d7dee7 0%, #e9edf3 100%);
+
   /* —— 字体（系统栈，禁引入字体文件） —— */
   --font-body: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
   --font-head: var(--font-body);

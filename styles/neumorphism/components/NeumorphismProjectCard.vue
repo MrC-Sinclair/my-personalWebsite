@@ -81,7 +81,7 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   flex-direction: column;
   gap: 10px;
   padding: calc(var(--space) + 4px);
-  background: var(--c-bg);
+  background: var(--surface-raised);
   border-radius: calc(var(--radius) + 8px);
   box-shadow: var(--shadow);
   transition:

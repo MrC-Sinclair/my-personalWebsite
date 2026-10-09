@@ -118,7 +118,7 @@ function toggle(name: string): void {
   align-items: center;
   gap: 12px 16px;
   padding: 14px 18px;
-  background: var(--c-bg);
+  background: var(--surface-sunken);
   border-radius: var(--radius-sm);
   box-shadow: inset 4px 4px 9px #a3b1c6, inset -4px -4px 9px #ffffff;
 }
@@ -205,7 +205,7 @@ function toggle(name: string): void {
   margin: 12px 12px 0;
   padding: 12px;
   overflow: hidden;
-  background: var(--c-bg);
+  background: var(--surface-sunken);
   border-radius: var(--radius-sm);
   box-shadow: inset 4px 4px 9px #a3b1c6, inset -4px -4px 9px #ffffff;
 }

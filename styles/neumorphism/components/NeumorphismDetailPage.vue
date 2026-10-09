@@ -114,7 +114,7 @@ const projectLinks = computed(() => {
 /* 凸起：双光源（左上亮、右下暗），与新拟态其他构件同一角度 */
 .raised {
   border-radius: var(--radius);
-  background: var(--c-bg);
+  background: var(--surface-raised);
   box-shadow: var(--shadow);
 }
 

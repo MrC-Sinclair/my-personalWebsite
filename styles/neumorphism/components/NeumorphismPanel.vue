@@ -40,7 +40,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   flex-direction: column;
   gap: var(--gap);
   padding: calc(var(--space) + 4px) var(--space);
-  background: var(--c-bg);
+  background: var(--surface-raised);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }

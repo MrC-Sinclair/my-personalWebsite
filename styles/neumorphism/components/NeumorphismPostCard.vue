@@ -59,7 +59,7 @@ const metaTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   align-items: flex-start;
   gap: 18px;
   padding: 16px 20px;
-  background: var(--c-bg);
+  background: var(--surface-sunken);
   border-radius: var(--radius-sm);
   box-shadow: inset 4px 4px 9px #a3b1c6, inset -4px -4px 9px #ffffff;
   transition: box-shadow var(--transition);
@@ -138,7 +138,7 @@ const metaTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-muted);
-  background: var(--c-bg);
+  background: var(--surface-raised);
   border-radius: 999px;
   box-shadow: 2px 2px 5px #a3b1c6, -2px -2px 5px #ffffff;
 }

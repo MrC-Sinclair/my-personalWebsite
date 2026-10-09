@@ -50,7 +50,7 @@ const localePath = useLocalePath()
   max-width: var(--page-w);
   margin: 0 auto;
   padding: 18px 26px;
-  background: var(--c-bg);
+  background: var(--surface-sunken);
   border-radius: var(--radius);
   box-shadow: inset 4px 4px 10px #a3b1c6, inset -4px -4px 10px #ffffff;
 }
