@@ -34,7 +34,7 @@
         :posts="latestPosts"
         :projects="featuredProjects"
         :post-count="postCount"
-        :project-count="featuredProjects.length"
+        :project-count="projectCount"
       />
     </main>
 
@@ -92,7 +92,7 @@ const copy = computed(() => pickTerminalCopy(locale.value))
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
-const { getFeaturedProjects } = useProjects()
+const { getAllProjects } = useProjects()
 
 // 文章列表（useAsyncData 承载：SSG 预渲染即含数据，payload 下发避免水合不一致）
 const {
@@ -106,13 +106,15 @@ const {
   return Array.isArray(list) ? list : []
 })
 
-// 精选项目
+// 项目列表
+// 与文章同样**取全量、不在此处截断**：MOTD 的 Works 需要真实项目总数，
+// 展示用的「精选 N 条」在下面的 computed 里另行筛选 + slice
 const {
   data: projectsData,
   pending: projectsPending,
   refresh: refreshProjects,
 } = await useAsyncData<Project[]>('terminal-projects', async () => {
-  const list = await getFeaturedProjects(PROJECT_COUNT)
+  const list = await getAllProjects()
   return Array.isArray(list) ? list : []
 })
 
@@ -127,12 +129,24 @@ watch(locale, () => {
 const latestPosts = computed<BlogPost[]>(() =>
   Array.isArray(postsData.value) ? postsData.value.slice(0, POST_COUNT) : [],
 )
+/** 展示用精选项目（筛 featured 后截断到 PROJECT_COUNT） */
 const featuredProjects = computed<Project[]>(() =>
-  Array.isArray(projectsData.value) ? projectsData.value : [],
+  Array.isArray(projectsData.value)
+    ? projectsData.value.filter((project) => project.featured).slice(0, PROJECT_COUNT)
+    : [],
 )
 
 /** MOTD 用：文章总数（未截断；与展示数据同源，SSR 安全） */
 const postCount = computed(() => (Array.isArray(postsData.value) ? postsData.value.length : 0))
+
+/**
+ * MOTD 用：项目总数（同样未截断）。
+ * ⚠️ 曾误传 featuredProjects.length，导致 MOTD 显示的是**展示条数**（4）
+ * 而非真实总数，与 Posts 的口径不一致，且会让人以为站点只有 4 个项目。
+ */
+const projectCount = computed(() =>
+  Array.isArray(projectsData.value) ? projectsData.value.length : 0,
+)
 
 /** 加载态：仅在尚无任何数据时显示占位 */
 const loading = computed(
