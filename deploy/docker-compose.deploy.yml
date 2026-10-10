@@ -1,0 +1,50 @@
+# 个人网站 — CVM 线上部署编排（第三个独立项目，与 mychat / jintian 互不影响）
+#
+# 用法（在服务器上，项目目录 /root/personal-web）：
+#   上传产物后执行
+#   docker compose -f deploy/docker-compose.deploy.yml up -d --force-recreate caddy
+#
+# 项目名固定 personalweb，卷前缀 personalweb_，不会和 mychat 的 deploy_* 、
+# jintian 的 jintian_* 撞名。
+#
+# 为什么只有 caddy：本站是 `nuxt generate` 出来的纯静态产物（802 页预渲染 HTML），
+# 没有 Node 运行时、没有数据库，所以不需要 app / postgres 两个服务。
+#
+# 为什么端口是 8444/8082：机器上 mychat 的 Caddy 已独占 80/443，jintian 用 8443/8081，
+# 且只有公网 IP 无域名 —— 客户端按 IP 建 TLS 连接时 ClientHello 不带 SNI，
+# 两个具名站点无法在同端口区分，所以每个项目各起一套监听。
+#
+# 为什么这里不放构建：2C2G 的机器跑 nuxt generate 会 OOM（jintian 同因不在这构建），
+# 而本机 Windows 又跑不出 generate 产物。所以产物一律由 GitHub Actions 生成，
+# 本地下载后由 scripts/publish-cvm.mjs 上传到 deploy/dist/site/。
+#
+# ⚠️ 更新产物的正确姿势：原地 tar -xzf 覆盖 dist/site/，**不要先 rm -rf**。
+# 本目录是 :ro bind mount，删掉重建会让容器仍指向已删除的旧 inode，
+# 结果是新产物完全不生效（jintian 实测踩过这个坑，表现是静态站直接 404）。
+# 这条已由 scripts/publish-cvm.mjs 固化，别手工改成先删后解。
+
+name: personalweb
+
+services:
+  caddy:
+    image: caddy:2
+    container_name: personal-web
+    restart: unless-stopped
+    ports:
+      - '8444:8444'
+      - '8082:8082'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # nuxt generate 的产物（.output/public 的内容解到这里）
+      - ./dist/site:/srv/site:ro
+      # 自签证书只在服务器上生成，不入库，生成命令见 Caddyfile 头注释
+      - ./certs:/etc/caddy/certs:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    # 静态站服务不需要内存余量，但 2G 的机器上必须给上限，
+    # 否则和 mychat/jintian 的容器争抢时会被 OOM killer 随机杀
+    mem_limit: 128m
+
+volumes:
+  caddy_data:
+  caddy_config:

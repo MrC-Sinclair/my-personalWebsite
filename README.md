@@ -4,14 +4,14 @@
 
 ## 站点形态
 
-| 路由                                | 内容                                        |
-| ----------------------------------- | ------------------------------------------- |
-| `/`                                 | 风格画廊（20 个风格入口，站点的门脸）      |
-| `/style/<id>/`                      | 某风格的首页（单页式，导航为页内锚点）      |
-| `/style/<id>/about`                 | 关于                                        |
-| `/style/<id>/projects`              | 项目                                        |
-| `/style/<id>/blog`                  | 博客                                        |
-| `/style/<id>/contact`               | 联系                                        |
+| 路由                   | 内容                                   |
+| ---------------------- | -------------------------------------- |
+| `/`                    | 风格画廊（20 个风格入口，站点的门脸）  |
+| `/style/<id>/`         | 某风格的首页（单页式，导航为页内锚点） |
+| `/style/<id>/about`    | 关于                                   |
+| `/style/<id>/projects` | 项目                                   |
+| `/style/<id>/blog`     | 博客                                   |
+| `/style/<id>/contact`  | 联系                                   |
 
 20 风格 × 5 页 + 画廊 = **101 条路由**（预渲染清单由 `styles/registry.ts` 自动派生）。`/styles` 与 `/en/styles` 301 重定向到 `/`。
 
@@ -32,19 +32,19 @@
 
 ## 技术栈
 
-| 类别   | 技术                                            | 用途                       |
-| ------ | ----------------------------------------------- | -------------------------- |
-| 框架   | Nuxt 3 (^3.17.7, SSG 模式)                      | 全栈框架                   |
+| 类别   | 技术                                            | 用途                        |
+| ------ | ----------------------------------------------- | --------------------------- |
+| 框架   | Nuxt 3 (^3.17.7, SSG 模式)                      | 全栈框架                    |
 | UI     | 无第三方 UI 库                                  | 每风格原生元素 + 独立 token |
-| 语言   | TypeScript ^5.8.3                               | 类型安全                   |
-| 内容   | @nuxt/content v3 (^3.6.3)                       | Markdown 渲染              |
-| 国际化 | @nuxtjs/i18n ^9.5.5                             | 中/英双语                  |
-| 图标   | @iconify-json/tabler + simple-icons             | 按需内联 SVG               |
-| 图片   | @nuxt/image ^1.10.0                             | 响应式图片优化（含 sizes） |
-| PWA    | @vite-pwa/nuxt ^1.1.1                           | 离线访问、添加到主屏幕     |
-| 测试   | Vitest (^3.1.4)                                 | 单元测试                   |
-| 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                   |
-| 部署   | GitHub Actions → GitHub Pages                   | CI/CD + 静态托管           |
+| 语言   | TypeScript ^5.8.3                               | 类型安全                    |
+| 内容   | @nuxt/content v3 (^3.6.3)                       | Markdown 渲染               |
+| 国际化 | @nuxtjs/i18n ^9.5.5                             | 中/英双语                   |
+| 图标   | @iconify-json/tabler + simple-icons             | 按需内联 SVG                |
+| 图片   | @nuxt/image ^1.10.0                             | 响应式图片优化（含 sizes）  |
+| PWA    | @vite-pwa/nuxt ^1.1.1                           | 离线访问、添加到主屏幕      |
+| 测试   | Vitest (^3.1.4)                                 | 单元测试                    |
+| 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                    |
+| 部署   | GitHub Actions → GitHub Pages                   | CI/CD + 静态托管            |
 
 > Nuxt UI 与 Tailwind 已随过渡层整体移除（阶段 3），风格层与它们零耦合。
 
@@ -66,7 +66,7 @@ my-personalWebsite/
 ├── content/                       # Markdown 内容文件
 │   ├── blog/zh|en/                # 博客文章
 │   └── projects/zh|en/            # 项目介绍
-├── i18n/                          # 国际化语言包（各 134 key，双向零缺失）
+├── i18n/                          # 国际化语言包（各 107 key，双向零缺失）
 ├── layouts/style.vue              # 风格裸布局
 ├── pages/
 │   ├── index.vue                  # 风格画廊（/）
@@ -130,42 +130,42 @@ pnpm test:watch    # 运行测试（监听模式）
 
 ## 部署
 
-项目使用 GitHub Actions 自动构建部署到 GitHub Pages：
+站点发布在**腾讯云 CVM**（`122.51.97.106`，与 mychat、jintian-1851 同一台机器），
+线上地址 <https://122.51.97.106:8444/>。GitHub Pages 已停用，CI 不再往它推产物。
 
-1. 推送代码到 `main` 分支触发自动部署
-2. GitHub Actions 并行跑**质量门禁**（`pnpm lint` / `pnpm test` / `pnpm spellcheck`）与构建（`pnpm install → pnpm generate`）
-3. 两个 job 都通过才部署 `.output/public/` 到 GitHub Pages——检查红掉时不会发布
+链路固定为「CI 构建 → 浏览器下载 artifact → 本机脚本上传」：
 
-> 质量门禁是 2026-10-07 加的（此前 CI 只做 build + deploy，坏代码能一路推上线）。
-> Actions 列表里还会有个 GitHub 自带的 `pages build and deployment`（Jekyll）一直 failure，
-> 那是因为本站不是 Jekyll 站点，**属无害噪声**，不用管。
+1. 推到 `main`，Actions 并行跑**质量门禁**（`pnpm lint` / `pnpm test` / `pnpm spellcheck`）、
+   **移动端 + 无障碍审计**、以及 `pnpm generate`
+2. 确认该 run 全绿，在 Summary 页底部下载 `site-cvm` artifact 并解压
+3. 上传并生效：
+
+```bash
+node scripts/publish-cvm.mjs <解压出来的目录>
+```
+
+脚本打 tar.gz → scp 到 `/root/personal-web/deploy/dist/` → **原地解包覆盖** →
+`docker compose up -d --force-recreate caddy` → 用 curl 校验关键路由状态码。
+凭据走本机 `~/.ssh/cvm_deploy_rsa`（可用 `CVM_KEY` / `CVM_HOST` 覆盖），仓库里不留任何密钥。
+
+> **为什么不在服务器上构建**：机器是 2C2G，802 页预渲染会 OOM。
+> **为什么不在本机构建**：Windows 跑 `nuxt generate` 是 CPU 空转十几分钟零产物（Linux 约 48 秒），
+> 所以 CI 的 artifact 是唯一可信发布物。
+> **为什么用自签证书**：这台机器只有公网 IP、没有域名，ACME 不给裸 IP 签证书。
+> 但仍必须走 HTTPS —— Service Worker 要求安全上下文，`http://IP:PORT` 下 PWA 离线
+> 和 `navigator.clipboard` 一类 API 会直接失效。浏览器首次访问提示证书不受信任，点「继续访问」。
+> **没有域名的代价**：sitemap / canonical 里是 `IP:8444`，且证书不受信任，
+> 公开搜索引擎基本收不到，现阶段它是「自己和朋友访问」的站点，不是公开门面。
+
+服务器上的目录是 `/root/personal-web/deploy/`，含 `Caddyfile`、`docker-compose.deploy.yml`、
+`certs/`（脚本首跑自动生成，不入库）、`dist/site/`（产物）。仓库内的配置副本在 `deploy/`。
 
 > CI 里 **Setup Node 必须排在 Setup pnpm 之前**，且 Node 版本 ≥ 22.13，否则 `Setup pnpm` 会直接失败（2026-09-18 ~ 09-23 期间 CI 因此全红，线上版本停滞）。
 
-### 手动部署到自有服务器（腾讯云轻量 + 宝塔）
-
-如需发布到自有服务器，按以下步骤操作：
-
-```bash
-# 1. 本地生成静态站点（先关闭 Nuxt 遥测询问）
-$env:NUXT_TELEMETRY_DISABLED = "1"
-pnpm generate
-```
-
-2. 将 `.output/public/` 目录打包为 zip
-3. 打开宝塔面板，上传 zip 到站点根目录并解压覆盖
-4. 浏览器访问验证（返回 HTTP 200 即成功）
-
-关键点：
-
-- `pnpm generate` 已定义在 package.json 的 `scripts` 中，直接执行即可
-- 服务器站点根目录：`/www/wwwroot/my-personalWebsite/`
-- 本流程为手动发布；如要自动化，可另配 GitHub Actions 通过 SSH/SFTP 推送产物
-
 ### 关键配置
 
-- `nuxt.config.ts` 中 `app.baseURL` 设为 `/my-personalWebsite/`
-- 站点对外 URL 取 `NUXT_PUBLIC_SITE_URL`（默认 `https://mrc-sinclair.github.io`），sitemap / canonical / og:url 均由它拼接
+- 部署子路径由构建期变量 `NUXT_APP_BASE_URL` 决定（默认 `/my-personalWebsite/`，CVM 发布时 CI 传 `/`）：`app.baseURL`、PWA `start_url`、sitemap / feed / og 全部从它派生，改它必须重新 generate
+- 站点对外 URL 取 `NUXT_PUBLIC_SITE_URL`（CI 默认 `https://122.51.97.106:8444`，可用仓库 variable `SITE_URL` 覆盖），sitemap / canonical / og:url 均由它拼接
 - `sitemap.xml` / `robots.txt` 由 nitro 的 `prerender:done` 钩子在构建时依据「真实预渲染成功的路由」自动生成，无需手工维护
 - i18n 使用 `prefix_except_default` 策略（中文无前缀，英文 URL 带 `/en/`）
 - 图片优化使用 `@nuxt/image` 的 `ipx` provider，卡片组件配置 `sizes` 属性

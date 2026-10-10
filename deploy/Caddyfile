@@ -1,0 +1,47 @@
+# 个人网站 — Caddy 站点配置（独立实例，监听 8444/8082）
+#
+# 为什么用自签证书：ACME 不给裸 IP 签发证书，这台机器只有公网 IP 没有域名。
+# 目的不是「证书可信」，而是把站点放进 HTTPS —— http://IP:PORT 不是安全上下文，
+# Service Worker 直接不注册（PWA 离线全废），navigator.clipboard 一类 API 也是 undefined。
+# jintian 当年就是因为这个才上自签 TLS 的，这里照同一套做法。
+# 生成命令（在服务器 deploy/ 目录执行，certs/ 不入库）：
+#   mkdir -p certs && openssl req -x509 -newkey rsa:2048 -sha256 -days 825 -nodes \
+#     -keyout certs/site.key -out certs/site.crt -subj "/CN=personal-web-cvm" \
+#     -addext "subjectAltName=IP:122.51.97.106,DNS:localhost"
+
+{
+	admin off
+	# 关掉自动 HTTPS：证书是自签的，不能让 caddy 去 ACME 抢着签发并改写站点
+	auto_https off
+}
+
+:8444 {
+	tls /etc/caddy/certs/site.crt /etc/caddy/certs/site.key
+
+	# 纯静态产物：没有 /api，整站就是一个文件服务器
+	root * /srv/site
+	# 压缩只作用于静态资源（预渲染 HTML 压得动，802 页约能省七成流量）
+	encode zstd gzip
+
+	# 入口三件套不缓存。否则改版后新 index.html 拿到了、旧 sw.js 仍按老 precache
+	# 清单把已删除的 hash 资源喂给客户端，表现为「线上不更新、清缓存才正常」
+	header /index.html Cache-Control "no-cache"
+	header /sw.js Cache-Control "no-cache"
+	header /manifest.webmanifest Cache-Control "no-cache"
+	# _nuxt/* 与 workbox-* 的文件名带内容 hash，可以永久缓存
+	header /_nuxt/* Cache-Control "public, max-age=31536000, immutable"
+	header /workbox-*.js Cache-Control "public, max-age=31536000, immutable"
+
+	# 不需要 try_files：本站是 SSG，每条路由都是产物里真实存在的
+	# <路径>/index.html，file_server 自己就能把目录请求补成索引页
+	# （无尾斜杠时先 301 到带斜杠的规范路径）。
+	# 也不写回落到 index.html 的 SPA 兜底 —— 那会让所有乱输的路径返回 200 + 首页，
+	# 而 SEO 要求不存在的内容必须是 404 状态码。这里未命中的路径直接 404。
+	file_server
+}
+
+# 明文入口：只做跳转，省得有人停在非安全上下文里用不了 SW / 剪贴板。
+# 目标端口写死 8444 —— {host} 在这种按端口建站点的写法里会带上 :8082，跳过去就死了。
+:8082 {
+	redir https://122.51.97.106:8444{uri} permanent
+}

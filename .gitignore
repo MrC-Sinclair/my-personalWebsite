@@ -35,6 +35,11 @@ Thumbs.db
 .shots
 .shots-new
 
+# CVM 部署：产物与自签证书都不入库。
+# deploy/dist 已被上面的 `dist` 规则覆盖，这里只补证书目录——
+# 私钥一旦进历史就永远留在仓库里，只能在服务器生成本地留存。
+deploy/certs/
+
 # AI 协作工作区数据（记忆与诊断脚本，仅本地使用）
 .workbuddy
 

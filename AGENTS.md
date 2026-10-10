@@ -2,25 +2,25 @@
 
 ## 项目概述
 
-一站多风格的个人网站，使用 Nuxt 3 SSG 静态生成 + GitHub Pages 部署。站点形态：`/` 是 20 种 UI 大风格的画廊入口，`/style/<id>[/<page>]` 是各风格的 5 个页面（首页 + about / projects / blog / contact），共 101 条路由。内容通过 Markdown + @nuxt/content v3 管理，风格层全部用原生元素 + 各风格独立 token 实现，**不依赖任何第三方 UI 库**。完整适配移动端，支持 PWA 离线访问。
+一站多风格的个人网站，使用 Nuxt 3 SSG 静态生成 + 腾讯云 CVM 静态托管部署。站点形态：`/` 是 20 种 UI 大风格的画廊入口，`/style/<id>[/<page>]` 是各风格的 5 个页面（首页 + about / projects / blog / contact），共 101 条路由。内容通过 Markdown + @nuxt/content v3 管理，风格层全部用原生元素 + 各风格独立 token 实现，**不依赖任何第三方 UI 库**。完整适配移动端，支持 PWA 离线访问。
 
 **目标架构已落地：一站多风格（20 种 UI 大风格），UI 不复用、业务逻辑复用。** 迁移阶段 0~4 全部完成：过渡层（`components/`、旧 `pages/`、`layouts/default.vue`、`assets/css/main.css`、Nuxt UI + Tailwind）已整体删除，共享 CSS 落在 `styles/_base/base.css`。架构总纲见 `docs/architecture/multi-style-ui.md`，新增风格 SOP 见 `docs/architecture/style-authoring-guide.md`。
 
 ## 技术栈
 
-| 类别   | 技术                                                    |
-| ------ | ------------------------------------------------------- |
-| 框架   | Nuxt 3 (^3.17.7, SSG 模式) + Vue 3 (^3.5)              |
+| 类别   | 技术                                                                                                                                      |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 框架   | Nuxt 3 (^3.17.7, SSG 模式) + Vue 3 (^3.5)                                                                                                 |
 | UI     | 无第三方 UI 库。每风格用原生元素 + 自己的 `styles/<id>/tokens.css`（契约在 `styles/_base/tokens.css`）；Nuxt UI / Tailwind 已随过渡层移除 |
-| 语言   | TypeScript ^5.8.3                                       |
-| 内容   | @nuxt/content v3 (^3.6.3, Markdown + Zod schema)       |
-| 国际化 | @nuxtjs/i18n ^9.5.5 (中/英)                             |
-| 图标   | @iconify-json/tabler + simple-icons（按需内联 SVG）      |
-| 图片   | @nuxt/image ^1.10.0 (含响应式 sizes)                    |
-| PWA    | @vite-pwa/nuxt ^1.1.1 (离线访问、添加到主屏幕)          |
-| 测试   | Vitest (^3.1.4)                                         |
-| 规范   | ESLint + Prettier + Commitlint + husky + cspell         |
-| 部署   | GitHub Actions → GitHub Pages                           |
+| 语言   | TypeScript ^5.8.3                                                                                                                         |
+| 内容   | @nuxt/content v3 (^3.6.3, Markdown + Zod schema)                                                                                          |
+| 国际化 | @nuxtjs/i18n ^9.5.5 (中/英)                                                                                                               |
+| 图标   | @iconify-json/tabler + simple-icons（按需内联 SVG）                                                                                       |
+| 图片   | @nuxt/image ^1.10.0 (含响应式 sizes)                                                                                                      |
+| PWA    | @vite-pwa/nuxt ^1.1.1 (离线访问、添加到主屏幕)                                                                                            |
+| 测试   | Vitest (^3.1.4)                                                                                                                           |
+| 规范   | ESLint + Prettier + Commitlint + husky + cspell                                                                                           |
+| 部署   | GitHub Actions 构建产物 → 腾讯云 CVM（Caddy 静态服务）                                                                                    |
 
 ## 架构约束
 
@@ -42,7 +42,7 @@ composables/      → 业务逻辑层（useBlog, useProjects, useSiteConfig, use
                      注意：useSiteConfig.ts 文件导出的函数名为 useAppInfo()
 types/            → blog.ts, project.ts, site.ts
 utils/            → format.ts 等工具函数
-i18n/             → zh-CN.json, en-US.json（各 134 个 key，双向零缺失）
+i18n/             → zh-CN.json, en-US.json（各 107 个 key，双向零缺失）
 pages/            → style/[style]/[...slug].vue 薄壳路由（不含 UI，未知风格/页面抛 404）
 layouts/          → style.vue（裸布局）
 app.vue / error.vue → 全局壳与 404 页（自包含，不引用已删除的过渡层组件）
@@ -53,6 +53,8 @@ styles/
                      （可加 layout.css / composables/ / tones.ts）
                      页面键只允许 registry.ts 的 STYLE_SUB_PATHS：/about /projects /blog /contact
 tests/            → Vitest（styles-structure.test.ts 守结构契约）
+scripts/          → 仓库级脚本（无障碍审计、品牌图/预览生成、publish-cvm.mjs 发布到 CVM）
+deploy/           → CVM 部署配置（Caddyfile + docker-compose.deploy.yml；certs/ 与 dist/ 不入库）
 docs/architecture/ → 架构文档（multi-style-ui.md 总纲 + style-authoring-guide.md 风格 SOP）
 .workbuddy/       → 排查脚本（CDP 截图 shot.mjs、对比度 contrast.mjs 等）+ memory/ 项目记忆
 ```
@@ -192,13 +194,13 @@ Nuxt 3 使用 SSR，服务端和客户端必须渲染出相同的 HTML，否则�
 
 ## 关键配置
 
-- `app.baseURL` 设为 `/my-personalWebsite/`（GitHub Pages 部署需要，本地开发为 `/`）
+- 部署子路径由构建期变量 `NUXT_APP_BASE_URL` 决定（默认 `/my-personalWebsite/`，CVM 发布时 CI 传 `/`）：`app.baseURL`、PWA `start_url`、sitemap / feed / og 都从 `nuxt.config.ts` 的 `SITE_BASE_URL` 一处派生，改它必须重新 generate
 - @nuxt/content v3 的 `defineCollection` + Zod schema 在 `content.config.ts` 定义
 - i18n 使用 `prefix_except_default` 策略（默认中文无前缀，英文 URL 带 `/en/` 前缀）
 - 图片 `@nuxt/image` 配置 `provider: ipx`，卡片组件配置 `sizes="sm:100vw md:50vw lg:33vw"`
 - 多风格架构：风格预渲染清单**从 `styles/registry.ts` 自动派生**（`nuxt.config.ts` 的 `stylePrerenderRoutes()`，不再手工维护数组）；路由壳 `pages/style/[style]/[...slug].vue`（未知风格/缺失页面抛 404）+ 裸布局 `layouts/style.vue`
 - 画廊页 `pages/index.vue`（`/`）列出注册表条目；`/styles` 与 `/en/styles` 301 → `/`
-- **部署**：`.github/workflows/deploy.yml` 跑 `pnpm generate`，产出 `.output/public`。**Node 必须 ≥ 22.13**（`packageManager: pnpm@11.25.0` 的 engines 要求），且 **Setup Node 必须排在 Setup pnpm 之前**——顺序反了会让 Setup pnpm 直接失败（2026-09-18 起 CI 因此全红）
+- **部署**：`.github/workflows/deploy.yml` 跑 `pnpm generate` 产出 `.output/public` 并上传为 `site-cvm` artifact，再由本机 `node scripts/publish-cvm.mjs <目录>` 推到腾讯云 CVM 的 `/root/personal-web/deploy/dist/site` 并 `--force-recreate caddy`。**Node 必须 ≥ 22.13**（`packageManager: pnpm@11.25.0` 的 engines 要求），且 **Setup Node 必须排在 Setup pnpm 之前**——顺序反了会让 Setup pnpm 直接失败（2026-09-18 起 CI 因此全红）。构建只能在这条链上跑：服务器 2C2G 会 OOM，本机 Windows 跑 generate 零产物
 - 网络受限环境下，Google Fonts 和 Google Icons 已在 `nuxt.config.ts` 中禁用（`fonts.providers.google: false, fonts.providers.googleicons: false`）
 - 依赖客户端状态的组件（各风格的滚动进度、canvas 装饰等）使用 `<ClientOnly>` 包裹，避免 hydration mismatch
 - PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段，manifest 含 name/short_name/theme_color/icons
@@ -232,9 +234,9 @@ Nuxt 3 使用 SSR，服务端和客户端必须渲染出相同的 HTML，否则�
 2. 内容型数据放 `content/` 目录，结构化类型放 `types/`
 3. 数据获取逻辑封装到 `composables/`，不要在组件中直接调用 content API
 4. 新增风格组件放 `styles/<id>/components/`，显式 import、组件名带风格前缀
-6. 提交前确保 ESLint + Prettier + cspell 通过
-7. 新增功能需编写 Vitest 单元测试
-8. 新增 UI 风格按 `docs/architecture/style-authoring-guide.md` 的 SOP 执行；新风格的通用交互行为先进共享层
+5. 提交前确保 ESLint + Prettier + cspell 通过
+6. 新增功能需编写 Vitest 单元测试
+7. 新增 UI 风格按 `docs/architecture/style-authoring-guide.md` 的 SOP 执行；新风格的通用交互行为先进共享层
 
 ## 与 AI 协作约定
 

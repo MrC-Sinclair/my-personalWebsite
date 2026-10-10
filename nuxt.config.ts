@@ -16,7 +16,17 @@ const SITE_URL = (process.env.NUXT_PUBLIC_SITE_URL || 'https://mrc-sinclair.gith
   /\/+$/,
   '',
 )
-const SITE_BASE_URL = '/my-personalWebsite/'
+/**
+ * 站点部署子路径，首尾都带斜杠：GitHub Pages 是 /my-personalWebsite/，
+ * 自有服务器（CVM 按根路径发布）是 /。构建期由 NUXT_APP_BASE_URL 决定，
+ * app.baseURL、PWA start_url、sitemap/feed/og 全部从这里派生。
+ * ⚠️ 改了它必须重新 generate —— 子路径是烘进每个 HTML 的资源链接里的。
+ */
+const BASE_PATH = (process.env.NUXT_APP_BASE_URL ?? '/my-personalWebsite/').replace(
+  /^\/+|\/+$/g,
+  '',
+)
+const SITE_BASE_URL = BASE_PATH ? `/${BASE_PATH}/` : '/'
 
 /**
  * RSS feed 的文章链接指向哪个风格的详情页。
@@ -247,9 +257,7 @@ async function writeStyleOgImages(publicDir: string): Promise<void> {
 
   for (const meta of styleRegistry) {
     const svg = Buffer.from(styleOgSvg({ id: meta.id, en: meta.en, accent: meta.accent }))
-    await (sharp as (input: Buffer) => { png(): { toFile(path: string): Promise<unknown> } })(
-      svg,
-    )
+    await (sharp as (input: Buffer) => { png(): { toFile(path: string): Promise<unknown> } })(svg)
       .png()
       .toFile(join(ogDir, `${meta.id}.png`))
   }
@@ -337,7 +345,7 @@ export default defineNuxtConfig({
   css: ['~/styles/_base/base.css', '~/styles/_base/tokens.css'],
 
   app: {
-    baseURL: '/my-personalWebsite/',
+    baseURL: SITE_BASE_URL,
     head: {
       meta: [
         { charset: 'utf-8' },
@@ -400,7 +408,7 @@ export default defineNuxtConfig({
       theme_color: '#6366f1',
       background_color: '#0f172a',
       display: 'standalone',
-      start_url: '/my-personalWebsite/',
+      start_url: SITE_BASE_URL,
       icons: [
         {
           src: `${SITE_BASE_URL}favicon.ico`,

@@ -1,11 +1,17 @@
 # ============================================================
-# GitHub Actions 工作流：自动部署到 GitHub Pages
+# GitHub Actions 工作流：构建静态产物（发布到腾讯云 CVM）
 # ============================================================
 # 触发时机：当推送到 main 分支时自动执行
-# 执行流程：质量门禁（lint / test / spellcheck）→ 构建 → 部署到 GitHub Pages
+# 执行流程：质量门禁（lint / test / spellcheck）+ 真实浏览器审计 → 生成产物 → 上传 artifact
+#
+# 为什么构建留在这里而不在服务器或本机：
+#   - 服务器是 2C2G，跑 `nuxt generate`（802 页预渲染）会 OOM；
+#   - 本机 Windows 跑 generate 是「CPU 空转十几分钟零产物」，只有 Linux 上正常（约 48 秒）；
+#   - 所以这里产出的 artifact 是唯一可信的发布物，下载后由
+#     `node scripts/publish-cvm.mjs <解压目录>` 上传到 CVM。
 # ============================================================
 
-name: Deploy to GitHub Pages
+name: Build site for Tencent CVM
 
 # ==================== 触发条件 ====================
 # 定义何时运行此工作流
@@ -14,11 +20,11 @@ on:
     branches: [main] # 当代码推送到 main 分支时触发
 
 # ==================== 权限配置 ====================
-# GitHub Actions 需要的权限（用于部署到 GitHub Pages）
+# 只读检出 + 写 artifact：不再需要 pages / id-token，
+# 因为发布动作改成本机 `scripts/publish-cvm.mjs` 用 SSH 私钥推送到 CVM，
+# 私钥只存在于本机 ~/.ssh/，不进 CI 密钥库。
 permissions:
   contents: read # 读取仓库内容的权限（用于 checkout）
-  pages: write # 写入 GitHub Pages 的权限（用于部署）
-  id-token: write # 用于 OIDC 身份验证（GitHub Pages 部署需要）
 
 # ==================== 并发控制 ====================
 # ⚠️ 组名**不能**叫 pages：GitHub 自带的 "pages build and deployment" workflow
@@ -27,12 +33,13 @@ permissions:
 # cancel-in-progress: true —— 连续推送时只跑最新一个，不让队列积压
 #    （802 页 × 2 语言预渲染一次要 5~10 分钟，积压 5 个就是近一小时）
 concurrency:
-  group: deploy-pages-nuxt
+  group: build-cvm-nuxt
   cancel-in-progress: true
 
 # ==================== 任务定义 ====================
-# 工作流包含三个任务：quality（质量门禁）、build（构建）和 deploy（部署）
-# quality 与 build 并行跑，deploy 需要两者都成功——坏代码不会推上线
+# 三个任务：quality（质量门禁）、audit（真实浏览器审计）、build（生成产物 + 传 artifact）。
+# 三者并行，构建失败或检查红掉时不该下载产物——发布动作在人这一侧，
+# 所以「先看这个 run 全绿，再跑 publish-cvm.mjs」是必须遵守的顺序。
 jobs:
   # -------------------- 质量门禁任务 --------------------
   # 2026-10-07 补：此前 CI 只做 build + deploy，lint / test / spellcheck 全靠
@@ -191,41 +198,51 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      # 步骤 5：配置 GitHub Pages
-      # 自动设置 GitHub Pages 所需的配置
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      # 步骤 6：安装项目依赖
+      # 步骤 5：安装项目依赖
       # 根据 package.json 和 pnpm-lock.yaml 安装所有依赖
       - name: Install dependencies
         run: pnpm install
 
-      # 步骤 7：生成静态站点
-      # 执行 Nuxt 的静态生成命令，输出到 .output/public 目录
+      # 步骤 6：生成静态站点（发布用的唯一可信产物）
+      # 这里显式给两个构建期变量，它们会烘进 HTML 里的每一条资源链接：
+      #   NUXT_APP_BASE_URL=/            CVM 按根路径发布，不再是 GitHub Pages 的子路径
+      #   NUXT_PUBLIC_SITE_URL           canonical / og:url / sitemap / feed 的绝对前缀
+      # 想换成域名时在仓库 Settings → Secrets and variables → Actions 里加
+      # SITE_URL / SITE_BASE_URL 两个 variable，不用改这份工作流。
       - name: Generate static site
+        env:
+          NUXT_APP_BASE_URL: ${{ vars.SITE_BASE_URL || '/' }}
+          NUXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || 'https://122.51.97.106:8444' }}
         run: pnpm generate
 
-      # 步骤 8：上传构建产物
-      # 将生成的静态文件打包为 artifact，供部署任务使用
+      # 步骤 7：上传为可下载的 artifact
+      # 用标准 upload-artifact（不是 upload-pages-artifact，那个只服务 Pages）：
+      # 在这个 run 的 Summary 页面底部下载 site-cvm.zip，解压后交给
+      #   node scripts/publish-cvm.mjs <解压目录>
+      # ⚠️ 下载前先确认本 run 的 quality / audit 两个 job 是绿的——
+      # 它们与 build 并行跑，红掉时产物虽然已经上传，但不该发布。
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: site-cvm
           path: .output/public # Nuxt SSG 的输出目录
+          retention-days: 14
+          if-no-files-found: error
 
-  # -------------------- 部署任务 --------------------
-  deploy:
-    # 部署环境配置
-    environment:
-      name: github-pages # GitHub Pages 环境名称
-      url: ${{ steps.deployment.outputs.page_url }} # 部署完成后显示的 URL
-
-    runs-on: ubuntu-latest
-    needs: [build, quality] # 构建与质量门禁都通过才部署
-
-    steps:
-      # 步骤 1：部署到 GitHub Pages
-      # 将构建产物发布到 GitHub Pages
-      - name: Deploy to GitHub Pages
-        id: deployment # 设置步骤 ID，用于获取输出（如部署 URL）
-        uses: actions/deploy-pages@v4
+      # 步骤 8：把下载地址写进 run 摘要，省得回去翻 URL
+      - name: Write publish hint
+        shell: bash
+        run: |
+          {
+            echo "### 发布到 CVM"
+            echo ""
+            echo "下载本 run 的 \`site-cvm\` artifact，解压后执行："
+            echo ""
+            echo '```bash'
+            echo "node scripts/publish-cvm.mjs <解压出来的目录>"
+            echo '```'
+            echo ""
+            echo "产物页：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo ""
+            echo "发布前确认 quality / audit 两个 job 为绿。"
+          } >> "$GITHUB_STEP_SUMMARY"
