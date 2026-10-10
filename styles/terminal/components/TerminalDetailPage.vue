@@ -65,7 +65,7 @@
       </div>
 
       <!-- 上下篇：cd 命令式导航 -->
-      <nav v-if="view.prev || view.next" class="nav" aria-label="上下篇">
+      <nav v-if="view.prev || view.next" class="nav" :aria-label="t('common.postNav')">
         <NuxtLink v-if="view.prev" class="nav-line" :to="view.prev.to">
           <span class="prompt" aria-hidden="true">$</span>
           <span class="cmd">cd ../{{ prevSlug }}</span>

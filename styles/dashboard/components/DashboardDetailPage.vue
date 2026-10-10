@@ -73,13 +73,13 @@
       </section>
 
       <!-- 上下篇：表格行 -->
-      <nav v-if="view.prev || view.next" class="nav" aria-label="上下篇">
+      <nav v-if="view.prev || view.next" class="nav" :aria-label="t('common.postNav')">
         <NuxtLink v-if="view.prev" class="nav-row" :to="view.prev.to">
-          <span class="nav-cell nav-cell--label">{{ t('blog.prev') }}</span>
+          <span class="nav-cell nav-cell--label">{{ t('blog.prevPost') }}</span>
           <span class="nav-cell nav-cell--title">{{ view.prev.title }}</span>
         </NuxtLink>
         <NuxtLink v-if="view.next" class="nav-row" :to="view.next.to">
-          <span class="nav-cell nav-cell--label">{{ t('blog.next') }}</span>
+          <span class="nav-cell nav-cell--label">{{ t('blog.nextPost') }}</span>
           <span class="nav-cell nav-cell--title">{{ view.next.title }}</span>
         </NuxtLink>
       </nav>

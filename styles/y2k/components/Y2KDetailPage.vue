@@ -55,15 +55,15 @@
       </div>
 
       <!-- 上下篇 -->
-      <nav v-if="view.prev || view.next" class="detail-nav" aria-label="上下篇">
+      <nav v-if="view.prev || view.next" class="detail-nav" :aria-label="t('common.postNav')">
         <NuxtLink v-if="view.prev" class="detail-nav-item" :to="view.prev.to">
-          <span class="detail-nav-label">{{ t('blog.prev') }}</span>
+          <span class="detail-nav-label">{{ t('blog.prevPost') }}</span>
           <span class="detail-nav-title">{{ view.prev.title }}</span>
         </NuxtLink>
         <span v-else class="detail-nav-item detail-nav-item--empty" />
 
         <NuxtLink v-if="view.next" class="detail-nav-item detail-nav-item--next" :to="view.next.to">
-          <span class="detail-nav-label">{{ t('blog.next') }}</span>
+          <span class="detail-nav-label">{{ t('blog.nextPost') }}</span>
           <span class="detail-nav-title">{{ view.next.title }}</span>
         </NuxtLink>
       </nav>
