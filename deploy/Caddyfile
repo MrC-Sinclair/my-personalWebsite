@@ -8,7 +8,6 @@
 #   mkdir -p certs && openssl req -x509 -newkey rsa:2048 -sha256 -days 825 -nodes \
 #     -keyout certs/site.key -out certs/site.crt -subj "/CN=personal-web-cvm" \
 #     -addext "subjectAltName=IP:122.51.97.106,DNS:localhost"
-
 {
 	admin off
 	# 关掉自动 HTTPS：证书是自签的，不能让 caddy 去 ACME 抢着签发并改写站点
