@@ -84,21 +84,63 @@ function flatten(obj: unknown, prefix: string[] = []): string[] {
 const zhKeys = new Set(flatten(JSON.parse(readFileSync(resolve(root, 'i18n/zh-CN.json'), 'utf8'))))
 const enKeys = new Set(flatten(JSON.parse(readFileSync(resolve(root, 'i18n/en-US.json'), 'utf8'))))
 
-/** 代码里所有 `t('x.y')` / `$t('x.y')` 的字面量 key（动态拼接的不管） */
+/**
+ * 代码里所有被 t() 引用的字面量 key。
+ *
+ * ⚠️ 不能只匹配 `t('x.y')` 这种「紧跟引号」的写法。实测代码里有 19 处
+ * 三元表达式（`t(kind === 'post' ? 'blog.title' : 'projects.title')`），
+ * t( 后面是变量不是引号，会被漏掉。所以改成**括号配对**：找到 t( 后
+ * 一直扫到配对的右括号，把里面所有 'x.y' 形式的字面量都取出来。
+ */
 function usedKeys(): Map<string, string[]> {
-  const re = /(?:\bt|\$t)\(\s*'([a-zA-Z][\w.]*)'/g
   const map = new Map<string, string[]>()
+  for (const file of SOURCE_FILES) {
+    const src = stripComments(readFileSync(file, 'utf8'))
+    const re = /\$?\bt\(/g
+    let m: RegExpExecArray | null
+    while ((m = re.exec(src))) {
+      const open = m.index + m[0].length - 1
+      let depth = 0
+      let close = open
+      for (; close < src.length; close++) {
+        if (src[close] === '(') depth++
+        else if (src[close] === ')') {
+          depth--
+          if (depth === 0) break
+        }
+      }
+      const inner = src.slice(open + 1, close)
+      for (const km of inner.matchAll(/'([a-zA-Z][\w.]*)'/g)) {
+        const key = km[1]
+        // 只收形如 "xxx.yyy" 的（'i18n key 形态'），排除 'post' 这类单词值
+        if (!/^[a-z][\w]*\.[a-zA-Z]/.test(key)) continue
+        if (!map.has(key)) map.set(key, [])
+        const files = map.get(key)
+        if (files && !files.includes(file)) files.push(file)
+      }
+    }
+  }
+  return map
+}
+
+/**
+ * 动态拼接的 key 前缀，例如 t(`styles.gallery.tier${meta.tier}`)。
+ * 这种写法**扫不到具体 key**，所以按字面量判断「零引用」会误判成死 key
+ * （2026-10-10 实测：styles.gallery.tier2 / tier3 就是这么被误判的，
+ * 差点在清理死 key 时删掉）。这里至少保证前缀没写错。
+ */
+function dynamicPrefixes(): Array<{ prefix: string; file: string }> {
+  const out: Array<{ prefix: string; file: string }> = []
+  const re = /\$?\bt\(\s*`([^`]*?)\$\{/g
   for (const file of SOURCE_FILES) {
     const src = stripComments(readFileSync(file, 'utf8'))
     let m: RegExpExecArray | null
     while ((m = re.exec(src))) {
-      const key = m[1]
-      if (!map.has(key)) map.set(key, [])
-      const files = map.get(key)
-      if (files && !files.includes(file)) files.push(file)
+      const prefix = m[1]
+      if (prefix) out.push({ prefix, file })
     }
   }
-  return map
+  return out
 }
 
 describe('i18n key 契约', () => {
@@ -145,8 +187,19 @@ describe('i18n key 契约', () => {
     expect(offenders, `placeholder 必须走 t()：\n${offenders.join('\n')}`).toEqual([])
   })
 
+  it('动态拼接的 t() 前缀下必须存在 key（防止前缀写错而静默露 key 名）', () => {
+    const prefixes = dynamicPrefixes()
+    const broken = prefixes.filter((p) => ![...zhKeys].some((k) => k.startsWith(p.prefix)))
+    expect(
+      broken.map((b) => `${b.prefix}（${b.file}）`),
+      '动态前缀在语言包里一个 key 都对不上，运行时会显示 key 名',
+    ).toEqual([])
+  })
+
   it('确实扫到了足够多的文件（防止收集逻辑失效导致空跑）', () => {
     expect(SOURCE_FILES.length).toBeGreaterThan(300)
     expect(used.size).toBeGreaterThan(50)
+    // 括号配对必须比「紧跟引号」扫得多，否则说明配对逻辑退化了
+    expect(dynamicPrefixes().length).toBeGreaterThan(0)
   })
 })
