@@ -23,7 +23,12 @@
         @update="setQuery"
         @clear="clear"
       />
-      <EditorialPosts v-if="results.length" :posts="results" :level="1"/>
+      <EditorialPosts
+        v-if="results.length"
+        :posts="results"
+        :level="1"
+        :heading="t('blog.allPosts')"
+      />
       <EditorialEmpty
         v-else
         :message="t('blog.noResults')"

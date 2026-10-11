@@ -19,7 +19,7 @@
       <DashboardPanel
         class="cell"
         :eyebrow="t('blog.publishedAt')"
-        :title="t('blog.title')"
+        :title="t('blog.publishTrend')"
         :meta="String(trendTotal)"
       >
         <DashboardTrendLine
@@ -34,7 +34,7 @@
       <DashboardPanel
         id="posts"
         class="cell"
-        :title="t('blog.title')"
+        :title="t('blog.allPosts')"
         :meta="String(resultCount)"
       >
         <template #actions>
@@ -82,7 +82,7 @@
           />
         </template>
 
-        <DashboardPostsTable v-if="results.length" :posts="results" :caption="t('blog.title')" />
+        <DashboardPostsTable v-if="results.length" :posts="results" :caption="t('blog.allPosts')" />
         <DashboardEmptyState
           v-else
           :message="t('blog.noResults')"

@@ -13,7 +13,7 @@
   <section id="posts" class="section" data-section="posts">
     <EditorialSectionHead
       :no="'03'"
-      :title="t('home.latestPosts')"
+      :title="headingText"
       :note="t('blog.description')"
       :level="level"
     />
@@ -63,17 +63,22 @@ import { contentSlug } from '~/utils/content'
 import EditorialSectionHead from './EditorialSectionHead.vue'
 import EditorialEmpty from './EditorialEmpty.vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     /** 最新文章列表（来自共享层 useBlog） */
     posts: BlogPost[]
     /** 标题层级：blog 子页用它当页头，传 1；首页是并列分区，默认 2 */
     level?: 1 | 2
+    /** 标题覆写：子页列的是全量，不该沿用首页语义的「最新文章」 */
+    heading?: string
   }>(),
   {
     level: 2,
+    heading: '',
   },
 )
+
+const headingText = computed(() => props.heading || t('home.latestPosts'))
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()

@@ -13,8 +13,7 @@
     <DashboardPanel
       id="projects"
       class="cell"
-      :eyebrow="t('projects.featured')"
-      :title="t('projects.title')"
+      :title="t('projects.allProjects')"
       :meta="String(projects.length)"
     >
       <div v-if="loading" class="skeleton-zone" role="status">
@@ -25,7 +24,7 @@
       <DashboardProjectsTable
         v-else-if="projects.length"
         :projects="projects"
-        :caption="t('projects.title')"
+        :caption="t('projects.allProjects')"
       />
 
       <DashboardEmptyState v-else :message="t('projects.noResults')" />
