@@ -287,22 +287,59 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
-          # 这里刻意不加 -e：失败必须被捕获成 annotation，而不是被 shell 直接掐死——
-          # Actions 的日志要登录才能看，annotation 匿名可读（实测 API 可取），
-          # 排障全靠它把真实原因送出来。
-          set -uo pipefail
-          gh --version >/dev/null 2>&1 || echo "::warning::runner 上没有 gh CLI"
-          # 固定 tag 每次覆盖：cvm-latest 永远指向最近一次全绿构建的产物
-          gh release delete cvm-latest --cleanup-tag --yes 2>/dev/null || true
+          # ★ 必须显式 set +e：runner 是用 `bash -eo pipefail` 执行 run 块的，
+          # 「不加 -e」并不成立。上一轮 gh 一失败整个 step 就被掐死，
+          # 下面那句 ::error:: 根本没来得及执行（annotations 里只剩通用的 exit 1）。
+          set +e
+          gh --version >/dev/null 2>&1 || echo "::warning title=缺工具::runner 上没有 gh CLI"
+          gh release delete cvm-latest --cleanup-tag --yes 2>/dev/null
           out=$(gh release create cvm-latest site-cvm.tar.gz \
             --target "$GITHUB_SHA" \
             --title "CVM 产物（最近一次构建）" \
             --notes "供 scripts/publish-cvm.mjs --latest 拉取。来自 run $GITHUB_RUN_ID。" 2>&1)
           code=$?
+          # 工作流命令里 % 必须写成 %25，否则命令解析失败、annotation 静默丢失
+          msg=$(printf '%s' "$out" | tr '\n\r' '  ' | cut -c1-500 | sed 's/%/%25/g')
           if [ "$code" -ne 0 ]; then
-            msg=$(printf '%s' "$out" | tr '\n\r' '  ' | cut -c1-500)
             echo "::error title=Release 发布失败（exit $code）::$msg"
             exit "$code"
           fi
           echo "Release 资产：$out"
           echo "下载地址：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/cvm-latest/site-cvm.tar.gz"
+
+  # -------------------- 临时排障 job：GITHUB_TOKEN 到底能不能建 Release --------------------
+  # 为什么单独一个 job：release 挂在 build/quality 后面，一轮要 10 分钟以上，
+  # 而这个问题 20 秒就有答案。用 curl 打 REST 拿 **HTTP 状态码**（硬信号），
+  # 并塞进 annotation 的 title —— 状态码是纯数字，不受消息里特殊字符影响。
+  # 判读：403 = token 权限被仓库/组织设置封顶（要在 Settings → Actions →
+  #  Workflow permissions 选 Read and write）；422 = tag/参数问题（代码可修）；
+  # 201 = 权限没问题，那上一轮的锅在 gh 的用法上。
+  # 探到的 release 立刻删掉不留垃圾；本 job 恒成功，不参与发布判定。
+  # ★ 拿到结论后删除此 job。
+  perm-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+
+    steps:
+      - name: Probe release permission
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set +e
+          API="https://api.github.com/repos/$GITHUB_REPOSITORY/releases"
+          code=$(curl -s -o resp.json -w '%{http_code}' -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
+            -d "{\"tag_name\":\"perm-probe-$GITHUB_RUN_NUMBER\",\"target_commitish\":\"$GITHUB_SHA\",\"name\":\"perm probe\",\"draft\":false,\"prerelease\":false}" \
+            "$API")
+          msg=$(node -e 'const j=require("./resp.json");process.stdout.write(String(j.message||("created id="+j.id)))' 2>/dev/null | cut -c1-160 | sed 's/%/%25/g')
+          echo "::notice title=PROBE-HTTP-$code::$msg"
+          id=$(node -e 'const j=require("./resp.json");process.stdout.write(String(j.id||""))' 2>/dev/null)
+          if [ -n "$id" ]; then
+            curl -s -o /dev/null -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" "$API/$id"
+            curl -s -o /dev/null -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs/tags/perm-probe-$GITHUB_RUN_NUMBER"
+          fi
+          exit 0
