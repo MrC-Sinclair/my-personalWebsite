@@ -82,6 +82,9 @@ defineProps<{
 
 .main-inner {
   display: grid;
+  /* 面板一律 span 12 排布：这里必须真的给出 12 条轨道。缺了它，网格会按内容
+     收缩出隐式轨道（实测窄到 46px），没声明跨列的页头就被挤进一格，标题逐字换行 */
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   flex: 1 0 auto;
   align-content: start;
   gap: var(--gap);
@@ -92,6 +95,7 @@ defineProps<{
 
 /* —— 页头：等宽小标 + h1（首页英雄区的降一级版本） —— */
 .pagehead {
+  grid-column: 1 / -1;
   padding: calc(var(--space) / 2) 0 0;
 }
 

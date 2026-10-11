@@ -56,10 +56,19 @@ defineProps<{
 
 .panel-head {
   display: flex;
+  /* 动作区放不下时整块换到标题下一行，而不是把标题挤成逐字换行 */
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--gap);
   padding: var(--space) var(--space) 0;
+}
+
+/* 标题不参与收缩：CJK 的 min-content 只有一个字，让它收缩等于把标题压成竖排 */
+.panel-titles {
+  flex: none;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .panel-eyebrow {
@@ -82,9 +91,20 @@ defineProps<{
 
 .panel-side {
   display: flex;
-  flex: none;
+  /* 原来 flex:none：动作区多一组标签就把整行顶出面板，再被 .panel 的
+     overflow:hidden 裁掉——筛选项看不见也点不到。改成可收缩、可换行 */
+  flex: 1 1 auto;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  /* 桌面仍靠右对齐；窄屏换行后左对齐才不别扭 */
+  .panel-side {
+    justify-content: flex-end;
+  }
 }
 
 .panel-meta {
