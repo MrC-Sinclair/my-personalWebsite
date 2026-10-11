@@ -4,27 +4,69 @@
  * 这个脚本要往生产机上写文件并重建容器，跑错了代价是「线上新产物不生效」，
  * 所以守住四件事：站点根目录识别、本地路径写法、解包不碰 inode、配置自举幂等。
  */
-import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import {
   siteRootCandidates,
   resolveSiteRoot,
   normalizeInputPath,
-  releaseAssetUrl,
+  releaseApiUrl,
+  releaseDownloadUrl,
+  assertTarballOk,
   windowsToPosix,
   remoteActivateScript,
   remoteBootstrapScript,
 } from '../scripts/publish-cvm.mjs'
 
 describe('publish-cvm：产物来源', () => {
-  it('--latest 走公开 Release 资产，固定 tag 才能被反复覆盖', () => {
-    // Actions artifact 即使仓库公开也要鉴权（实测匿名 401），Release 资产才免鉴权
-    expect(releaseAssetUrl('some-owner/some-repo')).toBe(
+  it('元数据走 api.github.com，不走 github.com', () => {
+    // 固定 tag 才能被 CI 反复覆盖；host 必须是 api —— 实测本机对 github.com
+    // 的直连会 SYN 黑洞（21 秒超时），而 api.github.com 全程可达
+    expect(releaseApiUrl('some-owner/some-repo')).toBe(
+      'https://api.github.com/repos/some-owner/some-repo/releases/tags/cvm-latest',
+    )
+  })
+
+  it('第一条路是不占 API 配额的 Release 直链', () => {
+    // 匿名配额 60 次/小时会被用尽（实测 403 rate limit exceeded），
+    // 所以先试直链，API 端点只作退路
+    expect(releaseDownloadUrl('some-owner/some-repo')).toBe(
       'https://github.com/some-owner/some-repo/releases/download/cvm-latest/site-cvm.tar.gz',
     )
   })
+
+  it('完整的 tar.gz 能过完整性门禁并数出条目', () => {
+    const { dir, tgz } = makeTarball()
+    expect(assertTarballOk(tgz)).toBeGreaterThanOrEqual(2)
+    rmSync(dir, { recursive: true, force: true })
+  })
+
+  it('被截断的包必须挡住：宁可不上线，也不能把半套站点推上去', () => {
+    const { dir, tgz } = makeTarball()
+    // 截掉尾部：这就是实测发生过的形态（17.6 MB 只收到 8.4 MB）
+    writeFileSync(tgz, readFileSync(tgz).subarray(0, Math.floor(statSync(tgz).size / 2)))
+    expect(() => assertTarballOk(tgz)).toThrow(/拒绝上传/)
+    rmSync(dir, { recursive: true, force: true })
+  })
 })
+
+/** 造一个含两个文件的 tar.gz，供完整性门禁用例使用 */
+function makeTarball() {
+  const dir = mkdtempSync(join(tmpdir(), 'site-tar-'))
+  const src = join(dir, 'src')
+  mkdirSync(join(src, '_nuxt'), { recursive: true })
+  writeFileSync(join(src, 'index.html'), '<html></html>')
+  writeFileSync(join(src, '_nuxt', 'a.js'), 'x')
+  const tgz = join(dir, 'site.tar.gz')
+  // 走 windowsToPosix：这台机器上是 GNU tar，给它 D:\ 形态会当成远程主机名解析失败
+  const r = spawnSync('tar', ['-czf', windowsToPosix(tgz), '-C', windowsToPosix(src), '.'], {
+    encoding: 'utf8',
+  })
+  if (r.status !== 0) throw new Error(`构造测试用 tar 失败：${r.stderr}`)
+  return { dir, tgz }
+}
 
 describe('publish-cvm：站点根目录识别', () => {
   it('artifact 解压成站点根本身时直接命中', () => {

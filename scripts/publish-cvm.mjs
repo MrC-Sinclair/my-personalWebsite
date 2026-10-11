@@ -16,8 +16,8 @@
  *     CVM_KEY=~/.ssh/cvm_deploy_rsa   SITE_REPO=MrC-Sinclair/my-personalWebsite
  *     DRY_RUN=1  只打印将要执行的命令，不连服务器
  */
-import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, rmSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { existsSync, mkdirSync, rmSync, statSync } from 'node:fs'
 import { homedir, tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -45,11 +45,6 @@ const RELEASE_TAG = 'cvm-latest'
 const RELEASE_ASSET = 'site-cvm.tar.gz'
 const REPO = process.env.SITE_REPO || 'MrC-Sinclair/my-personalWebsite'
 const RELEASE_DIR = join(tmpdir(), 'personal-web-site-latest')
-
-/** 拼出 Release 资产的下载地址（纯函数，便于单测） */
-export function releaseAssetUrl(repo = REPO, tag = RELEASE_TAG, asset = RELEASE_ASSET) {
-  return `https://github.com/${repo}/releases/download/${tag}/${asset}`
-}
 
 /**
  * ★ 本地路径写法必须跟着工具链走，否则会静默失败：
@@ -173,12 +168,17 @@ function sshRemote(script) {
 }
 
 /**
- * 线上验证：抓几个代表路径的状态码。curl 加 --noproxy 是因为系统代理会干扰（实测 502）。
+ * 线上验证：抓几个代表路径的状态码。
+ * curl 加 --noproxy 是因为系统代理会干扰（实测 502），到自己的服务器应该直连。
  * 必须 200 的是路由与 sitemap；PWA 那两个只做通报 —— 自签证书下 Service Worker
  * 能不能注册取决于浏览器是否接受这张证书，不属于「发布失败」。
+ *
+ * ⚠️ 用 spawnSync 而不是 execFileSync：实测 curl 会**先把 -w 的状态码打出来、
+ * 再以 28（超时）退出**，execFileSync 会在拿到答案之前就抛异常，
+ * 把「线上其实 200」误报成发布失败。
  */
 function httpCode(path) {
-  return execFileSync(
+  const r = spawnSync(
     'curl',
     [
       '-k',
@@ -188,13 +188,15 @@ function httpCode(path) {
       '--noproxy',
       '*',
       '-m',
-      '20',
+      '25',
       '-w',
       '%{http_code}',
       `https://${HOST}:8444${path}`,
     ],
     { encoding: 'utf8' },
-  ).trim()
+  )
+  const code = (r.stdout || '').trim()
+  return /^\d{3}$/.test(code) ? code : '000'
 }
 
 function verify(required, optional) {
@@ -218,18 +220,147 @@ function verify(required, optional) {
 
 /**
  * --latest：拉最近一次构建的 Release 资产并解包，返回解出来的站点根目录。
- * curl 用 -f 让「404/未发布」变成非零退出码（否则会把错误页当成产物解包，
- * 得到一堆莫名奇妙的缺失文件警告）；-L 是因为 GitHub 会 302 到对象存储。
+ *
+ * ★ 三条都是实测出来的约束：
+ *   1. 连接会在中途断（17.6 MB 只收到 8.4 MB 就停）⇒ 必须 `-C -` 续传，
+ *      且**验完包再上传**：截断的 tar 解出来是半套站点，比不发布更糟；
+ *   2. 两个 host 各有独立的失败方式 —— `github.com` 在这台机器上会 SYN 黑洞
+ *      （21 秒超时），`api.github.com` 稳定但匿名配额只有 60 次/小时
+ *      （轮询 CI 状态时就把配额用光过，报 403 rate limit exceeded）
+ *      ⇒ 先走不占配额的 Release 直链，失败再退到 API 资产端点；
+ *   3. 403 / 404 这类错误重试没有意义 ⇒ 立刻换路或收手，不要空转十轮。
  */
 function fetchLatest() {
-  const url = releaseAssetUrl()
-  console.log(`拉取产物：${url}`)
   const downloaded = join(tmpdir(), 'personal-web-download.tar.gz')
-  run('curl', ['-fL', '--retry', '3', '--retry-delay', '2', '-o', toShellPath(downloaded), url])
-  rmSync(RELEASE_DIR, { recursive: true, force: true })
-  mkdirSync(RELEASE_DIR, { recursive: true })
-  run('tar', ['-xzf', toShellPath(downloaded), '-C', toShellPath(RELEASE_DIR)])
-  return RELEASE_DIR
+  const routes = [{ label: 'Release 直链', url: releaseDownloadUrl(), want: 0, headers: [] }]
+  try {
+    const meta = releaseMeta()
+    routes.push({
+      label: 'API 资产端点',
+      url: meta.url,
+      want: meta.size,
+      headers: [`Accept: application/octet-stream`],
+    })
+  } catch (e) {
+    console.warn(`⚠️ 拿不到 Release 元数据，只用直链：${e.message}`)
+  }
+
+  let last = ''
+  for (const route of routes) {
+    console.log(`拉取产物（${route.label}）：${route.url}`)
+    rmSync(downloaded, { force: true })
+    try {
+      downloadAsset(route, downloaded)
+      const entries = assertTarballOk(downloaded)
+      console.log(`产物包完整：${entries} 个条目`)
+      rmSync(RELEASE_DIR, { recursive: true, force: true })
+      mkdirSync(RELEASE_DIR, { recursive: true })
+      run('tar', ['-xzf', toShellPath(downloaded), '-C', toShellPath(RELEASE_DIR)])
+      return RELEASE_DIR
+    } catch (e) {
+      last = e.message
+      console.warn(`⚠️ ${route.label} 失败：${last}`)
+    }
+  }
+  throw new Error(`两条下载路都失败，放弃发布：${last}`)
+}
+
+/** Release 直链：不占 API 配额，但这台机器上可能连不上 */
+export function releaseDownloadUrl(repo = REPO, tag = RELEASE_TAG, asset = RELEASE_ASSET) {
+  return `https://github.com/${repo}/releases/download/${tag}/${asset}`
+}
+
+/** Release 元数据端点（api 主机，稳定但要算配额） */
+export function releaseApiUrl(repo = REPO, tag = RELEASE_TAG) {
+  return `https://api.github.com/repos/${repo}/releases/tags/${tag}`
+}
+
+/** 读 Release 元数据。用 HTTP 状态码判定，而不是 curl 退出码 —— 403 时也要说清是配额 */
+function releaseMeta() {
+  const r = spawnSync(
+    'curl',
+    [
+      '-s',
+      '-L',
+      '-m',
+      '30',
+      '-w',
+      '\n%{http_code}',
+      '-H',
+      'Accept: application/vnd.github+json',
+      releaseApiUrl(),
+    ],
+    { encoding: 'utf8' },
+  )
+  const out = r.stdout || ''
+  const code = out.slice(out.lastIndexOf('\n') + 1).trim()
+  if (code !== '200') {
+    throw new Error(
+      `HTTP ${code}（读 ${RELEASE_TAG} 元数据）。` +
+        '403 多半是匿名配额 60 次/小时用尽，等复位再试；也可能是还没发布',
+    )
+  }
+  const j = JSON.parse(out.slice(0, out.lastIndexOf('\n')))
+  const asset = (j.assets || []).find((a) => a.name === RELEASE_ASSET)
+  if (!asset) throw new Error(`Release ${RELEASE_TAG} 里没有 ${RELEASE_ASSET}`)
+  return { url: asset.url, size: Number(asset.size) || 0 }
+}
+
+/** 重试没有意义的 HTTP 码：配额/权限、不存在、被封 */
+const FATAL_HTTP = ['403', '404', '451']
+
+/**
+ * 断点续传下载。want>0 时按字节数判定完成；
+ * want=0（直链不知道长度）时以「tar 索引能读通」为完成条件，读不通就再来一轮。
+ */
+function downloadAsset({ url, want = 0, headers = [] }, dest) {
+  const H = headers.flatMap((h) => ['-H', h])
+  for (let i = 1; i <= 10; i++) {
+    const have = existsSync(dest) ? statSync(dest).size : 0
+    if (want > 0 && have >= want) return
+    if (want === 0 && readTarballEntries(dest) > 0) return
+    const r = spawnSync(
+      'curl',
+      [
+        '-s',
+        '-L',
+        '-m',
+        '300',
+        '-C',
+        '-',
+        '-o',
+        toShellPath(dest),
+        '-w',
+        '%{http_code}',
+        ...H,
+        url,
+      ],
+      { encoding: 'utf8' },
+    )
+    const code = (r.stdout || '').trim().slice(-3)
+    const now = existsSync(dest) ? statSync(dest).size : 0
+    console.log(`  第 ${i} 轮：${now}${want ? '/' + want : ''} 字节，HTTP ${code}`)
+    if (FATAL_HTTP.includes(code)) throw new Error(`HTTP ${code}，重试无意义`)
+  }
+  const now = existsSync(dest) ? statSync(dest).size : 0
+  throw new Error(`下载未完成：${now}${want ? '/' + want : ''} 字节`)
+}
+
+/** tar 索引条目数；读不通返回 0（截断的包就是这里露馅） */
+function readTarballEntries(file) {
+  if (!existsSync(file)) return 0
+  const r = spawnSync('tar', ['-tzf', toShellPath(file)], { encoding: 'utf8' })
+  if (r.status !== 0) return 0
+  return (r.stdout || '').split('\n').filter(Boolean).length
+}
+
+/** 上传前的完整性门禁：tar 索引读不动就说明包被截断，绝不能把半套站点推上线 */
+export function assertTarballOk(file) {
+  const entries = readTarballEntries(file)
+  if (entries === 0) {
+    throw new Error(`产物包不完整，拒绝上传：${file}`)
+  }
+  return entries
 }
 
 function main() {
@@ -241,7 +372,7 @@ function main() {
   let resolved
   if (source === '--latest') {
     if (process.env.DRY_RUN === '1') {
-      console.log(`[dry-run] 将拉取 ${releaseAssetUrl()} 并解包后发布`)
+      console.log(`[dry-run] 将拉取 ${releaseApiUrl()} 描述的产物并解包后发布`)
       return
     }
     resolved = fetchLatest()
