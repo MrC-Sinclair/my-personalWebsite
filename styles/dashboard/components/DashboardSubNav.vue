@@ -126,8 +126,8 @@ function isActive(path: string): boolean {
 .side-name {
   display: inline-flex;
   align-items: center;
-  /* 同 DashboardSidebar：行高 22px 达不到 WCAG 2.2 AA 的 24×24，补内边距 */
-  min-height: 24px;
+  /* 同 DashboardSidebar：站名是可点元素，撑到项目约定的 40px 命中高度 */
+  min-height: 40px;
   padding: 2px 0;
   font-family: var(--font-head);
   font-size: var(--fs-base);

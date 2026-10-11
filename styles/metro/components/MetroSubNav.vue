@@ -118,8 +118,11 @@ function isActive(path: string): boolean {
 .subnav__link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   flex: none;
   min-height: 40px;
+  /* 两字标签只有 29px 宽，拇指横向命中不够：兜到 40px，长标签不受影响 */
+  min-width: 40px;
   font-size: var(--fs-small);
   letter-spacing: 0.12em;
   text-transform: uppercase;

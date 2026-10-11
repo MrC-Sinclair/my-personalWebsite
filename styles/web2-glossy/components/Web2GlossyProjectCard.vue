@@ -239,9 +239,18 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 
 /* 标题链接：默认继承标题色，hover 才显出可点 */
 .pcard__link {
+  position: relative;
   color: inherit;
   text-decoration: none;
   transition: color var(--transition);
+}
+
+/* 标题链接的边框盒随字体度量浮动（单行只有 18-33px）：
+   以自身行盒为基准反解出「凑满 40px」的外扩量，不依赖具体字号 */
+.pcard__link::after {
+  content: '';
+  position: absolute;
+  inset: calc(50% - 20px) 0;
 }
 
 .pcard__link:hover {

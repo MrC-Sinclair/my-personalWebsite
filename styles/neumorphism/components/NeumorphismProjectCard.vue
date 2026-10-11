@@ -115,9 +115,18 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
 }
 
 .card-link {
+  position: relative;
   color: var(--c-text);
   text-decoration: none;
   transition: color var(--transition);
+}
+
+/* 标题链接的边框盒随字体度量浮动（单行只有 18-33px）：
+   以自身行盒为基准反解出「凑满 40px」的外扩量，不依赖具体字号 */
+.card-link::after {
+  content: '';
+  position: absolute;
+  inset: calc(50% - 20px) 0;
 }
 
 .card-link:hover {

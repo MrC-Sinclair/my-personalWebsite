@@ -77,6 +77,8 @@ const { activeId } = useActiveSection()
   align-items: center;
   gap: 10px;
   min-width: 0;
+  /* 站名整块可点，圆点+文字原本只有 28px 高：兜到项目约定的 40px */
+  min-height: 40px;
 }
 
 /* 材料上的凸起小圆点（渐变装饰） */

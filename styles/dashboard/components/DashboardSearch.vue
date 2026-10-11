@@ -82,8 +82,8 @@ const { t } = useI18n()
 .input {
   flex: 1 1 220px;
   min-width: 0;
-  min-height: 34px;
-  padding: 7px 12px;
+  min-height: 40px;
+  padding: 9px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -112,8 +112,8 @@ const { t } = useI18n()
 
 /* —— 清除：与标签栏同款（琥珀描边，hover 实心） —— */
 .clear {
-  min-height: 34px;
-  padding: 7px 10px;
+  min-height: 40px;
+  padding: 9px 10px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent-2);

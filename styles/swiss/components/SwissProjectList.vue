@@ -146,6 +146,7 @@ function tagsText(tags: unknown): string {
 }
 
 .proj-link {
+  position: relative;
   color: inherit;
   text-decoration: none;
   background-image: linear-gradient(var(--c-accent), var(--c-accent));
@@ -153,6 +154,14 @@ function tagsText(tags: unknown): string {
   background-position: 0 100%;
   background-size: 0% 3px;
   transition: background-size var(--transition);
+}
+
+/* 标题链接的边框盒随字体度量浮动（单行只有 18-33px）：
+   以自身行盒为基准反解出「凑满 40px」的外扩量，不依赖具体字号 */
+.proj-link::after {
+  content: '';
+  position: absolute;
+  inset: calc(50% - 20px) 0;
 }
 
 .proj-link:hover,

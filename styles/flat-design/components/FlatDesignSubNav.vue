@@ -84,6 +84,7 @@ function isActive(path: string): boolean {
   align-items: center;
   gap: 10px;
   flex: none;
+  min-height: 40px;
   text-decoration: none;
   color: var(--c-text);
 }
@@ -113,7 +114,10 @@ function isActive(path: string): boolean {
 .fd-subnav__link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 40px;
+  /* 两字标签只有 31px 宽，兜到 40px 才有可点的横向命中区 */
+  min-width: 40px;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.1em;
