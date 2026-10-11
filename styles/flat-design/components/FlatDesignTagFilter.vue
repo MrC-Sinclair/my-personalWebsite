@@ -158,6 +158,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   }
 }
 
+
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 44px;
@@ -173,13 +174,16 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
     background var(--transition),
     color var(--transition);
 
+}
 .more:hover {
   color: var(--c-text);
   background: #ffffff;
 
+}
 .more:active {
   transform: var(--press-transform);
 
+}
 
 @media (prefers-reduced-motion: reduce) {
   .more {
