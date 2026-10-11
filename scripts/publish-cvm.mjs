@@ -247,12 +247,15 @@ function verify(required, optional) {
  *   2. 两个 host 各有独立的失败方式 —— `github.com` 在这台机器上会 SYN 黑洞
  *      （21 秒超时），`api.github.com` 稳定但匿名配额只有 60 次/小时
  *      （轮询 CI 状态时就把配额用光过，报 403 rate limit exceeded）
- *      ⇒ 先走不占配额的 Release 直链，失败再退到 API 资产端点；
+ *      ⇒ 先走 API 端点（稳定，且能拿到期望字节数，完成判定精确），
+ *        配额被吃掉时退到不占配额的 Release 直链；
  *   3. 403 / 404 这类错误重试没有意义 ⇒ 立刻换路或收手，不要空转十轮。
  */
 function fetchLatest() {
   const downloaded = join(tmpdir(), 'personal-web-download.tar.gz')
-  const routes = [{ label: 'Release 直链', url: releaseDownloadUrl(), want: 0, headers: [] }]
+  // 顺序按「这台机器上哪条路真的通」排：api.github.com 稳定且能给出期望字节数
+  // （完成判定精确），直链不占配额但经常 SYN 黑洞 —— 所以直链只作配额耗尽时的退路。
+  const routes = []
   try {
     const meta = releaseMeta()
     routes.push({
@@ -262,8 +265,9 @@ function fetchLatest() {
       headers: [`Accept: application/octet-stream`],
     })
   } catch (e) {
-    console.warn(`⚠️ 拿不到 Release 元数据，只用直链：${e.message}`)
+    console.warn(`⚠️ 读 Release 元数据失败，改走直链：${e.message}`)
   }
+  routes.push({ label: 'Release 直链', url: releaseDownloadUrl(), want: 0, headers: [] })
 
   let last = ''
   for (const route of routes) {
