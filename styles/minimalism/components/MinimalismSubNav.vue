@@ -15,7 +15,7 @@
   <header class="hd safe-top">
     <div class="hd-inner">
       <NuxtLink class="brand" :to="localePath('/style/minimalism')">
-        <span class="brand-dot" aria-hidden="true"/>
+        <span class="brand-dot" aria-hidden="true" />
         <span class="brand-name">{{ t('home.name') }}</span>
       </NuxtLink>
 
@@ -185,8 +185,20 @@ function isActive(path: string): boolean {
     padding: 10px var(--space) 6px;
   }
 
+  /* ★ 三个位置全部写死。画廊胶囊在 DOM 里排最后，而导航显式占了 1/-1，
+     自动放置会把胶囊推到第 3 行、并落进 1fr 那列被拉成整宽 ——
+     实测 722px 与 390px 下它看起来就是一个空的输入框。 */
+  .brand {
+    grid-area: 1 / 1;
+  }
+
+  .hd-gallery {
+    grid-area: 1 / 2;
+    justify-self: end;
+  }
+
   .hd-nav {
-    grid-column: 1 / -1;
+    grid-area: 2 / 1 / 3 / 3;
     justify-content: flex-start;
     padding-bottom: 4px;
     overflow-x: auto;

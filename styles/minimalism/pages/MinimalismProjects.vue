@@ -8,7 +8,8 @@
 <template>
   <MinimalismSubPage :title="t('nav.projects')">
     <p v-if="loading" class="loading" role="status">{{ t('common.loading') }}</p>
-    <MinimalismProjects v-else :projects="projects" />
+    <!-- 子页模式：不重复挂「项目集锦」eyebrow，标题走「全部项目」 -->
+    <MinimalismProjects v-else :projects="projects" standalone />
   </MinimalismSubPage>
 </template>
 

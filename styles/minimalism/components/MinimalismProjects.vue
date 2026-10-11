@@ -11,8 +11,8 @@
   <MinimalismSection
     id="projects"
     data-section="projects"
-    :eyebrow="t('nav.projects')"
-    :title="t('home.featuredProjects')"
+    :eyebrow="eyebrowText"
+    :title="headingText"
   >
     <ul v-if="projects.length" class="idx">
       <li v-for="project in projects" :key="project.path" class="idx-item">
@@ -64,13 +64,18 @@ import type { Project } from '~/types/project'
 import { contentSlug } from '~/utils/content'
 import MinimalismSection from './MinimalismSection.vue'
 
-defineProps<{
-  /** 精选项目列表（来自共享层 useProjects） */
+const { projects, standalone = false } = defineProps<{
+  /** 项目列表（来自共享层 useProjects） */
   projects: Project[]
+  /** 独立子页模式：h1 已是「项目集锦」，不再重复挂 eyebrow，标题也改成「全部项目」 */
+  standalone?: boolean
 }>()
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+
+const eyebrowText = computed(() => (standalone ? '' : t('nav.projects')))
+const headingText = computed(() => (standalone ? t('projects.allProjects') : t('home.featuredProjects')))
 // 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
 const { styleId } = useStyleContentPath()
 

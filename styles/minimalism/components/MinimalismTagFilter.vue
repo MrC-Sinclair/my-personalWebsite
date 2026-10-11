@@ -21,7 +21,7 @@
     </button>
 
     <button
-      v-for="item in tags"
+      v-for="item in shown"
       :key="item.tag"
       type="button"
       class="tag"
@@ -36,13 +36,28 @@
     <button v-if="activeTag" type="button" class="clear" @click="emit('select', '')">
       {{ t('blog.clearFilter') }}
     </button>
+
+    <!-- 展开/收起：只在真有被收起的标签时出现，两行以内就能看完高频标签 -->
+    <button
+      v-if="hidden > 0 || expanded"
+      type="button"
+      class="toggle"
+      :aria-expanded="expanded"
+      @click="expanded = !expanded"
+    >
+      {{ expanded ? t('blog.fewerTags') : t('blog.moreTags', { n: hidden }) }}
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
+// 显式从 vue 导入：契约测试的 afterEach 会 unstubAllGlobals()，
+// 把 tests/setup.ts 注入的全局 ref/computed 一并清掉，靠自动导入在这个文件里会红
+import { computed, ref } from 'vue'
 import type { TagCount } from '~/utils/tags'
+import { limitTags, VISIBLE_TAG_LIMIT } from '~/utils/tags'
 
-defineProps<{
+const props = defineProps<{
   /** 标签清单（含文章数，已按文章数降序） */
   tags: TagCount[]
   /** 当前选中标签，空串表示未筛选 */
@@ -54,6 +69,15 @@ defineProps<{
 const emit = defineEmits<{ select: [tag: string] }>()
 
 const { t } = useI18n()
+
+/**
+ * 平铺上限与「选中项必须可见」的取舍都在共享层 limitTags 里，
+ * 组件只决定展开态（表现），不自己算截断（业务）。
+ */
+const expanded = ref(false)
+const limited = computed(() => limitTags(props.tags, VISIBLE_TAG_LIMIT, props.activeTag))
+const shown = computed(() => (expanded.value ? props.tags : limited.value.shown))
+const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 </script>
 
 <style scoped>
@@ -117,8 +141,9 @@ const { t } = useI18n()
   color: var(--c-accent);
 }
 
-/* —— 清除筛选：只在筛选态出现，弱化到只剩文字 —— */
-.clear {
+/* —— 清除筛选 / 展开收起：只在需要时出现，弱化到只剩文字 —— */
+.clear,
+.toggle {
   min-height: 40px;
   padding: 8px 4px;
   font-family: inherit;
@@ -132,22 +157,31 @@ const { t } = useI18n()
   transition: color var(--transition);
 }
 
-.clear:hover {
+.clear:hover,
+.toggle:hover {
   color: var(--c-accent);
 }
 
-.clear:active {
+.toggle:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.clear:active,
+.toggle:active {
   transform: var(--press-transform);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tag,
-  .clear {
+  .clear,
+  .toggle {
     transition: none;
   }
 
   .tag:active,
-  .clear:active {
+  .clear:active,
+  .toggle:active {
     transform: none;
   }
 }

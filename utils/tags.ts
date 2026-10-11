@@ -40,7 +40,7 @@ export function collectCategories(posts: BlogPost[]): CategoryCount[] {
   }
   return [...counter.entries()]
     .map(([label, count]) => ({ label, count }))
-    .sort((a, b) => (b.count - a.count) || (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
+    .sort((a, b) => b.count - a.count || (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
 }
 
 /**
@@ -71,7 +71,7 @@ export function collectTags(posts: BlogPost[]): TagCount[] {
   }
   return [...counter.entries()]
     .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => (b.count - a.count) || (a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0))
+    .sort((a, b) => b.count - a.count || (a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0))
 }
 
 /**
@@ -87,4 +87,39 @@ export function filterPostsByTag(posts: BlogPost[], tag: string): BlogPost[] {
 export function countPostsWithTag(posts: BlogPost[], tag: string): number {
   if (!tag) return posts.length
   return filterPostsByTag(posts, tag).length
+}
+
+/** 标签栏默认平铺上限：超过这个数就该收起来，否则筛选栏会把正文挤出首屏 */
+export const VISIBLE_TAG_LIMIT = 12
+
+/** 截断结果：该平铺出来的标签 + 被收起的个数 */
+export interface LimitedTags {
+  shown: TagCount[]
+  hidden: number
+}
+
+/**
+ * 按频次截断标签清单（列表已由 collectTags 按文章数降序排好）。
+ * ------------------------------------------------------------
+ * 实测教训：14 篇文章带出 60 个标签，全量平铺时桌面 8 行、手机 15+ 行，
+ * 首屏全是筛选控件、一篇文章都看不到。
+ *
+ * ★ 选中的标签必须保证在 shown 里：用户从 ?tag=xxx 进来或被收起的那批里
+ * 选中过某标签时，若它被截掉，界面就出现「正在筛选一个看不见的标签」的
+ * 断裂状态——所以把它顶到第一位，并相应少显示一个。
+ */
+export function limitTags(
+  tags: TagCount[],
+  visible: number = VISIBLE_TAG_LIMIT,
+  activeTag: string = '',
+): LimitedTags {
+  if (tags.length <= visible) return { shown: tags, hidden: 0 }
+
+  const head = tags.slice(0, visible)
+  const picked = tags.find((item) => item.tag === activeTag)
+  if (picked && !head.includes(picked)) {
+    head.pop()
+    head.unshift(picked)
+  }
+  return { shown: head, hidden: tags.length - head.length }
 }

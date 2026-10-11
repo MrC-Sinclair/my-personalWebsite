@@ -35,11 +35,15 @@
     "allTags": "All",
     "filterByTag": "Filter by tag",
     "clearFilter": "Clear filter",
+    "moreTags": "{n} more tags",
+    "fewerTags": "Collapse tags",
+    "allPosts": "All posts",
     "clearSearch": "Clear search",
     "postsUnit": "posts"
   },
   "projects": {
     "title": "Projects",
+    "allProjects": "All projects",
     "description": "Personal projects and portfolio",
     "demo": "Live Demo",
     "github": "GitHub",

@@ -35,11 +35,15 @@
     "allTags": "全部",
     "filterByTag": "按标签筛选",
     "clearFilter": "清除筛选",
+    "moreTags": "还有 {n} 个标签",
+    "fewerTags": "收起标签",
+    "allPosts": "全部文章",
     "clearSearch": "清除搜索",
     "postsUnit": "篇"
   },
   "projects": {
     "title": "项目集锦",
+    "allProjects": "全部项目",
     "description": "个人项目与作品展示",
     "demo": "在线演示",
     "github": "GitHub",

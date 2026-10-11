@@ -10,7 +10,14 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { BlogPost } from '~/types/blog'
-import { collectTags, countPostsWithTag, filterPostsByTag } from '~/utils/tags'
+import {
+  collectTags,
+  countPostsWithTag,
+  filterPostsByTag,
+  limitTags,
+  VISIBLE_TAG_LIMIT,
+} from '~/utils/tags'
+import type { TagCount } from '~/utils/tags'
 
 /** 只关心 tags 时不必填满全部字段，其余给最小可用值 */
 function post(title: string, tags: unknown): BlogPost {
@@ -81,5 +88,48 @@ describe('countPostsWithTag', () => {
 
   it('空 tag 返回总数（「全部」角标用）', () => {
     expect(countPostsWithTag(posts, '')).toBe(3)
+  })
+})
+
+describe('limitTags：标签栏截断', () => {
+  /** 造 n 个标签，count 从 n 递减（模拟已按频次降序排好的清单） */
+  function many(n: number): TagCount[] {
+    return Array.from({ length: n }, (_, i) => ({ tag: `t${i}`, count: n - i }))
+  }
+
+  it('不超过上限时原样返回且不报隐藏数', () => {
+    const tags = many(VISIBLE_TAG_LIMIT)
+    expect(limitTags(tags)).toEqual({ shown: tags, hidden: 0 })
+  })
+
+  it('超过上限时按频次截断，hidden 是差值', () => {
+    const { shown, hidden } = limitTags(many(60))
+    expect(shown).toHaveLength(VISIBLE_TAG_LIMIT)
+    expect(hidden).toBe(60 - VISIBLE_TAG_LIMIT)
+    // 高频在前：第一个必须是 count 最大的那个
+    expect(shown[0]?.tag).toBe('t0')
+  })
+
+  it('选中的标签落在被收起的那批里时，必须顶进可见区', () => {
+    // 用户从 ?tag=t40 进来：若它被截掉，界面就成了「正在筛选一个看不见的标签」
+    const { shown } = limitTags(many(60), VISIBLE_TAG_LIMIT, 't40')
+    expect(shown.map((item) => item.tag)).toContain('t40')
+    expect(shown[0]?.tag).toBe('t40')
+    // 仍然不超预算：顶进来一个就要挤出去一个
+    expect(shown).toHaveLength(VISIBLE_TAG_LIMIT)
+  })
+
+  it('选中的标签本来就在可见区时不重复、不改变顺序', () => {
+    const tags = many(60)
+    const { shown } = limitTags(tags, VISIBLE_TAG_LIMIT, 't2')
+    expect(shown.map((item) => item.tag)).toEqual(
+      tags.slice(0, VISIBLE_TAG_LIMIT).map((t) => t.tag),
+    )
+  })
+
+  it('自定义上限同样生效（不同风格可以有不同的平铺预算）', () => {
+    const { shown, hidden } = limitTags(many(20), 4)
+    expect(shown).toHaveLength(4)
+    expect(hidden).toBe(16)
   })
 })

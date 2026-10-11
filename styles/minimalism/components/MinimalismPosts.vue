@@ -8,12 +8,7 @@
   数据来自共享层 useBlog（由页面获取后传入 props）。
 -->
 <template>
-  <MinimalismSection
-    id="posts"
-    data-section="posts"
-    :eyebrow="t('nav.blog')"
-    :title="t('home.latestPosts')"
-  >
+  <MinimalismSection id="posts" data-section="posts" :eyebrow="eyebrowText" :title="headingText">
     <template v-if="showMore" #aside>
       <NuxtLink class="more" :to="localePath('/style/minimalism/blog')">
         {{ t('home.viewAll') }}<span class="more-arrow" aria-hidden="true">→</span>
@@ -50,15 +45,24 @@ const {
   posts,
   // blog 子页本身就是全量列表，再给「查看全部」会指向自己，故默认开、子页关
   showMore = true,
+  standalone = false,
 } = defineProps<{
   /** 最新文章列表（来自共享层 useBlog，按日期倒序） */
   posts: BlogPost[]
   /** 是否显示右上角「查看全部」入口 */
   showMore?: boolean
+  /**
+   * 独立子页模式。子页的 h1 已经是「博客」，区块头再挂一个同名 eyebrow
+   * 就是重复标注；而子页列的是全量，标题也不该叫「最新文章」。
+   */
+  standalone?: boolean
 }>()
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+
+const eyebrowText = computed(() => (standalone ? '' : t('nav.blog')))
+const headingText = computed(() => (standalone ? t('blog.allPosts') : t('home.latestPosts')))
 // 详情链接走风格内路由（/style/<id>/blog/<slug>），旧的 /blog/<slug> 已 404
 const { styleId } = useStyleContentPath()
 

@@ -57,13 +57,16 @@ defineProps<{
   flex: 1 0 auto;
 }
 
-/* —— 主轴：窄测量单列，与首页区块同宽同留白 —— */
+/* —— 主轴：窄测量单列，与首页区块同宽同留白 ——
+   子页的区块比首页少（多数只有一块），沿用首页那套 88px 级间隙会让
+   页头、工具条、列表三块各自漂着，读起来像控件堆而不是一个页面。
+   这里收到 40~72px，并把顶部留白压低，让首个区块进入首屏。 */
 .flow {
   display: grid;
-  gap: clamp(48px, 8vw, 88px);
+  gap: clamp(40px, 6vw, 72px);
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: clamp(56px, 9vw, 112px) var(--space) clamp(88px, 12vw, 152px);
+  padding: clamp(40px, 7vw, 88px) var(--space) clamp(88px, 12vw, 152px);
 }
 
 /* 子页标题：大、轻、紧字距；下缘 hairline 与首页的分隔语言一致 */

@@ -11,21 +11,26 @@
   <MinimalismSubPage :title="t('nav.blog')">
     <p v-if="loading" class="loading" role="status">{{ t('common.loading') }}</p>
     <template v-else>
-      <MinimalismTagFilter
-        :tags="tags"
-        :active-tag="activeTag"
-        :total="posts.length"
-        @select="select"
-      />
-      <!-- 关键词搜索：数据源是标签筛选后的列表，两个维度正交叠加（交集） -->
-      <MinimalismSearch
-        :query="query"
-        :result-count="resultCount"
-        :total="totalCount"
-        @update="setQuery"
-        @clear="clear"
-      />
-      <MinimalismPosts :posts="results" :show-more="false" />
+      <!-- 筛选与搜索是一组控件，包成一块：否则它们各自成为 .flow 的网格子项，
+           中间被 88px 的区块间距劈开，读起来像三块漂浮的面板而不是一个工具条 -->
+      <div class="toolbar">
+        <MinimalismTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
+        />
+        <!-- 关键词搜索：数据源是标签筛选后的列表，两个维度正交叠加（交集） -->
+        <MinimalismSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+      </div>
+      <!-- 子页模式：区块自己知道不该重复挂「博客」eyebrow、标题该叫「全部文章」 -->
+      <MinimalismPosts :posts="results" :show-more="false" standalone />
     </template>
   </MinimalismSubPage>
 </template>
@@ -73,5 +78,11 @@ const loading = computed(() => pending.value && !postsData.value)
 .loading {
   margin: 0;
   color: var(--c-muted);
+}
+
+/* 工具条内部紧凑，与下方列表之间才用区块级留白 */
+.toolbar {
+  display: grid;
+  gap: 16px;
 }
 </style>
