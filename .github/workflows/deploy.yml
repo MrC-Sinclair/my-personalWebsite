@@ -15,9 +15,12 @@ name: Build site for Tencent CVM
 
 # ==================== 触发条件 ====================
 # 定义何时运行此工作流
+# workflow_dispatch：Release 那一步出问题时，可以在不推代码的前提下重跑一次
+# （产物与检查都会重跑，用于快速验证修复是否生效）
 on:
   push:
     branches: [main] # 当代码推送到 main 分支时触发
+  workflow_dispatch:
 
 # ==================== 权限配置 ====================
 # 只读检出 + 写 artifact：不再需要 pages / id-token，
@@ -284,11 +287,22 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
-          set -euo pipefail
+          # 这里刻意不加 -e：失败必须被捕获成 annotation，而不是被 shell 直接掐死——
+          # Actions 的日志要登录才能看，annotation 匿名可读（实测 API 可取），
+          # 排障全靠它把真实原因送出来。
+          set -uo pipefail
+          gh --version >/dev/null 2>&1 || echo "::warning::runner 上没有 gh CLI"
           # 固定 tag 每次覆盖：cvm-latest 永远指向最近一次全绿构建的产物
           gh release delete cvm-latest --cleanup-tag --yes 2>/dev/null || true
-          gh release create cvm-latest site-cvm.tar.gz \
+          out=$(gh release create cvm-latest site-cvm.tar.gz \
             --target "$GITHUB_SHA" \
             --title "CVM 产物（最近一次构建）" \
-            --notes "供 scripts/publish-cvm.mjs --latest 拉取。来自 run $GITHUB_RUN_ID。"
+            --notes "供 scripts/publish-cvm.mjs --latest 拉取。来自 run $GITHUB_RUN_ID。" 2>&1)
+          code=$?
+          if [ "$code" -ne 0 ]; then
+            msg=$(printf '%s' "$out" | tr '\n\r' '  ' | cut -c1-500)
+            echo "::error title=Release 发布失败（exit $code）::$msg"
+            exit "$code"
+          fi
+          echo "Release 资产：$out"
           echo "下载地址：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/cvm-latest/site-cvm.tar.gz"
