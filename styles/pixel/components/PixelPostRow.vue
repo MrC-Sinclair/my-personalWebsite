@@ -89,6 +89,9 @@ const dateText = computed(() =>
   color: var(--c-text);
   text-decoration: none;
   overflow-wrap: break-word;
+  /* 行容器有 44px，但可点的只有这条链接：撑到 40px 命中高度 */
+  display: inline-block;
+  padding-block: 12px;
 }
 
 .row-link::after {

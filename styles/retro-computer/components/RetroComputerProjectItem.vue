@@ -119,6 +119,9 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .rc-proj__title-link {
   color: inherit;
   text-decoration: none;
+  /* 行容器有 44px，但可点的只有这条链接：撑到 40px 命中高度 */
+  display: inline-block;
+  padding-block: 12px;
 }
 
 .rc-proj__title-link:hover {

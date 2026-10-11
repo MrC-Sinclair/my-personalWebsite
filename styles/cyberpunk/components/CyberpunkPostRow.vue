@@ -78,6 +78,9 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
 .row-link {
   display: block;
   outline-offset: 3px;
+  /* 行容器有 44px，但可点的只有这条链接：撑到 40px 命中高度 */
+  display: inline-block;
+  padding-block: 12px;
 }
 
 /* —— 数据流行：左缘指示条 + 徽标 + 正文 + 箭头 —— */
