@@ -11,7 +11,6 @@
       <SkeuomorphismSectionHead
         id="projects-title"
         :level="1"
-        :badge="t('nav.projects')"
         :title="t('projects.title')"
       />
 

@@ -11,7 +11,6 @@
       <SkeuomorphismSectionHead
         id="posts-title"
         :level="1"
-        :badge="t('nav.blog')"
         :title="t('blog.title')"
       />
 
