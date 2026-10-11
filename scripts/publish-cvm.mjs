@@ -4,19 +4,20 @@
  * 为什么需要这个脚本：本站产物只能由 GitHub Actions 生成 ——
  * 服务器是 2C2G，在上面跑 `nuxt generate` 会 OOM；本机 Windows 跑 generate
  * 又是「CPU 空转十几分钟零产物」。于是链路固定为：
- *   CI 构建 → 浏览器下载 artifact zip → 本脚本上传并生效
- * 脚本本身不构建，只做「搬运 + 让配置生效 + 验证」，凭据全部走本机 SSH 私钥，
- * 仓库里不留任何密钥。
+ *   CI 构建 → 本脚本拉 Release 资产（--latest）→ 上传 → 原地覆盖 → 重建容器
+ * 脚本本身不构建，只做「取产物 + 搬运 + 让配置生效 + 验证」，
+ * 凭据全部走本机 SSH 私钥与免鉴权的公开 Release，仓库里不留任何密钥。
  *
  * 用法：
- *   node scripts/publish-cvm.mjs <解压后的产物目录>
+ *   node scripts/publish-cvm.mjs --latest        # 拉 CI 最新发布产物（免鉴权 Release 资产）
+ *   node scripts/publish-cvm.mjs <产物目录>       # 用手头已解压的产物
  *   环境变量（都有默认值，一般不用传）：
  *     CVM_HOST=122.51.97.106  CVM_USER=root  CVM_PORT=22
- *     CVM_KEY=~/.ssh/cvm_deploy_rsa
+ *     CVM_KEY=~/.ssh/cvm_deploy_rsa   SITE_REPO=MrC-Sinclair/my-personalWebsite
  *     DRY_RUN=1  只打印将要执行的命令，不连服务器
  */
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, mkdirSync, rmSync } from 'node:fs'
 import { homedir, tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -35,6 +36,20 @@ const REMOTE_DEPLOY = `${REMOTE_BASE}/deploy`
 const REMOTE_SITE = `${REMOTE_DEPLOY}/dist/site`
 const REMOTE_TARBALL = `${REMOTE_DEPLOY}/dist/site.tar.gz`
 const LOCAL_TARBALL = join(tmpdir(), 'personal-web-site.tar.gz')
+/**
+ * 产物来源之一：CI 的 release job 把 tar.gz 固定发到 cvm-latest 这个 tag。
+ * 之所以走 Release 而不是 Actions artifact —— artifact 下载接口即使仓库公开也要鉴权
+ * （实测匿名 401），而 Release 资产免鉴权，`--latest` 才能做到不打开浏览器。
+ */
+const RELEASE_TAG = 'cvm-latest'
+const RELEASE_ASSET = 'site-cvm.tar.gz'
+const REPO = process.env.SITE_REPO || 'MrC-Sinclair/my-personalWebsite'
+const RELEASE_DIR = join(tmpdir(), 'personal-web-site-latest')
+
+/** 拼出 Release 资产的下载地址（纯函数，便于单测） */
+export function releaseAssetUrl(repo = REPO, tag = RELEASE_TAG, asset = RELEASE_ASSET) {
+  return `https://github.com/${repo}/releases/download/${tag}/${asset}`
+}
 
 /**
  * ★ 本地路径写法必须跟着工具链走，否则会静默失败：
@@ -201,13 +216,39 @@ function verify(required, optional) {
   }
 }
 
+/**
+ * --latest：拉最近一次构建的 Release 资产并解包，返回解出来的站点根目录。
+ * curl 用 -f 让「404/未发布」变成非零退出码（否则会把错误页当成产物解包，
+ * 得到一堆莫名奇妙的缺失文件警告）；-L 是因为 GitHub 会 302 到对象存储。
+ */
+function fetchLatest() {
+  const url = releaseAssetUrl()
+  console.log(`拉取产物：${url}`)
+  const downloaded = join(tmpdir(), 'personal-web-download.tar.gz')
+  run('curl', ['-fL', '--retry', '3', '--retry-delay', '2', '-o', toShellPath(downloaded), url])
+  rmSync(RELEASE_DIR, { recursive: true, force: true })
+  mkdirSync(RELEASE_DIR, { recursive: true })
+  run('tar', ['-xzf', toShellPath(downloaded), '-C', toShellPath(RELEASE_DIR)])
+  return RELEASE_DIR
+}
+
 function main() {
   const source = process.argv[2]
   if (!source) {
-    console.error('用法：node scripts/publish-cvm.mjs <解压后的产物目录>')
+    console.error('用法：node scripts/publish-cvm.mjs --latest | <解压后的产物目录>')
     process.exit(1)
   }
-  const siteRoot = resolveSiteRoot(siteRootCandidates(normalizeInputPath(source)))
+  let resolved
+  if (source === '--latest') {
+    if (process.env.DRY_RUN === '1') {
+      console.log(`[dry-run] 将拉取 ${releaseAssetUrl()} 并解包后发布`)
+      return
+    }
+    resolved = fetchLatest()
+  } else {
+    resolved = normalizeInputPath(source)
+  }
+  const siteRoot = resolveSiteRoot(siteRootCandidates(resolved))
   console.log(`站点根目录：${siteRoot}`)
 
   // sw.js / manifest 缺失意味着 PWA 离线不会生效，属于「能上线但功能不全」，提醒不阻断

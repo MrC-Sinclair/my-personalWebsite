@@ -133,20 +133,26 @@ pnpm test:watch    # 运行测试（监听模式）
 站点发布在**腾讯云 CVM**（`122.51.97.106`，与 mychat、jintian-1851 同一台机器），
 线上地址 <https://122.51.97.106:8444/>。GitHub Pages 已停用，CI 不再往它推产物。
 
-链路固定为「CI 构建 → 浏览器下载 artifact → 本机脚本上传」：
+链路固定为「CI 构建 → 本机一条命令发布」：
 
 1. 推到 `main`，Actions 并行跑**质量门禁**（`pnpm lint` / `pnpm test` / `pnpm spellcheck`）、
    **移动端 + 无障碍审计**、以及 `pnpm generate`
-2. 确认该 run 全绿，在 Summary 页底部下载 `site-cvm` artifact 并解压
-3. 上传并生效：
+2. 全绿后 `release` job 把产物打成 `site-cvm.tar.gz` 发到固定 tag `cvm-latest`
+3. 发布：
 
 ```bash
-node scripts/publish-cvm.mjs <解压出来的目录>
+node scripts/publish-cvm.mjs --latest        # 拉最新产物并上线
+node scripts/publish-cvm.mjs <产物目录>       # 或用手头已解压的产物
 ```
 
-脚本打 tar.gz → scp 到 `/root/personal-web/deploy/dist/` → **原地解包覆盖** →
-`docker compose up -d --force-recreate caddy` → 用 curl 校验关键路由状态码。
+脚本会拉 Release 资产、打 tar.gz、scp 到 `/root/personal-web/deploy/dist/`、**原地解包覆盖**、
+`docker compose up -d --force-recreate caddy`，最后用 curl 校验关键路由状态码。
 凭据走本机 `~/.ssh/cvm_deploy_rsa`（可用 `CVM_KEY` / `CVM_HOST` 覆盖），仓库里不留任何密钥。
+
+> 产物为什么走 Release 而不是 Actions artifact：artifact 的下载接口即使仓库是公开的
+> 也要求鉴权（实测匿名返回 401 `Requires authentication`），那样每次上线都要人打开浏览器点一次；
+> 公开仓库的 Release 资产免鉴权，`--latest` 才能把最后这一步也自动化。
+> artifact 仍保留一份，作为 Release 出问题时的人工兜底。
 
 > **为什么不在服务器上构建**：机器是 2C2G，802 页预渲染会 OOM。
 > **为什么不在本机构建**：Windows 跑 `nuxt generate` 是 CPU 空转十几分钟零产物（Linux 约 48 秒），

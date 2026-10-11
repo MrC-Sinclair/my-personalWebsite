@@ -236,13 +236,59 @@ jobs:
           {
             echo "### 发布到 CVM"
             echo ""
-            echo "下载本 run 的 \`site-cvm\` artifact，解压后执行："
-            echo ""
             echo '```bash'
-            echo "node scripts/publish-cvm.mjs <解压出来的目录>"
+            echo "node scripts/publish-cvm.mjs --latest   # 自己取本 run 的产物并上传"
+            echo "node scripts/publish-cvm.mjs <目录>      # 或用手头已解压的产物"
             echo '```'
             echo ""
-            echo "产物页：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "产物有两个来源：本 run 的 \`site-cvm\` artifact（下载要登录），"
+            echo "以及下面 release job 发布的免鉴权资产 \`cvm-latest\`（--latest 走这条）。"
             echo ""
             echo "发布前确认 quality / audit 两个 job 为绿。"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # -------------------- 发布成免鉴权可下载的 Release 资产 --------------------
+  # 为什么需要它：Actions 的 artifact 即使仓库是公开的，下载接口仍然要求鉴权
+  # （实测匿名请求返回 401 Requires authentication），而发布机（本机 Windows）
+  # 上没有 GitHub API 凭据 —— 于是每次上线都要人打开浏览器点一次下载，
+  # 这是整条链路上唯一的人工卡点。公开仓库的 Release 资产可以匿名下载，
+  # 所以把它固定发到 cvm-latest 这个 tag 上，`publish-cvm.mjs --latest` 就能一路自动。
+  #
+  # 需要 contents: write（建仓级 Release），所以单独一个 job，不给 build 扩权限。
+  # artifact 那一份继续保留：Release 出问题时还能手工下载兜底。
+  release:
+    runs-on: ubuntu-latest
+    needs: [build, quality] # 检查红掉就不该让这份产物变成「可被拉取的最新版本」
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-cvm
+          path: site
+
+      # 打成 tar.gz：两端都免依赖（Windows 自带 bsdtar 也能解 tar.gz），
+      # 比 zip 更适合「下载后直接解包覆盖」这条链路
+      - name: Pack
+        shell: bash
+        run: |
+          test -f site/index.html || { echo "产物根目录没有 index.html，拒绝发布空包"; exit 1; }
+          tar -czf site-cvm.tar.gz -C site .
+          echo "打包大小: $(du -h site-cvm.tar.gz | cut -f1)"
+
+      - name: Publish to release cvm-latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # 固定 tag 每次覆盖：cvm-latest 永远指向最近一次全绿构建的产物
+          gh release delete cvm-latest --cleanup-tag --yes 2>/dev/null || true
+          gh release create cvm-latest site-cvm.tar.gz \
+            --target "$GITHUB_SHA" \
+            --title "CVM 产物（最近一次构建）" \
+            --notes "供 scripts/publish-cvm.mjs --latest 拉取。来自 run $GITHUB_RUN_ID。"
+          echo "下载地址：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/cvm-latest/site-cvm.tar.gz"

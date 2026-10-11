@@ -11,10 +11,20 @@ import {
   siteRootCandidates,
   resolveSiteRoot,
   normalizeInputPath,
+  releaseAssetUrl,
   windowsToPosix,
   remoteActivateScript,
   remoteBootstrapScript,
 } from '../scripts/publish-cvm.mjs'
+
+describe('publish-cvm：产物来源', () => {
+  it('--latest 走公开 Release 资产，固定 tag 才能被反复覆盖', () => {
+    // Actions artifact 即使仓库公开也要鉴权（实测匿名 401），Release 资产才免鉴权
+    expect(releaseAssetUrl('some-owner/some-repo')).toBe(
+      'https://github.com/some-owner/some-repo/releases/download/cvm-latest/site-cvm.tar.gz',
+    )
+  })
+})
 
 describe('publish-cvm：站点根目录识别', () => {
   it('artifact 解压成站点根本身时直接命中', () => {
