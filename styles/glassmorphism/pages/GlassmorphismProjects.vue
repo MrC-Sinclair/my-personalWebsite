@@ -10,7 +10,6 @@
       <GlassmorphismGlassPanel>
         <GlassmorphismSectionHead
           :level="1"
-          :eyebrow="t('nav.projects')"
           :title="t('projects.title')"
         />
 

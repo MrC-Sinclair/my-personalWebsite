@@ -8,7 +8,6 @@
   <CyberpunkSubPage>
     <CyberpunkPanel
       class="scroll-reveal scroll-reveal-up"
-      :eyebrow="t('nav.blog')"
       :title="t('blog.title')"
       :meta="String(resultCount)"
       tone="cyan"

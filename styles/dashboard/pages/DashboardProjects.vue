@@ -7,7 +7,6 @@
 -->
 <template>
   <DashboardSubPage
-    :eyebrow="t('nav.projects')"
     :title="t('projects.title')"
     :description="t('projects.description')"
   >

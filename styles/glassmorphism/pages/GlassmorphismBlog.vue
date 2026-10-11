@@ -9,7 +9,7 @@
   <GlassmorphismSubPage>
     <section id="posts" data-section="posts" class="sheet scroll-reveal scroll-reveal-up">
       <GlassmorphismGlassPanel>
-        <GlassmorphismSectionHead :level="1" :eyebrow="t('nav.blog')" :title="t('blog.title')" />
+        <GlassmorphismSectionHead :level="1" :title="t('blog.title')" />
 
         <GlassmorphismPlaceholder
           v-if="loading"

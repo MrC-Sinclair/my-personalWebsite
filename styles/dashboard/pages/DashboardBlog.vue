@@ -7,7 +7,6 @@
 -->
 <template>
   <DashboardSubPage
-    :eyebrow="t('nav.blog')"
     :title="t('blog.title')"
     :description="t('blog.description')"
   >
@@ -35,7 +34,6 @@
       <DashboardPanel
         id="posts"
         class="cell"
-        :eyebrow="t('nav.blog')"
         :title="t('blog.title')"
         :meta="String(resultCount)"
       >

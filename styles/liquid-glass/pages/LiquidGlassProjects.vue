@@ -10,7 +10,6 @@
     <div class="loose">
       <LiquidGlassSectionHead
         class="scroll-reveal scroll-reveal-up"
-        :eyebrow="t('nav.projects')"
         :title="t('projects.title')"
         :meta="String(projects.length)"
        :level="1"/>

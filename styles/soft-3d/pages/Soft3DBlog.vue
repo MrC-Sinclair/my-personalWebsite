@@ -6,7 +6,6 @@
 -->
 <template>
   <Soft3DSubPage
-    :eyebrow="t('nav.blog')"
     :title="t('blog.title')"
     :description="t('blog.description')"
     variant="mint"
