@@ -12,8 +12,11 @@ import {
   siteRootCandidates,
   resolveSiteRoot,
   normalizeInputPath,
+  localPathFor,
   releaseApiUrl,
   releaseDownloadUrl,
+  localPathFor,
+  toShellPath,
   assertTarballOk,
   windowsToPosix,
   remoteActivateScript,
@@ -92,6 +95,18 @@ describe('publish-cvm：站点根目录识别', () => {
 })
 
 describe('publish-cvm：本地路径写法', () => {
+  it('curl 拿原生路径 —— node 的 spawn 不做 bash 那层 MSYS 路径翻译', () => {
+    // 实测：给 mingw 版 curl 传 /d/Temp/x，它以退出码 23（write error）收场，
+    // 而 -w 已经打出了 HTTP 200 —— 成功和失败两头都能骗人
+    const native = join(tmpdir(), 'x.bin')
+    expect(localPathFor('curl', native)).toBe(native)
+  })
+
+  it('tar 走 shell 形态（GNU tar 把 D:\\ 当远程主机名）', () => {
+    const native = join(tmpdir(), 'x.tar.gz')
+    expect(localPathFor('tar', native)).toBe(toShellPath(native))
+  })
+
   it('盘符路径能转成 GNU tar 认的 /x 形态', () => {
     // Git Bash 的 GNU tar 把 `D:\x` 的 `D:` 当远程主机名，实测报 resolve failed
     expect(windowsToPosix('D:\\Temp\\site.tar.gz')).toBe('/d/Temp/site.tar.gz')

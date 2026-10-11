@@ -139,7 +139,8 @@
     "tifffile",
     "konanok",
     "pipefail",
-    "mychat"
+    "mychat",
+    "msys"
   ],
   "ignorePaths": [
     "node_modules",

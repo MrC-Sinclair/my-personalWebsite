@@ -36,6 +36,8 @@ const REMOTE_DEPLOY = `${REMOTE_BASE}/deploy`
 const REMOTE_SITE = `${REMOTE_DEPLOY}/dist/site`
 const REMOTE_TARBALL = `${REMOTE_DEPLOY}/dist/site.tar.gz`
 const LOCAL_TARBALL = join(tmpdir(), 'personal-web-site.tar.gz')
+/** 状态码探测时丢弃响应体的落点（curl 需要真实可写路径，见 httpCode 注释） */
+const PROBE_OUT = join(tmpdir(), 'personal-web-probe.out')
 /**
  * 产物来源之一：CI 的 release job 把 tar.gz 固定发到 cvm-latest 这个 tag。
  * 之所以走 Release 而不是 Actions artifact —— artifact 下载接口即使仓库公开也要鉴权
@@ -68,6 +70,22 @@ export function windowsToPosix(p) {
 export function toShellPath(p) {
   if (process.platform !== 'win32' || !GNU_TAR) return p
   return windowsToPosix(p)
+}
+
+/**
+ * ★ 本地路径必须**按工具**给形态，不能一刀切：
+ * 这台机器的 PATH 里 `D:\code\Git\usr\bin` 在前，但只有 tar/ssh/scp 在那儿，
+ * `curl` 实际来自 `D:\code\Git\mingw64\bin`，是原生 Windows 版（--version 报
+ * x86_64-w64-mingw32）。bash 交互执行时 MSYS 会自动把 `/d/x` 翻译成 `D:\x`
+ * 再交给原生程序，**node 的 spawnSync 不做这层翻译** ——
+ * 于是给 curl 传 POSIX 路径，curl 报退出码 23（write error）：
+ * 实测 `-o /d/Temp/x` 写 0 字节但 `-w` 照样打出 HTTP 200，
+ * 看起来像「下载失败」又像「站点 200」，两头都能骗人。
+ */
+const POSIX_PATH_BINS = new Set(['tar', 'ssh', 'scp'])
+
+export function localPathFor(bin, p) {
+  return POSIX_PATH_BINS.has(bin) ? toShellPath(p) : p
 }
 
 /**
@@ -183,8 +201,10 @@ function httpCode(path) {
     [
       '-k',
       '-s',
+      // 不能用 /dev/null：原生 Windows curl 打不开它，会在拿到 200 之后
+      // 以退出码 23（write error）收场，把成功报成失败
       '-o',
-      '/dev/null',
+      localPathFor('curl', PROBE_OUT),
       '--noproxy',
       '*',
       '-m',
@@ -324,12 +344,16 @@ function downloadAsset({ url, want = 0, headers = [] }, dest) {
       [
         '-s',
         '-L',
+        // 连接阶段单独设短超时：github.com 被 SYN 黑洞时不设 --connect-timeout
+        // 会由 -m 300 兜着，十轮就是 50 分钟空等
+        '--connect-timeout',
+        '20',
         '-m',
         '300',
         '-C',
         '-',
         '-o',
-        toShellPath(dest),
+        localPathFor('curl', dest),
         '-w',
         '%{http_code}',
         ...H,
