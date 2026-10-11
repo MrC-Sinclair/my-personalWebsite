@@ -31,9 +31,17 @@
 	header /_nuxt/* Cache-Control "public, max-age=31536000, immutable"
 	header /workbox-*.js Cache-Control "public, max-age=31536000, immutable"
 
+	# 旧画廊入口补 301。nuxt.config 里声明的 routeRules 在 SSG 产物中不生效
+	# （nitro 的路由规则要服务端执行），实测 Pages 与 CVM 上 /styles 都是 404，
+	# 所以这层只能由静态宿主自己补。带不带尾斜杠两种写法都收。
+	@stylesZh path /styles /styles/
+	redir @stylesZh / permanent
+	@stylesEn path /en/styles /en/styles/
+	redir @stylesEn /en permanent
+
 	# 不需要 try_files：本站是 SSG，每条路由都是产物里真实存在的
 	# <路径>/index.html，file_server 自己就能把目录请求补成索引页
-	# （无尾斜杠时先 301 到带斜杠的规范路径）。
+	# （无尾斜杠时先 308 到带斜杠的规范路径，实测过）。
 	# 也不写回落到 index.html 的 SPA 兜底 —— 那会让所有乱输的路径返回 200 + 首页，
 	# 而 SEO 要求不存在的内容必须是 404 状态码。这里未命中的路径直接 404。
 	file_server

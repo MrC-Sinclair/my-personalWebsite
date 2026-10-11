@@ -199,8 +199,8 @@ Nuxt 3 使用 SSR，服务端和客户端必须渲染出相同的 HTML，否则�
 - i18n 使用 `prefix_except_default` 策略（默认中文无前缀，英文 URL 带 `/en/` 前缀）
 - 图片 `@nuxt/image` 配置 `provider: ipx`，卡片组件配置 `sizes="sm:100vw md:50vw lg:33vw"`
 - 多风格架构：风格预渲染清单**从 `styles/registry.ts` 自动派生**（`nuxt.config.ts` 的 `stylePrerenderRoutes()`，不再手工维护数组）；路由壳 `pages/style/[style]/[...slug].vue`（未知风格/缺失页面抛 404）+ 裸布局 `layouts/style.vue`
-- 画廊页 `pages/index.vue`（`/`）列出注册表条目；`/styles` 与 `/en/styles` 301 → `/`
-- **部署**：`.github/workflows/deploy.yml` 跑 `pnpm generate` 产出 `.output/public` 并上传为 `site-cvm` artifact，再由本机 `node scripts/publish-cvm.mjs <目录>` 推到腾讯云 CVM 的 `/root/personal-web/deploy/dist/site` 并 `--force-recreate caddy`。**Node 必须 ≥ 22.13**（`packageManager: pnpm@11.25.0` 的 engines 要求），且 **Setup Node 必须排在 Setup pnpm 之前**——顺序反了会让 Setup pnpm 直接失败（2026-09-18 起 CI 因此全红）。构建只能在这条链上跑：服务器 2C2G 会 OOM，本机 Windows 跑 generate 零产物
+- 画廊页 `pages/index.vue`（`/`）列出注册表条目；旧入口 `/styles` 与 `/en/styles` 的 301 **由 `deploy/Caddyfile` 补**，不要指望 `nuxt.config.ts` 的 `routeRules`——SSG 产物里没有服务端，实测它在 Pages 和 CVM 上都直接 404
+- **部署**：`.github/workflows/deploy.yml` 跑 `pnpm generate` 产出 `.output/public`，上传为 `site-cvm` artifact 并由 release job 发到固定 tag `cvm-latest`（免鉴权可下载；Actions artifact 即使仓库公开也要登录，实测 401），再由本机 `node scripts/publish-cvm.mjs --latest` 推到腾讯云 CVM 的 `/root/personal-web/deploy/dist/site` 并 `--force-recreate caddy`。**Node 必须 ≥ 22.13**（`packageManager: pnpm@11.25.0` 的 engines 要求），且 **Setup Node 必须排在 Setup pnpm 之前**——顺序反了会让 Setup pnpm 直接失败（2026-09-18 起 CI 因此全红）。构建只能在这条链上跑：服务器 2C2G 会 OOM，本机 Windows 跑 generate 零产物
 - 网络受限环境下，Google Fonts 和 Google Icons 已在 `nuxt.config.ts` 中禁用（`fonts.providers.google: false, fonts.providers.googleicons: false`）
 - 依赖客户端状态的组件（各风格的滚动进度、canvas 装饰等）使用 `<ClientOnly>` 包裹，避免 hydration mismatch
 - PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段，manifest 含 name/short_name/theme_color/icons
