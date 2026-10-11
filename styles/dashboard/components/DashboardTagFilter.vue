@@ -23,7 +23,7 @@
     </button>
 
     <button
-      v-for="item in tags"
+      v-for="item in shown"
       :key="item.tag"
       type="button"
       class="chip"
@@ -38,13 +38,26 @@
     <button v-if="activeTag" type="button" class="clear" @click="emit('select', '')">
       {{ t('blog.clearFilter') }}
     </button>
+
+    <!-- 展开/收起：只在真有被收起的标签时出现 -->
+    <button
+      v-if="hidden > 0 || expanded"
+      type="button"
+      class="more"
+      :aria-expanded="expanded"
+      @click="expanded = !expanded"
+    >
+      {{ expanded ? t('blog.fewerTags') : t('blog.moreTags', { n: hidden }) }}
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import type { TagCount } from '~/utils/tags'
+import { limitTags, VISIBLE_TAG_LIMIT } from '~/utils/tags'
 
-defineProps<{
+const props = defineProps<{
   /** 标签清单（含文章数，已按文章数降序） */
   tags: TagCount[]
   /** 当前选中标签，空串表示未筛选 */
@@ -56,6 +69,12 @@ defineProps<{
 const emit = defineEmits<{ select: [tag: string] }>()
 
 const { t } = useI18n()
+
+// 平铺上限与「选中项必须可见」由共享层 limitTags 决定，组件只管展开态
+const expanded = ref(false)
+const limited = computed(() => limitTags(props.tags, VISIBLE_TAG_LIMIT, props.activeTag))
+const shown = computed(() => (expanded.value ? props.tags : limited.value.shown))
+const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 </script>
 
 <style scoped>
@@ -155,5 +174,25 @@ const { t } = useI18n()
   .chip:active {
     transform: none;
   }
+}
+
+/* 展开/收起：沿用本风格 clear 的控件语言 */
+.more {
+  min-height: 34px;
+  padding: 7px 10px;
+  font-family: inherit;
+  font-size: var(--fs-small);
+  color: var(--c-accent-2);
+  background: transparent;
+  border: var(--border-w) solid var(--c-accent-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+.more:hover {
+  color: #1a1206;
+  background: var(--c-accent-2);
 }
 </style>

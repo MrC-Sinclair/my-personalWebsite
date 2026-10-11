@@ -16,6 +16,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick, type Component } from 'vue'
 import type { TagCount } from '~/utils/tags'
+import { VISIBLE_TAG_LIMIT } from '~/utils/tags'
 
 const modules = import.meta.glob('../styles/*/components/*TagFilter.vue') as Record<
   string,
@@ -78,6 +79,27 @@ describe('风格标签筛选组件契约', () => {
         await buttons[buttons.length - 1]!.trigger('click')
         await nextTick()
         expect(wrapper.emitted('select')?.[0]).toEqual([''])
+      })
+
+      it('超过平铺上限时先截断，点展开项后渲染全部标签', async () => {
+        const Comp = (await load()).default
+        const many = Array.from({ length: VISIBLE_TAG_LIMIT + 3 }, (_, i) => ({
+          tag: `t${i}`,
+          count: 100 - i,
+        }))
+        const wrapper = mount(Comp, { props: { tags: many, activeTag: '', total: 14 } })
+
+        // 截断态：「全部」+ 上限个标签；展开项用 aria-expanded 标记，不计入标签
+        expect(wrapper.findAll('button:not([aria-expanded])')).toHaveLength(VISIBLE_TAG_LIMIT + 1)
+
+        const toggle = wrapper.find('button[aria-expanded]')
+        expect(toggle.exists()).toBe(true)
+        expect(toggle.attributes('aria-expanded')).toBe('false')
+
+        await toggle.trigger('click')
+        await nextTick()
+        expect(wrapper.findAll('button:not([aria-expanded])')).toHaveLength(many.length + 1)
+        expect(wrapper.find('button[aria-expanded]').attributes('aria-expanded')).toBe('true')
       })
     })
   }
