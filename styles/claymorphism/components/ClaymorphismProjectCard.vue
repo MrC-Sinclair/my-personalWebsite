@@ -156,6 +156,10 @@ const projectRoute = computed(
 
 .name {
   flex: 1;
+  /* flex 项的自动最小尺寸是 min-content，而英文项目名里的长词把它撑得很宽，
+     于是右侧 flex:none 的「精选」徽标被顶出视口（320 宽 en 实测 27px）。
+     overflow-wrap: break-word 不压缩 min-content，必须显式 min-width: 0 */
+  min-width: 0;
   margin: 0;
   font-size: var(--fs-title);
   font-weight: 800;

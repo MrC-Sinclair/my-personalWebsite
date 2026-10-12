@@ -112,6 +112,21 @@ PROBE_VIEW=390,844 PROBE_PAGES=blog,projects node scripts/probe-touch-targets.mj
 `min-width: 40px`（下划线只画在文字上，观感不变），小余量的溢出要找到越界的
 元凶元素再改，而不是缩一点间距蒙过去。
 
+**复现手法**：不必等 CI。审计有 `AUDIT_VIEWPORT` 开关，本机把视口压窄
+（`AUDIT_VIEWPORT=320,844`）就等价于「文本变宽」，能在家把溢出钓出来。
+但它不是等量替换——320 报出来的可能是只在 320 才触发的另一类脆弱：
+实测 `en@320` 有 4 类根因，3 类是页头按钮 `flex:none` + 容器不换行，
+1 类是 flex 项缺 `min-width: 0`（英文长词把 min-content 撑宽，
+而 `overflow-wrap: break-word` 并不压缩 min-content，只有 `anywhere` 会）。
+
+**溢出归因的三条纪律**（在 `scripts/audit-a11y-mobile.mjs` 里）：
+越界 且 没有被 `overflow-x` 的祖先裁剪 且 不是 `position: fixed`，再按右缘取前三。
+三条各对应一次真实误指——滚动容器里的锚点 chip（右缘 635）、被撑宽的布局视口
+顺带显形的 `.scan-overlay`、以及依赖 `scrollWidth` 精确对齐时接不上导致明细为空。
+祖先链还必须记忆化：页面一旦整体越界，几乎所有后代的右缘都超过视口，
+逐个走祖先会把 `getComputedStyle` 调到几万次（5 页跑满 7 分钟，且每页都撞 40 秒超时）；
+记忆化后同样 5 页 22.7 秒。
+
 ## 7. 会静默通过的错误（这三类必须靠专门的测试守）
 
 | 静默失效                                              | 守它的东西                       |

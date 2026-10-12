@@ -71,6 +71,9 @@ function isActive(path: string): boolean {
 
 .fd-subnav__inner {
   display: flex;
+  /* 320 宽（en）下品牌与画廊按钮两个 flex:none 的块自己就超过视口，
+     溢出 32px。给一条退路，放不下就换行而不是撑出横向滚动。 */
+  flex-wrap: wrap;
   align-items: center;
   gap: clamp(14px, 3vw, 28px);
   max-width: var(--page-w);

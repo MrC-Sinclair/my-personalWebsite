@@ -90,6 +90,9 @@ const { activeId } = useActiveSection()
 
 .hd-inner {
   display: flex;
+  /* 同 skeuomorphism/cyberpunk：品牌与画廊胶囊都不退让时，320 宽（en）整行
+     顶出视口 36px，极窄屏让胶囊落到第二行 */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
   width: min(100% - 2 * var(--space), var(--page-w));

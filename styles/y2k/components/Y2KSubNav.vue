@@ -90,6 +90,8 @@ function isActive(path: string): boolean {
 
 .hd-inner {
   display: flex;
+  /* 同 Y2KSiteHeader：320 宽（en）下品牌与画廊胶囊都不退让，整行顶出视口 36px */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
   width: min(100% - 2 * var(--space), var(--page-w));
