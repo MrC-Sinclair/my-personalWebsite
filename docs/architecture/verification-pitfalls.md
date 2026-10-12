@@ -165,8 +165,13 @@ PROBE_VIEW=390,844 PROBE_PAGES=blog,projects node scripts/probe-touch-targets.mj
 - **`http.request()` 不会自动收尾**（只有 `http.get()` 会）：漏掉 `req.end()` 的表现是
   「TCP 连上了、请求从未发出、服务端一个包都收不到、客户端只能等到超时」，
   很容易被误判成服务端或端口的问题。
-- **调试用的 headless Chrome 会被用坏**：CDP 脚本挂住不退出且无报错。换一个端口起重起，
-  **不要 `taskkill` Chrome**（会连正常使用的窗口一起杀掉）。
+- **调试用的 headless Chrome 会被用坏，而且一半是我自己造成的**：CDP 脚本挂住不退出且无报错。
+  换端口起重起（**不要 `taskkill` Chrome**，会连正常使用的窗口一起杀）。
+  两个具体信号：僵尸 tab 的表征是**第一条 `Page.enable` 就超时**；
+  而制造僵尸最常见的动作是**中途 kill 掉正在跑量测的审计进程**——它留下的挂死导航
+  会让下一个复用该实例的脚本全程卡住。所以要么让它跑完，要么换端口。
+  审计脚本每个 CDP 调用都有 40 秒超时并抛出，就是为了把这类事变成一行明确报错，
+  而不是「无声挂满 job 时限」。
 - **后台服务要按端口找 PID 停**，`TaskStop` 只杀 shell 不杀 node。
 - **build 期间别改文件、别同时跑 vitest**：`.nuxt/tsconfig.json` 会短暂消失，
   测试报 `TSConfckParseError` 之类的假故障。
