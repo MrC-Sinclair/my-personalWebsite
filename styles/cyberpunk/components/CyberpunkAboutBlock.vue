@@ -57,6 +57,13 @@ const { skillGroups, timeline } = useAppInfo()
 /* —— 7/5 非对称分栏 + 技能面板下沉（首页霓虹错落轮廓） —— */
 .duo {
   display: grid;
+  /* 窄屏必须显式给轨道：省掉这行会按隐式 auto（= max-content）定轨，
+     面板内容一撑就把整页顶出横向滚动（320 宽实测溢出 27px）。
+     桌面那条 @media 里已经写了 minmax(0,7fr)，缺的只是基线。
+     min-width: 0 是配套的另一半——只压轨道不管用，因为 .duo 作为栅格项
+     的自动最小尺寸仍是 min-content（实测可用 273px 却占了 330px） */
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: clamp(36px, 5vw, 64px);
 }
 

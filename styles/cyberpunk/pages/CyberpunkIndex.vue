@@ -199,6 +199,10 @@ useScrollReveal()
 .stream {
   position: relative;
   display: grid;
+  /* 不写这行时是隐式 auto 轨道，会按面板内容的 max-content 定宽——
+     实测 320 宽的视口里它被撑到 330px，整页出横向滚动（溢出 27px）。
+     下游的 .duo / .panel 只是被它撑开的跟随者 */
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(36px, 5vw, 64px);
   max-width: var(--page-w);
   margin: 0 auto;

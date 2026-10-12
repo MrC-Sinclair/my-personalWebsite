@@ -70,6 +70,9 @@ const anchors = computed(() => [
 
 .hud {
   display: flex;
+  /* 同 CyberpunkSubNav：品牌与画廊按钮都不退让时，320 宽整行会顶出视口，
+     让它们在极窄屏换行而不是撑出横向滚动 */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
   max-width: var(--page-w);

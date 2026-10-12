@@ -57,6 +57,9 @@ useScrollReveal()
 /* 面板流：单列舞台，区块间大量呼吸 */
 .stream {
   display: grid;
+  /* 同 CyberpunkIndex：隐式 auto 轨道会按最宽面板的 max-content 定宽，
+     320 宽下撑到 330px 造成横向滚动，基线必须锁成 minmax(0,1fr) */
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(40px, 6vw, 80px);
   max-width: var(--page-w);
   margin: 0 auto;

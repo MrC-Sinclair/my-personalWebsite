@@ -120,6 +120,9 @@ function isActive(path: string): boolean {
 
 .hd-inner {
   display: flex;
+  /* 不换行时，右侧黄铜画廊按钮（flex:none，不肯退让）在 320 宽下把整行顶出
+     视口 31px，五个子页全中。给它一条退路：放不下就让画廊落到第二行。 */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
   width: min(100% - 2 * var(--space), var(--page-w));

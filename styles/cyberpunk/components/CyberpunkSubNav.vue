@@ -83,6 +83,10 @@ function isActive(path: string): boolean {
 
 .hud {
   display: flex;
+  /* 不换行时，右侧画廊按钮（flex:none + nowrap）在 320 宽下顶出视口 27px：
+     中间的 .links-scroll 已经可以缩到 0，剩下的品牌 + 画廊两个不退让的块
+     自己就超过了视口。给一条退路，画廊在极窄屏落到第二行。 */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
   max-width: var(--page-w);

@@ -113,6 +113,9 @@ const { activeId } = useActiveSection()
 
 .hd-inner {
   display: flex;
+  /* 同 SkeuomorphismSubNav：画廊按钮是 flex:none，不换行时 320 宽下整行顶出
+     视口 31px。给一条退路，放不下就落到第二行。 */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
   width: min(100% - 2 * var(--space), var(--page-w));
