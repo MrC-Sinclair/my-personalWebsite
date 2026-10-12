@@ -168,9 +168,29 @@ async function main() {
             );
           });
           const imgNoAlt = [...document.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt')).length;
+          // 溢出必须给出「是谁越界」：只报一个像素数，就得再改一次 CI 才能知道元凶
+          // （CI 作业日志要鉴权，注解里只有这么多字能带出来）
+          const vw = doc.clientWidth;
+          const overEls = doc.scrollWidth - vw > 0
+            ? [...document.querySelectorAll('body *')]
+                .map((el) => ({ el: el, right: el.getBoundingClientRect().right }))
+                .filter((x) => x.right > vw + 1)
+                .sort((a, b) => b.right - a.right)
+                .slice(0, 3)
+                .map((x) => {
+                  const el = x.el;
+                  return (
+                    el.tagName.toLowerCase() +
+                    '.' +
+                    (String(el.className).split(/\\s+/)[0] || '(无类名)') +
+                    ' 右缘' + Math.round(x.right) + '/视口' + vw
+                  );
+                })
+            : [];
           return JSON.stringify({
             title: document.title,
             overflow: doc.scrollWidth - doc.clientWidth,
+            overflowDetail: overEls,
             h1,
             targets: targets.length,
             small,
@@ -188,7 +208,8 @@ async function main() {
       // 样式/脚本 404 时这一页的量全部不可信，放在最前面提示
       if (failedAssets > 0) flags.push(`缺资源${failedAssets}`)
       if (data.title?.startsWith('404')) flags.push('404')
-      if (data.overflow > 0) flags.push(`溢出${data.overflow}px`)
+      if (data.overflow > 0)
+        flags.push(`溢出${data.overflow}px ${(data.overflowDetail || []).join(' ; ')}`)
       if (data.h1 !== 1) flags.push(`h1=${data.h1}`)
       if (data.small > 0) flags.push(`小目标${data.small}/${data.targets} ${(data.smallDetail||[]).join(" ; ")}`)
       if (data.imgNoAlt > 0) flags.push(`缺alt${data.imgNoAlt}`)
