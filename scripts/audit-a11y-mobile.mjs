@@ -205,8 +205,10 @@ async function main() {
           };
           const overEls = over > 0
             ? [...document.querySelectorAll('body *')]
-                .map((el) => ({ el: el, right: el.getBoundingClientRect().right }))
-                .filter((x) => x.right > vw + 1 && !isClipped(x.el))
+                .map((el) => ({ el: el, right: el.getBoundingClientRect().right, pos: getComputedStyle(el).position }))
+                // fixed 元素要排除：它按视口定位，是「被撑宽的布局视口顺着它显形」，
+                // 不是它把页面撑宽的（cyberpunk 的 .scan-overlay 就是这样被误指过）
+                .filter((x) => x.right > vw + 1 && x.pos !== 'fixed' && !isClipped(x.el))
                 .sort((a, b) => b.right - a.right)
                 .slice(0, 3)
                 .map((x) => {
