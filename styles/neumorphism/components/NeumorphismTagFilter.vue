@@ -173,4 +173,20 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .more:hover {
   color: var(--c-accent-2);
 }
+
+/* 窄屏收成单行横向滚动条：14 个 chip 绕 5 行会把首条正文推出屏幕
+   （英文标签更宽，实测 swiss/blog 首条正文到 1016px / 视口 844px）。
+   滚动条常驻可见，行尾就是「还有 N 个标签」，全部标签仍可逐个滑到 */
+@media (max-width: 639px) {
+  .tags {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 4px 0;
+    scrollbar-width: thin;
+  }
+
+  .tags > * {
+    flex: none;
+  }
+}
 </style>
