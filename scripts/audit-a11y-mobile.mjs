@@ -35,6 +35,17 @@ const DETAIL = process.env.AUDIT_DETAIL || ''
 const PAGES = DETAIL ? [''] : ['', '/about', '/projects', '/blog', '/contact']
 const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 3, mobile: true }
 
+/**
+ * 失败原因必须**读得到**：作业日志要鉴权（实测匿名 403），而 check-run annotations
+ * 匿名就能读。所以红的时候除了 stdout，还要发一条 ::error:: 工作流命令，
+ * 否则「CI 红了但不知道为什么」只能靠再改一次 CI 去猜。
+ * 命令里 % 必须写成 %25、换行要压掉，否则整条注解静默丢失。
+ */
+function annotate(message) {
+  const safe = String(message).replace(/\r?\n/g, ' ').replace(/%/g, '%25').slice(0, 500)
+  console.log(`::error::${safe}`)
+}
+
 async function main() {
   // CDP 端口：默认的 9222 实例**会被用坏**（表现为脚本挂住不退出），
   // 这时换一个端口起新实例即可，不用去杀可能正在被你正常使用的 Chrome。
@@ -170,7 +181,6 @@ async function main() {
         returnByValue: true,
       })
       const data = JSON.parse(res.result?.result?.value ?? '{}')
-      rows.push({ style, suffix: suffix || '/', status: docStatus, assets: failedAssets, ...data })
       const flags = []
       // 两条 404 判据并存：HTTP 状态是静态服务器上的可靠判据（缺失的文件根本没有 Nuxt
       // 错误页可渲染，只看 title 会静默放过）；title 兜住「服务端返回 200 但内容是错误页」
@@ -182,6 +192,14 @@ async function main() {
       if (data.h1 !== 1) flags.push(`h1=${data.h1}`)
       if (data.small > 0) flags.push(`小目标${data.small}/${data.targets} ${(data.smallDetail||[]).join(" ; ")}`)
       if (data.imgNoAlt > 0) flags.push(`缺alt${data.imgNoAlt}`)
+      rows.push({
+        style,
+        suffix: suffix || '/',
+        status: docStatus,
+        assets: failedAssets,
+        note: flags.join(' '),
+        ...data,
+      })
       console.log(
         `${style.padEnd(12)} ${(suffix || '/').padEnd(10)} ${flags.length ? '⚠ ' + flags.join(' ') : '✓'}`,
       )
@@ -205,7 +223,9 @@ async function main() {
   // 全部静默，先怀疑量具」）。所有页面都拿不到 HTTP 状态说明 Network 事件根本没收到，
   // 这时 404 判据等于没跑，必须红而不是绿。
   if (rows.length && rows.every((r) => !r.status)) {
-    console.error('审计失效：所有页面都没拿到主文档 HTTP 状态，404 判据未生效')
+    const msg = '审计失效：所有页面都没拿到主文档 HTTP 状态，404 判据未生效'
+    console.error(msg)
+    annotate(msg)
     process.exitCode = 1
     return
   }
@@ -213,11 +233,20 @@ async function main() {
   // ★ 退出码必须反映结果：接进 CI 后靠它判定成败。
   // 早先这里只 console 不设 exitCode，脚本永远以 0 退出——
   // 哪怕审计出 100 页全有问题，CI 也是绿的，门禁形同虚设。
-  if (bad.length > 0) process.exitCode = 1
+  if (bad.length > 0) {
+    // 注解只放计数与头几条摘要：CI 的 stdout 要鉴权才读得到，注解不用
+    const detail = bad
+      .slice(0, 5)
+      .map((r) => `${r.style}${r.suffix === '/' ? '' : r.suffix}→${r.note}`)
+      .join(' ;; ')
+    annotate(`审计未通过 ${bad.length}/${rows.length} 页（locale=${process.env.AUDIT_LOCALE || 'zh'}）：${detail}`)
+    process.exitCode = 1
+  }
 }
 
 main().catch((error) => {
   console.error(error)
+  annotate(`审计脚本异常中断：${error?.message || error}（这不是页面问题，是量具或环境跑不起来）`)
   // 脚本自身出错（连不上 Chrome / dev server 没起来）同样要红，
   // 否则「审计根本没跑」也会被当成通过
   process.exitCode = 1
