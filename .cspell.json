@@ -145,7 +145,8 @@
     "pathconv",
     "noproxy",
     "taskkill",
-    "confck"
+    "confck",
+    "subnav"
   ],
   "ignorePaths": [
     "node_modules",
