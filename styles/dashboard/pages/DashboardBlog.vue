@@ -17,7 +17,7 @@
 
     <template v-else>
       <DashboardPanel
-        class="cell"
+        class="cell cell--trend"
         :eyebrow="t('blog.publishedAt')"
         :title="t('blog.publishTrend')"
         :meta="String(trendTotal)"
@@ -155,6 +155,14 @@ const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSear
 .cell {
   min-width: 0;
   grid-column: span 12;
+}
+
+/* 窄屏列表优先：趋势图是次要读数，挪到文章表之后，
+   否则筛选区 + 图表会把首条正文推到折线以下（实测 873 vs 844） */
+@media (max-width: 767px) {
+  .cell--trend {
+    order: 2;
+  }
 }
 
 /* —— 分类筛选器（面板头 actions 插槽，与首页同款） —— */

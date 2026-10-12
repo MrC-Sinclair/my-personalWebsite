@@ -10,19 +10,23 @@
 
     <!-- 筛选/搜索控件常驻：结果为空时也要留着，否则用户改不了条件 -->
     <template v-else>
-      <EditorialTagFilter
-        :tags="tags"
-        :active-tag="activeTag"
-        :total="posts.length"
-        @select="select"
-      />
-      <EditorialSearch
-        :query="query"
-        :result-count="resultCount"
-        :total="totalCount"
-        @update="setQuery"
-        @clear="clear"
-      />
+      <!-- 标签筛选与关键词搜索是配套使用的，必须包成一块：
+           否则两者各自成为 .flow 栅格子项，被 108px 的区块间距劈成两块漂浮的面板 -->
+      <div class="toolbar">
+        <EditorialTagFilter
+          :tags="tags"
+          :active-tag="activeTag"
+          :total="posts.length"
+          @select="select"
+        />
+        <EditorialSearch
+          :query="query"
+          :result-count="resultCount"
+          :total="totalCount"
+          @update="setQuery"
+          @clear="clear"
+        />
+      </div>
       <EditorialPosts
         v-if="results.length"
         :posts="results"
@@ -78,3 +82,18 @@ const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSear
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(() => pending.value && !postsData.value)
 </script>
+
+
+<style scoped>
+/* 控件组内部只留 16px，区块级的间距交给 EditorialSubPage 的 .flow 去管 */
+.toolbar {
+  display: grid;
+  gap: 16px;
+}
+
+/* 两个控件各自带 var(--gap) 的下边距，是给「独立成块」时用的；
+   合进 toolbar 之后间距由 grid gap 统一负责，留着会叠加成 36px */
+.toolbar > :not(:last-child) {
+  margin-bottom: 0;
+}
+</style>
