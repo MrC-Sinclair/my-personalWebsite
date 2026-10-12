@@ -199,6 +199,9 @@ function projectRoute(project: Project): string {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
+  /* 命中区不能交给字形宽度决定：这条链接在 CI 的 Linux 回退字体下量到 31px 宽，
+     本机 Windows 字体刚好过线——换个字体就掉下去，属于脆弱而不是「已经够」 */
+  min-width: 40px;
   font-size: var(--fs-small);
   color: var(--c-text);
   text-decoration: underline;

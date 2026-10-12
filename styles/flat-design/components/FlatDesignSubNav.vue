@@ -152,6 +152,8 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
+  /* 同上：三个字在窄一号的回退字体下只有 37px 宽，命中区下限不该依赖字形 */
+  min-width: 40px;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.06em;
