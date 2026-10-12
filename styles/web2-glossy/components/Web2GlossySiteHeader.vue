@@ -87,6 +87,8 @@ const anchors = computed(() => [
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  /* 字母牌是 38×38，会把整条链接的命中区定在 38px；补到 40 与 Web2GlossySubNav 的 .brand 一致 */
+  min-height: 40px;
   color: var(--c-text);
   text-decoration: none;
   transition: filter var(--transition);

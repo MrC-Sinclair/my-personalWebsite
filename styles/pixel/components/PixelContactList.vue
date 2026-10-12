@@ -112,11 +112,11 @@ function linkText(url: string): string {
 }
 
 .crow-link {
-  /* 触控目标：23px 差一点够不到 WCAG 2.2 AA 的 24×24（2.5.8），
-     改成 inline-flex 并补 2px 内边距（像素风没有补间，视觉不变） */
+  /* 触控命中区 ≥ 40（项目无障碍红线）。原先按 WCAG 2.5.8 的 24×24 只做到 27px 高；
+     同一行的复制按钮本来就是 40px，抬到 40 之后行高反而统一，不会忽高忽低 */
   display: inline-flex;
   align-items: center;
-  min-height: 24px;
+  min-height: 40px;
   padding: 2px 0;
   color: var(--c-text);
   text-decoration: none;
