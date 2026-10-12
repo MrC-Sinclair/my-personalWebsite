@@ -66,6 +66,10 @@ const localePath = useLocalePath()
 
 .topbar-inner {
   display: flex;
+  /* 320 宽（en）下画廊胶囊右缘是 320.56——只差 0.56px，四舍五入报成溢出 1px。
+     同 flat-design / y2k / skeuomorphism / cyberpunk 那一族：容器不换行 +
+     画廊按钮不退让。允许换行而不是去调量具的取整。 */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
   max-width: var(--page-w);

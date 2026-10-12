@@ -85,6 +85,8 @@ function isActive(path: string): boolean {
 
 .topbar-inner {
   display: flex;
+  /* 同 SciFiHudTopBar：320 宽（en）下画廊胶囊超出 0.56px，允许换行 */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--gap);
   max-width: var(--page-w);
