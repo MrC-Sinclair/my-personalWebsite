@@ -173,16 +173,41 @@ async function main() {
           const imgNoAlt = [...document.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt')).length;
           // 溢出必须给出「是谁越界」：只报一个像素数，就得再改一次 CI 才能知道元凶
           // （CI 作业日志要鉴权，注解里只有这么多字能带出来）。
-          // 元凶落在「视口右缘 + 溢出量」这条边界带上——document.scrollWidth 就是页面最外缘。
-          // 不能按 right 最大的取：横向滚动容器里的子元素右缘可以远得多（实测锚点导航的 chip
-          // 排到 635），但它们被祖先裁着，根本不贡献 document.scrollWidth。
+          // 判据是「越界且没有被祖先裁剪」：横向滚动容器里的子元素右缘可以远到 635px
+          //（实测锚点导航的 chip），但它们由 overflow-x:auto/hidden 的祖先管着，
+          // 根本不贡献 document.scrollWidth，按右缘大小排会把它们误指为元凶。
+          // 早先按「视口 + 溢出量」这条边界带筛过，依赖 scrollWidth 精确对齐，
+          // 本机压窄到 320 复现时就接不上、明细变空。
           const vw = doc.clientWidth;
           const over = doc.scrollWidth - vw;
-          const edge = vw + over;
+          // 祖先链必须记忆化：页面一旦整体越界，几乎所有后代的右缘都超过视口，
+          // 逐个走祖先会把 getComputedStyle 调到几万次（实测 5 页跑满 7 分钟，
+          // 全部超过 CDP 的 40 秒超时）。链上节点高度重叠，记忆化后每个元素最多算一次。
+          const clipsX = new Map();
+          const doesClip = (el) => {
+            let v = clipsX.get(el);
+            if (v === undefined) {
+              const ox = getComputedStyle(el).overflowX;
+              v = ox === 'hidden' || ox === 'auto' || ox === 'scroll' || ox === 'clip';
+              clipsX.set(el, v);
+            }
+            return v;
+          };
+          const underClip = new Map();
+          const isClipped = (el) => {
+            let v = underClip.get(el);
+            if (v === undefined) {
+              const p = el.parentElement;
+              v = p && p !== doc.documentElement ? doesClip(p) || isClipped(p) : false;
+              underClip.set(el, v);
+            }
+            return v;
+          };
           const overEls = over > 0
             ? [...document.querySelectorAll('body *')]
                 .map((el) => ({ el: el, right: el.getBoundingClientRect().right }))
-                .filter((x) => Math.abs(x.right - edge) <= 1)
+                .filter((x) => x.right > vw + 1 && !isClipped(x.el))
+                .sort((a, b) => b.right - a.right)
                 .slice(0, 3)
                 .map((x) => {
                   const el = x.el;
