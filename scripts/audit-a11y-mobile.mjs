@@ -33,7 +33,10 @@ const STYLES = process.env.AUDIT_STYLES ? process.env.AUDIT_STYLES.split(',') : 
 // 详情路由占全站 802 页里的大头（约 560 页），此前从没被审计过。
 const DETAIL = process.env.AUDIT_DETAIL || ''
 const PAGES = DETAIL ? [''] : ['', '/about', '/projects', '/blog', '/contact']
-const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 3, mobile: true }
+// 默认 390×844。AUDIT_VIEWPORT 可以压窄：CI 的 Linux 回退字体让文本变宽，
+// 效果等价于视口变窄——本地量不到「只剩 9px 余量」的那类溢出，压窄就能钓出来。
+const [VW, VH] = (process.env.AUDIT_VIEWPORT || '390,844').split(',').map(Number)
+const VIEWPORT = { width: VW, height: VH, deviceScaleFactor: 3, mobile: true }
 
 /**
  * 失败原因必须**读得到**：作业日志要鉴权（实测匿名 403），而 check-run annotations
@@ -169,13 +172,17 @@ async function main() {
           });
           const imgNoAlt = [...document.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt')).length;
           // 溢出必须给出「是谁越界」：只报一个像素数，就得再改一次 CI 才能知道元凶
-          // （CI 作业日志要鉴权，注解里只有这么多字能带出来）
+          // （CI 作业日志要鉴权，注解里只有这么多字能带出来）。
+          // 元凶落在「视口右缘 + 溢出量」这条边界带上——document.scrollWidth 就是页面最外缘。
+          // 不能按 right 最大的取：横向滚动容器里的子元素右缘可以远得多（实测锚点导航的 chip
+          // 排到 635），但它们被祖先裁着，根本不贡献 document.scrollWidth。
           const vw = doc.clientWidth;
-          const overEls = doc.scrollWidth - vw > 0
+          const over = doc.scrollWidth - vw;
+          const edge = vw + over;
+          const overEls = over > 0
             ? [...document.querySelectorAll('body *')]
                 .map((el) => ({ el: el, right: el.getBoundingClientRect().right }))
-                .filter((x) => x.right > vw + 1)
-                .sort((a, b) => b.right - a.right)
+                .filter((x) => Math.abs(x.right - edge) <= 1)
                 .slice(0, 3)
                 .map((x) => {
                   const el = x.el;
@@ -183,13 +190,14 @@ async function main() {
                     el.tagName.toLowerCase() +
                     '.' +
                     (String(el.className).split(/\\s+/)[0] || '(无类名)') +
-                    ' 右缘' + Math.round(x.right) + '/视口' + vw
+                    '@' +
+                    Math.round(x.right)
                   );
                 })
             : [];
           return JSON.stringify({
             title: document.title,
-            overflow: doc.scrollWidth - doc.clientWidth,
+            overflow: over,
             overflowDetail: overEls,
             h1,
             targets: targets.length,
