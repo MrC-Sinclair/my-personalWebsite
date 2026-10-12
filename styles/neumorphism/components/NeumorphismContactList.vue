@@ -159,8 +159,13 @@ function toggle(name: string): void {
 
 .contact-actions {
   display: flex;
-  flex: none;
+  /* 实测（320 宽）：这一块的 max-content 是 219px，而行内可用宽度只有 185px。
+     写 flex:none 时它不肯退让，内部的 flex-wrap 就永远不会触发，整块顶出视口 47px
+     —— SOP 第 6 条点名的就是这种写法。改成可收缩，让按钮在块内自己换行。 */
+  flex: 0 1 auto;
+  min-width: 0;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
   margin-left: auto;
 }
