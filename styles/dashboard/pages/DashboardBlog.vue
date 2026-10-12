@@ -176,6 +176,8 @@ const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSear
   display: inline-flex;
   align-items: center;
   min-height: 40px;
+  /* 同 DashboardIndex：两字标签在回退等宽字体下 39px，命中区下限写进样式 */
+  min-width: 40px;
   padding: 6px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

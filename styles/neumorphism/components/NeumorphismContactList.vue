@@ -136,6 +136,9 @@ function toggle(name: string): void {
   display: flex;
   flex: 1;
   flex-direction: column;
+  /* flex 项的自动最小尺寸是 min-content；里面那行等宽字体是 nowrap，
+     于是整行被它撑住（CI 实测溢出 19px）。给了 min-width:0 省略号才真的生效 */
+  min-width: 0;
   gap: 2px;
   min-width: 0;
 }

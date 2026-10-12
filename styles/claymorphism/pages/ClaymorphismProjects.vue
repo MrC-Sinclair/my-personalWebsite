@@ -82,6 +82,9 @@ function toneOf(index: number): (typeof TONES)[number] {
 /* —— 项目网格：桌面双列，偶数卡交错下沉（黏土块散落感） —— */
 .project-grid {
   display: grid;
+  /* 窄屏必须显式给轨道：省略声明会按隐式 auto（= max-content）定宽，
+     最宽那张卡的内容一撑就把整页顶出横向滚动（CI 实测溢出 9px） */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap);
   align-items: start;
 }

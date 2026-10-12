@@ -256,6 +256,7 @@ const sections = computed(() => [
 /* —— 双岛 7/5 错落：窄屏单列，桌面端技能岛下沉 —— */
 .duo {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap);
   align-items: start;
 }
@@ -273,6 +274,8 @@ const sections = computed(() => [
 /* —— 项目网格：桌面双列，偶数卡交错下沉（黏土块散落感） —— */
 .project-grid {
   display: grid;
+  /* 同 .duo：窄屏给一条 minmax(0,1fr)，别让隐式 auto 轨道按最宽卡片撑破页面 */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap);
   align-items: start;
 }
