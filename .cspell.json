@@ -141,7 +141,11 @@
     "konanok",
     "pipefail",
     "mychat",
-    "msys"
+    "msys",
+    "pathconv",
+    "noproxy",
+    "taskkill",
+    "confck"
   ],
   "ignorePaths": [
     "node_modules",

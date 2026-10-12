@@ -5,12 +5,18 @@
  * 从没在真实浏览器里量过。这个脚本在移动端视口下逐页检查：
  *   1. 横向溢出（页面被撑宽，移动端最致命的布局问题）
  *   2. h1 数量（AGENTS 红线：每页必须有且仅有一个）
- *   3. 触控目标 < 44px（WCAG 2.5.5 / 项目要求 ≥ 40px）
- *   4. 图片缺 alt、页面是否真的渲染成功（不是 404）
+ *   3. 触控目标命中区 < 40×40（项目无障碍红线）。量的是命中区不是边框盒，
+ *      还原模型与 scripts/probe-touch-targets.mjs 共用 hit-box.mjs，两边数字必须对得上
+ *   4. 图片缺 alt、主文档 HTTP 状态（404 判定不能只看 document.title：
+ *      静态服务器上缺失的页面根本没有 Nuxt 错误页，标题判据会静默放过）
  *
- * 用法：MSYS_NO_PATHCONV=1 node .workbuddy/audit-a11y-mobile.mjs [baseURL]
+ * 用法：MSYS_NO_PATHCONV=1 node scripts/audit-a11y-mobile.mjs [baseURL]
  */
-const BASE = process.argv[2] || 'https://mrc-sinclair.github.io/my-personalWebsite'
+import { HIT_BOX_SRC } from './hit-box.mjs'
+
+// 默认打线上：这是真实发布物（Caddy 服务 generate 产物），量到的就是用户拿到的。
+// 子路径部署时 BASE 必须带上 baseURL 前缀，否则资源链接与路由全错。
+const BASE = process.argv[2] || 'https://122.51.97.106:8444'
 // AUDIT_LOCALE=en 时审英文站（i18n 用 prefix_except_default：英文路径带 /en 前缀）。
 // 802 页里英文占一半，只审中文等于漏掉一半。
 const LOCALE_PREFIX = process.env.AUDIT_LOCALE === 'en' ? '/en' : ''
@@ -31,29 +37,54 @@ const VIEWPORT = { width: 390, height: 844, deviceScaleFactor: 3, mobile: true }
 
 async function main() {
   // CDP 端口：默认的 9222 实例**会被用坏**（表现为脚本挂住不退出），
-// 这时换一个端口起新实例即可，不用去杀可能正在被你正常使用的 Chrome。
-const CDP_PORT = process.env.CDP_PORT || '9222'
-const list = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`)).json()
+  // 这时换一个端口起新实例即可，不用去杀可能正在被你正常使用的 Chrome。
+  const CDP_PORT = process.env.CDP_PORT || '9222'
+  const list = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`)).json()
   const page = list.find((t) => t.type === 'page')
   const ws = new WebSocket(page.webSocketDebuggerUrl)
   let seq = 0
   const pending = new Map()
+  // 主文档的 HTTP 状态由 CDP 事件带来（事件消息没有 id，不进 pending 分支）。
+  // 这是 404 判定的唯一可靠来源：脚本自身的 fetch 会走系统代理、且对自签证书站会失败。
+  let docStatus = 0
+  // 子资源（样式表/脚本）的 4xx 同样要抓：挂载点与构建期 baseURL 不一致时，
+  // 页面照样渲染、h1 照样唯一，但全局样式与 JS 全 404 —— 于是量到的是半裸页面。
+  // 本机实测踩过：把带 /my-personalWebsite 前缀的产物挂在 / 上，凭空多出 4 条报警。
+  let failedAssets = 0
   ws.onmessage = (ev) => {
     const msg = JSON.parse(ev.data)
     if (msg.id && pending.has(msg.id)) {
       pending.get(msg.id)(msg)
       pending.delete(msg.id)
+    } else if (msg.method === 'Network.responseReceived') {
+      const { type, response } = msg.params || {}
+      if (type === 'Document') docStatus = response.status
+      else if ((type === 'Script' || type === 'Stylesheet') && response.status >= 400) failedAssets++
     }
   }
+  // 每个 CDP 调用都要有超时：headless 实例会被用坏，表现为「连 6 秒的 evaluate
+  // 都不返回」且无任何报错。没有超时的话 CI 里就是一次挂死烧满 job 时限、
+  // 日志里连一行诊断都没有（本机实测：卡在第一页十几分钟零输出）。
   const send = (method, params = {}) =>
-    new Promise((resolve) => {
+    new Promise((resolve, reject) => {
       const id = ++seq
-      pending.set(id, resolve)
+      const timer = setTimeout(() => {
+        pending.delete(id)
+        reject(new Error(`CDP 超时: ${method}`))
+      }, 40000)
+      pending.set(id, (m) => {
+        clearTimeout(timer)
+        // 协议层错误要冒出来：以前直接把带 error 的消息交给调用方，
+        // 调用方读到 undefined 就当成「这页没数据」，于一类故障静默变成零信号
+        if (m.error) reject(new Error(method + ': ' + JSON.stringify(m.error)))
+        else resolve(m)
+      })
       ws.send(JSON.stringify({ id, method, params }))
     })
 
   await new Promise((r) => (ws.onopen = r))
   await send('Page.enable')
+  await send('Network.enable')
   await send('Runtime.enable')
   await send('Emulation.setDeviceMetricsOverride', VIEWPORT)
 
@@ -85,41 +116,46 @@ const list = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`)).json(
         //    不能直接 `BASE + href`——那会把子路径拼两遍导致 404。用 origin 拼。
         url = href.startsWith('http') ? href : new URL(href, new URL(BASE).origin).href
       }
+      // 导航前清零，避免读到上一页的状态。301 与最终响应都会以 Document 类型上报，
+      // 事件按序到达，后写的覆盖先写的，所以拿到的就是跟随重定向后的最终状态。
+      docStatus = 0
+      failedAssets = 0
       await send('Page.navigate', { url })
       await new Promise((r) => setTimeout(r, DETAIL ? 5000 : 4500))
       const res = await send('Runtime.evaluate', {
         expression: `(() => {
           const doc = document.documentElement;
           const h1 = document.querySelectorAll('h1').length;
-          // 触控目标：WCAG 2.2 AA（2.5.8）要求最小 24×24，且**行内文本链接豁免**
-          // （44×44 是 AAA 的 2.5.5，拿它当门槛会把段落里的链接全算成问题）
-          const targets = [...document.querySelectorAll('a, button')].filter((el) => {
-            const r = el.getBoundingClientRect();
-            return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden';
-          });
-          const smallEls = targets.filter((el) => {
-            if (getComputedStyle(el).display === 'inline') return false;
-            const r = el.getBoundingClientRect();
-            return Math.min(r.width, r.height) < 24;
-          });
+          ${HIT_BOX_SRC}
+          // 触控目标量「命中区」而不是边框盒，口径与 scripts/probe-touch-targets.mjs 保持一致：
+          // 覆盖式链接（::after 用 inset:0 铺满整行/整卡）、外扩命中区（inset 为负）、
+          // display:inline 包住块级子元素时塌成 0 宽的链接，直接量 rect 会把这三类全判成不合格。
+          // 无 href 的 <a> 不是可点元素，所以选择器是 a[href]。
+          const targets = [...document.querySelectorAll('a[href], button')]
+            .map((el) => ({ el: el, box: hitBox(el) }))
+            .filter((t) => (t.box.width || t.box.height) && getComputedStyle(t.el).visibility !== 'hidden');
+          // 地板 40×40（项目无障碍红线），按整像素比较：soft-3d 的 .z-item 带 0.97 缩放
+          //（层次深度的签名效果），投影后的 rect 比布局盒小 0.5px（实测 41 → 39.53），那不是命中区不足
+          const smallEls = targets.filter(
+            (t) => Math.round(t.box.width) < 40 || Math.round(t.box.height) < 40,
+          );
           const small = smallEls.length;
-          // 注意：这段表达式在**浏览器**里执行，拿不到 Node 的 process，
-          // 开关必须由 Node 侧插值进来（否则 ReferenceError: process is not defined）
-          const smallDetail = ${process.env.DETAIL ? 'true' : 'false'}
-            ? smallEls.slice(0, 3).map((el) => {
-                const r = el.getBoundingClientRect();
-                // 用拼接而不是嵌套模板串：外层 expression 本身就是模板串，
-                // 内层再写插值语法会被 Node 提前解析（SyntaxError）
-                return (
-                  el.tagName.toLowerCase() +
-                  '.' +
-                  (el.className || '(no-class)') +
-                  ' ' +
-                  Math.round(r.width) + 'x' + Math.round(r.height) +
-                  ' "' + (el.textContent || '').trim().slice(0, 16) + '"'
-                );
-              })
-            : [];
+          // 明细无条件带上（最多 3 条）：只有 small>0 时才会被打印出去，
+          // 不给类名的话 CI 日志里只剩一个数字，没法归因。
+          // 用拼接而不是嵌套模板串：外层 expression 本身就是模板串，
+          // 内层再写插值语法会被 Node 提前解析（SyntaxError）
+          const smallDetail = smallEls.slice(0, 3).map((t) => {
+            const el = t.el;
+            // className 在 SVG 元素上是 SVGAnimatedString 对象，必须 String() 兜住
+            return (
+              el.tagName.toLowerCase() +
+              '.' +
+              (String(el.className).split(/\\s+/)[0] || '(无类名)') +
+              ' ' +
+              Math.round(t.box.width) + 'x' + Math.round(t.box.height) +
+              ' "' + (el.textContent || '').trim().slice(0, 16) + '"'
+            );
+          });
           const imgNoAlt = [...document.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt')).length;
           return JSON.stringify({
             title: document.title,
@@ -134,8 +170,13 @@ const list = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`)).json(
         returnByValue: true,
       })
       const data = JSON.parse(res.result?.result?.value ?? '{}')
-      rows.push({ style, suffix: suffix || '/', ...data })
+      rows.push({ style, suffix: suffix || '/', status: docStatus, assets: failedAssets, ...data })
       const flags = []
+      // 两条 404 判据并存：HTTP 状态是静态服务器上的可靠判据（缺失的文件根本没有 Nuxt
+      // 错误页可渲染，只看 title 会静默放过）；title 兜住「服务端返回 200 但内容是错误页」
+      if (docStatus >= 400) flags.push(`HTTP${docStatus}`)
+      // 样式/脚本 404 时这一页的量全部不可信，放在最前面提示
+      if (failedAssets > 0) flags.push(`缺资源${failedAssets}`)
       if (data.title?.startsWith('404')) flags.push('404')
       if (data.overflow > 0) flags.push(`溢出${data.overflow}px`)
       if (data.h1 !== 1) flags.push(`h1=${data.h1}`)
@@ -149,9 +190,25 @@ const list = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`)).json(
 
   ws.close()
   const bad = rows.filter(
-    (r) => r.overflow > 0 || r.h1 !== 1 || r.small > 0 || r.imgNoAlt > 0 || r.title?.startsWith('404'),
+    (r) =>
+      r.status >= 400 ||
+      r.assets > 0 ||
+      r.overflow > 0 ||
+      r.h1 !== 1 ||
+      r.small > 0 ||
+      r.imgNoAlt > 0 ||
+      r.title?.startsWith('404'),
   )
   console.log(`\n共 ${rows.length} 页，${bad.length} 页有问题`)
+
+  // 量具自检：一条判据静默失效，比它报错更危险（教训「某个轴对全部对象同时报警/
+  // 全部静默，先怀疑量具」）。所有页面都拿不到 HTTP 状态说明 Network 事件根本没收到，
+  // 这时 404 判据等于没跑，必须红而不是绿。
+  if (rows.length && rows.every((r) => !r.status)) {
+    console.error('审计失效：所有页面都没拿到主文档 HTTP 状态，404 判据未生效')
+    process.exitCode = 1
+    return
+  }
 
   // ★ 退出码必须反映结果：接进 CI 后靠它判定成败。
   // 早先这里只 console 不设 exitCode，脚本永远以 0 退出——

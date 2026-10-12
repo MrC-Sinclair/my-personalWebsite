@@ -177,14 +177,21 @@ export default {
    动作区可收缩可换行，放不下时整块换到标题下一行。
 
 **验证口径**：桌面与手机**各截一张**，并且**中英各跑一遍探针**
-（`LOCALE=en node .workbuddy/probe-subpage-layout.mjs`）。同一处缺陷可能只在
+（`LOCALE=en node scripts/probe-subpage-layout.mjs`）。同一处缺陷可能只在
 其中一个宽度或其中一个语言出现（页头布局只在 ≤767px 暴露，标签墙在英文侧才撑爆），
 只看一个维度会得出错误结论。
+
+**已经进 CI 的那部分**：`.github/workflows/deploy.yml` 的 audit job 会下载 build job 的
+发布物（`.output/public`），用 `scripts/serve-static.mjs` 按生产的 Caddy 语义起来，
+再以 390×844 逐页量横向溢出、h1 唯一、图片 alt、主文档 HTTP 状态、
+子资源（样式表/脚本）4xx 与 **40px 命中区**，20 风格 × 5 页 × 中英两个 locale 全跑。
+它不再起 `pnpm dev`——dev 的 HMR 会在 DOM 里留幽灵节点，量触控目标会出假阳性。
+构图其余几条（控件成组、`span N` 的轨道、头部动作区）机器判不了，仍要靠探针与截图。
 
 **量触控目标要量命中区，不是边框盒**：`getBoundingClientRect()` 会漏判三种真实情况——
 覆盖式链接（`::after` 用 `inset: 0` 铺满整行 / 整卡）、外扩命中区（`inset` 为负）、
 以及 `display: inline` 包住块级子元素时塌成 0 宽的链接。统一走
-`.workbuddy/hit-box.mjs` 的还原模型，别在探针里各自量 rect。
+`scripts/hit-box.mjs` 的还原模型，别在探针里各自量 rect。
 另外：inline 元素边框盒的高度随**字体度量**浮动（同一标题在字体加载完成前后差 6-10px），
 所以外扩量不要写死 px，用 `inset: calc(50% - 20px) 0` 以自身行盒反解出「凑满 40px」的量。
 
@@ -215,12 +222,13 @@ export default {
       长列表控件有平铺上限、窄屏页头元素显式定位、`span N` 的容器真的给出 N 条轨道、
       头部动作区不靠 `flex: none` + `overflow: hidden` 硬挤——桌面与手机各截一张确认
 - [ ] **手机触控目标**：390×844 下量「命中区」（不是边框盒）≥ 40×40，
-      用 `.workbuddy/probe-touch-targets.mjs`，量出来必须是 0
+      用 `scripts/probe-touch-targets.mjs`，量出来必须是 0。
+      这条已经进了 CI 闸门（见下方「验证口径」），改版后不必手工复跑
 - [ ] **详情页面包屑**：用共享层 `useDetailBreadcrumb(() => props.view)` 拿 `items`，
       渲染成 `<nav aria-label="面包屑">`，末级（当前标题）标 `aria-current="page"` 且不是链接
 - [ ] **代码块可读**：详情组件的 `:deep(pre)` 给了明确底色；深底的话必须加
       `:deep(.shiki span) { color: var(--shiki-dark) }`（共享层默认给的是亮色变量，
-      深底上会变成深字压深底）。用 `.workbuddy/probe-code.mjs <styleId>` 实测，
+      深底上会变成深字压深底）。用 `scripts/probe-code.mjs <styleId>` 实测，
       最低 token 对比度 ≥ 4.5:1
 - [ ] cspell 通过
 

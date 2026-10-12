@@ -232,7 +232,7 @@ function verify(required, optional) {
   if (bad.length) {
     throw new Error(
       `有路径不是 200：\n  ${bad.join('\n  ')}\n` +
-        '先判据再动手：截图空白/状态异常时，用 .workbuddy/eval-url.mjs 读 DOM，' +
+        '先判据再动手：截图空白/状态异常时，用 scripts/eval-url.mjs 读 DOM，' +
         '别急着重构产物。',
     )
   }

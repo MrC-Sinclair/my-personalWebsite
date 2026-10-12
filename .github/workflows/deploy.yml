@@ -40,9 +40,11 @@ concurrency:
   cancel-in-progress: true
 
 # ==================== 任务定义 ====================
-# 三个任务：quality（质量门禁）、audit（真实浏览器审计）、build（生成产物 + 传 artifact）。
-# 三者并行，构建失败或检查红掉时不该下载产物——发布动作在人这一侧，
-# 所以「先看这个 run 全绿，再跑 publish-cvm.mjs」是必须遵守的顺序。
+# 四个任务：quality（质量门禁）、build（生成产物 + 传 artifact）、
+# audit（对发布物跑真实浏览器审计，needs: build，中英两个 matrix）、
+# release（把产物发成免鉴权可下载的 cvm-latest 资产）。
+# quality 与 build 并行；audit 必须等 build，因为它量的就是 build 的那份产物。
+# 发布动作在人这一侧，所以「先看这个 run 全绿，再跑 publish-cvm.mjs」是必须遵守的顺序。
 jobs:
   # -------------------- 质量门禁任务 --------------------
   # 2026-10-07 补：此前 CI 只做 build + deploy，lint / test / spellcheck 全靠
@@ -99,64 +101,85 @@ jobs:
   # 为什么需要它：样式跨风格泄漏这类 bug，lint / 单测 / 构建**全都抓不到**
   #   —— 真实例子：flat-design 的非 scoped layout.css 曾把 neo-brutalism 的
   #      色带从 321px 撑到 417px，还随样式注入顺序时有时无。
-  # 这里跑 scripts/audit-a11y-mobile.mjs：移动端视口下量横向溢出、h1 数量、
-  # 触控目标尺寸、图片 alt——全是确定性数值断言，不需要基线图、没有像素
-  # diff 的跨平台抖动（字体渲染差异会让像素 diff 在 CI 上全红）。
   #
-  # 抽样而非全量：全量 100 页约 8 分钟且每个页面都要 dev 首次编译，
-  # CI 上划不来；抽样 6 个布局差异最大的风格（表格 / 极简 / 定宽像素 /
-  # 网格 / 玻璃 / 黏土），全量留给本地改版后跑。
+  # ★ 量的是 build job 的**发布物本身**：下载 site-cvm artifact（.output/public），
+  #   用 scripts/serve-static.mjs 复刻生产 Caddy 的行为起来量。
+  #   此前这里起的是 `pnpm dev`，而 dev 的 HMR 会在 DOM 里留幽灵节点
+  #   （空的重复 <a>、0×0 / 420×0 的链接），拿它量触控目标会出假阳性；
+  #   而且 SSG 产物里根本没有服务端，「可达性」这件事只能在静态宿主上量才算数。
+  #   静态服务器与 Caddy 对齐四条语义：目录无尾斜杠 → 308、目录 → index.html、
+  #   未命中 → 404（不做 SPA 回落）、base 前缀严格挂载。契约见 tests/serve-static.test.ts。
   #
-  # 暂不放进 deploy 的 needs：先在真实 CI 里观察是否 flaky，稳定后再考虑卡发布。
+  # 判据（scripts/audit-a11y-mobile.mjs）：横向溢出、h1 唯一、图片 alt、
+  # 主文档 HTTP 状态、子资源（样式表/脚本）4xx，以及 390×844 下**命中区** ≥ 40×40。
+  # 子资源那条是量具自检：挂载点与构建期 baseURL 不一致时页面照样出 h1，
+  # 但全局样式与 JS 全 404，量到的是半裸页面（实测凭空多出 4 条假报警）。
+  # 所以下面把同一个 SITE_BASE 同时喂给静态服务器与审计脚本。
+  # 命中区不是边框盒：覆盖式链接（::after 用 inset:0 铺满整行）、外扩命中区
+  #（inset 为负）、inline 包住块级子元素塌成 0 宽这三类，直接量
+  # getBoundingClientRect 会全判成不合格，模型统一在 scripts/hit-box.mjs。
+  # 24px 地板 + 整体豁免 inline 是 WCAG 2.5.8 的最低线，本站的无障碍红线是 40px。
+  #
+  # 全量 20 风格 × 5 页，中英各跑一遍：标签墙那类缺陷只在英文侧暴露
+  #（英文 chip 更宽、绕的行更多），只测中文会得出错误结论。
+  #
+  # 暂不放进 release 的 needs：release 发的是固定 tag cvm-latest，一旦审计被
+  # headless Chrome 的抖动带红，publish-cvm.mjs --latest 会**静默拉到上一个 commit
+  # 的产物**并部署上去 —— 比 CI 报红更危险。人工闸保留：发布前确认本 run 全绿。
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    needs: build
+    strategy:
+      # 一个语言红不该把另一个语言也取消掉，两边都要看得见结果
+      fail-fast: false
+      matrix:
+        locale: [zh, en]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 审计脚本零依赖（只用 Node 内置的 http/WebSocket/fetch），所以这个 job
+      # 不装 pnpm 也不装项目依赖，省掉一整轮 install
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Setup pnpm
-        run: |
-          npm i -g pnpm@11.25.0
-          pnpm --version
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
 
-      - name: 移动端 + 无障碍审计
-        env:
-          AUDIT_STYLES: dashboard,terminal,pixel,swiss,y2k,claymorphism
+      - name: Download 发布物
+        uses: actions/download-artifact@v4
+        with:
+          name: site-cvm
+          path: dist
+
+      # 产物必须是 build job 的那一份，空目录会让审计对着 404 全体报警
+      - name: 确认产物非空
+        shell: bash
         run: |
-          pnpm dev &
-          # 等 dev server 就绪（首次编译需要一点时间）
-          for i in $(seq 1 90); do
-            curl -sf "http://localhost:3000/my-personalWebsite/" > /dev/null && break
-            sleep 2
+          test -f dist/index.html || { echo "artifact 根目录没有 index.html"; exit 1; }
+          echo "条目数: $(find dist -type f | wc -l)"
+
+      - name: 移动端 + 无障碍审计（${{ matrix.locale }}）
+        shell: bash
+        env:
+          AUDIT_LOCALE: ${{ matrix.locale }}
+          # 与 build 用同一个 baseURL 前缀，否则页面里的资源链接与路由全部落空
+          SITE_BASE: ${{ vars.SITE_BASE_URL || '/' }}
+        run: |
+          PREFIX="${SITE_BASE%/}"
+          node scripts/serve-static.mjs dist 4173 "${SITE_BASE}" &
+          for i in $(seq 1 30); do
+            curl -sf "http://127.0.0.1:4173${PREFIX}/" > /dev/null && break
+            sleep 1
           done
-          chrome --headless=new --no-sandbox --disable-component-update --no-first-run --remote-debugging-port=9222 &
+          chrome --headless=new --no-sandbox --disable-component-update --no-first-run \
+            --remote-debugging-port=9222 &
           sleep 3
-          node scripts/audit-a11y-mobile.mjs http://localhost:3000/my-personalWebsite
+          CDP_PORT=9222 node scripts/audit-a11y-mobile.mjs "http://127.0.0.1:4173${PREFIX}"
 
   # -------------------- 构建任务 --------------------
   build:
@@ -222,8 +245,8 @@ jobs:
       # 用标准 upload-artifact（不是 upload-pages-artifact，那个只服务 Pages）：
       # 在这个 run 的 Summary 页面底部下载 site-cvm.zip，解压后交给
       #   node scripts/publish-cvm.mjs <解压目录>
-      # ⚠️ 下载前先确认本 run 的 quality / audit 两个 job 是绿的——
-      # 它们与 build 并行跑，红掉时产物虽然已经上传，但不该发布。
+      # ⚠️ 下载前先确认本 run 的 quality 与 audit 是绿的——audit 排在 build 之后
+      #（它要拿这份产物），所以「build 绿了」不等于「可以发了」。
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

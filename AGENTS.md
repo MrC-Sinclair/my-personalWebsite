@@ -42,7 +42,7 @@ composables/      → 业务逻辑层（useBlog, useProjects, useSiteConfig, use
                      注意：useSiteConfig.ts 文件导出的函数名为 useAppInfo()
 types/            → blog.ts, project.ts, site.ts
 utils/            → format.ts 等工具函数
-i18n/             → zh-CN.json, en-US.json（各 107 个 key，双向零缺失）
+i18n/             → zh-CN.json, en-US.json（各 112 个 key，双向零缺失）
 pages/            → style/[style]/[...slug].vue 薄壳路由（不含 UI，未知风格/页面抛 404）
 layouts/          → style.vue（裸布局）
 app.vue / error.vue → 全局壳与 404 页（自包含，不引用已删除的过渡层组件）
@@ -53,10 +53,21 @@ styles/
                      （可加 layout.css / composables/ / tones.ts）
                      页面键只允许 registry.ts 的 STYLE_SUB_PATHS：/about /projects /blog /contact
 tests/            → Vitest（styles-structure.test.ts 守结构契约）
-scripts/          → 仓库级脚本（无障碍审计、品牌图/预览生成、publish-cvm.mjs 发布到 CVM）
+scripts/          → 仓库级脚本：
+                     构建发布 —— publish-cvm.mjs（推到 CVM）、gen-brand-assets.mjs、gen-style-previews.mjs
+                     验证工具 —— audit-a11y-mobile.mjs（CI 审计入口，40px 命中区）、
+                                 hit-box.mjs（命中区还原模型，三个探针共用）、
+                                 serve-static.mjs（复刻 Caddy 语义起静态产物，CI 审计用）、
+                                 probe-subpage-layout.mjs / probe-touch-targets.mjs /
+                                 probe-target-detail.mjs / probe-code.mjs /
+                                 audit-all-styles.mjs / contrast.mjs / eval-url.mjs /
+                                 shot.mjs / dead-keys.mjs
+                     教训与量具口径见 docs/architecture/verification-pitfalls.md
 deploy/           → CVM 部署配置（Caddyfile + docker-compose.deploy.yml；certs/ 与 dist/ 不入库）
-docs/architecture/ → 架构文档（multi-style-ui.md 总纲 + style-authoring-guide.md 风格 SOP）
-.workbuddy/       → 排查脚本（CDP 截图 shot.mjs、对比度 contrast.mjs 等）+ memory/ 项目记忆
+docs/architecture/ → 架构文档（multi-style-ui.md 总纲 + style-authoring-guide.md 风格 SOP
+                     + verification-pitfalls.md 验证量具与踩坑口径）
+.workbuddy/       → 本地 AI 工作区，不入库（.gitignore）：逐日记忆 + 一次性脚本。
+                     可复用的工具与探针已迁到 scripts/，别再往这里放需要交给别人的东西
 ```
 
 ## 编码约定
@@ -182,7 +193,7 @@ Nuxt 3 使用 SSR，服务端和客户端必须渲染出相同的 HTML，否则�
 
 ### 无障碍
 
-- **正文/次要文字对比度 ≥ 4.5:1**：必须**实测**不能凭观感（脚本 `.workbuddy/contrast.mjs`）。暗色风格浅字压深底通常天然合格，真正易出问题的是**浅色风格的次要文字**
+- **正文/次要文字对比度 ≥ 4.5:1**：必须**实测**不能凭观感（脚本 `scripts/contrast.mjs`）。暗色风格浅字压深底通常天然合格，真正易出问题的是**浅色风格的次要文字**
 - **图标按钮必须有 aria-label**：值使用 `t()` 国际化，如 `:aria-label="t('common.closeMenu')"`
 - **纯图标按钮必须提供文字提示**：Nuxt UI 已移除，风格层自行实现 tooltip 或直接在按钮上给出可见文案；不要只依赖原生 `title` 属性（触屏设备无法触发）
 - **遮罩层/弹窗/抽屉需可关闭**：ESC 键、点击遮罩、关闭按钮三种方式至少支持两种
