@@ -108,6 +108,10 @@ const projectLinks = computed(() => {
 <style scoped>
 .detail {
   display: grid;
+  /* 必须显式给轨道：缺 grid-template-columns 时网格按内容收缩出隐式轨道，
+     正文里那个宽 pre 把轨道顶到 873px（视口 390），整列文字被 .metro-page 的
+     overflow-x: clip 裁掉——溢出量查不出来，用户也永远读不到右半截 */
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   padding: 8px;
 }
@@ -368,9 +372,6 @@ const projectLinks = computed(() => {
   gap: 4px;
   align-items: center;
   font-size: var(--fs-small);
-  /* .detail 是 grid，轨道会被同级元素的 min-content 撑到 791px（远超视口），
-     nav 跟着变宽后一行排开、右侧被裁。用视口宽度兜底，窄屏一定换行 */
-  max-width: min(100%, calc(100vw - 48px));
 }
 
 .crumb {

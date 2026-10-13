@@ -12,8 +12,11 @@
  *   5. 语言切换入口：本页是否存在指向「另一语言同一页」的链接。双语站点
  *      漏了这一条，英文页就成了孤岛（用户切不过去）。详情页没有导航，
  *      用 AUDIT_DETAIL 抽查时不参与这条判定
- *   6. 横向滚动带被挤成一条缝（实测宽 < 80 而内容比它宽 40 以上）：
+ *   6. 被 hidden/clip 藏起来的超宽内容（scrollWidth 量不到，用户读不到右半截）
+ *   7. 横向滚动带被挤成一条缝（实测宽 < 80 而内容比它宽 40 以上）：
  *      不溢出、命中区也够，但那条导航等于消失了
+ *   8. 正文列被压进网格的一格（最宽正文块 < 视口 40%）：不溢出、h1 也唯一，
+ *      只能直接量列宽——dashboard 详情页就这么整篇压进 18.8px 一列过
  *
  * 用法：MSYS_NO_PATHCONV=1 node scripts/audit-a11y-mobile.mjs [baseURL]
  */
@@ -164,8 +167,20 @@ async function main() {
             .filter((t) => (t.box.width || t.box.height) && getComputedStyle(t.el).visibility !== 'hidden');
           // 地板 40×40（项目无障碍红线），按整像素比较：soft-3d 的 .z-item 带 0.97 缩放
           //（层次深度的签名效果），投影后的 rect 比布局盒小 0.5px（实测 41 → 39.53），那不是命中区不足
+          // 行内链接豁免：正文里、目录里、面包屑里的文字链接，display 是 inline，
+          // 它的尺寸由所在文字行决定（WCAG 2.5.8 的 inline 例外）。
+          // 详情页一测就是 30 个这种「小目标」，硬撑到 40px 反而把正文排坏。
+          // 只豁免 display: inline —— inline-block / flex 是刻意做的盒子，仍然要达标。
+          const isInlineText = (el) => {
+            const p = el.parentElement;
+            if (!p) return false;
+            if (!/^(p|li|h1|h2|h3|h4|blockquote|dd|td)$/.test(p.tagName.toLowerCase())) return false;
+            return getComputedStyle(el).display === 'inline';
+          };
           const smallEls = targets.filter(
-            (t) => Math.round(t.box.width) < 40 || Math.round(t.box.height) < 40,
+            (t) =>
+              (Math.round(t.box.width) < 40 || Math.round(t.box.height) < 40) &&
+              !isInlineText(t.el),
           );
           const small = smallEls.length;
           // 明细无条件带上（最多 3 条）：只有 small>0 时才会被打印出去，
@@ -217,6 +232,60 @@ async function main() {
             }
             return v;
           };
+          // 「藏起来的溢出」要单独判：overflow-x: hidden/clip 的祖先会把超宽内容
+          // 剪掉，document.scrollWidth 因此量不到（metro 详情页实测正文 873px
+          // 压在 390 视口里、溢出判据全绿，而用户读不到右半截）。
+          // 只算 hidden/clip——auto/scroll 是设计上的滚动区，不算缺陷。
+          const hidesX = new Map();
+          const doesHide = (el) => {
+            let v = hidesX.get(el);
+            if (v === undefined) {
+              const ox = getComputedStyle(el).overflowX;
+              v = ox === 'hidden' || ox === 'clip';
+              hidesX.set(el, v);
+            }
+            return v;
+          };
+          const hiddenChain = new Map();
+          const isHiddenBy = (el) => {
+            let v = hiddenChain.get(el);
+            if (v === undefined) {
+              const p = el.parentElement;
+              v = p && p !== doc.documentElement ? doesHide(p) || isHiddenBy(p) : false;
+              hiddenChain.set(el, v);
+            }
+            return v;
+          };
+          const cutEls = vw > 0
+            ? [...document.querySelectorAll('main *, article *')]
+                .filter((el) => (el.textContent || '').trim().length > 24)
+                .map((el) => ({
+                  el: el,
+                  right: el.getBoundingClientRect().right,
+                  // 能不能滚要看整条祖先链，不能只看元素自己：代码块里的高亮
+                  // <span> 宽到 800+px 是正常的（它外面的 pre 才是滚动区），
+                  // 只查自己的 overflowX 会把 5 个风格的正文全误报成「藏起来的溢出」
+                  scrollable: (function up(e) {
+                    for (let q = e; q && q !== doc.documentElement; q = q.parentElement) {
+                      if (/auto|scroll/.test(getComputedStyle(q).overflowX)) return true;
+                    }
+                    return false;
+                  })(el),
+                }))
+                .filter((x) => x.right > vw + 8 && !x.scrollable && isHiddenBy(x.el))
+                .sort((a, b) => b.right - a.right)
+                .slice(0, 3)
+                .map((x) => {
+                  const el = x.el;
+                  return (
+                    el.tagName.toLowerCase() +
+                    '.' +
+                    (String(el.className).split(/\\s+/)[0] || '(无类名)') +
+                    '@' +
+                    Math.round(x.right)
+                  );
+                })
+            : [];
           const overEls = over > 0
             ? [...document.querySelectorAll('body *')]
                 .map((el) => ({ el: el, right: el.getBoundingClientRect().right, pos: getComputedStyle(el).position }))
@@ -255,6 +324,24 @@ async function main() {
           ).length;
           // 横向滚动带被挤成一条缝（判据与已知答案测试共用 scripts/squeeze-check.mjs）
           const squeezed = squeezedOf(document);
+          // 正文列过窄：dashboard 详情页的 .detail 没声明跨列，整篇正文被塞进
+          // 12 轨网格的一格里（实测 18.8px 宽、页面高 70006px）。它不溢出、
+          // h1 唯一、也不是滚动带，所以前面几条全绿——只能直接量正文列宽。
+          let widest = 0;
+          let blocks = 0;
+          for (const el of document.querySelectorAll('p, li, h2, h3, pre, blockquote')) {
+            const t = (el.textContent || '').trim();
+            if (t.length < 12) continue;
+            const cs = getComputedStyle(el);
+            if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+            const r = el.getBoundingClientRect();
+            if (r.width <= 0) continue;
+            blocks++;
+            if (r.width > widest) widest = r.width;
+          }
+          const narrowBody = blocks >= 3 && widest < vw * 0.4
+            ? Math.round(widest) + 'px/' + blocks + '块'
+            : '';
           return JSON.stringify({
             title: document.title,
             // 实测到的页面路径必须就是本次要审的那一页：多个驱动共用一个 tab 时
@@ -264,6 +351,8 @@ async function main() {
             href: location.pathname,
             overflow: over,
             overflowDetail: overEls,
+            cutOff: cutEls,
+            narrowBody,
             h1,
             targets: targets.length,
             small,
@@ -283,6 +372,10 @@ async function main() {
       // 样式/脚本 404 时这一页的量全部不可信，放在最前面提示
       if (failedAssets > 0) flags.push(`缺资源${failedAssets}`)
       if (data.title?.startsWith('404')) flags.push('404')
+      // 被 hidden/clip 藏起来的超宽内容：溢出判据量不到，只能单独报
+      if (data.cutOff?.length) flags.push(`藏起来的溢出${data.cutOff.join(' ; ')}`)
+      // 正文列被压进一格：不溢出、h1 也唯一，只能直接量列宽
+      if (data.narrowBody) flags.push(`正文列过窄${data.narrowBody}`)
       if (data.overflow > 0)
         flags.push(`溢出${data.overflow}px ${(data.overflowDetail || []).join(' ; ')}`)
       if (data.h1 !== 1) flags.push(`h1=${data.h1}`)
@@ -321,6 +414,8 @@ async function main() {
       r.status >= 400 ||
       r.assets > 0 ||
       r.overflow > 0 ||
+      (r.cutOff && r.cutOff.length > 0) ||
+      !!r.narrowBody ||
       r.h1 !== 1 ||
       r.small > 0 ||
       r.imgNoAlt > 0 ||
