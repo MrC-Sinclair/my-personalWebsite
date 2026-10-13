@@ -251,6 +251,9 @@ const navSections = computed(() => [
 /* —— 项目网格 —— */
 .project-grid {
   display: grid;
+  /* 显式给一条可收缩的轨道：缺了它，单列网格按卡片 max-content 定尺
+     （320 宽下实测轨道 250.6px 对容器 246px），卡片右缘被祖先裁掉 5px */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap);
 }
 
