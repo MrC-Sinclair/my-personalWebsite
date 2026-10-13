@@ -257,8 +257,11 @@ const projectLinks = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* 命中区地板：行高只撑出 23px 的纯文字链，高度下限得显式写 */
+  /* 命中区地板：行高只撑出 23px 的纯文字链，高度下限得显式写；
+     宽度同理——「在线演示↗」在 CI 的 Linux 回退字体下实测 39px */
   min-height: 40px;
+  min-width: 40px;
+  padding-inline: 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-accent);
