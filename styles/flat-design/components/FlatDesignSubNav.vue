@@ -8,7 +8,8 @@
   · 激活来源：首页的锚点链接无激活态（页面滚动自己会说话）；子页
     用路由匹配（aria-current='page'），否则用户不知道自己在哪一栏。
 
-  视觉沿用首页那根顶部栏：黄色几何方块站点标识 + 文字链接 + 画廊入口。
+  视觉沿用首页那根顶部栏：黄色几何方块站点标识 + 文字链接 + 画廊入口
+  + 一条语言切换扁平色块（行为走共享层 useLocaleSwitch）。
   当前子页把首页 hover 时的「强调色 + 底部色条」固定下来（扁平化只有
   纯颜色反馈，选中即用强调蓝色表达）。
 -->
@@ -32,9 +33,17 @@
         </NuxtLink>
       </nav>
 
-      <NuxtLink :to="localePath('/styles')" class="fd-subnav__gallery">
-        {{ t('styles.gallery.enter') }}
-      </NuxtLink>
+      <!-- 右侧动作组：语言切换 + 画廊入口（成组换行，不撑出横向滚动） -->
+      <div class="fd-subnav__actions">
+        <!-- 语言切换：扁平浅灰小色块，比强调蓝的画廊文字链低一级 -->
+        <NuxtLink class="fd-subnav__lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+
+        <NuxtLink :to="localePath('/styles')" class="fd-subnav__gallery">
+          {{ t('styles.gallery.enter') }}
+        </NuxtLink>
+      </div>
     </div>
   </header>
 </template>
@@ -43,6 +52,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -149,6 +160,53 @@ function isActive(path: string): boolean {
   border-bottom-color: var(--c-accent);
 }
 
+/* 右侧动作组：语言切换 + 画廊入口 */
+.fd-subnav__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(10px, 2vw, 22px);
+  min-width: 0;
+}
+
+/* 语言切换：扁平浅灰小色块（比画廊的强调蓝文字链低一级） */
+.fd-subnav__lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 0 10px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--c-bg);
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--transition),
+    background var(--transition);
+}
+
+.fd-subnav__lang:hover {
+  color: var(--c-text);
+  background: var(--c-border);
+}
+
+/* 扁平签名：按压只换色，不做位移 */
+.fd-subnav__lang:active {
+  color: var(--c-on-accent);
+  background: var(--c-accent);
+}
+
+.fd-subnav__lang:focus-visible {
+  outline: 3px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 /* 画廊入口：纯文字链接（与首页一致） */
 .fd-subnav__gallery {
   flex: none;
@@ -170,7 +228,8 @@ function isActive(path: string): boolean {
 }
 
 @media (max-width: 640px) {
-  .fd-subnav__gallery {
+  /* 窄屏把动作组整体推到右端（原先是画廊入口自己贴右） */
+  .fd-subnav__actions {
     margin-left: auto;
   }
 }

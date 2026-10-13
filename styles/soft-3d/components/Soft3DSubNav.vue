@@ -7,7 +7,8 @@
   子页之间没有可滚动的页内区块，锚点在子页上无处可去，两者不能混用。
 
   视觉沿用首页那颗漂浮玻璃胶囊：站点标识是受光小球 + 站名，
-  条目是悬浮小胶囊（hover 上抬 2px），画廊入口是糖果渐变胶囊。
+  条目是悬浮小胶囊（hover 上抬 2px），语言切换是哑光充气小胶囊
+  （行为走共享层 useLocaleSwitch），画廊入口是糖果渐变胶囊。
   当前子页用「糖果渐变实底」标出——soft-3d 里「选中」就是
   这颗物体被点亮，而不是换个描边。
 -->
@@ -31,6 +32,11 @@
         </li>
       </ul>
 
+      <!-- 语言切换：充气小胶囊（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="float-nav-lang" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
       <NuxtLink class="float-nav-gallery" :to="localePath('/styles')">
         {{ t('styles.gallery.title') }}
         <span class="float-nav-gallery-arrow" aria-hidden="true">→</span>
@@ -45,6 +51,8 @@ import Soft3DOrb from './Soft3DOrb.vue'
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -167,6 +175,41 @@ function isActive(path: string): boolean {
     inset 0 1px 3px rgb(255 255 255 / 0.35);
 }
 
+/* —— 语言切换：充气小胶囊 ——
+   比糖果渐变的画廊入口低一级：受光的哑光面 + 小尺度柔影，不上辉光 */
+.float-nav-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 14px;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--c-surface) 92%, var(--c-on-accent));
+  border: var(--border-w) solid var(--c-border);
+  border-radius: 999px;
+  box-shadow:
+    0 4px 10px color-mix(in srgb, var(--c-bg) 60%, transparent),
+    inset 0 1px 2px color-mix(in srgb, var(--c-on-accent) 16%, transparent);
+  transition: color var(--transition), background var(--transition), transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.float-nav-lang:hover {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-accent) 16%, transparent);
+  transform: translateY(-2px);
+}
+
+/* 按压：被压回空间深处（与全站同款 --shadow-press 配方） */
+.float-nav-lang:active {
+  transform: var(--press-transform);
+  box-shadow: var(--shadow-press);
+}
+
 /* —— 风格画廊入口：糖果渐变胶囊 —— */
 .float-nav-gallery {
   display: inline-flex;
@@ -228,6 +271,7 @@ function isActive(path: string): boolean {
 @media (prefers-reduced-motion: reduce) {
   .float-nav-brand,
   .float-nav-link,
+  .float-nav-lang,
   .float-nav-gallery,
   .float-nav-gallery-arrow {
     transition: none;
@@ -235,8 +279,10 @@ function isActive(path: string): boolean {
 
   .float-nav-brand:hover,
   .float-nav-link:hover,
+  .float-nav-lang:hover,
   .float-nav-gallery:hover,
-  .float-nav-gallery:hover .float-nav-gallery-arrow {
+  .float-nav-gallery:hover .float-nav-gallery-arrow,
+  .float-nav-lang:active {
     transform: none;
   }
 }

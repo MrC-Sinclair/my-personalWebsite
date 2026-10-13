@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   漂浮在场景上方的玻璃胶囊导航（sticky 吸顶）：左侧站点标识
   （光点 + 站名），右侧页内锚点（原生 <a href="#...">，全局
-  已有平滑滚动与锚点偏移补偿）与「风格画廊」外跳入口。
+  已有平滑滚动与锚点偏移补偿）与「风格画廊」外跳入口，画廊入口
+  左侧另有一条折射语言切换小胶囊（行为走共享层 useLocaleSwitch）。
   窄屏时锚点行横向滚动（两端渐隐遮罩提示可滑），玻璃质感
   与触控目标（≥40px）在移动端完整保留。
 -->
@@ -24,6 +25,11 @@
         </ul>
       </div>
 
+      <!-- 语言切换：折射小胶囊（行为来自共享层 useLocaleSwitch） -->
+      <NuxtLink class="lang" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
       <NuxtLink class="gallery" :to="localePath('/styles')">
         {{ t('styles.gallery.enter') }}
       </NuxtLink>
@@ -34,6 +40,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 </script>
 
 <style scoped>
@@ -163,6 +171,43 @@ const localePath = useLocalePath()
   transform: var(--press-transform);
 }
 
+/* 语言切换：无描边的折射胶囊（比画廊的强调色描边低一级） */
+.lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-size: var(--fs-base);
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--c-surface);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-text) 22%, transparent);
+  transition:
+    color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.lang:hover,
+.lang:focus-visible {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-text) 12%, transparent);
+}
+
+.lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.lang:active {
+  transform: var(--press-transform);
+}
+
 /* 画廊入口：强调色描边玻璃小胶囊 */
 .gallery {
   display: inline-flex;
@@ -199,25 +244,73 @@ const localePath = useLocalePath()
 
 /* 窄屏：画廊入口退化为紧凑胶囊，锚点行横向滚动 */
 @media (max-width: 640px) {
+  /* 两侧留白与条目间距收紧，为语言切换让出 320 宽的位 */
+  .nav-wrap {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
   .glass {
-    gap: 8px;
+    gap: 6px;
+    padding-right: 8px;
     padding-left: 14px;
+    /* 锚点带改独占一行（见下方 .links-scroll 的 order） */
+    flex-wrap: wrap;
+  }
+
+  /* 锚点带不能和站名 + 语言 + 画廊抢同一行：挤窄后一次只露一小截，
+     键盘 Tab 过去会停在可视区外（浏览器不会替 overflow 带滚进视野，已实测） */
+  .links-scroll {
+    order: 3;
+    flex: 1 1 100%;
   }
 
   .links {
     justify-content: flex-start;
+  }
+
+  /* 站名不参与收缩：压力交给锚点那条横向滚动带（它本来就是 overflow-x: auto）。
+     早先这里写 flex: 0 1 auto + 截断，实测 390 宽就把站名削成「Si…」；
+     命中区塌到 23px 那个红线问题用 min-width 兜住就够，不必牺牲站名 */
+  .brand {
+    gap: 8px;
+    flex: none;
+    min-width: 40px;
+  }
+
+  .brand-orb {
+    flex: none;
+  }
+
+  .brand-name {
+    font-size: var(--fs-small);
+  }
+
+  .lang,
+  .gallery {
+    font-size: var(--fs-small);
+  }
+
+  .lang {
+    padding: 8px 10px;
+  }
+
+  .gallery {
+    padding: 8px 12px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .brand,
   .link,
+  .lang,
   .gallery {
     transition: none;
   }
 
   .brand:active,
   .link:active,
+  .lang:active,
   .gallery:active {
     transform: none;
   }

@@ -2,7 +2,8 @@
   NeumorphismTopBar - neumorphism 风格顶部导航条
   ------------------------------------------------------------
   一块浮在同色材料上方的凸起薄板：站点标识 + 页内锚点胶囊 +
-  「风格画廊」入口。锚点胶囊为凸起小件，当前区块的胶囊呈
+  「风格画廊」入口 + 语言切换小胶囊（低一级，行为走共享层
+  useLocaleSwitch）。锚点胶囊为凸起小件，当前区块的胶囊呈
   「压进材料」的内凹态（本风格的激活签名）。
   滚动激活态复用共享层 useActiveSection（观察 [data-section]
   元素、区块跨越视口中部「阅读线」时激活，observer 清理在其
@@ -33,9 +34,17 @@
       </ul>
     </nav>
 
-    <NuxtLink class="gallery-btn" :to="localePath('/styles')">
-      {{ t('styles.gallery.title') }}
-    </NuxtLink>
+    <!-- 动作组：语言切换 + 画廊入口（整组右靠，窄屏一起换行） -->
+    <div class="top-actions">
+      <!-- 语言切换：低一级的凸起小胶囊（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="lang-btn" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
+      <NuxtLink class="gallery-btn" :to="localePath('/styles')">
+        {{ t('styles.gallery.title') }}
+      </NuxtLink>
+    </div>
   </header>
 </template>
 
@@ -49,6 +58,8 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 // 滚动激活态走共享层 useActiveSection：观察 [data-section] 元素、
 // 区块跨越视口中部「阅读线」时激活，observer 清理在其内部完成
@@ -154,13 +165,58 @@ const { activeId } = useActiveSection()
   outline-offset: 3px;
 }
 
+/* —— 动作组：语言切换 + 画廊（整组靠右，窄屏整组换行不溢出） —— */
+.top-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* —— 语言切换：凸起小胶囊（画廊的低一级：次要字色 + 更窄内边距） —— */
+.lang-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--c-bg);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  transition:
+    box-shadow var(--transition),
+    color var(--transition);
+}
+
+.lang-btn:hover {
+  color: var(--c-accent);
+}
+
+/* 按压签名：凹进材料里 */
+.lang-btn:active {
+  color: var(--c-accent);
+  box-shadow: var(--shadow-press);
+}
+
+.lang-btn:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
 /* —— 风格画廊入口 —— */
 .gallery-btn {
   display: inline-flex;
   flex: none;
   align-items: center;
   min-height: 40px;
-  margin-left: auto;
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -202,13 +258,14 @@ const { activeId } = useActiveSection()
     justify-content: center;
   }
 
-  .gallery-btn {
+  .top-actions {
     margin-left: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .anchor-chip,
+  .lang-btn,
   .gallery-btn {
     transition: none;
   }

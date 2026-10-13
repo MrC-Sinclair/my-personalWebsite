@@ -3,8 +3,9 @@
   ------------------------------------------------------------
   三要素：站点标识（点击回顶部）+ 页内锚点（关于 / 项目 /
   文章 / 联系，原生 <a href="#id">，平滑滚动由全局 CSS 提供）
-  + 风格画廊入口（localePath 包裹）。桌面端单行；窄屏回退为
-  两行（标识 + 画廊一行，锚点横向滚动一行）。链接反馈克制：
+  + 风格画廊入口（localePath 包裹）。右侧动作组里还有一条语言切换
+  文字链（行为走共享层 useLocaleSwitch，外观随锚点同族）。桌面端单行；
+  窄屏回退为两行（标识 + 动作组一行，锚点横向滚动一行）。链接反馈克制：
   下划线由透明渐显为强调色。safe-top 适配刘海屏。
 -->
 <template>
@@ -23,9 +24,16 @@
         <a class="hd-link" href="#contact">{{ t('nav.contact') }}</a>
       </nav>
 
-      <NuxtLink class="hd-gallery" :to="localePath('/styles')">
-        {{ t('styles.gallery.title') }}
-      </NuxtLink>
+      <div class="hd-actions">
+        <!-- 语言切换：安静文字链，不给它边框——边框留给画廊胶囊这一个导航终点 -->
+        <NuxtLink class="hd-lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+
+        <NuxtLink class="hd-gallery" :to="localePath('/styles')">
+          {{ t('styles.gallery.title') }}
+        </NuxtLink>
+      </div>
     </div>
   </header>
 </template>
@@ -33,6 +41,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 </script>
 
 <style scoped>
@@ -148,7 +158,55 @@ const localePath = useLocalePath()
   transform: var(--press-transform);
 }
 
-/* —— 窄屏回退：两行布局（标识 + 画廊 / 锚点横向滚动行） —— */
+/* —— 右侧动作组：语言切换 + 画廊入口（网格第三列，内部自己排） —— */
+.hd-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* 语言切换：与锚点同族的安静文字链，命中区不靠字形撑 */
+.hd-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 10px;
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--c-muted);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  white-space: nowrap;
+  transition:
+    color var(--transition),
+    text-decoration-color var(--transition);
+}
+
+.hd-lang:hover {
+  color: var(--c-text);
+  text-decoration-color: var(--c-accent);
+}
+
+.hd-lang:active {
+  transform: var(--press-transform);
+}
+
+/* —— 键盘可达：吸顶条此前没有任何 :focus-visible 表现，Tab 过去看不见落在哪 —— */
+.brand:focus-visible,
+.hd-link:focus-visible,
+.hd-lang:focus-visible,
+.hd-gallery:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* —— 窄屏回退：两行布局（标识 + 动作组 / 锚点横向滚动行） —— */
 @media (max-width: 767px) {
   .hd-inner {
     grid-template-columns: 1fr auto;
@@ -156,8 +214,19 @@ const localePath = useLocalePath()
     padding: 10px var(--space) 6px;
   }
 
+  /* ★ 三个位置全部写死（与 MinimalismSubNav 同一条 SOP）：动作组在 DOM 里排最后，
+     只靠自动放置会被推到第 3 行、并落进 1fr 那列被拉成整宽。 */
+  .brand {
+    grid-area: 1 / 1;
+  }
+
+  .hd-actions {
+    grid-area: 1 / 2;
+    justify-self: end;
+  }
+
   .hd-nav {
-    grid-column: 1 / -1;
+    grid-area: 2 / 1 / 3 / 3;
     justify-content: flex-start;
     padding-bottom: 4px;
     overflow-x: auto;
@@ -172,12 +241,14 @@ const localePath = useLocalePath()
 @media (prefers-reduced-motion: reduce) {
   .brand,
   .hd-link,
+  .hd-lang,
   .hd-gallery {
     transition: none;
   }
 
   .brand:active,
   .hd-link:active,
+  .hd-lang:active,
   .hd-gallery:active {
     transform: none;
   }

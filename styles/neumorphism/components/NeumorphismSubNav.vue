@@ -9,7 +9,8 @@
     可观察，改用路由匹配（aria-current='page'）。
 
   视觉沿用首页那块「凸起薄板」：材料小圆点站点标识、凸起胶囊条目、
-  画廊入口。当前子页的激活态与首页滚动激活态同一套——**压进材料里**
+  画廊入口与语言切换小胶囊（低一级，行为走共享层 useLocaleSwitch）。
+  当前子页的激活态与首页滚动激活态同一套——**压进材料里**
   （inset 阴影）。新拟态只有凸起/凹陷两态，选中就是被按下去。
 -->
 <template>
@@ -35,9 +36,17 @@
       </ul>
     </nav>
 
-    <NuxtLink class="gallery-btn" :to="localePath('/styles')">
-      {{ t('styles.gallery.title') }}
-    </NuxtLink>
+    <!-- 动作组：语言切换 + 画廊入口（整组右靠，窄屏一起换行） -->
+    <div class="top-actions">
+      <!-- 语言切换：低一级的凸起小胶囊（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="lang-btn" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
+      <NuxtLink class="gallery-btn" :to="localePath('/styles')">
+        {{ t('styles.gallery.title') }}
+      </NuxtLink>
+    </div>
   </header>
 </template>
 
@@ -45,6 +54,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -166,13 +177,58 @@ function isActive(path: string): boolean {
   outline-offset: 3px;
 }
 
+/* —— 动作组：语言切换 + 画廊（整组靠右，窄屏整组换行不溢出） —— */
+.top-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* —— 语言切换：凸起小胶囊（画廊的低一级：次要字色 + 更窄内边距） —— */
+.lang-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--c-bg);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  transition:
+    box-shadow var(--transition),
+    color var(--transition);
+}
+
+.lang-btn:hover {
+  color: var(--c-accent);
+}
+
+/* 按压签名：凹进材料里 */
+.lang-btn:active {
+  color: var(--c-accent);
+  box-shadow: var(--shadow-press);
+}
+
+.lang-btn:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
 /* —— 风格画廊入口 —— */
 .gallery-btn {
   display: inline-flex;
   flex: none;
   align-items: center;
   min-height: 40px;
-  margin-left: auto;
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -214,13 +270,14 @@ function isActive(path: string): boolean {
     justify-content: center;
   }
 
-  .gallery-btn {
+  .top-actions {
     margin-left: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .anchor-chip,
+  .lang-btn,
   .gallery-btn {
     transition: none;
   }

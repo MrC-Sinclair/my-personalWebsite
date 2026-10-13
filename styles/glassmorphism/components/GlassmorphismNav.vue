@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   固定悬浮在页面顶部的「玻璃胶囊」：品牌标识（点击回到页顶）
   + 页内锚点（原生锚点跳转，走全局平滑滚动）+ 「风格画廊」
-  入口（localePath('/styles')，不写死路径）。
+  入口（localePath('/styles')，不写死路径）+ 一条磨砂语言切换
+  小胶囊（行为走共享层 useLocaleSwitch）。
   移动端：胶囊近似全宽，锚点行横向滚动；全部交互目标 ≥ 40px。
 -->
 <template>
@@ -21,6 +22,11 @@
           <a class="anchor" :href="`#${item.id}`">{{ item.label }}</a>
         </li>
       </ul>
+
+      <!-- 语言切换：磨砂小胶囊（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="lang" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
 
       <!-- 风格画廊入口 -->
       <NuxtLink class="gallery-pill" :to="localePath('/styles')">
@@ -44,6 +50,8 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 </script>
 
 <style scoped>
@@ -149,6 +157,44 @@ const localePath = useLocalePath()
   transform: var(--press-transform);
 }
 
+/* 语言切换：磨砂小胶囊——复用胶囊自身的透光材质，不另加一层 blur */
+.lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 12px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--c-muted);
+  text-decoration: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c-on-accent) 45%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-on-accent) 70%, transparent);
+  transition:
+    color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.lang:hover,
+.lang:focus-visible {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-on-accent) 78%, transparent);
+}
+
+.lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.lang:active {
+  transform: var(--press-transform);
+}
+
 /* 风格画廊入口：极光渐变胶囊按钮（签名 Glow） */
 .gallery-pill {
   display: inline-flex;
@@ -181,10 +227,37 @@ const localePath = useLocalePath()
   .nav-capsule {
     gap: 4px;
     padding-left: 12px;
+    /* 锚点带改独占一行（见下方 .anchors 的 order） */
+    flex-wrap: wrap;
+  }
+
+  /* 锚点带不能和三个动作件抢一行：实测它从 154px 被挤到 90px，
+     而带内导航内容宽 248px —— 一次只露三分之一，
+     键盘 Tab 过去还会停在可视区外（浏览器不会替 overflow 带滚进视野，已实测） */
+  .anchors {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .lang {
+    padding: 6px 9px;
+  }
+
+  /* 站名不参与收缩：压力交给锚点那条横向滚动带（它本来就是 overflow-x: auto）。
+     早先这里写 flex: 0 1 auto + 截断，实测 390 宽就把站名削成「Si…」；
+     命中区塌到 23px 那个红线问题用 min-width 兜住就够，不必牺牲站名 */
+  .brand {
+    flex: none;
+    min-width: 40px;
+  }
+
+  .brand-dot {
+    flex: none;
   }
 
   .brand-name {
     font-size: var(--fs-small);
+    white-space: nowrap;
   }
 
   .gallery-pill {
@@ -195,11 +268,13 @@ const localePath = useLocalePath()
 @media (prefers-reduced-motion: reduce) {
   .brand,
   .anchor,
+  .lang,
   .gallery-pill {
     transition: none;
   }
 
   .anchor:active,
+  .lang:active,
   .gallery-pill:active {
     transform: none;
   }

@@ -2,6 +2,7 @@
   MetroSiteHeader - Metro 风格顶部栏
   ------------------------------------------------------------
   站点标识（回顶部原生锚点）+ 页内锚点导航 + 风格画廊小 Tile 入口。
+  右侧另有一枚中性色块的语言切换入口（行为走共享层 useLocaleSwitch）。
   本风格是单页纵向信息版面，移动端收起锚点导航（无需抽屉菜单），
   所有区块随页面自然滚动到达。
 -->
@@ -17,6 +18,11 @@
         </a>
       </nav>
 
+      <!-- 语言切换：中性小色块 Tile（画廊橙色块的低一级版本） -->
+      <NuxtLink class="hdr__lang" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
       <!-- 风格画廊入口：站内路由，localePath 包裹 -->
       <MetroTile :to="localePath('/styles')" variant="orange" class="hdr__gallery">
         <span>{{ t('styles.gallery.enter') }}</span>
@@ -31,6 +37,8 @@ import MetroTile from './MetroTile.vue'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 页内锚点导航项 */
 const navLinks = computed(() => [
@@ -52,6 +60,8 @@ const navLinks = computed(() => [
 
 .hdr__inner {
   display: flex;
+  /* 320px 窄屏下标识 + 语言块 + 画廊块可能超一行：允许换行防横向溢出 */
+  flex-wrap: wrap;
   align-items: center;
   gap: clamp(14px, 3vw, 28px);
   max-width: var(--page-w);
@@ -105,6 +115,38 @@ const navLinks = computed(() => [
   border-bottom-color: var(--c-accent);
 }
 
+/* 语言切换：中性表面色块（画廊橙块的下一级；命中区与字形宽度解耦） */
+.hdr__lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 10px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-text);
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--c-surface);
+  border: var(--border-w) solid var(--c-border);
+  transition:
+    color var(--transition),
+    background-color var(--transition);
+}
+
+.hdr__lang:hover {
+  color: var(--c-accent);
+  background: color-mix(in srgb, var(--c-accent) 12%, var(--c-surface));
+}
+
+.hdr__lang:active {
+  transform: var(--press-transform);
+}
+
 /* 画廊入口：压扁成小条 Tile（复用 MetroTile 的色块/倾斜签名） */
 .hdr__gallery {
   flex-direction: row;
@@ -120,6 +162,11 @@ const navLinks = computed(() => [
 .hdr__brand:focus-visible,
 .hdr__link:focus-visible {
   outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.hdr__lang:focus-visible {
+  outline: 2px solid var(--c-accent);
   outline-offset: 2px;
 }
 

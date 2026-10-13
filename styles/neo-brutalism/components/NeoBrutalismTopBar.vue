@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   吸顶导航：左侧黑底反白的站点标识（点击回站点首页），
   中部是页内锚点（原生 <a href="#id">，平滑滚动由全局 CSS 负责），
-  右侧「风格画廊」入口（海报黄按钮）。
+  右侧「风格画廊」入口（海报黄按钮）+ 语言切换硬影小硬片
+  （行为走共享层 useLocaleSwitch，比黄块低一级）。
   窄屏时锚点横向滚动，触控目标全部 ≥ 40px。
 -->
 <template>
@@ -20,6 +21,11 @@
         </a>
       </nav>
 
+      <!-- 语言切换：白底描边 + 小硬影的硬片（画廊黄块的下一级；行为走共享层） -->
+      <NuxtLink class="lang-btn" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
       <NuxtLink class="gallery-btn" :to="localePath('/styles')">
         {{ t('styles.gallery.enter') }}
       </NuxtLink>
@@ -30,6 +36,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 页内锚点清单（label 随语言更新） */
 const anchors = computed(() => [
@@ -135,6 +143,42 @@ const anchors = computed(() => [
   transform: var(--press-transform);
 }
 
+/* —— 语言切换：白底描边 + 2px 小硬影的硬片（比海报黄实心钮低一级） —— */
+.lang-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--c-text);
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--c-surface);
+  border: var(--border-w) solid var(--c-border);
+  box-shadow: var(--shadow-press);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    color var(--transition);
+}
+
+.lang-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow);
+  color: var(--c-muted);
+}
+
+.lang-btn:active {
+  transform: var(--press-transform);
+  box-shadow: var(--shadow-press);
+}
+
 /* —— 风格画廊入口：海报黄实心按钮 —— */
 .gallery-btn {
   display: inline-flex;
@@ -168,6 +212,7 @@ const anchors = computed(() => [
 /* —— 键盘焦点：电光蓝描边 —— */
 .brand:focus-visible,
 .anchor:focus-visible,
+.lang-btn:focus-visible,
 .gallery-btn:focus-visible {
   outline: var(--border-w) solid var(--c-accent-2);
   outline-offset: 3px;
@@ -189,17 +234,20 @@ const anchors = computed(() => [
 @media (prefers-reduced-motion: reduce) {
   .brand,
   .anchor,
+  .lang-btn,
   .gallery-btn {
     transition: none;
   }
 
   .brand:hover,
+  .lang-btn:hover,
   .gallery-btn:hover {
     transform: none;
   }
 
   .brand:active,
   .anchor:active,
+  .lang-btn:active,
   .gallery-btn:active {
     transform: none;
   }

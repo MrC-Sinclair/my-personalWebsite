@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   老游戏主菜单的样子：站点标识（▶ 光标 + 站点名，点击回顶部）
   + 页内锚点菜单项（原生 <a href="#区块id">，hover 色块反转）
-  + 风格画廊入口（站内路由，localePath 包裹，草绿底强调项）。
+  + 语言切换方块键 + 风格画廊入口（站内路由，localePath 包裹，草绿底强调项）。
+  语言切换行为走共享层 useLocaleSwitch。
   吸顶显示，移动端菜单项自动换行（HUD 签名保留）。
 -->
 <template>
@@ -21,6 +22,11 @@
           <span class="hud-cursor" aria-hidden="true">▶</span>
           {{ item.label }}
         </a>
+        <!-- 语言切换：普通 HUD 方块键（比草绿画廊键低一级；行为走共享层） -->
+        <NuxtLink class="hud-item hud-item--lang" :to="targetPath" :aria-label="t('common.language')">
+          <span class="hud-cursor" aria-hidden="true">▶</span>
+          {{ targetLabel }}
+        </NuxtLink>
         <NuxtLink :to="localePath('/styles')" class="hud-item hud-item--accent">
           <span class="hud-cursor" aria-hidden="true">▶</span>
           {{ t('styles.gallery.enter') }}
@@ -38,6 +44,8 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 </script>
 
 <style scoped>
@@ -122,6 +130,12 @@ const localePath = useLocalePath()
 
 .hud-item:active {
   transform: var(--press-transform);
+}
+
+/* 语言切换键：像素字出窄方块，40px 命中下限显式兜住并与字形宽度解耦 */
+.hud-item--lang {
+  justify-content: center;
+  min-width: 40px;
 }
 
 /* 风格画廊入口：草绿底的强调菜单项 */

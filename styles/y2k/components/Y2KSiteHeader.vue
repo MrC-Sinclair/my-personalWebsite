@@ -2,8 +2,8 @@
   Y2KSiteHeader - y2k 风格导航头部
   ------------------------------------------------------------
   吸顶「透明塑料 + 铬边」导航条：铬球站点标识（页内锚点回顶）
-  + 页内锚点胶囊导航（窄屏横向滚动）+ 「风格画廊」入口
-  （localePath('/styles')）。
+  + 页内锚点胶囊导航（窄屏横向滚动）+ 右侧动作组
+  （语言切换的铬描边空心胶囊 + 「风格画廊」辉光胶囊）。
   滚动激活态复用共享层 useActiveSection（观察 [data-section]
   元素、区块跨越视口中部「阅读线」时激活，observer 清理在其
   内部完成）；滚动激活属视图侧状态。
@@ -30,11 +30,18 @@
         </a>
       </nav>
 
-      <!-- 风格画廊入口 -->
-      <NuxtLink class="hd-gallery" :to="localePath('/styles')">
-        <span class="hd-gallery-star" aria-hidden="true">✦</span>
-        {{ t('styles.gallery.title') }}
-      </NuxtLink>
+      <!-- 右侧动作组：语言切换（安静铬描边胶囊）+ 画廊入口（辉光胶囊）
+           两者成组换行，极窄屏不会把画廊单独甩到行尾 -->
+      <div class="hd-actions">
+        <NuxtLink class="hd-lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+
+        <NuxtLink class="hd-gallery" :to="localePath('/styles')">
+          <span class="hd-gallery-star" aria-hidden="true">✦</span>
+          {{ t('styles.gallery.title') }}
+        </NuxtLink>
+      </div>
     </div>
   </header>
 </template>
@@ -42,12 +49,14 @@
 <script setup lang="ts">
 /**
  * @file Y2K 风格的站点导航头部组件
- * @description 塑料质感吸顶条：锚点导航 + 滚动激活态 + 画廊入口。
+ * @description 塑料质感吸顶条：锚点导航 + 滚动激活态 + 语言切换 + 画廊入口。
  */
 import { useActiveSection } from '~/composables/useActiveSection'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层（composables 自动导入，无需 import）
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 页内锚点（id 与首页各区块的 id/data-section 对应，label 随语言更新） */
 const anchors = computed(() => [
@@ -207,6 +216,53 @@ const { activeId } = useActiveSection()
     0 0 14px rgb(139 123 255 / 0.45);
 }
 
+/* —— 右侧动作组：语言切换 + 画廊入口（成组换行，极窄屏不把两者拆散） —— */
+.hd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* —— 语言切换：铬描边空心胶囊，无辉光无填充（比画廊低一级） —— */
+.hd-lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 14px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--c-muted);
+  white-space: nowrap;
+  text-decoration: none;
+  border: var(--border-w) solid color-mix(in srgb, var(--c-border) 45%, transparent);
+  border-radius: 999px;
+  transition:
+    color var(--transition),
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.hd-lang:hover {
+  color: var(--c-text);
+  border-color: color-mix(in srgb, var(--c-accent) 60%, transparent);
+  /* 塑料透光：正文色 8% 当薄雾底，不新造色值 */
+  background: color-mix(in srgb, var(--c-text) 8%, transparent);
+}
+
+.hd-lang:active {
+  transform: var(--press-transform);
+}
+
+.hd-lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 /* —— 风格画廊入口（品红辉光塑料胶囊） —— */
 .hd-gallery {
   display: inline-flex;
@@ -247,7 +303,7 @@ const { activeId } = useActiveSection()
   color: var(--c-accent-2);
 }
 
-/* —— 窄屏：画廊入口收为星形胶囊（省横向空间） —— */
+/* —— 窄屏：画廊入口与语言胶囊收窄留白 —— */
 @media (max-width: 767px) {
   .hd-inner {
     gap: 10px;
@@ -255,6 +311,10 @@ const { activeId } = useActiveSection()
 
   .hd-gallery {
     padding: 8px 12px;
+  }
+
+  .hd-lang {
+    padding: 6px 12px;
   }
 }
 
@@ -276,6 +336,7 @@ const { activeId } = useActiveSection()
 
 @media (prefers-reduced-motion: reduce) {
   .hd-link,
+  .hd-lang,
   .hd-gallery,
   .brand-name,
   .hd-gallery-star {
@@ -284,6 +345,7 @@ const { activeId } = useActiveSection()
   }
 
   .hd-link:active,
+  .hd-lang:active,
   .hd-gallery:active {
     transform: none;
   }

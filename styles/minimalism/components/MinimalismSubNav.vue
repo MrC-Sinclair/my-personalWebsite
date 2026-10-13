@@ -8,7 +8,8 @@
 
   视觉沿用首页导航的语言：纸面同色吸顶条 + hairline 底线、
   站点标识带唯一的强调色圆点、链接反馈是「下划线由透明渐显」，
-  画廊入口仍是唯一带边框的胶囊。子页多一项：当前页以强调色标出
+  画廊入口仍是唯一带边框的胶囊（语言切换做成它左边的安静文字链，
+  行为来自共享层 useLocaleSwitch）。子页多一项：当前页以强调色标出
   （minimalism 不靠色块，只靠字色与下划线——克制的表达）。
 -->
 <template>
@@ -31,9 +32,15 @@
         </NuxtLink>
       </nav>
 
-      <NuxtLink class="hd-gallery" :to="localePath('/styles')">
-        {{ t('styles.gallery.title') }}
-      </NuxtLink>
+      <div class="hd-actions">
+        <NuxtLink class="hd-lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+
+        <NuxtLink class="hd-gallery" :to="localePath('/styles')">
+          {{ t('styles.gallery.title') }}
+        </NuxtLink>
+      </div>
     </div>
   </header>
 </template>
@@ -42,6 +49,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -177,6 +186,54 @@ function isActive(path: string): boolean {
   transform: var(--press-transform);
 }
 
+/* —— 右侧动作组：语言切换 + 画廊入口（网格第三列） —— */
+.hd-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* 语言切换：与子页链接同族的安静文字链，命中区不靠字形撑 */
+.hd-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 10px;
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--c-muted);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  white-space: nowrap;
+  transition:
+    color var(--transition),
+    text-decoration-color var(--transition);
+}
+
+.hd-lang:hover {
+  color: var(--c-text);
+  text-decoration-color: var(--c-accent);
+}
+
+.hd-lang:active {
+  transform: var(--press-transform);
+}
+
+/* —— 键盘可达：吸顶条此前没有 :focus-visible 表现 —— */
+.brand:focus-visible,
+.hd-link:focus-visible,
+.hd-lang:focus-visible,
+.hd-gallery:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 /* —— 窄屏回退：两行布局（与首页一致） —— */
 @media (max-width: 767px) {
   .hd-inner {
@@ -192,7 +249,7 @@ function isActive(path: string): boolean {
     grid-area: 1 / 1;
   }
 
-  .hd-gallery {
+  .hd-actions {
     grid-area: 1 / 2;
     justify-self: end;
   }
@@ -213,12 +270,14 @@ function isActive(path: string): boolean {
 @media (prefers-reduced-motion: reduce) {
   .brand,
   .hd-link,
+  .hd-lang,
   .hd-gallery {
     transition: none;
   }
 
   .brand:active,
   .hd-link:active,
+  .hd-lang:active,
   .hd-gallery:active {
     transform: none;
   }

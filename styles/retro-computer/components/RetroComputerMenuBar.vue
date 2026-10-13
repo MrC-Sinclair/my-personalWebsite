@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   桌面隐喻的「系统菜单栏」：固定在视口顶部，左侧为站点标识
   （四色旗帜 + 站点名），中间为页内锚点菜单（悬停即深蓝反白，
-  像真实菜单项的选中高亮），右侧为「风格画廊」入口 + 系统时钟。
+  像真实菜单项的选中高亮），右侧为「风格画廊」入口 + 系统时钟，
+  画廊左边再挂一枚语言切换小芯片（行为走共享层 useLocaleSwitch）。
   时钟为客户端专属：SSR 首帧不渲染，onMounted 起定时器，
   onUnmounted 成对清理；窄屏隐藏中间锚点菜单（回退布局不回退设计）。
 -->
@@ -23,6 +24,10 @@
       </nav>
 
       <div class="rc-menubar__right">
+        <!-- 语言切换：凹陷托盘小芯片，比画廊入口低一级 -->
+        <NuxtLink class="rc-menubar__lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
         <NuxtLink :to="localePath('/styles')" class="rc-menubar__item">
           {{ t('styles.gallery.title') }}
         </NuxtLink>
@@ -43,6 +48,8 @@ import RetroComputerPixelIcon from './RetroComputerPixelIcon.vue'
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 系统时钟（HH:mm）：初始为空，SSR 首帧与客户端首帧一致 */
 const clock = ref('')
@@ -129,11 +136,50 @@ onUnmounted(() => {
   align-items: stretch;
 }
 
-/* —— 右侧：画廊入口 + 时钟 —— */
+/* —— 右侧：语言切换 + 画廊入口 + 时钟 —— */
 .rc-menubar__right {
   display: flex;
   align-items: stretch;
   margin-left: auto;
+}
+
+/* 语言切换：8-bit 凸起小按钮，比画廊那条菜单项低一级 ——
+   常态是 muted 等宽小字，hover 只把底色提亮，不像菜单项整块反白 */
+.rc-menubar__lang {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-w) solid;
+  border-color: #ffffff var(--c-border) var(--c-border) #ffffff;
+  box-shadow:
+    inset 1px 1px 0 0 #ffffff,
+    inset -1px -1px 0 0 var(--c-border);
+}
+
+.rc-menubar__lang:hover {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-on-accent) 45%, var(--c-surface));
+}
+
+/* 按压：95 系不位移，靠描边凹凸翻转（凸起 → 凹陷，--shadow-press 即凹陷配方） */
+.rc-menubar__lang:active {
+  color: var(--c-accent);
+  border-color: var(--c-border) #ffffff #ffffff var(--c-border);
+  box-shadow: var(--shadow-press);
+}
+
+.rc-menubar__lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 /* 时钟：白色凹陷托盘（像菜单栏里的时钟显示区） */
@@ -162,6 +208,19 @@ onUnmounted(() => {
   .rc-menubar__brand,
   .rc-menubar__item {
     padding: 0 10px;
+  }
+
+  /* 极窄屏先收掉时钟，再截短站名（菜单条定高 48px 不能换行，
+     不给语言芯片腾位置就会横向溢出；站名只截断不隐藏，保留可读名） */
+  .rc-menubar__clock {
+    display: none;
+  }
+
+  .rc-menubar__brand-name {
+    max-width: 18vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

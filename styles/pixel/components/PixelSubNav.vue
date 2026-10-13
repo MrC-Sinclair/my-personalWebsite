@@ -8,9 +8,10 @@
   · 激活来源：首页菜单项无激活态（锚点靠滚动说话）；子页必须用
     路由匹配（aria-current='page'），否则用户不知道自己在哪一栏。
 
-  视觉沿用首页那根吸顶 HUD 条：▶ 光标 + 站点标识 + 菜单项 + 画廊
-  入口。当前子页是「菜单项常亮为金黄底 + 深色字」，即首页 hover 时
-  的色块反转被固定下来——像素风的选中态只能是硬色块，没有渐变。
+  视觉沿用首页那根吸顶 HUD 条：▶ 光标 + 站点标识 + 菜单项 + 语言切换
+  方块键（行为走共享层 useLocaleSwitch）+ 画廊入口。当前子页是
+  「菜单项常亮为金黄底 + 深色字」，即首页 hover 时的色块反转被固定
+  下来——像素风的选中态只能是硬色块，没有渐变。
 -->
 <template>
   <header class="hud">
@@ -32,6 +33,11 @@
           <span class="hud-cursor" aria-hidden="true">▶</span>
           {{ item.label }}
         </NuxtLink>
+        <!-- 语言切换：普通 HUD 方块键（比草绿画廊键低一级；行为走共享层） -->
+        <NuxtLink class="hud-item hud-item--lang" :to="targetPath" :aria-label="t('common.language')">
+          <span class="hud-cursor" aria-hidden="true">▶</span>
+          {{ targetLabel }}
+        </NuxtLink>
         <NuxtLink class="hud-item hud-item--accent" :to="localePath('/styles')">
           <span class="hud-cursor" aria-hidden="true">▶</span>
           {{ t('styles.gallery.title') }}
@@ -45,6 +51,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -156,6 +164,12 @@ function isActive(path: string): boolean {
 
 .hud-item[aria-current='page'] .hud-cursor {
   color: var(--c-on-accent);
+}
+
+/* 语言切换键：像素字出窄方块，40px 命中下限显式兜住并与字形宽度解耦 */
+.hud-item--lang {
+  justify-content: center;
+  min-width: 40px;
 }
 
 /* 风格画廊入口：草绿底强调项（与首页同一配色分工） */

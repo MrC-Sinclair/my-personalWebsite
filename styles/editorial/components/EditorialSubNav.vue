@@ -8,7 +8,8 @@
 
   视觉沿用首页刊头：№ 记号 + 衬线站名、编号红字、悬停时下划线
   从左划入、底部印刷双规线。当前子页的下划线常驻——杂志里
-  「当前栏目」就是目录上被划掉的那一条。
+  「当前栏目」就是目录上被划掉的那一条。动作组里的语言切换页边注
+  与首页同源（行为走共享层 useLocaleSwitch）。
 -->
 <template>
   <header class="mast safe-top">
@@ -33,9 +34,16 @@
         </ul>
       </nav>
 
-      <NuxtLink class="gallery" :to="localePath('/styles')">
-        {{ t('styles.galleryLink') }}
-      </NuxtLink>
+      <div class="actions">
+        <!-- 语言切换：页边注式安静文字链，比画廊的铅字框低一级 -->
+        <NuxtLink class="lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+
+        <NuxtLink class="gallery" :to="localePath('/styles')">
+          {{ t('styles.galleryLink') }}
+        </NuxtLink>
+      </div>
     </div>
     <div class="rule" aria-hidden="true"/>
   </header>
@@ -45,6 +53,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（编号 + label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -185,13 +195,60 @@ function isActive(path: string): boolean {
   background-size: calc(100% - 26px) 1px;
 }
 
+/* 右侧动作组：语言切换 + 画廊入口（贴右成组，窄屏整组换行） */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+/* 语言切换：页边注——发丝竖线 + 斜体衬线小字，比铅字框低一级 */
+.lang {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-family: var(--font-head);
+  font-size: var(--fs-small);
+  font-style: italic;
+  letter-spacing: 0.08em;
+  color: var(--c-muted);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  white-space: nowrap;
+  border-left: var(--border-w) solid var(--ink-strong);
+  transition:
+    color var(--transition),
+    text-decoration-color var(--transition);
+}
+
+.lang:hover {
+  color: var(--c-accent);
+  text-decoration-color: var(--c-accent);
+}
+
+.lang:active {
+  transform: var(--press-transform);
+}
+
+/* 键盘可达：文字链需要可见焦点环 */
+.lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 /* 画廊入口：印刷「铅字按钮」——直角描边框 */
 .gallery {
   display: inline-flex;
   flex: none;
   align-items: center;
   min-height: 40px;
-  margin-left: auto;
   padding: 8px 16px;
   font-size: var(--fs-small);
   letter-spacing: 0.12em;
@@ -228,7 +285,7 @@ function isActive(path: string): boolean {
   background: var(--ink-soft);
 }
 
-/* 窄屏：链接行折到第二行横滑，画廊入口贴右 */
+/* 窄屏：链接行折到第三行横滑，动作组（语言切换 + 画廊）贴右成行 */
 @media (max-width: 820px) {
   .inner {
     padding-top: 6px;
@@ -243,21 +300,19 @@ function isActive(path: string): boolean {
     flex-basis: 100%;
     order: 3;
   }
-
-  .gallery {
-    margin-left: auto;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .brand,
   .anchor,
+  .lang,
   .gallery {
     transition: none;
   }
 
   .brand:active,
   .anchor:active,
+  .lang:active,
   .gallery:active {
     transform: none;
   }

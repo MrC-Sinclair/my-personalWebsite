@@ -12,6 +12,7 @@
  * 2. 注册表 id 唯一
  * 3. 每个风格 index.ts 默认导出的页面映射必须包含 '/'
  * 4. 子页契约：页面键来自 STYLE_SUB_PATHS，且导出数与 pages/ 文件数一致
+ * 5. 语言切换入口：每个风格的首页导航与 XxxSubNav 都必须挂上
  */
 import { describe, expect, it } from 'vitest'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
@@ -93,6 +94,40 @@ describe('多风格架构结构', () => {
         if (used && !imported.has(sibling)) {
           problems.push(`${file.replace(stylesRoot, 'styles')} 使用了 <${sibling}> 但未 import`)
         }
+      }
+    }
+
+    expect(problems).toEqual([])
+  })
+
+  /**
+   * 语言切换入口的结构契约。
+   * 站点是中英双语，但 20 个风格的 100 个页面一度**一个入口都没有**——
+   * 英文页成了孤岛，而且这类缺失是静默的：构建、lint、类型检查全绿。
+   * 这里守住两条（入口的行为在共享层 useLocaleSwitch，风格只负责长什么样）：
+   * 1. 每个风格的 XxxSubNav 必须挂入口——4 个子页与详情页都复用它；
+   * 2. 该风格还必须有一个**非 SubNav** 的组件挂入口——首页用的是它自己的导航。
+   */
+  it('每个风格的首页导航与子页导航都挂有语言切换入口', () => {
+    const problems: string[] = []
+
+    for (const item of styleRegistry) {
+      const dir = resolve(stylesRoot, item.id)
+      if (!existsSync(dir)) continue
+      const withSwitch = walkVue(dir).filter((file) => {
+        const src = readFileSync(file, 'utf8')
+        // 只认「拿到 targetPath 并真的渲染成链接」的组件：
+        // 调了 composable 却没用 targetPath，等于入口不存在
+        return /useLocaleSwitch\(\)/.test(src) && /targetPath/.test(src)
+      })
+      const subNav = withSwitch.filter((file) => /SubNav/i.test(basename(file)))
+      const homeNav = withSwitch.filter((file) => !/SubNav/i.test(basename(file)))
+
+      if (subNav.length === 0) {
+        problems.push(`styles/${item.id}: 子页导航（XxxSubNav）没有语言切换入口`)
+      }
+      if (homeNav.length === 0) {
+        problems.push(`styles/${item.id}: 首页导航没有语言切换入口`)
       }
     }
 

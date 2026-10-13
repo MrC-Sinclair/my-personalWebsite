@@ -81,7 +81,11 @@ export default {
    （`/style/<id>/about`），不是页内锚点。注意与首页导航区分：
    首页导航是页内锚点（`#about`），子页导航是路由跳转，
    两种语义不能混用。
-3. **子页文件本身是薄封装**，只指定标题与主体区块：
+3. **两条导航都要带语言切换入口**（首页导航 + `XxxSubNav`）。站点是中英双语，
+   入口只挂在画廊页 `/` 的话，用户从任何一个风格页都过不去另一语言——
+   英文页成了孤岛。行为走共享层 `useLocaleSwitch()`，外观归风格：
+   把它做成比「风格画廊」入口安静一档的次级控件即可，不要再造一个强调色块。
+4. **子页文件本身是薄封装**，只指定标题与主体区块：
 
 ```vue
 <template>
@@ -203,11 +207,16 @@ export default {
 - **三个必须用共享层的高频场景**（均已实现，禁止自写）：
   - 复制到剪贴板（微信号等）→ `useClipboardCopy()`（composables/useClipboardCopy.ts）
   - 导航「当前区块高亮」→ `useActiveSection()`（composables/useActiveSection.ts）
+  - 切换到另一语言的同一页 → `useLocaleSwitch()`（composables/useLocaleSwitch.ts），
+    返回 `targetPath` / `targetLabel`；模板里就是
+    `<NuxtLink :to="targetPath" :aria-label="t('common.language')">{{ targetLabel }}</NuxtLink>`
   - 内容路径转详情页 slug → `contentSlug()`（utils/content.ts）；日期格式化 → `formatDate()`（utils/format.ts）
 
 ## 4. 验收清单（PR 模板）
 
 - [ ] 内容同源：所有文字来自 content / composables / i18n，风格组件无硬编码业务文案
+- [ ] 两条导航（首页导航 + 子页导航）都有语言切换入口，链接指向**另一语言的同一页**
+      （不是 `/en` 首页，也不是当前页；`scripts/audit-a11y-mobile.mjs` 会逐页判这一条）
 - [ ] `aria-label` 等无障碍属性走 `t()`；图标按钮有 aria-label 与 tooltip
 - [ ] 交互完整：无「裸交互」，遵守 AGENTS.md 交互效果规范（hover / active 按压反馈 / 状态过渡）
 - [ ] `prefers-reduced-motion` 下动画尊重全局规则（`--transition: none` 类风格天然满足）

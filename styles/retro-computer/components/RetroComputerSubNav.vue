@@ -11,7 +11,8 @@
     第二个窗口可跳，隐藏菜单等于窄屏无法换页——改为横向滚动。
 
   视觉沿用首页那根系统菜单栏：固定顶部、四色旗帜站点标识、悬停
-  深蓝反白的菜单项、右侧画廊入口 + 系统时钟。当前子页把首页 hover
+  深蓝反白的菜单项、右侧画廊入口 + 系统时钟，画廊左边一枚语言切换
+  小芯片（行为走共享层 useLocaleSwitch）。当前子页把首页 hover
   时的深蓝反白固定下来（95 式的选中态就是反白，没有别的选项）。
 -->
 <template>
@@ -35,6 +36,10 @@
       </nav>
 
       <div class="rc-menubar__right">
+        <!-- 语言切换：凹陷托盘小芯片，比画廊入口低一级 -->
+        <NuxtLink class="rc-menubar__lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
         <NuxtLink :to="localePath('/styles')" class="rc-menubar__item">
           {{ t('styles.gallery.title') }}
         </NuxtLink>
@@ -50,6 +55,8 @@ import RetroComputerPixelIcon from './RetroComputerPixelIcon.vue'
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -169,11 +176,50 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
-/* —— 右侧：画廊入口 + 时钟 —— */
+/* —— 右侧：语言切换 + 画廊入口 + 时钟 —— */
 .rc-menubar__right {
   display: flex;
   align-items: stretch;
   margin-left: auto;
+}
+
+/* 语言切换：8-bit 凸起小按钮，比画廊那条菜单项低一级 ——
+   常态是 muted 等宽小字，hover 只把底色提亮，不像菜单项整块反白 */
+.rc-menubar__lang {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-w) solid;
+  border-color: #ffffff var(--c-border) var(--c-border) #ffffff;
+  box-shadow:
+    inset 1px 1px 0 0 #ffffff,
+    inset -1px -1px 0 0 var(--c-border);
+}
+
+.rc-menubar__lang:hover {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-on-accent) 45%, var(--c-surface));
+}
+
+/* 按压：95 系不位移，靠描边凹凸翻转（凸起 → 凹陷，--shadow-press 即凹陷配方） */
+.rc-menubar__lang:active {
+  color: var(--c-accent);
+  border-color: var(--c-border) #ffffff #ffffff var(--c-border);
+  box-shadow: var(--shadow-press);
+}
+
+.rc-menubar__lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 /* 时钟：白色凹陷托盘（像菜单栏里的时钟显示区） */
@@ -198,9 +244,17 @@ onUnmounted(() => {
     padding: 0 10px;
   }
 
-  /* 极窄屏先把时钟收掉，给路由菜单腾出横向空间 */
+  /* 极窄屏先把时钟收掉，再截短站名：给路由菜单和语言芯片腾出横向空间
+     （站名只截断不隐藏，品牌链接的可读名要保住） */
   .rc-menubar__clock {
     display: none;
+  }
+
+  .rc-menubar__brand-name {
+    max-width: 18vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

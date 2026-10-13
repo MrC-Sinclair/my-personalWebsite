@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   吸顶「木质菜单条」：胡桃木纹横杆（两端黄铜螺栓）+ 皮革缝线
   标签页内锚点 + 黄铜铭牌站点标识 + 「风格画廊」黄铜入口
-  （localePath('/styles')）。
+  （localePath('/styles')），画廊左边一枚压印皮革语言切换钥匙
+  （行为走共享层 useLocaleSwitch）。
   滚动激活态复用共享层 useActiveSection（观察 [data-section]
   元素、区块跨越视口中部「阅读线」时激活，observer 清理在其
   内部完成，SSR 初始为空双方一致）；滚动激活属视图侧状态。
@@ -36,6 +37,12 @@
         </a>
       </nav>
 
+      <!-- 语言切换：压印在木杆上的小皮革钥匙（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="hd-lang" :to="targetPath" :aria-label="t('common.language')">
+        <span class="hd-lang-pin" aria-hidden="true" />
+        {{ targetLabel }}
+      </NuxtLink>
+
       <!-- 风格画廊入口：黄铜按钮 -->
       <NuxtLink class="hd-gallery" :to="localePath('/styles')">
         <span class="hd-gallery-rivet" aria-hidden="true" />
@@ -54,6 +61,8 @@ import { useActiveSection } from '~/composables/useActiveSection'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 页内锚点（id 与首页各区块的 id/data-section 对应，label 随语言更新） */
 const anchors = computed(() => [
@@ -236,6 +245,63 @@ const { activeId } = useActiveSection()
     inset 0 -1px 0 rgb(255 240 210 / 0.12);
 }
 
+/* —— 语言切换：压印进木杆的小皮革钥匙 ——
+   比黄铜画廊按钮低一级：凹面而非凸面、等宽小字、黄铜销钉收小一档 */
+.hd-lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--c-surface) 62%, transparent);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--c-bg) 55%, var(--c-border));
+  box-shadow:
+    inset 0 2px 4px var(--c-border),
+    inset 0 -1px 0 color-mix(in srgb, var(--c-surface) 18%, transparent);
+  transition:
+    color var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+.hd-lang:hover {
+  color: color-mix(in srgb, var(--c-surface) 85%, transparent);
+}
+
+/* 按下：凹面再深一档（本风格的按压就是被按进桌面） */
+.hd-lang:active {
+  transform: var(--press-transform);
+  box-shadow: var(--shadow-press);
+}
+
+.hd-lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+/* 销钉：黄铜，与画廊按钮的铆钉同族但收小一档 */
+.hd-lang-pin {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--c-accent) 0%,
+    color-mix(in srgb, var(--c-accent) 55%, var(--c-border)) 100%
+  );
+}
+
 /* —— 风格画廊入口：黄铜按钮 —— */
 .hd-gallery {
   display: inline-flex;
@@ -285,10 +351,29 @@ const { activeId } = useActiveSection()
 /* —— 窄屏：收紧间距，锚点导航横向滚动 —— */
 @media (max-width: 767px) {
   .hd-inner {
-    gap: 10px;
-    padding-inline: 32px;
+    gap: 8px 10px;
+    padding-inline: 16px;
   }
 
+  /* 第二行给页内导航 + 语言切换。锚点带不能和站名牌、画廊扣板抢第一行：
+     实测 390 下三件动作占 153 + 98 + 122 > 可用 278，flex:1 的带被压到 7px 宽，
+     整条导航直接看不见（键盘 Tab 也全落在可视区外）。
+     站名牌 + 画廊正好 275 ≤ 278，所以让它们留在第一行，带与语言降到第二行。 */
+  .hd-nav {
+    order: 3;
+    /* 基准宽度按「整行减去语言扣板」给：留 110px 给语言切换，两者才能同落第二行。
+       写 auto 会被内容宽（实测 330px）顶成独占一行、把语言挤到第三行；
+       写 0 则根本不换行，被站名牌与画廊扣板压成 15px 一条缝（审计判据抓到过） */
+    flex: 1 1 calc(100% - 110px);
+  }
+
+  .hd-lang {
+    order: 4;
+    flex: none;
+    padding: 6px 9px;
+  }
+
+  /* 第一行的画廊扣板收一档，确保与站名牌同排放得下 */
   .hd-gallery {
     padding: 8px 12px;
   }
@@ -297,12 +382,14 @@ const { activeId } = useActiveSection()
 @media (prefers-reduced-motion: reduce) {
   .brand-plate,
   .hd-link,
+  .hd-lang,
   .hd-gallery {
     transition: none;
   }
 
   .brand:active .brand-plate,
   .hd-link:active,
+  .hd-lang:active,
   .hd-gallery:active {
     transform: none;
   }

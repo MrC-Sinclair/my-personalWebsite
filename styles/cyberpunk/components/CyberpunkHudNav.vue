@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   吸顶的「街头终端」导航条：左侧站点标识（闪烁信号块 + 等宽
   发光站名），右侧页内锚点（原生 <a href="#...">，hover 时
-  前缀 ">" 点亮 + 霓虹辉光）与「风格画廊」入口（切角按钮）。
+  前缀 ">" 点亮 + 霓虹辉光）、语言切换（行为来自共享层
+  useLocaleSwitch）与「风格画廊」入口（切角按钮）。
   窄屏时锚点行横向滚动（两端渐隐提示可滑），触控目标 ≥40px，
   底部一条青→粉霓虹渐变线贯穿全宽。
 -->
@@ -27,6 +28,11 @@
         </ul>
       </div>
 
+      <!-- 语言切换：次级霓虹标签（行为来自共享层 useLocaleSwitch） -->
+      <NuxtLink class="lang" :to="targetPath" :aria-label="t('common.language')">
+        <span class="lang-mark" aria-hidden="true">&gt;</span>{{ targetLabel }}
+      </NuxtLink>
+
       <!-- 风格画廊入口（对外路由，走 localePath） -->
       <NuxtLink class="gallery" :to="localePath('/styles')">
         {{ t('styles.gallery.enter') }}
@@ -41,6 +47,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 页内锚点清单（label 随语言更新） */
 const anchors = computed(() => [
@@ -205,6 +213,59 @@ const anchors = computed(() => [
   transform: var(--press-transform);
 }
 
+/* —— 语言切换：次级霓虹标签（比画廊切角钮安静一档：无填充、暗青细边） —— */
+.lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-family: var(--font-head);
+  font-size: var(--fs-small);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  box-shadow: inset 0 0 0 var(--border-w) color-mix(in srgb, var(--c-accent) 32%, transparent);
+  transition:
+    color var(--transition),
+    text-shadow var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+/* ">" 前缀常亮但半隐，hover 换主色（与锚点条目同一套语言，只是不点亮） */
+.lang-mark {
+  color: color-mix(in srgb, var(--c-accent) 60%, var(--c-muted));
+}
+
+.lang:hover {
+  color: var(--c-accent);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--c-accent) 55%, transparent);
+  box-shadow: inset 0 0 0 var(--border-w) color-mix(in srgb, var(--c-accent) 70%, transparent);
+}
+
+.lang:hover .lang-mark {
+  color: var(--c-accent);
+}
+
+.lang:active {
+  transform: var(--press-transform);
+}
+
+.lang:focus-visible {
+  /* clip-path 会裁掉 outline 与外发光，改用内嵌双环，焦点才落在裁形之内 */
+  outline: none;
+  color: var(--c-accent);
+  box-shadow:
+    inset 0 0 0 2px var(--c-accent),
+    inset 0 0 10px color-mix(in srgb, var(--c-accent) 55%, transparent);
+}
+
 /* —— 画廊入口：粉边切角按钮（hover 粉色填充 + 辉光） —— */
 .gallery {
   display: inline-flex;
@@ -267,6 +328,8 @@ const anchors = computed(() => [
   .brand-sigil,
   .link,
   .link-prefix,
+  .lang,
+  .lang-mark,
   .gallery {
     transition: none;
     animation: none;
@@ -274,6 +337,7 @@ const anchors = computed(() => [
 
   .brand:active,
   .link:active,
+  .lang:active,
   .gallery:active {
     transform: none;
   }

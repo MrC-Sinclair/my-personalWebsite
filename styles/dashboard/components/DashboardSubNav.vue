@@ -9,7 +9,8 @@
     可观察，改用路由匹配（aria-current='page'）。
 
   外形沿用首页那根侧栏（桌面 248px 固定列 / 窄屏收起为吸顶条）：
-  呼吸状态灯站点标识、风格画廊入口、圆角 chips 条目。当前子页的
+  呼吸状态灯站点标识、语言切换 + 风格画廊入口、圆角 chips 条目
+  （语言切换的行为来自共享层 useLocaleSwitch）。当前子页的
   激活态与首页滚动激活态同一套观感（强调色边框 + 淡底 + 点亮刻度条）。
 -->
 <template>
@@ -25,10 +26,16 @@
           <p class="side-tagline">{{ t('home.tagline') }}</p>
         </div>
       </div>
-      <NuxtLink class="side-gallery" :to="localePath('/styles')">
-        <span class="side-gallery-label">{{ t('styles.gallery.title') }}</span>
-        <span class="side-gallery-arrow" aria-hidden="true">→</span>
-      </NuxtLink>
+      <!-- 动作组：语言切换（次级）+ 风格画廊入口（主） -->
+      <div class="side-actions">
+        <NuxtLink class="side-lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+        <NuxtLink class="side-gallery" :to="localePath('/styles')">
+          <span class="side-gallery-label">{{ t('styles.gallery.title') }}</span>
+          <span class="side-gallery-arrow" aria-hidden="true">→</span>
+        </NuxtLink>
+      </div>
     </div>
 
     <!-- 子页路由导航（含当前页激活态） -->
@@ -53,6 +60,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -88,6 +97,8 @@ function isActive(path: string): boolean {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* 窄屏（320px）品牌行 + 动作组放不下时换行，而不是撑出横向滚动 */
+  flex-wrap: wrap;
   gap: var(--gap);
 }
 
@@ -149,6 +160,53 @@ function isActive(path: string): boolean {
   color: var(--c-muted);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* —— 动作组：语言切换 + 画廊入口（窄屏放不下时整组换到第二行） —— */
+.side-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* —— 语言切换：紧凑控件（比画廊入口安静一档：hover 只吃淡底，不填满强调色） —— */
+.side-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--transition),
+    border-color var(--transition),
+    background var(--transition),
+    transform var(--transition);
+}
+
+.side-lang:hover {
+  color: var(--c-accent);
+  border-color: color-mix(in srgb, var(--c-accent) 55%, var(--c-border));
+  background: color-mix(in srgb, var(--c-accent) 10%, transparent);
+}
+
+.side-lang:active {
+  transform: var(--press-transform);
+}
+
+.side-lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 /* —— 风格画廊入口 —— */
@@ -256,6 +314,8 @@ function isActive(path: string): boolean {
   .side-brand {
     flex-direction: column;
     align-items: stretch;
+    /* 竖排时不再需要横向换行（column + wrap 会变成纵向分列，这里禁掉） */
+    flex-wrap: nowrap;
     padding-bottom: var(--space);
     border-bottom: var(--border-w) solid var(--c-border);
   }
@@ -265,9 +325,15 @@ function isActive(path: string): boolean {
     white-space: normal;
   }
 
-  .side-gallery {
-    justify-content: space-between;
+  /* 动作组独占一行拉满宽度，画廊入口吃掉剩余空间（维持原「整宽按钮」观感） */
+  .side-actions {
     margin-top: var(--space);
+  }
+
+  .side-gallery {
+    flex: 1;
+    justify-content: space-between;
+    margin-top: 0;
   }
 
   .side-nav {
@@ -300,6 +366,7 @@ function isActive(path: string): boolean {
   }
 
   .side-name,
+  .side-lang,
   .side-gallery,
   .side-link,
   .side-tick {
@@ -307,6 +374,7 @@ function isActive(path: string): boolean {
   }
 
   .side-link:active,
+  .side-lang:active,
   .side-gallery:active {
     transform: none;
   }

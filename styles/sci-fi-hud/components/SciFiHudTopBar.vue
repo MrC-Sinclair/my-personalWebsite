@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   驾驶舱主控条（sticky 吸顶）：左侧站点标识块 + 状态灯装饰，
   中部页内锚点通道（移动端横向滚动），右侧「风格画廊」入口
-  （localePath 包裹，不写死路径）。下缘刻度尺装饰。
+  （localePath 包裹，不写死路径）+ 一枚方括号语言切换读数
+  （行为走共享层 useLocaleSwitch）。下缘刻度尺装饰。
   触控目标均 ≥ 40px，reduced-motion 下状态灯停止闪烁。
 -->
 <template>
@@ -23,6 +24,13 @@
           {{ section.label }}
         </a>
       </nav>
+
+      <!-- 语言切换：方括号仪表读数（比画廊入口低一级：常态无填充无描边） -->
+      <NuxtLink class="lang" :to="targetPath" :aria-label="t('common.language')">
+        <span class="lang-bracket" aria-hidden="true">[</span>
+        <span>{{ targetLabel }}</span>
+        <span class="lang-bracket" aria-hidden="true">]</span>
+      </NuxtLink>
 
       <!-- 风格画廊入口 -->
       <NuxtLink class="gallery" :to="localePath('/styles')">
@@ -51,6 +59,8 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 </script>
 
 <style scoped>
@@ -178,6 +188,54 @@ const localePath = useLocalePath()
   transform: var(--press-transform);
 }
 
+/* —— 语言切换：[ 目标语言 ] 的方括号仪表读数 ——
+   比画廊入口低一级：常态只有 muted 字、无填充无实边，hover 才点亮 */
+.lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.08em;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-w) solid transparent;
+  transition:
+    color var(--transition),
+    background var(--transition),
+    border-color var(--transition);
+}
+
+/* 括号：信号色半透明，读数本身保持 muted */
+.lang-bracket {
+  color: color-mix(in srgb, var(--c-accent) 55%, transparent);
+}
+
+.lang:hover {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--c-accent) 30%, transparent);
+}
+
+.lang:hover .lang-bracket {
+  color: var(--c-accent);
+}
+
+.lang:active {
+  transform: var(--press-transform);
+}
+
+.lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 /* —— 画廊入口 —— */
 .gallery {
   display: inline-flex;
@@ -236,11 +294,13 @@ const localePath = useLocalePath()
   }
 
   .channel,
+  .lang,
   .gallery {
     transition: none;
   }
 
   .channel:active,
+  .lang:active,
   .gallery:active {
     transform: none;
   }

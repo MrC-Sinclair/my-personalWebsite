@@ -9,7 +9,8 @@
     路由匹配（aria-current='page'），否则用户不知道自己在哪一栏。
 
   视觉沿用首页那根驾驶舱主控条：菱形信号徽标 + 站点标识 + 呼吸状态灯
-  + 通道项（带指示刻度）+ 画廊入口 + 下缘刻度尺。当前子页把首页
+  + 通道项（带指示刻度）+ 方括号语言切换（共享层 useLocaleSwitch）+
+  画廊入口 + 下缘刻度尺。当前子页把首页
   hover 时的「刻度点亮 + 文字转亮 + 淡信号底」固定下来。
 -->
 <template>
@@ -36,6 +37,13 @@
         </NuxtLink>
       </nav>
 
+      <!-- 语言切换：方括号仪表读数（比画廊入口低一级：常态无填充无描边） -->
+      <NuxtLink class="lang" :to="targetPath" :aria-label="t('common.language')">
+        <span class="lang-bracket" aria-hidden="true">[</span>
+        <span>{{ targetLabel }}</span>
+        <span class="lang-bracket" aria-hidden="true">]</span>
+      </NuxtLink>
+
       <!-- 风格画廊入口 -->
       <NuxtLink class="gallery" :to="localePath('/styles')">
         {{ t('styles.gallery.title') }}<span class="gallery-glyph" aria-hidden="true">↗</span>
@@ -51,6 +59,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 站点名（与首页同源：共享层 siteConfig） */
 const { siteConfig } = useAppInfo()
@@ -206,6 +216,54 @@ function isActive(path: string): boolean {
   background: var(--c-accent);
 }
 
+/* —— 语言切换：[ 目标语言 ] 的方括号仪表读数（与首页同款）——
+   比画廊入口低一级：常态只有 muted 字、无填充无实边，hover 才点亮 */
+.lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.08em;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-w) solid transparent;
+  transition:
+    color var(--transition),
+    background var(--transition),
+    border-color var(--transition);
+}
+
+/* 括号：信号色半透明，读数本身保持 muted */
+.lang-bracket {
+  color: color-mix(in srgb, var(--c-accent) 55%, transparent);
+}
+
+.lang:hover {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--c-accent) 30%, transparent);
+}
+
+.lang:hover .lang-bracket {
+  color: var(--c-accent);
+}
+
+.lang:active {
+  transform: var(--press-transform);
+}
+
+.lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 /* —— 画廊入口 —— */
 .gallery {
   display: inline-flex;
@@ -264,11 +322,13 @@ function isActive(path: string): boolean {
   }
 
   .channel,
+  .lang,
   .gallery {
     transition: none;
   }
 
   .channel:active,
+  .lang:active,
   .gallery:active {
     transform: none;
   }

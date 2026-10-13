@@ -9,8 +9,9 @@
     路由匹配（aria-current='page'），否则用户不知道自己在哪一栏。
 
   视觉沿用首页那颗「浮在彩色渐变上的磨砂玻璃胶囊」：发光圆点站点
-  标识 + 胶囊条目 + 极光渐变画廊按钮。当前子页把首页 hover 时的
-  「亮起玻璃底」固定下来——玻璃没有底色块，选中只能靠磨砂底变亮。
+  标识 + 胶囊条目 + 极光渐变画廊按钮，画廊按钮左侧另有一条磨砂语言
+  切换小胶囊（行为走共享层 useLocaleSwitch）。当前子页把首页 hover 时
+  的「亮起玻璃底」固定下来——玻璃没有底色块，选中只能靠磨砂底变亮。
 -->
 <template>
   <header class="nav-wrap">
@@ -34,6 +35,11 @@
         </li>
       </ul>
 
+      <!-- 语言切换：磨砂小胶囊（行为来自共享层 useLocaleSwitch） -->
+      <NuxtLink class="lang" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
       <!-- 风格画廊入口 -->
       <NuxtLink class="gallery-pill" :to="localePath('/styles')">
         {{ t('styles.gallery.enter') }}
@@ -46,6 +52,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -174,6 +182,44 @@ function isActive(path: string): boolean {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7);
 }
 
+/* 语言切换：磨砂小胶囊——复用胶囊自身的透光材质，不另加一层 blur */
+.lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 12px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--c-muted);
+  text-decoration: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c-on-accent) 45%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-on-accent) 70%, transparent);
+  transition:
+    color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.lang:hover,
+.lang:focus-visible {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-on-accent) 78%, transparent);
+}
+
+.lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.lang:active {
+  transform: var(--press-transform);
+}
+
 /* 风格画廊入口：极光渐变胶囊按钮（签名 Glow） */
 .gallery-pill {
   display: inline-flex;
@@ -207,10 +253,36 @@ function isActive(path: string): boolean {
   .nav-capsule {
     gap: 4px;
     padding-left: 12px;
+    /* 锚点带改独占一行（见下方 .anchors 的 order） */
+    flex-wrap: wrap;
+  }
+
+  .lang {
+    padding: 6px 9px;
+  }
+
+  /* 锚点带不能和三个动作件抢一行：被挤窄后 248px 的导航只露一小截，
+     键盘 Tab 过去会停在可视区外（浏览器不会替 overflow 带滚进视野，已实测） */
+  .anchors {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  /* 站名不参与收缩：压力交给锚点那条横向滚动带（它本来就是 overflow-x: auto）。
+     早先这里写 flex: 0 1 auto + 截断，实测 390 宽就把站名削成「Si…」；
+     命中区塌到 23px 那个红线问题用 min-width 兜住就够，不必牺牲站名 */
+  .brand {
+    flex: none;
+    min-width: 40px;
+  }
+
+  .brand-dot {
+    flex: none;
   }
 
   .brand-name {
     font-size: var(--fs-small);
+    white-space: nowrap;
   }
 
   .gallery-pill {
@@ -221,11 +293,13 @@ function isActive(path: string): boolean {
 @media (prefers-reduced-motion: reduce) {
   .brand,
   .anchor,
+  .lang,
   .gallery-pill {
     transition: none;
   }
 
   .anchor:active,
+  .lang:active,
   .gallery-pill:active {
     transform: none;
   }

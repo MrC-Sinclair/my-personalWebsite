@@ -12,6 +12,7 @@
   站点标识占最宽一格、画廊入口是强调色箭头格。当前子页把首页
   hover 时的红色下划线常亮（scaleX(1)）+ 文字转红——瑞士风的选中态
   只能用「线的生长」表达，没有底色块。
+  语言切换是画廊右侧那格安静条目（灰字无箭头，行为来自共享层 useLocaleSwitch）。
 -->
 <template>
   <header class="mast">
@@ -38,6 +39,11 @@
         <span class="cell-no cell-no--accent" aria-hidden="true">↗</span>
         <span class="cell-label">{{ t('styles.gallery.title') }}</span>
       </NuxtLink>
+
+      <!-- 语言切换：画廊右侧的安静格子（行为走共享层） -->
+      <NuxtLink class="mast-cell mast-lang" :to="targetPath" :aria-label="t('common.language')">
+        <span class="cell-label">{{ targetLabel }}</span>
+      </NuxtLink>
     </nav>
   </header>
 </template>
@@ -46,6 +52,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层（composables 自动导入，无需 import）
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -78,7 +86,7 @@ function pad(n: number): string {
   border-bottom: calc(var(--border-w) * 2) solid var(--c-border);
 }
 
-/* 移动端优先：站点标识整行 + 条目 2×2 网格 + 画廊整行 */
+/* 移动端优先：站点标识整行 + 条目 2×2 网格 + 画廊与语言切换共占末行 */
 .mast-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -100,10 +108,32 @@ function pad(n: number): string {
   transition: color var(--transition);
 }
 
-.mast-brand,
-.mast-gallery {
+/* 站点标识独占整行；画廊与语言切换写死占末行左右两格——
+   位置若交给自动放置，最后一格会被撑成整行（右列格子：第 3、5、7 个） */
+.mast-brand {
   grid-column: 1 / -1;
   border-left: none;
+}
+
+.mast-gallery {
+  grid-column: 1 / 2;
+}
+
+/* 语言切换：画廊右侧的安静格子——灰字、无强调箭头 */
+.mast-lang {
+  grid-column: 2 / 3;
+  min-width: 40px;
+  color: var(--c-muted);
+}
+
+.mast-lang:hover {
+  color: var(--c-text);
+}
+
+/* 焦点环走内描边：格子彼此贴边，外扩的环会盖住邻居的细则线 */
+.mast-lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: -4px;
 }
 
 .mast-cell:nth-child(odd) {
@@ -177,7 +207,7 @@ function pad(n: number): string {
   white-space: nowrap;
 }
 
-/* —— 桌面端：一行六格的网格条目，吸顶 —— */
+/* —— 桌面端：一行七格的网格条目，吸顶 —— */
 @media (min-width: 768px) {
   .mast {
     position: sticky;
@@ -185,7 +215,7 @@ function pad(n: number): string {
   }
 
   .mast-grid {
-    grid-template-columns: minmax(200px, 1.6fr) repeat(4, minmax(0, 1fr)) minmax(150px, 1.2fr);
+    grid-template-columns: minmax(180px, 1.6fr) repeat(4, minmax(0, 1fr)) minmax(120px, 1fr) 90px;
   }
 
   .mast-cell {
@@ -194,7 +224,8 @@ function pad(n: number): string {
   }
 
   .mast-brand,
-  .mast-gallery {
+  .mast-gallery,
+  .mast-lang {
     grid-column: auto;
   }
 

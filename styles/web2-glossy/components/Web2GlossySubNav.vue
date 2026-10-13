@@ -9,6 +9,7 @@
   视觉沿用首页顶栏：浅蓝渐变条 + 底部白高光线 + 三色渐变饰条，
   站点标识是凝胶字母牌 + 站名，条目是胶囊，画廊入口是橙色凝胶按钮。
   当前子页用「蓝色实底胶囊」标出——Web 2.0 里选中态就是实心高光。
+  画廊按钮左边多一枚语言切换小胶囊（次要动作，行为来自共享层 useLocaleSwitch）。
 -->
 <template>
   <header class="site-header">
@@ -30,9 +31,20 @@
         </NuxtLink>
       </nav>
 
-      <Web2GlossyGelButton :to="localePath('/styles')" variant="orange" class="site-header__gallery">
-        {{ t('styles.gallery.title') }}
-      </Web2GlossyGelButton>
+      <!-- 右侧动作组：语言切换（次要小胶囊）+ 画廊入口（主凝胶按钮） -->
+      <div class="site-header__actions">
+        <NuxtLink class="site-header__lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+
+        <Web2GlossyGelButton
+          :to="localePath('/styles')"
+          variant="orange"
+          class="site-header__gallery"
+        >
+          {{ t('styles.gallery.title') }}
+        </Web2GlossyGelButton>
+      </div>
     </div>
   </header>
 </template>
@@ -44,6 +56,8 @@ import Web2GlossyGelButton from './Web2GlossyGelButton.vue'
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层（composables 自动导入，无需 import）
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 站点标识字母牌取站名首字符 */
 const logoInitial = computed(() => t('home.name').charAt(0))
@@ -185,9 +199,62 @@ function isActive(path: string): boolean {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
 }
 
-/* —— 画廊入口 —— */
+/* —— 右侧动作组：语言切换 + 画廊入口 ——
+   组内允许换行：极窄屏时小胶囊折到画廊按钮下方，而不是把整行顶宽 */
+.site-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .site-header__gallery {
   flex: none;
+}
+
+/* —— 语言切换：光泽小胶囊（次要动作，比橙色凝胶按钮安静一级） —— */
+.site-header__lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 4px 14px;
+  font-family: var(--font-head);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius-sm);
+  /* 顶亮底深的凝胶渐变只用 token 的两档底色，不引入新色值 */
+  background: linear-gradient(180deg, var(--c-surface) 0%, var(--c-bg) 100%);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-surface) 90%, transparent);
+  transition:
+    color var(--transition),
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+/* hover：文字升到正文色（--c-accent 压浅蓝底只有 3.9:1，只做描边不做字色） */
+.site-header__lang:hover {
+  color: var(--c-text);
+  border-color: var(--c-accent);
+}
+
+.site-header__lang:active {
+  transform: var(--press-transform);
+  box-shadow: var(--shadow-press);
+}
+
+.site-header__lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 /* 窄屏：胶囊行折到第二行横滑 */
@@ -199,11 +266,13 @@ function isActive(path: string): boolean {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav__pill {
+  .nav__pill,
+  .site-header__lang {
     transition: none;
   }
 
-  .nav__pill:active {
+  .nav__pill:active,
+  .site-header__lang:active {
     transform: none;
   }
 }

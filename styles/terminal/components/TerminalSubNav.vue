@@ -37,6 +37,12 @@
       <span aria-hidden="true">↗</span>
       <span>{{ t('styles.galleryLink') }}</span>
     </a>
+
+    <!-- 语言切换：lang 命令样式（行为来自共享层 useLocaleSwitch） -->
+    <a class="subnav__lang" :href="targetPath" :aria-label="t('common.language')">
+      <span class="prompt" aria-hidden="true">lang</span>
+      <span>{{ targetLabel }}</span>
+    </a>
   </nav>
 </template>
 
@@ -44,6 +50,7 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -165,9 +172,37 @@ function isActive(path: string): boolean {
   border-color: color-mix(in srgb, var(--c-accent) 45%, transparent);
 }
 
+/* 语言切换：与画廊入口同族（1px 描边 + 提示符前缀） */
+.subnav__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 40px;
+  padding: 6px 10px;
+  color: var(--c-muted);
+  text-decoration: none;
+  border: var(--border-w) solid color-mix(in srgb, var(--c-muted) 35%, transparent);
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.subnav__lang:hover {
+  color: var(--c-accent-2);
+  border-color: color-mix(in srgb, var(--c-accent-2) 45%, transparent);
+}
+
+.subnav__lang .prompt {
+  color: var(--c-muted);
+  user-select: none;
+}
+
+.subnav__lang:active {
+  transform: var(--press-transform);
+}
+
 .subnav__home:focus-visible,
 .subnav__link:focus-visible,
-.subnav__styles:focus-visible {
+.subnav__styles:focus-visible,
+.subnav__lang:focus-visible {
   outline: 2px solid var(--c-accent);
   outline-offset: 2px;
 }
@@ -176,7 +211,8 @@ function isActive(path: string): boolean {
 @media (prefers-reduced-motion: reduce) {
   .subnav__home,
   .subnav__link,
-  .subnav__styles {
+  .subnav__styles,
+  .subnav__lang {
     transition: none;
   }
 }

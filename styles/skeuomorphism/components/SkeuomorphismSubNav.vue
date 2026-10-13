@@ -9,7 +9,8 @@
     可观察，改用路由匹配（aria-current='page'）。
 
   外观与首页那根木杆菜单条完全一致：两端黄铜螺栓、黄铜铭牌站点标识、
-  皮革缝线标签条目、黄铜画廊按钮。当前子页把首页滚动激活态那套
+  皮革缝线标签条目、压印皮革语言钥匙（行为走共享层 useLocaleSwitch）、
+  黄铜画廊按钮。当前子页把首页滚动激活态那套
   「皮革标签被按进木杆」的内凹行程固定下来——拟物只有凸起/按下两态。
 -->
 <template>
@@ -40,6 +41,12 @@
         </NuxtLink>
       </nav>
 
+      <!-- 语言切换：压印在木杆上的小皮革钥匙（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="hd-lang" :to="targetPath" :aria-label="t('common.language')">
+        <span class="hd-lang-pin" aria-hidden="true" />
+        {{ targetLabel }}
+      </NuxtLink>
+
       <!-- 风格画廊入口：黄铜按钮 -->
       <NuxtLink class="hd-gallery" :to="localePath('/styles')">
         <span class="hd-gallery-rivet" aria-hidden="true" />
@@ -58,6 +65,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -243,6 +252,63 @@ function isActive(path: string): boolean {
     inset 0 -1px 0 rgb(255 240 210 / 0.12);
 }
 
+/* —— 语言切换：压印进木杆的小皮革钥匙 ——
+   比黄铜画廊按钮低一级：凹面（压印）而非凸面，字号与销钉都收小一档 */
+.hd-lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--c-surface) 62%, transparent);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--c-bg) 55%, var(--c-border));
+  box-shadow:
+    inset 0 2px 4px var(--c-border),
+    inset 0 -1px 0 color-mix(in srgb, var(--c-surface) 18%, transparent);
+  transition:
+    color var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+.hd-lang:hover {
+  color: color-mix(in srgb, var(--c-surface) 85%, transparent);
+}
+
+/* 按下：凹面再深一档（本风格的按压就是被按进桌面） */
+.hd-lang:active {
+  transform: var(--press-transform);
+  box-shadow: var(--shadow-press);
+}
+
+.hd-lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+/* 销钉：黄铜，与画廊按钮的铆钉同族但收小一档 */
+.hd-lang-pin {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--c-accent) 0%,
+    color-mix(in srgb, var(--c-accent) 55%, var(--c-border)) 100%
+  );
+}
+
 /* —— 风格画廊入口：黄铜按钮 —— */
 .hd-gallery {
   display: inline-flex;
@@ -292,8 +358,24 @@ function isActive(path: string): boolean {
 /* —— 窄屏：收紧间距，路由导航横向滚动 —— */
 @media (max-width: 767px) {
   .hd-inner {
-    gap: 10px;
-    padding-inline: 32px;
+    gap: 8px 10px;
+    padding-inline: 16px;
+  }
+
+  /* 第二行给页内导航 + 语言切换：带子与站名牌、画廊扣板抢第一行时，
+     实测 390 下被压到 7px 宽，整条导航看不见（键盘 Tab 全落在可视区外） */
+  .hd-nav {
+    order: 3;
+    /* 基准宽度按「整行减去语言扣板」给：留 110px 给语言切换，两者才能同落第二行。
+       写 auto 会被内容宽（实测 330px）顶成独占一行、把语言挤到第三行；
+       写 0 则根本不换行，被站名牌与画廊扣板压成 15px 一条缝（审计判据抓到过） */
+    flex: 1 1 calc(100% - 110px);
+  }
+
+  .hd-lang {
+    order: 4;
+    flex: none;
+    padding: 6px 9px;
   }
 
   .hd-gallery {
@@ -304,12 +386,14 @@ function isActive(path: string): boolean {
 @media (prefers-reduced-motion: reduce) {
   .brand-plate,
   .hd-link,
+  .hd-lang,
   .hd-gallery {
     transition: none;
   }
 
   .brand:active .brand-plate,
   .hd-link:active,
+  .hd-lang:active,
   .hd-gallery:active {
     transform: none;
   }

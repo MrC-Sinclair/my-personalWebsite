@@ -9,7 +9,8 @@
     可观察，改用路由匹配（aria-current='page'）。
 
   视觉沿用首页那颗黏土胶囊条：黏土小球站点标识、凹陷轨道里的胶囊
-  条目、粉黏土画廊胶囊。当前子页把首页滚动激活态那套「内凹着色」
+  条目、语言切换软胶囊、粉黏土画廊胶囊（语言切换的行为来自共享层
+  useLocaleSwitch）。当前子页把首页滚动激活态那套「内凹着色」
   固定下来——黏土风只有按压/浮起两种状态，选中就是「被按下」。
 -->
 <template>
@@ -36,6 +37,11 @@
         </ul>
       </nav>
 
+      <!-- 语言切换：凹陷轨道里的次级软胶囊（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="lang-pill" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
       <!-- 风格画廊入口 -->
       <NuxtLink class="gallery-pill" :to="localePath('/styles')">
         <span class="gallery-dot" aria-hidden="true" />
@@ -49,6 +55,8 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 子页链接清单（label 走已有 i18n key，不新增文案） */
 const links = computed(() => [
@@ -184,6 +192,46 @@ function isActive(path: string): boolean {
     inset 0 -4px 8px rgb(90 40 150 / 0.25);
 }
 
+/* —— 语言切换（次级软胶囊：压在凹陷轨道里，不给粉底盘） —— */
+.lang-pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 14px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 999px;
+  box-shadow: inset 0 2px 6px color-mix(in srgb, var(--c-accent) 10%, transparent);
+  transition:
+    color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+.lang-pill:hover {
+  color: var(--c-accent);
+  background: color-mix(in srgb, var(--c-accent) 8%, var(--c-surface));
+  box-shadow:
+    0 4px 8px color-mix(in srgb, var(--c-accent) 18%, transparent),
+    inset 0 2px 5px color-mix(in srgb, var(--c-accent) 10%, transparent);
+}
+
+.lang-pill:active {
+  transform: var(--press-transform);
+}
+
+.lang-pill:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
 /* —— 风格画廊入口（粉黏土胶囊） —— */
 .gallery-pill {
   display: inline-flex;
@@ -243,12 +291,14 @@ function isActive(path: string): boolean {
   .brand,
   .brand-ball,
   .anchor-pill,
+  .lang-pill,
   .gallery-pill {
     transition: none;
   }
 
   .brand:active,
   .anchor-pill:active,
+  .lang-pill:active,
   .gallery-pill:active,
   .gallery-pill:hover {
     transform: none;

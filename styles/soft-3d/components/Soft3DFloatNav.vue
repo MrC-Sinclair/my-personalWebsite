@@ -3,6 +3,7 @@
   ------------------------------------------------------------
   一颗悬浮在页面顶端的玻璃质感胶囊：站点标识（小球 + 名称）
   + 页内锚点（原生 <a href="#id>，交给全局 smooth 滚动）
+  + 语言切换的充气小胶囊（行为走共享层 useLocaleSwitch）
   + 「风格画廊」入口（localePath 包裹的渐变胶囊）。
   窄屏胶囊自动换行、锚点横向滚动，物体感阴影与圆角保留。
 -->
@@ -21,6 +22,11 @@
           <a class="float-nav-link" :href="`#${section.id}`">{{ section.label }}</a>
         </li>
       </ul>
+
+      <!-- 语言切换：充气小胶囊（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="float-nav-lang" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
 
       <!-- 风格画廊入口 -->
       <NuxtLink class="float-nav-gallery" :to="localePath('/styles')">
@@ -41,6 +47,8 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 </script>
 
 <style scoped>
@@ -139,6 +147,41 @@ const localePath = useLocalePath()
   transform: var(--press-transform);
 }
 
+/* —— 语言切换：充气小胶囊 ——
+   比糖果渐变的画廊入口低一级：受光的哑光面 + 小尺度柔影，不上辉光 */
+.float-nav-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 14px;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--c-surface) 92%, var(--c-on-accent));
+  border: var(--border-w) solid var(--c-border);
+  border-radius: 999px;
+  box-shadow:
+    0 4px 10px color-mix(in srgb, var(--c-bg) 60%, transparent),
+    inset 0 1px 2px color-mix(in srgb, var(--c-on-accent) 16%, transparent);
+  transition: color var(--transition), background var(--transition), transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.float-nav-lang:hover {
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-accent) 16%, transparent);
+  transform: translateY(-2px);
+}
+
+/* 按压：被压回空间深处（与全站同款 --shadow-press 配方） */
+.float-nav-lang:active {
+  transform: var(--press-transform);
+  box-shadow: var(--shadow-press);
+}
+
 /* —— 风格画廊入口：糖果渐变胶囊 —— */
 .float-nav-gallery {
   display: inline-flex;
@@ -200,6 +243,7 @@ const localePath = useLocalePath()
 @media (prefers-reduced-motion: reduce) {
   .float-nav-brand,
   .float-nav-link,
+  .float-nav-lang,
   .float-nav-gallery,
   .float-nav-gallery-arrow {
     transition: none;
@@ -207,12 +251,14 @@ const localePath = useLocalePath()
 
   .float-nav-brand:hover,
   .float-nav-link:hover,
+  .float-nav-lang:hover,
   .float-nav-gallery:hover {
     transform: none;
   }
 
   .float-nav-brand:active,
   .float-nav-link:active,
+  .float-nav-lang:active,
   .float-nav-gallery:active {
     transform: none;
   }

@@ -2,7 +2,7 @@
   ClaymorphismTopNav - claymorphism 风格顶部胶囊导航
   ------------------------------------------------------------
   圆滚滚的黏土胶囊吸顶导航：站点标识（黏土小球 + 站名）+
-  页内锚点胶囊 + 「风格画廊」入口胶囊。
+  页内锚点胶囊 + 语言切换软胶囊 + 「风格画廊」入口胶囊。
   窄屏：胶囊自动换行，锚点横向滚动，触控目标均 ≥ 40px。
   滚动激活态复用共享层 useActiveSection（观察 [data-section]
   元素、区块跨越视口中部「阅读线」时激活，observer 清理在其
@@ -34,6 +34,11 @@
         </ul>
       </nav>
 
+      <!-- 语言切换：凹陷轨道里的次级软胶囊（行为走共享层 useLocaleSwitch） -->
+      <NuxtLink class="lang-pill" :to="targetPath" :aria-label="t('common.language')">
+        {{ targetLabel }}
+      </NuxtLink>
+
       <!-- 风格画廊入口 -->
       <NuxtLink class="gallery-pill" :to="localePath('/styles')">
         <span class="gallery-dot" aria-hidden="true"/>
@@ -53,6 +58,8 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 // 滚动激活态走共享层 useActiveSection：观察 [data-section] 元素、
 // 区块跨越视口中部「阅读线」时激活，observer 清理在其内部完成
@@ -178,6 +185,46 @@ const { activeId } = useActiveSection()
     inset 0 -4px 8px rgb(90 40 150 / 0.25);
 }
 
+/* —— 语言切换（次级软胶囊：压在凹陷轨道里，不给粉底盘） —— */
+.lang-pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 14px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 999px;
+  box-shadow: inset 0 2px 6px color-mix(in srgb, var(--c-accent) 10%, transparent);
+  transition:
+    color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+.lang-pill:hover {
+  color: var(--c-accent);
+  background: color-mix(in srgb, var(--c-accent) 8%, var(--c-surface));
+  box-shadow:
+    0 4px 8px color-mix(in srgb, var(--c-accent) 18%, transparent),
+    inset 0 2px 5px color-mix(in srgb, var(--c-accent) 10%, transparent);
+}
+
+.lang-pill:active {
+  transform: var(--press-transform);
+}
+
+.lang-pill:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
 /* —— 风格画廊入口（粉黏土胶囊） —— */
 .gallery-pill {
   display: inline-flex;
@@ -237,12 +284,14 @@ const { activeId } = useActiveSection()
   .brand,
   .brand-ball,
   .anchor-pill,
+  .lang-pill,
   .gallery-pill {
     transition: none;
   }
 
   .brand:active,
   .anchor-pill:active,
+  .lang-pill:active,
   .gallery-pill:active,
   .gallery-pill:hover {
     transform: none;

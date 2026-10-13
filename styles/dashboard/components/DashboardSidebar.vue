@@ -2,7 +2,7 @@
   DashboardSidebar - dashboard 风格侧边栏
   ------------------------------------------------------------
   桌面端（≥1024px）：固定宽度侧栏，站点标识 + 页内锚点导航 +
-  「风格画廊」入口，sticky 全高。
+  语言切换 + 「风格画廊」入口，sticky 全高。
   窄屏：收起为吸顶顶部条（品牌行 + 横向滚动锚点 chips），
   信息密度签名保留。
   滚动激活态复用共享层 useActiveSection（观察 [data-section]
@@ -20,10 +20,16 @@
           <p class="side-tagline">{{ t('home.tagline') }}</p>
         </div>
       </div>
-      <NuxtLink class="side-gallery" :to="localePath('/styles')">
-        <span class="side-gallery-label">{{ t('styles.gallery.title') }}</span>
-        <span class="side-gallery-arrow" aria-hidden="true">→</span>
-      </NuxtLink>
+      <!-- 动作组：语言切换（次级）+ 风格画廊入口（主） -->
+      <div class="side-actions">
+        <NuxtLink class="side-lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+        <NuxtLink class="side-gallery" :to="localePath('/styles')">
+          <span class="side-gallery-label">{{ t('styles.gallery.title') }}</span>
+          <span class="side-gallery-arrow" aria-hidden="true">→</span>
+        </NuxtLink>
+      </div>
     </div>
 
     <!-- 页内锚点导航（含滚动激活态） -->
@@ -54,6 +60,8 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+// 语言切换行为走共享层，外观由本风格决定
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 // 滚动激活态走共享层 useActiveSection：观察 [data-section] 元素、
 // 区块跨越视口中部「阅读线」时激活，observer 清理在其内部完成
@@ -78,6 +86,8 @@ const { activeId } = useActiveSection()
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* 窄屏（320px）品牌行 + 动作组放不下时换行，而不是撑出横向滚动 */
+  flex-wrap: wrap;
   gap: var(--gap);
 }
 
@@ -139,6 +149,53 @@ const { activeId } = useActiveSection()
   color: var(--c-muted);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* —— 动作组：语言切换 + 画廊入口（窄屏放不下时整组换到第二行） —— */
+.side-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* —— 语言切换：紧凑控件（比画廊入口安静一档：hover 只吃淡底，不填满强调色） —— */
+.side-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--transition),
+    border-color var(--transition),
+    background var(--transition),
+    transform var(--transition);
+}
+
+.side-lang:hover {
+  color: var(--c-accent);
+  border-color: color-mix(in srgb, var(--c-accent) 55%, var(--c-border));
+  background: color-mix(in srgb, var(--c-accent) 10%, transparent);
+}
+
+.side-lang:active {
+  transform: var(--press-transform);
+}
+
+.side-lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 /* —— 风格画廊入口 —— */
@@ -245,6 +302,8 @@ const { activeId } = useActiveSection()
   .side-brand {
     flex-direction: column;
     align-items: stretch;
+    /* 竖排时不再需要横向换行（column + wrap 会变成纵向分列，这里禁掉） */
+    flex-wrap: nowrap;
     padding-bottom: var(--space);
     border-bottom: var(--border-w) solid var(--c-border);
   }
@@ -254,9 +313,15 @@ const { activeId } = useActiveSection()
     white-space: normal;
   }
 
-  .side-gallery {
-    justify-content: space-between;
+  /* 动作组独占一行拉满宽度，画廊入口吃掉剩余空间（维持原「整宽按钮」观感） */
+  .side-actions {
     margin-top: var(--space);
+  }
+
+  .side-gallery {
+    flex: 1;
+    justify-content: space-between;
+    margin-top: 0;
   }
 
   .side-nav {
@@ -293,6 +358,7 @@ const { activeId } = useActiveSection()
   }
 
   .side-name,
+  .side-lang,
   .side-gallery,
   .side-link,
   .side-tick {
@@ -300,6 +366,7 @@ const { activeId } = useActiveSection()
   }
 
   .side-link:active,
+  .side-lang:active,
   .side-gallery:active {
     transform: none;
   }

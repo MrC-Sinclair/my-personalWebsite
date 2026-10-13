@@ -3,7 +3,8 @@
   ------------------------------------------------------------
   粘性光泽顶栏：浅蓝渐变条 + 底部白高光线 + 三色渐变饰条。
   内容 = 站点标识（凝胶字母牌 + 站名）+ 页内锚点胶囊导航
-  + 「UI 风格画廊」入口（NuxtLink，localePath 包裹）。
+  + 右侧动作组（语言切换小胶囊 + 「UI 风格画廊」橙色凝胶按钮，
+  画廊走 localePath、语言切换走共享层 useLocaleSwitch 的 targetPath）。
   移动端：锚点导航折叠为可横向滑动的胶囊条（触控目标 ≥ 40px）。
 -->
 <template>
@@ -20,9 +21,20 @@
         </a>
       </nav>
 
-      <Web2GlossyGelButton :to="localePath('/styles')" variant="orange" class="site-header__gallery">
-        {{ t('styles.gallery.title') }}
-      </Web2GlossyGelButton>
+      <!-- 右侧动作组：语言切换（次要小胶囊）+ 画廊入口（主凝胶按钮） -->
+      <div class="site-header__actions">
+        <NuxtLink class="site-header__lang" :to="targetPath" :aria-label="t('common.language')">
+          {{ targetLabel }}
+        </NuxtLink>
+
+        <Web2GlossyGelButton
+          :to="localePath('/styles')"
+          variant="orange"
+          class="site-header__gallery"
+        >
+          {{ t('styles.gallery.title') }}
+        </Web2GlossyGelButton>
+      </div>
     </div>
   </header>
 </template>
@@ -31,13 +43,15 @@
 /**
  * @file Web 2.0 光泽风格的站点导航头部组件
  * @description 锚点指向本页各区块（依赖全局 scroll-behavior: smooth 与
- *              scroll-margin-top）；画廊入口为站内路由，走 localePath。
+ *              scroll-margin-top）；画廊入口为站内路由，走 localePath；
+ *              语言切换走共享层 useLocaleSwitch（自动导入）。
  */
 // styles/ 下组件不走自动导入，引用同风格组件必须显式 import
 import Web2GlossyGelButton from './Web2GlossyGelButton.vue'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+const { targetPath, targetLabel } = useLocaleSwitch()
 
 /** 站点标识字母牌取站名首字符 */
 const logoInitial = computed(() => t('home.name').charAt(0))
@@ -198,10 +212,65 @@ const anchors = computed(() => [
   outline-offset: 2px;
 }
 
-/* 画廊入口在移动端收窄文字留白 */
-.site-header__gallery {
+/* —— 右侧动作组：语言切换 + 画廊入口 ——
+   原先 margin-left:auto 挂在画廊按钮上，现在移交给整组：
+   组内允许换行，极窄屏时小胶囊折到画廊按钮下方，而不是把整行顶宽 */
+.site-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
   order: 1;
   margin-left: auto;
+}
+
+.site-header__gallery {
+  flex: none;
+}
+
+/* —— 语言切换：光泽小胶囊（次要动作，比橙色凝胶按钮安静一级） —— */
+.site-header__lang {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 4px 14px;
+  font-family: var(--font-head);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--c-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius-sm);
+  /* 顶亮底深的凝胶渐变只用 token 的两档底色，不引入新色值 */
+  background: linear-gradient(180deg, var(--c-surface) 0%, var(--c-bg) 100%);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-surface) 90%, transparent);
+  transition:
+    color var(--transition),
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+/* hover：文字升到正文色（--c-accent 压浅蓝底只有 3.9:1，只做描边不做字色） */
+.site-header__lang:hover {
+  color: var(--c-text);
+  border-color: var(--c-accent);
+}
+
+.site-header__lang:active {
+  transform: var(--press-transform);
+  box-shadow: var(--shadow-press);
+}
+
+.site-header__lang:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 /* —— 窄屏：品牌 + 画廊一行，锚点成横向滑动胶囊条 —— */

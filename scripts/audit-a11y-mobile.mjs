@@ -9,10 +9,19 @@
  *      还原模型与 scripts/probe-touch-targets.mjs 共用 hit-box.mjs，两边数字必须对得上
  *   4. 图片缺 alt、主文档 HTTP 状态（404 判定不能只看 document.title：
  *      静态服务器上缺失的页面根本没有 Nuxt 错误页，标题判据会静默放过）
+ *   5. 语言切换入口：本页是否存在指向「另一语言同一页」的链接。双语站点
+ *      漏了这一条，英文页就成了孤岛（用户切不过去）。详情页没有导航，
+ *      用 AUDIT_DETAIL 抽查时不参与这条判定
+ *   6. 横向滚动带被挤成一条缝（实测宽 < 80 而内容比它宽 40 以上）：
+ *      不溢出、命中区也够，但那条导航等于消失了
  *
  * 用法：MSYS_NO_PATHCONV=1 node scripts/audit-a11y-mobile.mjs [baseURL]
  */
 import { HIT_BOX_SRC } from './hit-box.mjs'
+import { SQUEEZE_SRC } from './squeeze-check.mjs'
+
+/** 当前持有的 CDP socket，只给「出错也要退出」那条路径用 */
+let liveWs = null
 
 // 默认打线上：这是真实发布物（Caddy 服务 generate 产物），量到的就是用户拿到的。
 // 子路径部署时 BASE 必须带上 baseURL 前缀，否则资源链接与路由全错。
@@ -56,6 +65,10 @@ async function main() {
   const list = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`)).json()
   const page = list.find((t) => t.type === 'page')
   const ws = new WebSocket(page.webSocketDebuggerUrl)
+  // 出错路径必须能关掉这个 socket：CDP 超时抛错时 socket 还开着，
+  // 事件循环永不空转，进程就挂在那里（表现是「审计早退了、后面几轮全在串页」，
+  // 更糟的是它还在继续驱动同一个 tab，把后面那轮的量全污染）。
+  liveWs = ws
   let seq = 0
   const pending = new Map()
   // 主文档的 HTTP 状态由 CDP 事件带来（事件消息没有 id，不进 pending 分支）。
@@ -141,6 +154,7 @@ async function main() {
           const doc = document.documentElement;
           const h1 = document.querySelectorAll('h1').length;
           ${HIT_BOX_SRC}
+          ${SQUEEZE_SRC}
           // 触控目标量「命中区」而不是边框盒，口径与 scripts/probe-touch-targets.mjs 保持一致：
           // 覆盖式链接（::after 用 inset:0 铺满整行/整卡）、外扩命中区（inset 为负）、
           // display:inline 包住块级子元素时塌成 0 宽的链接，直接量 rect 会把这三类全判成不合格。
@@ -222,8 +236,32 @@ async function main() {
                   );
                 })
             : [];
+          // 语言切换入口存在性：链接必须指向「另一语言的同一页」。
+          // 不能只看 href 里有没有 /en —— 英文页的「返回首页」链接本身就带 /en，
+          // 那样会把「没有入口」判成「有入口」。子路径部署（/my-personalWebsite）
+          // 在 href 与 location.pathname 里都会出现，所以两边都从 /style/ 起截，
+          // 但必须**保留** /en 段：早先 slice(en + 3) 把它剥掉了，
+          // 于是英文侧的 key 永远等于中文 key，wantKey 反而谁都匹配不上（判据恒为 0）。
+          const langKey = (h) => {
+            const en = h.indexOf('/en/style/');
+            const zh = h.indexOf('/style/');
+            const k = en >= 0 ? h.slice(en) : zh >= 0 ? h.slice(zh) : '';
+            return k.replace(/\\/+$/, '') || '/';
+          };
+          const hereKey = langKey(location.pathname);
+          const wantKey = hereKey.indexOf('/en/') === 0 ? hereKey.slice(3) : '/en' + hereKey;
+          const lang = [...document.querySelectorAll('a[href]')].filter(
+            (a) => langKey(a.getAttribute('href') || '') === wantKey,
+          ).length;
+          // 横向滚动带被挤成一条缝（判据与已知答案测试共用 scripts/squeeze-check.mjs）
+          const squeezed = squeezedOf(document);
           return JSON.stringify({
             title: document.title,
+            // 实测到的页面路径必须就是本次要审的那一页：多个驱动共用一个 tab 时
+            // （僵尸探针进程还在跑，或 CI 上被人手动接上），A 的 navigate 会把 B
+            // 正在量的页换掉，于是「pixel 那行量到的是 liquid-glass 的数」——
+            // 一整批假阳性就是这么来的。不带 href 回来就没法发现。
+            href: location.pathname,
             overflow: over,
             overflowDetail: overEls,
             h1,
@@ -231,6 +269,8 @@ async function main() {
             small,
             smallDetail,
             imgNoAlt,
+            lang,
+            squeezed,
           });
         })()`,
         returnByValue: true,
@@ -247,10 +287,23 @@ async function main() {
         flags.push(`溢出${data.overflow}px ${(data.overflowDetail || []).join(' ; ')}`)
       if (data.h1 !== 1) flags.push(`h1=${data.h1}`)
       if (data.small > 0) flags.push(`小目标${data.small}/${data.targets} ${(data.smallDetail||[]).join(" ; ")}`)
+      // 滚动带被挤成一条缝：不溢出、命中区也够，但用户没法靠它导航
+      if (data.squeezed?.length) flags.push(`挤没滚动带${data.squeezed.join(' ; ')}`)
       if (data.imgNoAlt > 0) flags.push(`缺alt${data.imgNoAlt}`)
+      // 语言切换入口存在性：双语站点却切不到另一语言 = 英文页是孤岛
+      if (!DETAIL && data.lang === 0) flags.push('无语言入口')
+      // 量到的必须就是这一页。多个驱动共用同一个 tab 时（僵尸探针进程没清、
+      // CI 上被人手动接上），A 的 navigate 会把 B 正在量的页换掉，于是出现
+      // 「pixel 那行量到 liquid-glass 的数」这类整批假阳性。
+      // 宁可报「串页」，也不能静默给出一串看着可信的数字。
+      const wantPath = new URL(url).pathname.replace(/\/+$/, '')
+      const gotPath = String(data.href || '').replace(/\/+$/, '')
+      const hijacked = !!gotPath && gotPath !== wantPath
+      if (hijacked) flags.push(`串页(实为${gotPath})`)
       rows.push({
         style,
         suffix: suffix || '/',
+        hijacked,
         status: docStatus,
         assets: failedAssets,
         note: flags.join(' '),
@@ -271,6 +324,9 @@ async function main() {
       r.h1 !== 1 ||
       r.small > 0 ||
       r.imgNoAlt > 0 ||
+      r.hijacked ||
+      (r.squeezed && r.squeezed.length > 0) ||
+      (!DETAIL && r.lang === 0) ||
       r.title?.startsWith('404'),
   )
   console.log(`\n共 ${rows.length} 页，${bad.length} 页有问题`)
@@ -305,5 +361,12 @@ main().catch((error) => {
   annotate(`审计脚本异常中断：${error?.message || error}（这不是页面问题，是量具或环境跑不起来）`)
   // 脚本自身出错（连不上 Chrome / dev server 没起来）同样要红，
   // 否则「审计根本没跑」也会被当成通过
-  process.exitCode = 1
+  try {
+    liveWs?.close()
+  } catch {
+    // 关不上也无所谓：下面直接强制退出
+  }
+  // 必须强制退出。只设 process.exitCode 时，还开着的 CDP socket 会让事件循环
+  // 永不空转，进程挂成僵尸；它继续驱动同一个 tab，下一轮审计的量就全错位了
+  process.exit(1)
 })
