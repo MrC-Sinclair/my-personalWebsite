@@ -38,7 +38,9 @@
 
 ```
 content/          → Markdown 内容（blog/zh|en, projects/zh|en）
-composables/      → 业务逻辑层（useBlog, useProjects, useSiteConfig, useScrollReveal）
+composables/      → 业务逻辑层（useBlog, useProjects, useSiteConfig, useScrollReveal,
+                     useActiveSection, useClipboardCopy, useBlogTagFilter, useBlogSearch,
+                     useLocaleSwitch, useFocusIntoView）
                      注意：useSiteConfig.ts 文件导出的函数名为 useAppInfo()
 types/            → blog.ts, project.ts, site.ts
 utils/            → format.ts 等工具函数
@@ -57,6 +59,7 @@ scripts/          → 仓库级脚本：
                      构建发布 —— publish-cvm.mjs（推到 CVM）、gen-brand-assets.mjs、gen-style-previews.mjs
                      验证工具 —— audit-a11y-mobile.mjs（CI 审计入口，40px 命中区）、
                                  hit-box.mjs（命中区还原模型，三个探针共用）、
+                                 squeeze-check.mjs（滚动条带被挤没的判据，审计与已知答案测试共用）、
                                  serve-static.mjs（复刻 Caddy 语义起静态产物，CI 审计用）、
                                  probe-subpage-layout.mjs / probe-touch-targets.mjs /
                                  probe-target-detail.mjs / probe-code.mjs /
@@ -123,7 +126,10 @@ Nuxt 3 使用 SSR，服务端和客户端必须渲染出相同的 HTML，否则�
 - **响应式**：移动端优先，断点 sm:640 / md:768 / lg:1024 / xl:1280
 - **主题**：无全站亮/暗色切换（`@nuxtjs/color-mode` 已随 Nuxt UI 移除），每个风格自带固定配色
 - **动效**：各风格用自己的 `--transition` 定义（允许为 `none`），必须尊重 prefers-reduced-motion（全局 CSS 已实现）
-- **无障碍**：WCAG AA，对比度 ≥ 4.5:1，键盘导航，语义化 HTML，触控目标 ≥ 40px
+- **无障碍**：WCAG AA，对比度 ≥ 4.5:1，键盘导航，语义化 HTML，触控目标 ≥ 40px（量的是**命中区**，
+  口径见 `scripts/hit-box.mjs`；地板要用 `min-width/min-height` 与字形宽度解耦）。
+  窄屏横向滚动条带里的焦点由 `useFocusIntoView()`（app.vue 全局挂一次）负责滚进可视区——
+  浏览器只保证「露一点」，半截焦点环等于没有指示
 - **安全区域**：viewport-fit=cover + env(safe-area-inset-\*) 适配刘海屏
 
 ### 交互效果规范
@@ -177,6 +183,10 @@ Nuxt 3 使用 SSR，服务端和客户端必须渲染出相同的 HTML，否则�
 
 - **所有用户可见文本必须走 i18n**：composable 中的分类名、时间线内容等也必须用 `t()`，不要硬编码中文。`aria-label` 等无障碍属性也必须走 `t()` 国际化
 - **i18n key 按模块命名**：`blog.breadcrumb`、`projects.featured`、`common.notFound` 等
+- **每个风格的两条导航都要有语言切换入口**（首页导航 + `XxxSubNav`）：行为走共享层
+  `useLocaleSwitch()`，外观归风格，文案用现成的 `common.language` 做 aria-label。
+  入口只挂在画廊页等于英文页是孤岛；这条由 `tests/styles-structure.test.ts` 与
+  CI 审计（`无语言入口`）双重守住
 
 ### SEO
 

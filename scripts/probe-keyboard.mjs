@@ -91,12 +91,16 @@ function send(method, params = {}) {
  */
 const BASELINE = `(() => {
   ${HIT_BOX_SRC}
-  const snap = (el) => {
+  const snapOf = (el) => {
     const cs = getComputedStyle(el);
     return [cs.outlineStyle, cs.outlineWidth, cs.outlineColor, cs.boxShadow, cs.backgroundColor,
             cs.borderTopWidth, cs.borderTopColor, cs.color, cs.textDecorationLine, cs.transform,
             cs.fontWeight, cs.opacity].join('|');
   };
+  // 焦点指示常常不画在元素自己身上：输入框的 :focus 由父行用 :focus-within 接管
+  // （terminal 的 .input-row:focus-within 就是这样）。只量元素本身会把这种
+  // 「合规的间接指示」全判成无指示，所以签名里带上直接父容器的外观。
+  const snap = (el) => snapOf(el) + '#' + (el.parentElement ? snapOf(el.parentElement) : '');
   // 本站设了 html { scroll-behavior: smooth }，Tab 后浏览器是平滑滚动——
   // 紧接着读 rect 会读到「还在首屏以下」的中间态，整条判据全假阳性。
   // 探针期间临时关掉平滑，让焦点落位变成瞬时（只影响这个量测进程，不改产品代码）。

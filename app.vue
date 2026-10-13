@@ -25,6 +25,9 @@ useHead(() => ({
     },
   ],
 }))
+
+// 键盘焦点滚进滚动条带的可视区（全站共用这一份行为，见 composables/）
+useFocusIntoView()
 </script>
 
 <template>

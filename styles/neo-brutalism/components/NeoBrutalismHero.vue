@@ -41,7 +41,10 @@ const { t } = useI18n()
   min-height: clamp(560px, 82vh, 860px);
   padding: 48px 0 72px;
   border-bottom: calc(var(--border-w) * 2) solid var(--c-border);
-  overflow: hidden;
+  /* clip + clip-margin：仍然裁掉出界的装饰，但给焦点环留出 12px 画得出去。
+     用 overflow: hidden 会把 CTA 按钮的键盘焦点环一起裁掉（实测 1 处） */
+  overflow: clip;
+  overflow-clip-margin: 12px;
 }
 
 /* —— 问候标签：歪斜的橡皮章 —— */

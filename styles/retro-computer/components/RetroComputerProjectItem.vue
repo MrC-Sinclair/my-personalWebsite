@@ -108,11 +108,8 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   flex: 1;
   min-width: 0;
   margin: 0;
-  overflow: hidden;
   font-family: var(--font-head);
   font-size: var(--fs-title);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* 标题链接：默认继承标题色，hover 才显出可点（该风格无过渡动画） */
@@ -122,6 +119,12 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   /* 行容器有 44px，但可点的只有这条链接：撑到 40px 命中高度 */
   display: inline-block;
   padding-block: 12px;
+  /* 省略号从 h3 挪到这里：overflow 挂在祖先上会把链接自己的焦点环裁掉
+     （键盘实测 3 处「焦点看不见」就是这里），挂在本元素上则只裁文字、不裁环 */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .rc-proj__title-link:hover {
