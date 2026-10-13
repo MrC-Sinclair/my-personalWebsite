@@ -13,6 +13,7 @@
     data-section="projects"
     :eyebrow="eyebrowText"
     :title="headingText"
+    :quiet="standalone"
   >
     <ul v-if="projects.length" class="idx">
       <li v-for="project in projects" :key="project.path" class="idx-item">

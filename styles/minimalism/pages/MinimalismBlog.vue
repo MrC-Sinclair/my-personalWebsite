@@ -85,4 +85,12 @@ const loading = computed(() => pending.value && !postsData.value)
   display: grid;
   gap: 16px;
 }
+
+/* 搜索框不占满整行：实测 1280 下它是 896px 宽的空条，读起来像一条
+   分隔线而不是控件；收到 420px 后它是「一个输入框」，与标签行左对齐 */
+@media (min-width: 900px) {
+  .search {
+    max-width: 420px;
+  }
+}
 </style>

@@ -8,7 +8,13 @@
   数据来自共享层 useBlog（由页面获取后传入 props）。
 -->
 <template>
-  <MinimalismSection id="posts" data-section="posts" :eyebrow="eyebrowText" :title="headingText">
+  <MinimalismSection
+    id="posts"
+    data-section="posts"
+    :eyebrow="eyebrowText"
+    :title="headingText"
+    :quiet="standalone"
+  >
     <template v-if="showMore" #aside>
       <NuxtLink class="more" :to="localePath('/style/minimalism/blog')">
         {{ t('home.viewAll') }}<span class="more-arrow" aria-hidden="true">→</span>

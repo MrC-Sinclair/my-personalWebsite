@@ -144,22 +144,29 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* —— 清除筛选 / 展开收起：只在需要时出现，弱化到只剩文字 —— */
 .clear,
 .toggle {
+  display: inline-flex;
+  align-items: center;
   min-height: 40px;
-  padding: 8px 4px;
+  padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-muted);
   background: transparent;
-  border: 0;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  /* 与标签同形，但用虚线边：实线边属于「可筛选的标签」，虚线属于「展开这一组」的动作。
+     此前它是条下划线文字链混在 chip 群里，实测被读成第 15 个标签 */
+  border: 1px dashed var(--c-border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
   cursor: pointer;
-  transition: color var(--transition);
+  transition:
+    color var(--transition),
+    border-color var(--transition);
 }
 
 .clear:hover,
 .toggle:hover {
   color: var(--c-accent);
+  border-color: var(--c-accent);
 }
 
 .toggle:focus-visible {
