@@ -198,6 +198,19 @@ function isActive(path: string): boolean {
   .hud-menu {
     width: 100%;
     margin-left: 0;
+    /* 六个方块键在 390 宽下绕成两行，整条 HUD 吃掉三行高。收成单行横滑
+       （与本站标签墙同一套做法），键盘焦点由共享层 useFocusIntoView 滚进视野 */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .hud-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hud-item {
+    flex: none;
   }
 }
 </style>
