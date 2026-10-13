@@ -341,6 +341,12 @@ async function main() {
             if ((el.textContent || '').trim().length < 24) continue;
             const cs = getComputedStyle(el);
             if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+            // 读屏降级区（.sr-only 那类 1px + clip 的容器）本来就不给眼睛看：
+            // 里面的段落宽 0-1px 是设计如此，不是塌陷（terminal 首页五个 block 就是这样，
+            // 早先按视口百分比判时它一次报了 27 段）。
+            // 只按类名排除，不要加「祖先宽 <2 就跳过」的几何判断——
+            // 祖先被压塌成正是要抓的缺陷本身，加了就等于把证据又丢了。
+            if (el.closest('.sr-only')) continue;
             const r = el.getBoundingClientRect();
             // 0 宽不是「没有内容」，而是列被压塌了（dashboard 详情页的正文实测就是
             // 0 宽、父级 .detail 19px）。早先这里挡掉 width<=0，等于把唯一的证据丢了。
@@ -349,7 +355,10 @@ async function main() {
           }
           pw.sort((a, b) => a - b);
           const median = pw.length ? pw[Math.floor(pw.length / 2)] : 0;
-          const narrowBody = pw.length >= 3 && median < vw * 0.4
+          // 阈值取绝对值 40px，不取视口百分比：磁贴 / 卡片式首页本来就有许多窄段落
+          // （metro 正文块实测 111-146px），按 40% 判会把设计当成缺陷，一次报 9 页。
+          // 「塌陷」的信号是中位数低于一行文字还能读的宽度。
+          const narrowBody = pw.length >= 3 && median < 40
             ? Math.round(median) + 'px/' + pw.length + '段'
             : '';
           return JSON.stringify({
