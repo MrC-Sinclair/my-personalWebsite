@@ -189,8 +189,11 @@ PROBE_VIEW=390,844 PROBE_PAGES=blog,projects node scripts/probe-touch-targets.mj
   审计脚本每个 CDP 调用都有 40 秒超时并抛出，就是为了把这类事变成一行明确报错，
   而不是「无声挂满 job 时限」。
 - **后台服务要按端口找 PID 停**，`TaskStop` 只杀 shell 不杀 node。
-- **build 期间别改文件、别同时跑 vitest**：`.nuxt/tsconfig.json` 会短暂消失，
-  测试报 `TSConfckParseError` 之类的假故障。
+- **build 期间别改文件、别同时跑 vitest，也别同时跑 `nuxt dev`**：`.nuxt/tsconfig.json` 会短暂消失，
+  测试报 `TSConfckParseError` 之类的假故障。dev 与 build 共用 `.nuxt` 时更狠——client 段全绿、
+  server 段抛 `Unexpected token 'default'` 并伴随 `vite-builder/dist/vite-node.mjs … treating it as an
+  external dependency`，看着像代码错了，其实是 dev 把 `.nuxt/dist/server` 换成了它的中间产物。
+  停掉 dev、`rm -rf .nuxt/dist` 重跑即 exit 0。
 - **截图空白但 `innerText` 是满的 = HMR 脏**，重启即正常，别去改代码。
 
 ## 10. 详情页从没被量过，而它占 560 / 802 页
