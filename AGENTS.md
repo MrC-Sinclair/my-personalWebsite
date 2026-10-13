@@ -63,6 +63,7 @@ scripts/          → 仓库级脚本：
                                  serve-static.mjs（复刻 Caddy 语义起静态产物，CI 审计用）、
                                  probe-subpage-layout.mjs / probe-touch-targets.mjs /
                                  probe-target-detail.mjs / probe-code.mjs /
+                                 probe-keyboard.mjs（真实 Tab 走位：焦点可见性、屏外、环被裁）、
                                  audit-all-styles.mjs / contrast.mjs / eval-url.mjs /
                                  shot.mjs / dead-keys.mjs
                      教训与量具口径见 docs/architecture/verification-pitfalls.md
