@@ -138,9 +138,12 @@ const tocItems = computed(() => [
   border-left: var(--border-w) solid var(--ink-soft);
 }
 
-/* 本期目录：hairline 顶线 + 编号条目 */
+/* 本期目录：hairline 顶线 + 编号条目
+   margin-top: auto 把目录钉在封面底边——封面是撑满首屏的 flex 列，
+   不吸掉余量的话 1280 宽下标题下方会留 270px 空白。 */
 .toc {
-  margin-top: clamp(30px, 6vh, 64px);
+  margin-top: auto;
+  padding-top: clamp(30px, 6vh, 64px);
   border-top: var(--border-w) solid var(--ink-soft);
 }
 
@@ -231,6 +234,27 @@ const tocItems = computed(() => [
 @media (max-width: 480px) {
   .toc-list {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 宽屏：目录条目排成印刷索引的一行式（编号 + 标题 + 箭头）。
+   两栏各约 590px 宽，纵向堆叠会让单元格中间空成一片，
+   底线把这段空白变成「引导线」，箭头也才贴在自己那条条目上。 */
+@media (min-width: 761px) {
+  .toc-list {
+    column-gap: clamp(28px, 4vw, 56px);
+  }
+
+  .toc-item {
+    flex-direction: row;
+    gap: 14px;
+    align-items: baseline;
+    border-bottom: var(--border-w) solid var(--ink-soft);
+  }
+
+  .toc-arrow {
+    align-self: auto;
+    margin-left: auto;
   }
 }
 

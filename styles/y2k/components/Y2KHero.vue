@@ -245,8 +245,10 @@ const { t } = useI18n()
   font-size: 26px;
 }
 
+/* 星芒在桌面宽度落在正文列里（✧ 压在描述文字行上，看起来像一个多余的箭头），
+   所以按 hero 底边定位：内容块是垂直居中的，底部这条带子恒为空。 */
 .hero-spark--2 {
-  top: 58%;
+  bottom: 7%;
   left: 8%;
   font-size: 18px;
   animation-delay: 0.9s;
