@@ -122,6 +122,9 @@ jobs:
   #
   # 全量 20 风格 × 5 页，中英各跑一遍：标签墙那类缺陷只在英文侧暴露
   #（英文 chip 更宽、绕的行更多），只测中文会得出错误结论。
+  # 另加详情页抽查（blog + projects 各一条 × 20 风格）：详情页占全站 802 页里的
+  # 560 页，而 metro（正文被 overflow:clip 剪掉半截）与 dashboard（整篇压进 19px
+  # 一格）两个缺陷正是藏在从没被量过的详情页里——列表页判据当时全绿。
   #
   # 暂不放进 release 的 needs：release 发的是固定 tag cvm-latest，一旦审计被
   # headless Chrome 的抖动带红，publish-cvm.mjs --latest 会**静默拉到上一个 commit
@@ -171,6 +174,7 @@ jobs:
           SITE_BASE: ${{ vars.SITE_BASE_URL || '/' }}
         run: |
           PREFIX="${SITE_BASE%/}"
+          BASE_URL="http://127.0.0.1:4173${PREFIX}"
           node scripts/serve-static.mjs dist 4173 "${SITE_BASE}" &
           for i in $(seq 1 30); do
             curl -sf "http://127.0.0.1:4173${PREFIX}/" > /dev/null && break
@@ -179,7 +183,15 @@ jobs:
           chrome --headless=new --no-sandbox --disable-component-update --no-first-run \
             --remote-debugging-port=9222 &
           sleep 3
-          CDP_PORT=9222 node scripts/audit-a11y-mobile.mjs "http://127.0.0.1:4173${PREFIX}"
+          # 三轮都跑完再决定成败：只跑第一轮就 exit 的话，详情页有问题也看不见
+          rc=0
+          CDP_PORT=9222 node scripts/audit-a11y-mobile.mjs "$BASE_URL" || rc=1
+          # 详情页抽查（每风格 blog + projects 各一条）。全站 802 页里详情页占 560，
+          # 而 metro / dashboard 那两个「判据全绿、正文却根本读不到」的缺陷
+          # 正好长在从没被量过的详情页里。
+          AUDIT_DETAIL=blog CDP_PORT=9222 node scripts/audit-a11y-mobile.mjs "$BASE_URL" || rc=1
+          AUDIT_DETAIL=projects CDP_PORT=9222 node scripts/audit-a11y-mobile.mjs "$BASE_URL" || rc=1
+          exit $rc
 
   # -------------------- 构建任务 --------------------
   build:
