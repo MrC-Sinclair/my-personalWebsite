@@ -156,6 +156,8 @@ const projectLinks = computed(() => {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
+  /* 命中区地板：与字形宽度解耦，「首页」两个汉字的链接实测只有 24px 宽 */
+  min-width: 40px;
   color: var(--c-text);
   text-decoration: none;
   transition: color var(--transition);

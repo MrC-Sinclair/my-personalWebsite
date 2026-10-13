@@ -146,6 +146,11 @@ const projectLinks = computed(() => {
   display: flex;
   flex-direction: column;
   gap: var(--gap);
+  /* 外壳 .main-inner 是 12 条轨道的网格，这里不声明跨列就只占 1 格——
+     390 宽下实测整篇正文被压成 18.8px 一列（页面高 70006px），
+     而横向溢出/h1/命中区三条判据全都发现不了（详情页也没进 CI 审计）。
+     这正是 SOP 第 5 条构图规则写的坑。 */
+  grid-column: 1 / -1;
 }
 
 /* —— KPI 数据格 —— */
@@ -454,7 +459,9 @@ const projectLinks = computed(() => {
 .crumb {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
+  min-height: 40px;
+  /* 命中区地板：与字形宽度解耦，「首页」两个汉字的链接实测只有 22px 宽 */
+  min-width: 40px;
   color: var(--c-accent);
   text-decoration: none;
   transition: color var(--transition);

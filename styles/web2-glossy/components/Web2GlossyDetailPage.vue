@@ -198,6 +198,11 @@ const projectLinks = computed(() => {
   transform: scaleY(-1);
   mask-image: linear-gradient(180deg, transparent 40%, #000 100%);
   -webkit-mask-image: linear-gradient(180deg, transparent 40%, #000 100%);
+  /* 只映一行：详情页标题是一整句话，整段翻转后是三四行读不得的镜像字，
+     还把正文推到折叠线以下（实测 h1 之后空档 233px、正文起点 662px）。
+     溢出裁剪发生在自身坐标系内、transform 之前，所以裁出来正是首行的倒影 */
+  max-height: 1.12em;
+  overflow: hidden;
 }
 
 .meta {

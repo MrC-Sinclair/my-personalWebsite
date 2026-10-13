@@ -174,7 +174,9 @@ const projectLinks = computed(() => {
 .crumb {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
+  /* 命中区地板：等宽小字下「首页」只有 26×32，两个方向都抬到 40 */
+  min-height: 40px;
+  min-width: 40px;
   color: var(--c-accent);
   text-decoration: none;
 }
@@ -252,6 +254,11 @@ const projectLinks = computed(() => {
 }
 
 .link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 命中区地板：行高只撑出 23px 的纯文字链，高度下限得显式写 */
+  min-height: 40px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-accent);
@@ -407,7 +414,8 @@ const projectLinks = computed(() => {
   flex-wrap: wrap;
   gap: 8px;
   align-items: baseline;
-  min-height: 32px;
+  /* 命中区地板：整行可点，行高由地板决定而不是等宽小字 */
+  min-height: 40px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   text-decoration: none;
