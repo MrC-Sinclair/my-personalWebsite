@@ -34,6 +34,8 @@ function displayNote(item: StyleMeta) {
   return locale.value.startsWith('zh') ? item.note : item.noteEn
 }
 
+// tierLabel 不是档位名，是该风格自己的额外成本（+ 点阵字体 / + 雷达动画 …），
+// 分组标题给不了这层信息，所以留在卡片脚上；只去掉重复的「成本档位 N ·」前缀
 function displayTierLabel(item: StyleMeta) {
   return locale.value.startsWith('zh')
     ? item.tierLabel
@@ -46,6 +48,24 @@ const statusKey: Record<StyleMeta['status'], string> = {
   partial: 'styles.gallery.statusPartial',
   planned: 'styles.gallery.statusPlanned',
 }
+
+/**
+ * 按成本档位分组。
+ * 20 张卡平铺时，「成本档位 2 · 需要外部资源」只是每张卡脚上的一行小字，
+ * 读者不会用它排序；分组之后浏览路径变成「先决定愿意付出多少成本，再挑口味」，
+ * 而档位本身也有了两两对照的参照物。
+ */
+const tierGroups = computed(() => {
+  const byTier = new Map<number, StyleMeta[]>()
+  for (const item of styleRegistry) {
+    const list = byTier.get(item.tier) ?? []
+    list.push(item)
+    byTier.set(item.tier, list)
+  }
+  return [...byTier.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([tier, items]) => ({ tier, items }))
+})
 
 // 预览图：registry 的 preview 是 public/ 下的绝对路径（/previews/<id>.jpg），
 // 站点部署在 /my-personalWebsite/ 子路径下，站内引用必须拼上 baseURL
@@ -114,50 +134,64 @@ useHead({
         <p class="gallery__desc">{{ t('styles.gallery.description') }}</p>
       </header>
 
-      <!-- 风格卡片网格 -->
-      <ul class="gallery__grid">
-        <li v-for="item in styleRegistry" :key="item.id">
-          <NuxtLink
-            :to="localePath(`/style/${item.id}`)"
-            :style="{ '--accent': item.accent }"
-            :data-style="item.id"
-            class="card"
-          >
-            <span class="card__band" aria-hidden="true" />
-            <!-- 真实首页缩略图：preview 为空串时不渲染（保持「无图可用」的兼容） -->
-            <span v-if="item.preview" class="card__shot">
-              <img
-                class="card__img"
-                :src="previewSrc(item.preview)"
-                alt=""
-                loading="lazy"
-                decoding="async"
-                width="1200"
-                height="750"
-              >
-            </span>
-            <span class="card__top">
-              <span class="card__names">
-                <span class="card__name">
-                  <span class="card__dot" aria-hidden="true" />
-                  {{ displayName(item) }}
+      <!-- 风格卡片：按成本档位分组 -->
+      <section v-for="g in tierGroups" :key="g.tier" class="gallery__group">
+        <h2 class="gallery__tier">
+          <span class="gallery__tier-label">
+            {{ t('styles.gallery.tier') }} {{ g.tier }}
+          </span>
+          <span class="gallery__tier-name">{{ t(`styles.gallery.tier${g.tier}`) }}</span>
+          <span class="gallery__tier-count">{{ g.items.length }}</span>
+        </h2>
+
+        <ul class="gallery__grid">
+          <li v-for="item in g.items" :key="item.id">
+            <NuxtLink
+              :to="localePath(`/style/${item.id}`)"
+              :style="{ '--accent': item.accent }"
+              :data-style="item.id"
+              class="card"
+            >
+              <span class="card__band" aria-hidden="true" />
+              <!-- 真实首页缩略图：preview 为空串时不渲染（保持「无图可用」的兼容） -->
+              <span v-if="item.preview" class="card__shot">
+                <img
+                  class="card__img"
+                  :src="previewSrc(item.preview)"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="1200"
+                  height="750"
+                >
+              </span>
+              <span class="card__top">
+                <span class="card__names">
+                  <span class="card__name">
+                    <span class="card__dot" aria-hidden="true" />
+                    {{ displayName(item) }}
+                  </span>
+                  <span class="card__en">{{ item.en }}</span>
                 </span>
-                <span class="card__en">{{ item.en }}</span>
+                <span class="card__status" :data-status="item.status">
+                  {{ t(statusKey[item.status]) }}
+                </span>
               </span>
-              <span class="card__status" :data-status="item.status">
-                {{ t(statusKey[item.status]) }}
+
+              <span class="card__note">{{ displayNote(item) }}</span>
+
+              <span class="card__foot">
+                <!-- tierLabel 与所在组的标题相同时（档位 1 的 13 个风格都是「纯结构与样式」）
+                     就不要再印一遍；只有「+ 点阵字体」这类风格专属成本才值得占这一格 -->
+                <span v-if="displayTierLabel(item) !== t(`styles.gallery.tier${item.tier}`)">
+                  {{ displayTierLabel(item) }}
+                </span>
+                <span class="card__enter">{{ t('styles.gallery.enter') }} →</span>
               </span>
-            </span>
-
-            <span class="card__note">{{ displayNote(item) }}</span>
-
-            <span class="card__foot">
-              <span>{{ t('styles.gallery.tier') }} {{ item.tier }} · {{ displayTierLabel(item) }}</span>
-              <span class="card__enter">{{ t('styles.gallery.enter') }} →</span>
-            </span>
-          </NuxtLink>
-        </li>
-      </ul>
+            </NuxtLink>
+          </li>
+        </ul>
+      </section>
     </main>
 
     <!-- 页脚 -->
@@ -286,6 +320,35 @@ useHead({
   margin: 0 auto;
   font-size: 1rem;
   line-height: 1.7;
+  color: var(--muted);
+}
+
+/* —— 分组：档位标题 —— */
+.gallery__group + .gallery__group {
+  margin-top: clamp(36px, 5vw, 64px);
+}
+
+.gallery__tier {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+
+.gallery__tier-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.gallery__tier-count {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
 
