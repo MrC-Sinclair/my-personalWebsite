@@ -257,7 +257,13 @@ async function main() {
             return v;
           };
           const cutEls = vw > 0
-            ? [...document.querySelectorAll('main *, article *')]
+            // 只看承载文字的标签：跑马灯、胶带、装饰条本身就是「比视口宽然后被裁掉」
+            // 的设计（neo-brutalism 的 marquee/tape 一次就被报 3 处）。
+            // 判据开始报合法的东西，人就会开始忽略它——那比没有判据更糟。
+            ? [...document.querySelectorAll(
+                'main p, main li, main h1, main h2, main h3, main h4, main a, main blockquote, main dd, main td, main figcaption, main pre,' +
+                ' article p, article li, article h1, article h2, article h3, article h4, article a, article blockquote, article dd, article td, article figcaption, article pre',
+              )]
                 .filter((el) => (el.textContent || '').trim().length > 24)
                 .map((el) => ({
                   el: el,
@@ -327,20 +333,24 @@ async function main() {
           // 正文列过窄：dashboard 详情页的 .detail 没声明跨列，整篇正文被塞进
           // 12 轨网格的一格里（实测 18.8px 宽、页面高 70006px）。它不溢出、
           // h1 唯一、也不是滚动带，所以前面几条全绿——只能直接量正文列宽。
-          let widest = 0;
-          let blocks = 0;
-          for (const el of document.querySelectorAll('p, li, h2, h3, pre, blockquote')) {
-            const t = (el.textContent || '').trim();
-            if (t.length < 12) continue;
+          // 用「段落宽度的中位数」而不是「最宽的块」：详情页旁边常有目录 / 侧栏，
+          // 它们的 li 是正常宽度，取最大值会把被压进一格的主文列遮掉
+          // （dashboard 第一版判据就是这么静默的）
+          const pw = [];
+          for (const el of document.querySelectorAll('p')) {
+            if ((el.textContent || '').trim().length < 24) continue;
             const cs = getComputedStyle(el);
             if (cs.display === 'none' || cs.visibility === 'hidden') continue;
             const r = el.getBoundingClientRect();
-            if (r.width <= 0) continue;
-            blocks++;
-            if (r.width > widest) widest = r.width;
+            // 0 宽不是「没有内容」，而是列被压塌了（dashboard 详情页的正文实测就是
+            // 0 宽、父级 .detail 19px）。早先这里挡掉 width<=0，等于把唯一的证据丢了。
+            // 真正隐藏的段落已经被上面的 display / visibility 过滤掉了。
+            pw.push(r.width);
           }
-          const narrowBody = blocks >= 3 && widest < vw * 0.4
-            ? Math.round(widest) + 'px/' + blocks + '块'
+          pw.sort((a, b) => a - b);
+          const median = pw.length ? pw[Math.floor(pw.length / 2)] : 0;
+          const narrowBody = pw.length >= 3 && median < vw * 0.4
+            ? Math.round(median) + 'px/' + pw.length + '段'
             : '';
           return JSON.stringify({
             title: document.title,
