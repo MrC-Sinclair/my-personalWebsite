@@ -34,6 +34,16 @@ const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.va
 </script>
 
 <style scoped>
+/* MetroTile 默认 space-between（首页那种「小标签在顶、大标题在底」的活 tile 才需要）。
+   这块装的是提要 + 履历两组彼此衔接的内容，被拉开会在中间留 132px 空洞，
+   所以改回顶对齐——空到下方与右侧那几块技能 tile 的排法一致。
+   必须带上 .tile：两条规则同为「类 + scope 属性」，MetroTile 的样式在产物里排在后面，
+   只写 .about-block 会被 justify-content 反压（gap 生效、justify 不生效就是这么来的）。 */
+.tile.about-block {
+  justify-content: flex-start;
+  gap: var(--gap);
+}
+
 .about__heading {
   margin: 0;
   font-family: var(--font-head);
