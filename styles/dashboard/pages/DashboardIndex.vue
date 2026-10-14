@@ -3,8 +3,8 @@
   ------------------------------------------------------------
   把个人网站压成一个可快速扫描的「个人数据控制中心」：
   左侧边栏（窄屏收起为顶部条）+ 主区 12 列密集网格：
-  英雄区 + KPI 行（真实统计）→ 图表行（分类 / 标签条形图、
-  技能环形图、发文趋势迷你线）→ 精选项目表格 → 最新文章
+  英雄区 + KPI 行（真实统计）→ 图表行（文章分类 / 项目
+  技术栈条形图、技能环形图、发文趋势迷你线）→ 精选项目表格 → 最新文章
   表格（带分类筛选器）→ 联系方式卡片 → 页脚状态条。
   数据全部来自共享层 composables（useAsyncData 承载，SSG
   预渲染即含真实内容）；统计与筛选均为视图侧同步推导。
@@ -29,8 +29,16 @@
 
           <div class="kpi-grid">
             <DashboardKpiCard :label="t('nav.blog')" :value="kpiPosts" :hint="kpiPostsHint" />
-            <DashboardKpiCard :label="t('nav.projects')" :value="kpiProjects" :hint="kpiProjectsHint" />
-            <DashboardKpiCard :label="t('blog.categories')" :value="kpiCategories" :hint="kpiCategoriesHint" />
+            <DashboardKpiCard
+              :label="t('nav.projects')"
+              :value="kpiProjects"
+              :hint="kpiProjectsHint"
+            />
+            <DashboardKpiCard
+              :label="t('blog.categories')"
+              :value="kpiCategories"
+              :hint="kpiCategoriesHint"
+            />
             <DashboardKpiCard :label="t('blog.tags')" :value="kpiTags" :hint="kpiTagsHint" />
           </div>
         </section>
@@ -38,7 +46,7 @@
         <!-- 加载骨架（防御分支：正常情况下 await 后数据已就绪） -->
         <div v-if="loading" class="cell skeleton-zone" role="status">
           <p class="sr-only">{{ t('common.loading') }}</p>
-          <div v-for="i in 4" :key="i" class="skeleton"/>
+          <div v-for="i in 4" :key="i" class="skeleton" />
         </div>
 
         <template v-else>
@@ -52,19 +60,27 @@
             :meta="String(kpiPosts)"
           >
             <DashboardBarChart v-if="categoryStats.length" :items="categoryStats" />
-            <DashboardEmptyState v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
+            <DashboardEmptyState
+              v-else
+              :message="t('blog.noResults')"
+              :hint="t('blog.noResultsHint')"
+            />
           </DashboardPanel>
 
           <DashboardPanel
-            id="tags"
-            data-section="tags"
+            id="tech"
+            data-section="tech"
             class="cell cell-4"
-            :eyebrow="t('blog.title')"
-            :title="t('blog.tags')"
-            :meta="String(kpiTags)"
+            :eyebrow="t('nav.projects')"
+            :title="t('projects.techStack')"
+            :meta="String(kpiProjectTags)"
           >
-            <DashboardBarChart v-if="tagStats.length" :items="tagStats" tone="accent2" />
-            <DashboardEmptyState v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
+            <DashboardBarChart
+              v-if="projectTagStats.length"
+              :items="projectTagStats"
+              tone="accent2"
+            />
+            <DashboardEmptyState v-else :message="t('projects.noResults')" />
           </DashboardPanel>
 
           <DashboardPanel
@@ -96,7 +112,11 @@
               :labels="trend.labels"
               :caption="t('blog.publishedAt')"
             />
-            <DashboardEmptyState v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
+            <DashboardEmptyState
+              v-else
+              :message="t('blog.noResults')"
+              :hint="t('blog.noResultsHint')"
+            />
           </DashboardPanel>
 
           <!-- ③ 精选项目表格 -->
@@ -150,6 +170,17 @@
               </div>
             </template>
 
+            <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+            <form class="post-search" role="search" @submit.prevent="submitSearch">
+              <input
+                v-model="searchKeyword"
+                type="search"
+                :placeholder="t('blog.search')"
+                :aria-label="t('blog.search')"
+                autocomplete="off"
+              >
+            </form>
+
             <DashboardPostsTable
               v-if="filteredPosts.length"
               :posts="filteredPosts"
@@ -199,6 +230,9 @@ import { useDashboardStats } from '../composables/useDashboardStats'
 
 const { t, locale } = useI18n()
 
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
+
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
 const { getAllProjects, getFeaturedProjects } = useProjects()
@@ -219,17 +253,14 @@ const {
   data: projectsData,
   pending: projectsPending,
   refresh: refreshProjects,
-} = await useAsyncData<{ all: Project[]; featured: Project[] }>(
-  'dashboard-projects',
-  async () => {
-    const all = await getAllProjects()
-    const featured = await getFeaturedProjects()
-    return {
-      all: Array.isArray(all) ? all : [],
-      featured: Array.isArray(featured) ? featured : [],
-    }
-  },
-)
+} = await useAsyncData<{ all: Project[]; featured: Project[] }>('dashboard-projects', async () => {
+  const all = await getAllProjects()
+  const featured = await getFeaturedProjects()
+  return {
+    all: Array.isArray(all) ? all : [],
+    featured: Array.isArray(featured) ? featured : [],
+  }
+})
 
 // 语言切换时刷新（useAsyncData 不随 locale 自动失效）
 watch(locale, () => {
@@ -243,22 +274,31 @@ const featuredProjects = computed<Project[]>(() =>
   Array.isArray(projectsData.value?.featured) ? projectsData.value!.featured : [],
 )
 
+/** 全部项目（技术栈分布面板的数据源；KPI 亦用总数） */
+const allProjects = computed<Project[]>(() =>
+  Array.isArray(projectsData.value?.all) ? projectsData.value!.all : [],
+)
+
 /** 加载态：仅在尚无任何数据时显示骨架 */
 const loading = computed(
   () => (postsPending.value && !postsData.value) || (projectsPending.value && !projectsData.value),
 )
 
 // —— 图表数据推导（与 /about、/blog 子页共用同一口径） ——
+// 第二入参传全部项目：技术栈分布面板的数据源是 projects.tags，
+// 与文章分类/标签不同源（同一份文章切四刀只会信息重复）
 const {
   categoryStats,
-  tagStats,
+  fullTagStats,
+  projectTagStats,
   skillStats,
   trend,
   trendTotal,
   kpiCategories,
   kpiTags,
+  kpiProjectTags,
   kpiSkills,
-} = useDashboardStats(posts)
+} = useDashboardStats(posts, allProjects)
 
 // —— KPI（真实统计） ——
 const kpiPosts = computed(() => posts.value.length)
@@ -275,14 +315,22 @@ const kpiPostsHint = computed(() =>
 const kpiProjectsHint = computed(
   () => `${t('projects.featured')} · ${featuredProjects.value.length}`,
 )
-const kpiCategoriesHint = computed(
-  () => categoryStats.value[0]?.label ?? t('blog.allCategories'),
-)
-const kpiTagsHint = computed(() => tagStats.value[0]?.label ?? t('blog.tags'))
+/** KPI：分类数（全量，不受图表 Top N 截断影响） */
+const kpiCategoriesHint = computed(() => categoryStats.value[0]?.label ?? t('blog.allCategories'))
+const kpiTagsHint = computed(() => fullTagStats.value[0]?.label ?? t('blog.tags'))
 
 // —— 分类筛选器（视图侧过滤已获取的列表） ——
 /** 当前筛选的分类（空字符串 = 全部分类） */
 const activeCategory = ref('')
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/dashboard/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 const filteredPosts = computed(() =>
   activeCategory.value
     ? posts.value.filter((post) => post.category === activeCategory.value)
@@ -293,7 +341,7 @@ const filteredPosts = computed(() =>
 const sections = computed(() => [
   { id: 'overview', label: t('nav.home') },
   { id: 'categories', label: t('blog.categories') },
-  { id: 'tags', label: t('blog.tags') },
+  { id: 'tech', label: t('projects.techStack') },
   { id: 'skills', label: t('about.skills') },
   { id: 'projects', label: t('home.featuredProjects') },
   { id: 'posts', label: t('home.latestPosts') },
@@ -503,6 +551,42 @@ const sections = computed(() => [
   padding: 0;
   border: 0;
   white-space: nowrap;
+}
+
+/* —— 文章面板搜索入口：metric 输入位（与筛选 chips 同语言） —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 40px;
+  padding: 9px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:hover {
+  border-color: color-mix(in srgb, var(--c-accent) 55%, var(--c-border));
+}
+
+.post-search input:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 /* —— 锚点定位补偿：窄屏吸顶条比全局 5rem 更高 —— */
