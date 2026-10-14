@@ -75,6 +75,9 @@ const { copied, copy } = useClipboardCopy()
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: var(--gap);
+
+  /* 各自收短：等高 + 页脚 margin-top: auto 会在内容少的频道中间留 168px 空洞 */
+  align-items: start;
 }
 
 /* —— 频道模块 —— */

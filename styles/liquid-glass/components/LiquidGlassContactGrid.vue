@@ -64,6 +64,9 @@ const { t } = useI18n()
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--gap);
+
+  /* 各自收短：等高 + 页脚 margin-top: auto 会在内容少的展台中间留 131px 空洞 */
+  align-items: start;
 }
 
 /* 内嵌玻璃展台（无 backdrop-filter，避免面板内嵌套模糊） */

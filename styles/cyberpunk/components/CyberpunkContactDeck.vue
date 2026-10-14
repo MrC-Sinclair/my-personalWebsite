@@ -77,6 +77,9 @@ const { copied, copy } = useClipboardCopy()
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: var(--gap);
+
+  /* 各自收短：等高 + 页脚 margin-top: auto 会在只有二维码的槽位中间留 180px 空洞 */
+  align-items: start;
 }
 
 /* —— 切角终端卡 —— */

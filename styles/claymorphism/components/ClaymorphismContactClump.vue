@@ -61,11 +61,14 @@ const { copied, copy } = useClipboardCopy()
 </script>
 
 <style scoped>
-/* 鹅卵石排布：自适应等宽 */
+/* 鹅卵石排布：自适应等宽。
+   align-items: start 让每张卡只装自己的内容——等高时最高的那张（微信：二维码 + 号码 + 按钮）
+   会把其余几张撑开，页脚的 margin-top: auto 再把按钮顶到底边，中间裂开 194px 空洞。 */
 .clump {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: var(--gap);
+  align-items: start;
 }
 
 .pebble {

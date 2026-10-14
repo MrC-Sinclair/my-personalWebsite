@@ -114,6 +114,9 @@ const { copied, copy } = useClipboardCopy()
   gap: var(--gap);
   width: 100%;
   margin-top: 10px;
+
+  /* 各自收短：等高 + 页脚 margin-top: auto 会在内容少的卡中间留 174px 空洞 */
+  align-items: start;
 }
 
 .cell {

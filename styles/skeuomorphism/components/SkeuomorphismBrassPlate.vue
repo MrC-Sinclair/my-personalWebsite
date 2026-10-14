@@ -129,11 +129,13 @@ const { copied, copy } = useClipboardCopy()
   color: rgb(42 24 8 / 0.85);
 }
 
-/* —— 槽位网格：蚀刻分隔（暗上亮下 = 凹槽） —— */
+/* —— 槽位网格：蚀刻分隔（暗上亮下 = 凹槽） ——
+   start 让槽位各自收短：等高 + 页脚 margin-top: auto 会在内容少的槽位中间留 186px 空洞 */
 .plate-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: var(--gap);
+  align-items: start;
 }
 
 .cell {
