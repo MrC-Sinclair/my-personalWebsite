@@ -195,6 +195,10 @@ PROBE_VIEW=390,844 PROBE_PAGES=blog,projects node scripts/probe-touch-targets.mj
   external dependency`，看着像代码错了，其实是 dev 把 `.nuxt/dist/server` 换成了它的中间产物。
   停掉 dev、`rm -rf .nuxt/dist` 重跑即 exit 0。
 - **截图空白但 `innerText` 是满的 = HMR 脏**，重启即正常，别去改代码。
+- **同一个 headless 实例跨 build 复用 = 量到旧 CSS**：新产物的 HTML 引用的分片名变了，
+  旧实例仍按缓存里的旧名取，改好的规则在页面上查不到，很容易被误判成「选择器优先级不够」
+  而越改越糟。判据是把 `document.styleSheets` 的 href 拿去 `.output/public/_nuxt/` 里找——
+  找不到就是缓存。换 `--user-data-dir` 起冷实例，别在旧实例上反复量。
 
 ## 10. 详情页从没被量过，而它占 560 / 802 页
 
