@@ -21,15 +21,15 @@
       <!-- 加载骨架（防御分支：正常情况下 await 后数据已就绪） -->
       <div v-if="loading" class="panel-loading" role="status">
         <p class="sr-only">{{ t('common.loading') }}</p>
-        <div class="skeleton skeleton-a"/>
-        <div class="skeleton skeleton-b"/>
-        <div class="skeleton skeleton-c"/>
+        <div class="skeleton skeleton-a" />
+        <div class="skeleton skeleton-b" />
+        <div class="skeleton skeleton-c" />
       </div>
 
       <template v-else>
         <!-- ① 关于：工作 / 教育时间线 -->
         <NeumorphismPanel id="about" data-section="about" :title="t('about.title')">
-          <NeumorphismAboutBlock/>
+          <NeumorphismAboutBlock />
         </NeumorphismPanel>
 
         <!-- ② 技能：内凹轨道 + 凸起填充块 -->
@@ -54,6 +54,16 @@
 
         <!-- ④ 最新文章：凹槽行 -->
         <NeumorphismPanel id="posts" data-section="posts" :title="t('home.latestPosts')">
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
           <div v-if="latestPosts.length" class="post-list">
             <NeumorphismPostCard v-for="post in latestPosts" :key="post.path" :post="post" />
           </div>
@@ -97,6 +107,9 @@ import NeumorphismFooter from '../components/NeumorphismFooter.vue'
 const LATEST_POST_COUNT = 5
 
 const { t, locale } = useI18n()
+
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
@@ -153,6 +166,15 @@ const sections = computed(() => [
   { id: 'posts', label: t('home.latestPosts') },
   { id: 'contact', label: t('nav.contact') },
 ])
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/neumorphism/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -190,6 +212,40 @@ const sections = computed(() => [
 
 /* —— 列表容器 —— */
 .project-list,
+/* —— 文章面板搜索入口：内凹输入槽（双向阴影的 concave 语言） —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: var(--c-bg);
+  border: none;
+  border-radius: var(--radius);
+  outline: none;
+  box-shadow:
+    inset 3px 3px 6px rgb(0 0 0 / 0.12),
+    inset -3px -3px 6px rgb(255 255 255 / 0.75);
+  transition: box-shadow var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  box-shadow:
+    inset 4px 4px 8px rgb(0 0 0 / 0.16),
+    inset -4px -4px 8px rgb(255 255 255 / 0.85);
+}
+
 .post-list {
   display: flex;
   flex-direction: column;

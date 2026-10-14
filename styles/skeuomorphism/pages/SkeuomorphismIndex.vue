@@ -34,10 +34,7 @@
             :title="t('about.title')"
           />
           <div class="about-grid">
-            <SkeuomorphismWoodPanel
-              :title="t('about.experience')"
-              class="about-main scroll-reveal"
-            >
+            <SkeuomorphismWoodPanel :title="t('about.experience')" class="about-main scroll-reveal">
               <p class="about-intro">{{ t('about.description') }}</p>
               <SkeuomorphismTimeline v-if="safeTimeline.length" :items="safeTimeline" />
             </SkeuomorphismWoodPanel>
@@ -76,7 +73,10 @@
           </div>
 
           <!-- 空状态 -->
-          <SkeuomorphismEmptyNote v-else-if="safeProjects.length === 0" :message="t('projects.noResults')" />
+          <SkeuomorphismEmptyNote
+            v-else-if="safeProjects.length === 0"
+            :message="t('projects.noResults')"
+          />
 
           <div v-else class="cards">
             <SkeuomorphismPaperCard
@@ -97,6 +97,17 @@
             :badge="t('nav.blog')"
             :title="t('home.latestPosts')"
           />
+
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
 
           <!-- 加载骨架：索引卡纸条 -->
           <div v-if="postsLoading" class="rows" role="status" :aria-label="t('common.loading')">
@@ -134,7 +145,12 @@
         </section>
 
         <!-- ============ 联系方式：黄铜蚀刻铭牌 ============ -->
-        <section id="contact" data-section="contact" class="section" aria-labelledby="contact-title">
+        <section
+          id="contact"
+          data-section="contact"
+          class="section"
+          aria-labelledby="contact-title"
+        >
           <SkeuomorphismSectionHead
             id="contact-title"
             :badge="t('nav.contact')"
@@ -228,6 +244,15 @@ const projectTilts = [-0.8, 1.1, -0.6]
 
 // 滚动进入动画（共享层 composable，observer 在其内部成对清理）
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/skeuomorphism/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -312,7 +337,9 @@ useScrollReveal()
   background:
     radial-gradient(circle at 22% 32%, rgb(255 255 255 / 0.06) 1px, transparent 1.8px),
     linear-gradient(180deg, #6b4223 0%, #5a3617 100%);
-  background-size: 9px 9px, 100% 100%;
+  background-size:
+    9px 9px,
+    100% 100%;
   box-shadow:
     inset 0 1px 0 rgb(255 240 210 / 0.16),
     inset 0 -2px 4px rgb(0 0 0 / 0.4),
@@ -338,6 +365,41 @@ useScrollReveal()
 }
 
 /* —— 最新文章：索引卡堆叠 —— */
+/* —— 文章区搜索入口：打孔卡片输入条（纸面 + 缝线边） —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: var(--border-w) dashed color-mix(in srgb, var(--c-text) 35%, transparent);
+  border-radius: var(--radius-sm);
+  outline: none;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.08);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  border-color: var(--c-accent);
+  box-shadow:
+    inset 0 2px 4px rgb(0 0 0 / 0.08),
+    0 0 0 2px color-mix(in srgb, var(--c-accent) 30%, transparent);
+}
+
 .rows {
   display: grid;
   /* 不给轨道：单列会按内容的 max-content 撑开（长标题整行不换行时实测 1451px），
@@ -371,7 +433,9 @@ useScrollReveal()
   background:
     radial-gradient(circle at 22% 32%, rgb(255 255 255 / 0.05) 1px, transparent 1.6px),
     linear-gradient(180deg, #6b4223 0%, #543116 100%);
-  background-size: 9px 9px, 100% 100%;
+  background-size:
+    9px 9px,
+    100% 100%;
   box-shadow:
     inset 0 1px 0 rgb(255 240 210 / 0.16),
     inset 0 -3px 6px rgb(0 0 0 / 0.4),
@@ -422,10 +486,7 @@ useScrollReveal()
   border: 1px solid rgb(0 0 0 / 0.35);
   border-radius: var(--radius-sm);
   background:
-    repeating-linear-gradient(
-      transparent 0 27px,
-      rgb(109 83 53 / 0.12) 27px 28px
-    ),
+    repeating-linear-gradient(transparent 0 27px, rgb(109 83 53 / 0.12) 27px 28px),
     linear-gradient(178deg, #efe5cd 0%, #e4d7ba 100%);
   animation: skel-breathe 1.4s ease-in-out infinite;
 }

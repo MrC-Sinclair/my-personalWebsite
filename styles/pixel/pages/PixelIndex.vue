@@ -43,9 +43,7 @@
         :title="t('common.loading')"
         role="status"
       >
-        <p class="loading-art" aria-hidden="true">
-          [ ▓▓▓▓▓▓░░░░ ]<span class="blink">▉</span>
-        </p>
+        <p class="loading-art" aria-hidden="true">[ ▓▓▓▓▓▓░░░░ ]<span class="blink">▉</span></p>
       </PixelPanel>
 
       <template v-else>
@@ -93,6 +91,16 @@
           :title="t('home.latestPosts')"
           :meta="String(latestPosts.length)"
         >
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
           <ol v-if="latestPosts.length" class="stack">
             <PixelPostRow v-for="post in latestPosts" :key="post.path" :post="post" />
           </ol>
@@ -136,6 +144,9 @@ const PROJECT_COUNT = 4
 
 const { t, locale } = useI18n()
 
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
+
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
 const { getFeaturedProjects } = useProjects()
@@ -168,7 +179,9 @@ watch(locale, () => {
 })
 
 // —— 数据防御与视图推导（同步计算，SSR 安全） ——
-const latestPosts = computed<BlogPost[]>(() => (Array.isArray(postsData.value) ? postsData.value : []))
+const latestPosts = computed<BlogPost[]>(() =>
+  Array.isArray(postsData.value) ? postsData.value : [],
+)
 const featuredProjects = computed<Project[]>(() =>
   Array.isArray(projectsData.value) ? projectsData.value : [],
 )
@@ -186,6 +199,15 @@ const sections = computed(() => [
   { id: 'posts', label: t('home.latestPosts') },
   { id: 'contact', label: t('nav.contact') },
 ])
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/pixel/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -524,5 +546,31 @@ const sections = computed(() => [
   .blink {
     animation: none;
   }
+}
+/* —— QUEST LOG 搜索入口：像素风硬边输入框 —— */
+.post-search {
+  margin-bottom: var(--space);
+}
+
+.post-search input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 2px solid var(--c-border);
+  border-radius: 0;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  border-color: var(--c-accent);
 }
 </style>

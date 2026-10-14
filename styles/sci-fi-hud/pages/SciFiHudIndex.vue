@@ -19,16 +19,16 @@
 <template>
   <div class="hud">
     <!-- 全页座舱扫描线（纯装饰，reduced-motion 隐藏） -->
-    <div class="scanline" aria-hidden="true"/>
+    <div class="scanline" aria-hidden="true" />
 
-    <SciFiHudTopBar :name="siteConfig.name" :sections="sections"/>
+    <SciFiHudTopBar :name="siteConfig.name" :sections="sections" />
 
     <main class="main">
       <!-- ① 主视屏：英雄区 + 右舷雷达模块 -->
       <section id="overview" data-section="overview" class="viewport">
         <div class="viewport-left">
           <p class="boot scroll-reveal">
-            <span class="boot-dot" aria-hidden="true"/>
+            <span class="boot-dot" aria-hidden="true" />
             {{ t('home.greeting') }}
             <span class="boot-cursor" aria-hidden="true">▮</span>
           </p>
@@ -37,7 +37,7 @@
           <div class="tf scroll-reveal scroll-reveal-delay-1">
             <span class="tf-tag" aria-hidden="true">TGT-01</span>
             <h1 class="tf-name">{{ t('home.name') }}</h1>
-            <span class="tf-ruler" aria-hidden="true"/>
+            <span class="tf-ruler" aria-hidden="true" />
           </div>
 
           <p class="tagline scroll-reveal scroll-reveal-delay-2">{{ t('home.tagline') }}</p>
@@ -58,9 +58,9 @@
           <div class="radar-module">
             <header class="radar-head">
               <span class="radar-label" aria-hidden="true">RADAR</span>
-              <span class="radar-dot" aria-hidden="true"/>
+              <span class="radar-dot" aria-hidden="true" />
             </header>
-            <SciFiHudRadar/>
+            <SciFiHudRadar />
             <dl class="readouts">
               <div class="readout">
                 <dt>{{ t('nav.blog') }}</dt>
@@ -91,7 +91,7 @@
           class="cell cell-about scroll-reveal scroll-reveal-up"
         >
           <h3 class="sub-head">{{ t('about.experience') }}</h3>
-          <SciFiHudMissionLog :items="timeline"/>
+          <SciFiHudMissionLog :items="timeline" />
         </SciFiHudPanel>
 
         <!-- SEC-02 技能模块 -->
@@ -103,7 +103,7 @@
           :meta="String(readoutSkills)"
           class="cell cell-skills scroll-reveal scroll-reveal-up scroll-reveal-delay-1"
         >
-          <SciFiHudSkillGauge :groups="skillGroups"/>
+          <SciFiHudSkillGauge :groups="skillGroups" />
         </SciFiHudPanel>
 
         <!-- SEC-03 项目载荷 -->
@@ -115,7 +115,7 @@
           :meta="String(featuredProjects.length)"
           class="cell cell-12 scroll-reveal scroll-reveal-up"
         >
-          <SciFiHudLoader v-if="projectsLoading"/>
+          <SciFiHudLoader v-if="projectsLoading" />
           <div v-else-if="featuredProjects.length" class="payload-grid">
             <SciFiHudProjectCard
               v-for="(project, index) in featuredProjects"
@@ -124,7 +124,7 @@
               :index="index"
             />
           </div>
-          <SciFiHudEmpty v-else :message="t('projects.noResults')"/>
+          <SciFiHudEmpty v-else :message="t('projects.noResults')" />
         </SciFiHudPanel>
 
         <!-- SEC-04 文章数据流 -->
@@ -136,13 +136,19 @@
           :meta="String(latestPosts.length)"
           class="cell cell-posts scroll-reveal scroll-reveal-up"
         >
-          <SciFiHudLoader v-if="postsLoading"/>
-          <SciFiHudPostStream v-else-if="latestPosts.length" :posts="latestPosts"/>
-          <SciFiHudEmpty
-            v-else
-            :message="t('blog.noResults')"
-            :hint="t('blog.noResultsHint')"
-          />
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
+          <SciFiHudLoader v-if="postsLoading" />
+          <SciFiHudPostStream v-else-if="latestPosts.length" :posts="latestPosts" />
+          <SciFiHudEmpty v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
         </SciFiHudPanel>
 
         <!-- SEC-05 通讯频道 -->
@@ -151,16 +157,16 @@
           data-section="contact"
           code="SEC-05"
           :title="t('contact.title')"
-          :meta="t('contact.socialLinks')"
+          :meta="String(socialLinks.length)"
           class="cell cell-contact scroll-reveal scroll-reveal-up scroll-reveal-delay-1"
         >
           <p class="contact-desc">{{ t('contact.description') }}</p>
-          <SciFiHudContactDeck :socials="socialLinks"/>
+          <SciFiHudContactDeck :socials="socialLinks" />
         </SciFiHudPanel>
       </div>
     </main>
 
-    <SciFiHudTelemetryBar/>
+    <SciFiHudTelemetryBar />
   </div>
 </template>
 
@@ -186,6 +192,9 @@ const PROJECT_COUNT = 6
 
 const { t, locale } = useI18n()
 
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
+
 // —— 共享层数据（组件不直接调用 content API） ——
 const { siteConfig, socialLinks, skillGroups, timeline } = useAppInfo()
 const { getAllPosts } = useBlog()
@@ -206,16 +215,13 @@ const {
   data: projectsData,
   pending: projectsPending,
   refresh: refreshProjects,
-} = await useAsyncData<{ all: Project[]; featured: Project[] }>(
-  'scifihud-projects',
-  async () => {
-    const [all, featured] = await Promise.all([getAllProjects(), getFeaturedProjects(PROJECT_COUNT)])
-    return {
-      all: Array.isArray(all) ? all : [],
-      featured: Array.isArray(featured) ? featured : [],
-    }
-  },
-)
+} = await useAsyncData<{ all: Project[]; featured: Project[] }>('scifihud-projects', async () => {
+  const [all, featured] = await Promise.all([getAllProjects(), getFeaturedProjects(PROJECT_COUNT)])
+  return {
+    all: Array.isArray(all) ? all : [],
+    featured: Array.isArray(featured) ? featured : [],
+  }
+})
 
 // 语言切换时刷新（useAsyncData 不随 locale 自动失效）
 watch(locale, () => {
@@ -254,6 +260,15 @@ const sections = computed(() => [
   { id: 'posts', label: t('nav.blog') },
   { id: 'contact', label: t('nav.contact') },
 ])
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/sci-fi-hud/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 
 // 滚动进入视口动画（共享层行为，SSG 友好）
 useScrollReveal()
@@ -612,6 +627,38 @@ useScrollReveal()
   /* 同 cyberpunk：单条载荷时 auto-fill 会留下大片空轨道 */
   grid-template-columns: repeat(auto-fit, minmax(240px, 420px));
   justify-content: center;
+}
+
+/* —— 文章数据流面板内的搜索入口：等宽读数输入条 —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--space);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.06em;
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-surface) 78%, transparent);
+  border: var(--border-w) solid var(--c-border);
+  outline: none;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 12px rgb(74 240 198 / 0.25);
 }
 
 /* —— 通讯面板引导语 —— */

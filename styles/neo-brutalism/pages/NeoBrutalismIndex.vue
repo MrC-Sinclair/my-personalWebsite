@@ -51,7 +51,7 @@
         <!-- 加载骨架（防御分支：正常情况下 await 后数据已就绪） -->
         <div v-if="loading" class="skeleton-zone" role="status">
           <p class="sr-only">{{ t('common.loading') }}</p>
-          <div v-for="i in 3" :key="i" class="skeleton"/>
+          <div v-for="i in 3" :key="i" class="skeleton" />
         </div>
 
         <ol v-else-if="featuredProjects.length" class="work-list">
@@ -72,9 +72,20 @@
           </NuxtLink>
         </header>
 
+        <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+        <form class="post-search" role="search" @submit.prevent="submitSearch">
+          <input
+            v-model="searchKeyword"
+            type="search"
+            :placeholder="t('blog.search')"
+            :aria-label="t('blog.search')"
+            autocomplete="off"
+          >
+        </form>
+
         <div v-if="loading" class="skeleton-zone" role="status">
           <p class="sr-only">{{ t('common.loading') }}</p>
-          <div v-for="i in 4" :key="i" class="skeleton"/>
+          <div v-for="i in 4" :key="i" class="skeleton" />
         </div>
 
         <ol v-else-if="latestPosts.length" class="post-list">
@@ -83,11 +94,7 @@
           </li>
         </ol>
 
-        <NeoBrutalismEmpty
-          v-else
-          :message="t('blog.noResults')"
-          :hint="t('blog.noResultsHint')"
-        />
+        <NeoBrutalismEmpty v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
       </section>
     </main>
 
@@ -173,6 +180,15 @@ const loading = computed(
 
 // 入场动画：滚动进入视口时「盖戳」显现（共享层行为，reduced-motion 立即可见）
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/neo-brutalism/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -310,6 +326,49 @@ useScrollReveal()
 }
 
 /* —— 文章号外列表 —— */
+/* —— 文章区搜索入口：粗黑边框硬阴影输入块（海报拼贴语言） —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: var(--border-w) solid var(--c-border);
+  border-radius: 0;
+  outline: none;
+  box-shadow: 4px 4px 0 var(--c-border);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+  font-weight: 400;
+}
+
+.post-search input:hover {
+  background: #fff;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--c-border);
+}
+
+.post-search input:focus-visible {
+  background: #fff;
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 .post-list {
   display: flex;
   flex-direction: column;

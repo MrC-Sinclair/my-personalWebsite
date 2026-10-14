@@ -43,6 +43,8 @@ export interface TerminalCopy {
   blogHint: string
   /** theme 命令的说明行 */
   themeHint: string
+  /** search 命令缺关键词时的用法提示 */
+  searchHint: string
 }
 
 const zhCopy: TerminalCopy = {
@@ -58,6 +60,7 @@ const zhCopy: TerminalCopy = {
     skills: '技能栈',
     works: '精选作品',
     blog: '最新文章',
+    search: '搜索文章（跳转博客页）',
     contact: '联系方式',
     whoami: '我是谁',
     theme: '风格画廊',
@@ -69,6 +72,7 @@ const zhCopy: TerminalCopy = {
   worksHint: '条目附 GitHub / 演示链接，标题可进入详情。',
   blogHint: '标题可进入文章详情页。',
   themeHint: '本站是「一站多风格」实验：同一份内容，完全不同的界面。',
+  searchHint: '用法：search <关键词>，跳转博客页搜索文章',
 }
 
 const enCopy: TerminalCopy = {
@@ -84,6 +88,7 @@ const enCopy: TerminalCopy = {
     skills: 'skill stack',
     works: 'featured works',
     blog: 'latest posts',
+    search: 'search posts (opens the blog page)',
     contact: 'contact info',
     whoami: 'who am I',
     theme: 'style gallery',
@@ -95,6 +100,7 @@ const enCopy: TerminalCopy = {
   worksHint: 'Entries carry GitHub / demo links; titles open details.',
   blogHint: 'Titles open the post detail page.',
   themeHint: 'This site is a one-site-many-styles lab: same content, entirely different UIs.',
+  searchHint: 'usage: search <keyword> — opens the blog page with results',
 }
 
 /** 按语言取文案（zh → 中文，其余 → 英文；纯函数，无副作用） */

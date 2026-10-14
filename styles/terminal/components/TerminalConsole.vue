@@ -40,11 +40,9 @@
           <span class="run-desc">{{ entry.text }}</span>
         </button>
 
-        <p
-          v-else-if="entry.kind === 'line'"
-          class="line"
-          :class="toneClass(entry.tone)"
-        >{{ entry.text }}</p>
+        <p v-else-if="entry.kind === 'line'" class="line" :class="toneClass(entry.tone)">
+          {{ entry.text }}
+        </p>
 
         <component
           :is="BLOCKS[entry.block]"
@@ -57,7 +55,8 @@
 
       <!-- 打字进行中的行：aria-hidden 避免逐字播报，完成后整行进入上方日志 -->
       <p v-if="typing" class="line" :class="toneClass(typing.entry.tone)" aria-hidden="true">
-        {{ typing.entry.text.slice(0, typing.shown) }}<span class="cursor" aria-hidden="true">█</span>
+        {{ typing.entry.text.slice(0, typing.shown)
+        }}<span class="cursor" aria-hidden="true">█</span>
       </p>
       <p v-else class="line line--idle" aria-hidden="true"><span class="cursor">█</span></p>
     </div>
@@ -108,6 +107,9 @@ const props = defineProps<{
 const { t, locale } = useI18n()
 /** 终端风味文案（随语言响应式切换；字典本身为纯 TS 模块） */
 const copy = computed(() => pickTerminalCopy(locale.value))
+
+// 对外路由链接的本地化路径（search 命令跳转博客子页用）
+const localePath = useLocalePath()
 
 /* ============ 输出条目模型 ============ */
 
@@ -273,6 +275,7 @@ const COMMAND_LIST = [
   'skills',
   'works',
   'blog',
+  'search',
   'contact',
   'whoami',
   'theme',
@@ -300,6 +303,16 @@ const COMMANDS: Record<string, (arg: string) => void> = {
   blog: () => {
     enqueue(line('head', t('home.latestPosts')), block('blog'))
     enqueue(line('dim', copy.value.blogHint))
+  },
+  search: (arg) => {
+    // 首页的命令式搜索入口：带关键词跳转博客子页（?q=），
+    // 由共享层 useBlogSearch 落地执行；无关键词时给用法提示
+    const keyword = arg.trim()
+    if (!keyword) {
+      enqueue(line('err', copy.value.searchHint))
+      return
+    }
+    navigateTo(`${localePath('/style/terminal/blog')}?q=${encodeURIComponent(keyword)}`)
   },
   contact: () => {
     enqueue(line('head', t('contact.title')), block('contact'))
@@ -404,7 +417,10 @@ const motdText = computed(() => {
   ]
   const gutter = Math.max(...logo.map((l) => l.length)) + 2
   const rows = Math.max(logo.length, info.length)
-  return Array.from({ length: rows }, (_, i) => (logo[i] ?? '').padEnd(gutter) + (info[i] ?? '')).join('\n')
+  return Array.from(
+    { length: rows },
+    (_, i) => (logo[i] ?? '').padEnd(gutter) + (info[i] ?? ''),
+  ).join('\n')
 })
 
 /* ============ 交互辅助 ============ */

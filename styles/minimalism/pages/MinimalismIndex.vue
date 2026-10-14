@@ -25,11 +25,21 @@
         <!-- 异步数据加载骨架（防御分支：正常情况下 await 后数据已就绪） -->
         <div v-if="loading" class="skeleton" role="status">
           <p class="sr-only">{{ t('common.loading') }}</p>
-          <div v-for="i in 3" :key="i" class="skeleton-row"/>
+          <div v-for="i in 3" :key="i" class="skeleton-row" />
         </div>
 
         <template v-else>
           <MinimalismProjects :projects="featuredProjects" class="scroll-reveal" />
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
           <MinimalismPosts :posts="latestPosts" class="scroll-reveal" />
         </template>
 
@@ -59,12 +69,24 @@ const FEATURED_PROJECTS_COUNT = 3
 
 const { t, locale } = useI18n()
 
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
+
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
 const { getFeaturedProjects } = useProjects()
 
 // 滚动进入动画（共享层：IntersectionObserver + MutationObserver，自动清理）
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/minimalism/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 
 // 文章列表（useAsyncData 承载：SSG 预渲染即含数据，payload 下发避免水合不一致）
 const {
@@ -125,6 +147,37 @@ const loading = computed(
 }
 
 /* —— 主轴：窄测量单列，区块之间是大留白（留白即设计） —— */
+/* —— 文章区搜索入口：极简细线输入（无装饰，仅一条底线） —— */
+.post-search {
+  display: flex;
+  margin: calc(var(--gap) * 1.5) 0 var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 2px;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  color: var(--c-text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--c-border);
+  border-radius: 0;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  border-bottom-color: var(--c-text);
+  border-bottom-width: 2px;
+}
+
 .flow {
   display: grid;
   gap: clamp(72px, 12vw, 144px);

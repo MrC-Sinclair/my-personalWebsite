@@ -64,6 +64,17 @@
           </NuxtLink>
         </div>
 
+        <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+        <form class="post-search" role="search" @submit.prevent="submitSearch">
+          <input
+            v-model="searchKeyword"
+            type="search"
+            :placeholder="t('blog.search')"
+            :aria-label="t('blog.search')"
+            autocomplete="off"
+          >
+        </form>
+
         <div v-if="loading" class="band__loading">
           <FlatDesignSkeleton />
         </div>
@@ -75,11 +86,7 @@
             :tone-index="i"
           />
         </div>
-        <FlatDesignEmpty
-          v-else
-          :message="t('blog.noResults')"
-          :hint="t('blog.noResultsHint')"
-        />
+        <FlatDesignEmpty v-else :message="t('blog.noResults')" :hint="t('blog.noResultsHint')" />
       </div>
     </section>
 
@@ -156,4 +163,13 @@ const latestPosts = computed<BlogPost[]>(() =>
 const loading = computed(
   () => (postsPending.value && !postsData.value) || (projectsPending.value && !projectsData.value),
 )
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/flat-design/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>

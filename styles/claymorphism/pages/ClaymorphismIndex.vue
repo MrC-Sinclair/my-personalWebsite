@@ -12,22 +12,18 @@
 -->
 <template>
   <div class="page">
-    <ClaymorphismTopNav :sections="sections"/>
+    <ClaymorphismTopNav :sections="sections" />
 
     <main class="page-main">
-      <ClaymorphismHero/>
+      <ClaymorphismHero />
 
       <div class="content">
         <!-- ① 关于岛 + ② 技能岛：7/5 错落双栏（窄屏单列堆叠） -->
         <div class="duo">
           <section id="about" data-section="about" class="island island-lilac">
-            <ClaymorphismSectionHead
-              eyebrow="01"
-              :title="t('about.title')"
-              tone="pink"
-            />
+            <ClaymorphismSectionHead eyebrow="01" :title="t('about.title')" tone="pink" />
             <p class="intro">{{ t('about.description') }}</p>
-            <ClaymorphismTimeline :items="timeline"/>
+            <ClaymorphismTimeline :items="timeline" />
           </section>
 
           <section id="skills" data-section="skills" class="island island-mint island-offset">
@@ -37,7 +33,7 @@
               :count="skillTotal"
               tone="blue"
             />
-            <ClaymorphismSkillClump :groups="skillGroups"/>
+            <ClaymorphismSkillClump :groups="skillGroups" />
           </section>
         </div>
 
@@ -53,16 +49,16 @@
           <!-- 加载骨架（防御分支） -->
           <div v-if="projectsLoading" class="skeleton-zone" role="status">
             <p class="sr-only">{{ t('common.loading') }}</p>
-            <div v-for="i in 2" :key="i" class="skeleton skeleton-card"/>
+            <div v-for="i in 2" :key="i" class="skeleton skeleton-card" />
           </div>
 
           <div v-else-if="projects.length" class="project-grid">
             <div v-for="(project, index) in projects" :key="project.path" class="proj-slot">
-              <ClaymorphismProjectCard :project="project" :tone="toneOf(index)"/>
+              <ClaymorphismProjectCard :project="project" :tone="toneOf(index)" />
             </div>
           </div>
 
-          <ClaymorphismEmptyState v-else :message="t('projects.noResults')"/>
+          <ClaymorphismEmptyState v-else :message="t('projects.noResults')" />
         </section>
 
         <!-- ④ 最新文章：圆滚滚厚胶囊行 -->
@@ -74,10 +70,21 @@
             tone="lilac"
           />
 
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
+
           <!-- 加载骨架（防御分支） -->
           <div v-if="postsLoading" class="skeleton-zone" role="status">
             <p class="sr-only">{{ t('common.loading') }}</p>
-            <div v-for="i in 3" :key="i" class="skeleton skeleton-row"/>
+            <div v-for="i in 3" :key="i" class="skeleton skeleton-row" />
           </div>
 
           <div v-else-if="posts.length" class="post-stack">
@@ -98,18 +105,14 @@
 
         <!-- ⑤ 联系方式：奶油色岛 + 鹅卵石卡 -->
         <section id="contact" data-section="contact" class="island island-butter">
-          <ClaymorphismSectionHead
-            eyebrow="05"
-            :title="t('contact.title')"
-            tone="pink"
-          />
+          <ClaymorphismSectionHead eyebrow="05" :title="t('contact.title')" tone="pink" />
           <p class="intro">{{ t('contact.description') }}</p>
-          <ClaymorphismContactClump :socials="socialLinks"/>
+          <ClaymorphismContactClump :socials="socialLinks" />
         </section>
       </div>
     </main>
 
-    <ClaymorphismFooter/>
+    <ClaymorphismFooter />
   </div>
 </template>
 
@@ -128,6 +131,9 @@ import ClaymorphismEmptyState from '../components/ClaymorphismEmptyState.vue'
 import ClaymorphismFooter from '../components/ClaymorphismFooter.vue'
 
 const { t, locale } = useI18n()
+
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getFeaturedPosts } = useBlog()
@@ -194,6 +200,15 @@ const sections = computed(() => [
   { id: 'posts', label: t('home.latestPosts') },
   { id: 'contact', label: t('nav.contact') },
 ])
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/claymorphism/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -291,6 +306,42 @@ const sections = computed(() => [
 }
 
 /* —— 文章胶囊行堆叠 —— */
+/* —— 文章区搜索入口：厚圆角黏土输入块（软黏土捏出来的槽） —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 22px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: none;
+  border-radius: 999px;
+  outline: none;
+  box-shadow:
+    inset 3px 3px 7px rgb(0 0 0 / 0.08),
+    inset -3px -3px 7px rgb(255 255 255 / 0.9),
+    0 6px 14px rgb(125 63 201 / 0.12);
+  transition: box-shadow var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  box-shadow:
+    inset 3px 3px 7px rgb(0 0 0 / 0.1),
+    inset -3px -3px 7px rgb(255 255 255 / 0.9),
+    0 0 0 3px color-mix(in srgb, var(--c-accent) 35%, transparent);
+}
+
 .post-stack {
   display: flex;
   flex-direction: column;

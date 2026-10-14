@@ -16,12 +16,12 @@
 -->
 <template>
   <div class="page">
-    <LiquidGlassBackground/>
-    <LiquidGlassNav/>
+    <LiquidGlassBackground />
+    <LiquidGlassNav />
 
     <main class="main">
       <!-- ① 英雄区：巨型玻璃主板 -->
-      <LiquidGlassHero/>
+      <LiquidGlassHero />
 
       <div class="flow">
         <!-- ② 关于 / 技能：玻璃主板（左文案+经历轨，右技能架） -->
@@ -32,7 +32,7 @@
           :title="t('about.title')"
         >
           <!-- 关于内容抽成区块组件：「关于」子页复用同一块（见 LiquidGlassAboutBlock） -->
-          <LiquidGlassAboutBlock/>
+          <LiquidGlassAboutBlock />
         </LiquidGlassPanel>
 
         <!-- ③ 精选项目：松散玻璃片（悬浮标题 + 交错悬浮卡） -->
@@ -47,7 +47,7 @@
           <!-- 加载骨架：玻璃条微光脉冲 -->
           <div v-if="loading" class="skeletons" role="status">
             <p class="sr-only">{{ t('common.loading') }}</p>
-            <div v-for="i in 3" :key="i" class="skeleton"/>
+            <div v-for="i in 3" :key="i" class="skeleton" />
           </div>
 
           <LiquidGlassEmpty
@@ -74,9 +74,20 @@
             :meta="String(latestPosts.length)"
           />
 
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
+
           <div v-if="loading" class="skeletons" role="status">
             <p class="sr-only">{{ t('common.loading') }}</p>
-            <div v-for="i in 3" :key="i" class="skeleton skeleton-bar"/>
+            <div v-for="i in 3" :key="i" class="skeleton skeleton-bar" />
           </div>
 
           <LiquidGlassEmpty
@@ -86,11 +97,7 @@
           />
 
           <div v-else class="post-list">
-            <LiquidGlassPostCard
-              v-for="post in latestPosts"
-              :key="post.path"
-              :post="post"
-            />
+            <LiquidGlassPostCard v-for="post in latestPosts" :key="post.path" :post="post" />
           </div>
         </div>
 
@@ -103,13 +110,13 @@
         >
           <div class="contact-body scroll-reveal scroll-reveal-up">
             <p class="contact-desc">{{ t('contact.description') }}</p>
-            <LiquidGlassContactGrid :socials="socialLinks"/>
+            <LiquidGlassContactGrid :socials="socialLinks" />
           </div>
         </LiquidGlassPanel>
       </div>
     </main>
 
-    <LiquidGlassFooter/>
+    <LiquidGlassFooter />
   </div>
 </template>
 
@@ -134,6 +141,9 @@ const POST_COUNT = 5
 const PROJECT_COUNT = 4
 
 const { t, locale } = useI18n()
+
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
@@ -182,6 +192,15 @@ const loading = computed(
 
 // 滚动进入视口动画（共享层行为，SSG 友好）
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/liquid-glass/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -240,6 +259,43 @@ useScrollReveal()
 .post-list {
   display: grid;
   gap: var(--gap);
+}
+
+/* —— 文章区搜索入口：横躺玻璃输入条 —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 18px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: rgb(255 255 255 / 0.35);
+  backdrop-filter: blur(12px);
+  border: var(--border-w) solid rgb(255 255 255 / 0.5);
+  border-radius: var(--radius);
+  outline: none;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:hover {
+  background: rgb(255 255 255 / 0.45);
+}
+
+.post-search input:focus-visible {
+  border-color: var(--c-accent);
+  background: rgb(255 255 255 / 0.55);
 }
 
 /* —— 联系展台 —— */

@@ -30,7 +30,7 @@
         <section id="about" data-section="about" class="section" aria-labelledby="about-title">
           <Y2KSectionHead id="about-title" :badge="t('nav.about')" :title="t('about.title')" />
           <!-- 关于内容抽成区块组件：「关于」子页复用同一块（见 Y2KAboutBlock） -->
-          <Y2KAboutBlock/>
+          <Y2KAboutBlock />
         </section>
 
         <!-- 能量分隔线（纯 CSS 装饰） -->
@@ -51,12 +51,7 @@
           />
 
           <!-- 加载骨架：铬面 shimmer -->
-          <div
-            v-if="projectsLoading"
-            class="cards"
-            role="status"
-            :aria-label="t('common.loading')"
-          >
+          <div v-if="projectsLoading" class="cards" role="status" :aria-label="t('common.loading')">
             <span class="sr-only">{{ t('common.loading') }}</span>
             <div v-for="n in 3" :key="n" class="skel skel--card" aria-hidden="true" />
           </div>
@@ -85,6 +80,17 @@
         <!-- ============ 最新文章：序号铬球行条 ============ -->
         <section id="posts" data-section="posts" class="section" aria-labelledby="posts-title">
           <Y2KSectionHead id="posts-title" :badge="t('nav.blog')" :title="t('home.latestPosts')" />
+
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
 
           <!-- 加载骨架 -->
           <div v-if="postsLoading" class="rows" role="status" :aria-label="t('common.loading')">
@@ -115,8 +121,17 @@
         <span class="divider" aria-hidden="true" />
 
         <!-- ============ 联系方式：星际通讯台 ============ -->
-        <section id="contact" data-section="contact" class="section" aria-labelledby="contact-title">
-          <Y2KSectionHead id="contact-title" :badge="t('nav.contact')" :title="t('contact.title')" />
+        <section
+          id="contact"
+          data-section="contact"
+          class="section"
+          aria-labelledby="contact-title"
+        >
+          <Y2KSectionHead
+            id="contact-title"
+            :badge="t('nav.contact')"
+            :title="t('contact.title')"
+          />
           <Y2KPlasticPanel variant="pink" class="contact-panel scroll-reveal">
             <p class="contact-intro">{{ t('contact.description') }}</p>
             <Y2KContactDeck v-if="safeSocials.length" :socials="safeSocials" />
@@ -149,6 +164,9 @@ const LATEST_POST_COUNT = 4
 const FEATURED_PROJECT_COUNT = 3
 
 const { t, locale } = useI18n()
+
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getFeaturedPosts } = useBlog()
@@ -197,6 +215,15 @@ const postsLoading = computed(() => postsPending.value && !postsData.value)
 
 // 滚动进入动画（共享层 composable，observer 在其内部成对清理）
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/y2k/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -227,6 +254,45 @@ useScrollReveal()
 .cards {
   display: grid;
   gap: var(--gap);
+}
+
+/* —— 文章区搜索入口：塑料胶囊输入条（铬边 + 气泡高光） —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(226 232 255 / 0.78));
+  border: var(--border-w) solid rgb(255 255 255 / 0.85);
+  border-radius: 999px;
+  outline: none;
+  box-shadow:
+    inset 0 2px 4px rgb(255 255 255 / 0.9),
+    inset 0 -3px 6px rgb(99 102 241 / 0.18),
+    0 4px 12px rgb(99 102 241 / 0.22);
+  transition:
+    box-shadow var(--transition),
+    border-color var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  border-color: var(--c-accent);
+  box-shadow:
+    inset 0 2px 4px rgb(255 255 255 / 0.9),
+    inset 0 -3px 6px rgb(99 102 241 / 0.18),
+    0 0 0 3px color-mix(in srgb, var(--c-accent) 35%, transparent);
 }
 
 .rows {
@@ -350,7 +416,13 @@ useScrollReveal()
   height: 44px;
   border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: 50%;
-  background: radial-gradient(120% 120% at 32% 26%, #ffffff 0%, #c3cdf2 34%, #7d89c9 66%, #3a4484 100%);
+  background: radial-gradient(
+    120% 120% at 32% 26%,
+    #ffffff 0%,
+    #c3cdf2 34%,
+    #7d89c9 66%,
+    #3a4484 100%
+  );
   box-shadow: 0 0 14px rgb(139 123 255 / 0.5);
 }
 

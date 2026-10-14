@@ -12,24 +12,28 @@
 -->
 <template>
   <div id="top" class="gpage">
-    <GlassmorphismBackdrop/>
-    <GlassmorphismNav :sections="navSections"/>
+    <GlassmorphismBackdrop />
+    <GlassmorphismNav :sections="navSections" />
 
     <main class="flow">
       <!-- ① 英雄区（开放排版 + 漂浮统计片） -->
-      <GlassmorphismHero class="sheet" :chips="heroChips"/>
+      <GlassmorphismHero class="sheet" :chips="heroChips" />
 
       <!-- 全局加载骨架（防御分支：正常 await 后数据已就绪） -->
       <GlassmorphismGlassPanel v-if="loading" class="sheet">
-        <GlassmorphismPlaceholder variant="loading" :message="t('common.loading')"/>
+        <GlassmorphismPlaceholder variant="loading" :message="t('common.loading')" />
       </GlassmorphismGlassPanel>
 
       <template v-else>
         <!-- ② 关于 + 技能 + 经历（左文右历，之字左侧） -->
-        <section id="about" data-section="about" class="sheet sheet--a scroll-reveal scroll-reveal-up">
+        <section
+          id="about"
+          data-section="about"
+          class="sheet sheet--a scroll-reveal scroll-reveal-up"
+        >
           <GlassmorphismGlassPanel>
-            <GlassmorphismSectionHead :eyebrow="t('nav.about')" :title="t('about.title')"/>
-            <GlassmorphismAboutBlock/>
+            <GlassmorphismSectionHead :eyebrow="t('nav.about')" :title="t('about.title')" />
+            <GlassmorphismAboutBlock />
           </GlassmorphismGlassPanel>
         </section>
 
@@ -40,7 +44,10 @@
           class="sheet sheet--b scroll-reveal scroll-reveal-up"
         >
           <GlassmorphismGlassPanel>
-            <GlassmorphismSectionHead :eyebrow="t('nav.projects')" :title="t('home.featuredProjects')"/>
+            <GlassmorphismSectionHead
+              :eyebrow="t('nav.projects')"
+              :title="t('home.featuredProjects')"
+            />
             <div v-if="featuredProjects.length" class="project-grid">
               <GlassmorphismProjectCard
                 v-for="project in featuredProjects"
@@ -64,13 +71,19 @@
           class="sheet sheet--a scroll-reveal scroll-reveal-up"
         >
           <GlassmorphismGlassPanel>
-            <GlassmorphismSectionHead :eyebrow="t('nav.blog')" :title="t('home.latestPosts')"/>
+            <GlassmorphismSectionHead :eyebrow="t('nav.blog')" :title="t('home.latestPosts')" />
+            <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+            <form class="post-search" role="search" @submit.prevent="submitSearch">
+              <input
+                v-model="searchKeyword"
+                type="search"
+                :placeholder="t('blog.search')"
+                :aria-label="t('blog.search')"
+                autocomplete="off"
+              >
+            </form>
             <div v-if="latestPosts.length" class="post-list">
-              <GlassmorphismPostRow
-                v-for="post in latestPosts"
-                :key="post.path"
-                :post="post"
-              />
+              <GlassmorphismPostRow v-for="post in latestPosts" :key="post.path" :post="post" />
             </div>
             <GlassmorphismPlaceholder
               v-else
@@ -93,14 +106,14 @@
           class="sheet sheet--b scroll-reveal scroll-reveal-up"
         >
           <GlassmorphismGlassPanel>
-            <GlassmorphismSectionHead :eyebrow="t('nav.contact')" :title="t('contact.title')"/>
-            <GlassmorphismContactBoard :socials="socialLinks"/>
+            <GlassmorphismSectionHead :eyebrow="t('nav.contact')" :title="t('contact.title')" />
+            <GlassmorphismContactBoard :socials="socialLinks" />
           </GlassmorphismGlassPanel>
         </section>
       </template>
     </main>
 
-    <GlassmorphismFooter/>
+    <GlassmorphismFooter />
   </div>
 </template>
 
@@ -136,6 +149,15 @@ const { socialLinks, skillGroups } = useAppInfo()
 
 // 滚动入场动画（共享层 composable，内部自带 mount/unmount 成对清理）
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/glassmorphism/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 
 // 文章与项目一次取齐（useAsyncData 承载：SSG 预渲染即含数据，payload 下发避免水合不一致）
 const {
@@ -264,6 +286,39 @@ const navSections = computed(() => [
 }
 
 /* —— 文章列表 + 查看全部 —— */
+/* —— 文章区搜索入口：磨砂玻璃输入条 —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 18px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: rgb(255 255 255 / 0.28);
+  backdrop-filter: blur(10px);
+  border: var(--border-w) solid rgb(255 255 255 / 0.45);
+  border-radius: var(--radius);
+  outline: none;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  border-color: var(--c-accent);
+  background: rgb(255 255 255 / 0.42);
+}
+
 .post-list {
   display: grid;
   gap: 12px;
@@ -298,7 +353,9 @@ const navSections = computed(() => [
 .view-all:hover {
   transform: translateY(-3px);
   background: rgb(255 255 255 / 0.75);
-  box-shadow: 0 12px 28px rgb(31 38 135 / 0.2), 0 0 24px rgb(139 92 246 / 0.2);
+  box-shadow:
+    0 12px 28px rgb(31 38 135 / 0.2),
+    0 0 24px rgb(139 92 246 / 0.2);
 }
 
 .view-all:active {

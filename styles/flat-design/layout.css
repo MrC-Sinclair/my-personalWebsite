@@ -141,6 +141,36 @@
   justify-content: center;
 }
 
+/* —— 文章区搜索入口：白底细边输入条（深色带上的反衬块） —— */
+[data-style='flat-design'] .post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+[data-style='flat-design'] .post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  /* 深色带上局部 color 是白色，输入框自带白底，文字必须写死深色 */
+  color: #1f2937;
+  background: #ffffff;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+[data-style='flat-design'] .post-search input::placeholder {
+  color: #9ca3af;
+}
+
+[data-style='flat-design'] .post-search input:focus-visible {
+  border-color: #f1c40f;
+}
+
 /* —— 最新文章网格：1 → 2 列 —— */
 [data-style='flat-design'] .post-grid {
   display: grid;

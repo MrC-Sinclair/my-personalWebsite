@@ -16,21 +16,21 @@
 -->
 <template>
   <div class="page">
-    <CyberpunkScanOverlay/>
-    <CyberpunkHudNav/>
+    <CyberpunkScanOverlay />
+    <CyberpunkHudNav />
 
     <main class="main">
       <!-- ① 全屏英雄区 -->
-      <CyberpunkHero/>
+      <CyberpunkHero />
 
       <!-- ② 内容面板流 -->
       <div class="stream">
         <!-- 左缘 HUD 刻度轨（纯装饰，宽屏显示） -->
-        <div class="rail" aria-hidden="true"/>
+        <div class="rail" aria-hidden="true" />
 
         <!-- ②-1 关于 + 技能：7/5 非对称分栏，技能面板下沉错位 -->
         <!-- 关于 + 技能抽成区块组件：「关于」子页复用同一块（见 CyberpunkAboutBlock） -->
-        <CyberpunkAboutBlock/>
+        <CyberpunkAboutBlock />
 
         <!-- ②-2 精选项目：悬赏数据板网格 -->
         <CyberpunkPanel
@@ -45,10 +45,10 @@
           <!-- 加载骨架：霓虹脉冲条 -->
           <div v-if="loading" class="loading-zone" role="status">
             <p class="sr-only">{{ t('common.loading') }}</p>
-            <div v-for="i in 3" :key="`p-${i}`" class="skeleton skeleton-card"/>
+            <div v-for="i in 3" :key="`p-${i}`" class="skeleton skeleton-card" />
           </div>
 
-          <CyberpunkEmpty v-else-if="!featuredProjects.length" :message="t('projects.noResults')"/>
+          <CyberpunkEmpty v-else-if="!featuredProjects.length" :message="t('projects.noResults')" />
 
           <div v-else class="project-grid">
             <CyberpunkProjectCard
@@ -70,9 +70,21 @@
           tone="cyan"
           flip
         >
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <span class="post-search__prompt" aria-hidden="true">&gt;</span>
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
+
           <div v-if="loading" class="loading-zone" role="status">
             <p class="sr-only">{{ t('common.loading') }}</p>
-            <div v-for="i in 3" :key="`b-${i}`" class="skeleton skeleton-row"/>
+            <div v-for="i in 3" :key="`b-${i}`" class="skeleton skeleton-row" />
           </div>
 
           <CyberpunkEmpty
@@ -101,12 +113,12 @@
           tone="violet"
         >
           <p class="contact-desc">{{ t('contact.description') }}</p>
-          <CyberpunkContactDeck :socials="socialLinks"/>
+          <CyberpunkContactDeck :socials="socialLinks" />
         </CyberpunkPanel>
       </div>
     </main>
 
-    <CyberpunkFooter/>
+    <CyberpunkFooter />
   </div>
 </template>
 
@@ -130,6 +142,9 @@ const POST_COUNT = 5
 const PROJECT_COUNT = 4
 
 const { t, locale } = useI18n()
+
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
@@ -178,6 +193,15 @@ const loading = computed(
 
 // 滚动进入视口动画（共享层行为，SSG 友好）
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/cyberpunk/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -243,6 +267,52 @@ useScrollReveal()
 }
 
 /* —— 文章数据流行列表 —— */
+/* —— 文章面板搜索入口：直角数据块 + 提示符（同 CyberpunkSearch 语言） —— */
+.post-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--gap);
+}
+
+.post-search__prompt {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-accent);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: var(--border-w) solid rgb(34 211 238 / 0.35);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    color var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:hover {
+  color: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+.post-search input:focus-visible {
+  border-color: var(--c-accent);
+  box-shadow: var(--shadow);
+}
+
 .post-list {
   display: grid;
   gap: 12px;
@@ -270,7 +340,14 @@ useScrollReveal()
 
 .skeleton {
   background: rgb(34 211 238 / 0.05);
-  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
   box-shadow: inset 0 0 0 var(--border-w) rgb(34 211 238 / 0.25);
   animation: skeleton-pulse 1.4s ease-in-out infinite;
 }

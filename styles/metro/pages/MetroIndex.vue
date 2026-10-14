@@ -26,7 +26,7 @@
       <section class="start" data-section="hero">
         <div class="wrap">
           <p class="start__kicker scroll-reveal">
-            <span class="start__mark" aria-hidden="true"/>
+            <span class="start__mark" aria-hidden="true" />
             {{ t('home.greeting') }}
           </p>
           <h1 class="start__name scroll-reveal scroll-reveal-delay-1">{{ t('home.name') }}</h1>
@@ -85,10 +85,15 @@
           />
 
           <!-- 加载中：扁平骨架 Tile -->
-          <div v-if="projectsLoading" class="mosaic" role="status" :aria-label="t('common.loading')">
-            <div class="skel skel--wide" aria-hidden="true"/>
-            <div class="skel" aria-hidden="true"/>
-            <div class="skel" aria-hidden="true"/>
+          <div
+            v-if="projectsLoading"
+            class="mosaic"
+            role="status"
+            :aria-label="t('common.loading')"
+          >
+            <div class="skel skel--wide" aria-hidden="true" />
+            <div class="skel" aria-hidden="true" />
+            <div class="skel" aria-hidden="true" />
           </div>
 
           <!-- 空状态 -->
@@ -120,11 +125,22 @@
             class="scroll-reveal"
           />
 
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
+
           <!-- 加载中：扁平骨架 Tile -->
           <div v-if="postsLoading" class="mosaic" role="status" :aria-label="t('common.loading')">
-            <div class="skel" aria-hidden="true"/>
-            <div class="skel skel--wide" aria-hidden="true"/>
-            <div class="skel" aria-hidden="true"/>
+            <div class="skel" aria-hidden="true" />
+            <div class="skel skel--wide" aria-hidden="true" />
+            <div class="skel" aria-hidden="true" />
           </div>
 
           <!-- 空状态 -->
@@ -238,6 +254,15 @@ const postVariants: MetroTileVariant[] = ['green', 'cobalt', 'red']
 function pickVariant(list: MetroTileVariant[], index: number): MetroTileVariant {
   return list[index] ?? 'cobalt'
 }
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/metro/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 </script>
 
 <style scoped>
@@ -343,4 +368,35 @@ function pickVariant(list: MetroTileVariant[], index: number): MetroTileVariant 
 
 /* ================= 区块节奏：组距大于 Tile 沟槽 ================= */
 /* （.block 已抽到风格级 layout.css，首页与子页共用） */
+/* ============ 文章区搜索入口：输入 Tile（Metro 色块语言） ============ */
+.post-search {
+  display: flex;
+  align-items: center;
+  margin: 20px 0 4px;
+  padding: 0 14px;
+  min-height: 52px;
+  background: var(--c-surface);
+  border: 2px solid var(--c-border);
+  transition: border-color var(--transition);
+}
+
+.post-search:focus-within {
+  border-color: var(--c-accent);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  color: var(--c-text);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
 </style>

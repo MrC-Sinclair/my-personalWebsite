@@ -38,11 +38,19 @@
         <!-- 球体群：纯 CSS 物体，纯装饰 -->
         <div class="hero-scene" aria-hidden="true">
           <Soft3DOrb :size="66" variant="cyan" float :duration="6" :delay="0.6" class="sat sat-1" />
-          <Soft3DOrb :size="44" variant="pink" float ring :duration="7.5" :delay="1.4" class="sat sat-2" />
+          <Soft3DOrb
+            :size="44"
+            variant="pink"
+            float
+            ring
+            :duration="7.5"
+            :delay="1.4"
+            class="sat sat-2"
+          />
           <Soft3DOrb :size="34" variant="mint" float :duration="5.4" :delay="2" class="sat sat-3" />
-          <span class="scene-cube"/>
+          <span class="scene-cube" />
           <Soft3DOrb :size="248" variant="violet" float :duration="8" class="hero-core" />
-          <span class="hero-floor"/>
+          <span class="hero-floor" />
         </div>
       </section>
 
@@ -56,7 +64,7 @@
         />
 
         <!-- 关于内容抽成区块组件：「关于」子页复用同一块（见 Soft3DAboutBlock） -->
-        <Soft3DAboutBlock/>
+        <Soft3DAboutBlock />
       </section>
 
       <!-- ③ 精选项目：三列 Z 层错落（近 / 中 / 远） -->
@@ -112,6 +120,17 @@
           variant="mint"
         />
 
+        <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+        <form class="post-search" role="search" @submit.prevent="submitSearch">
+          <input
+            v-model="searchKeyword"
+            type="search"
+            :placeholder="t('blog.search')"
+            :aria-label="t('blog.search')"
+            autocomplete="off"
+          >
+        </form>
+
         <div class="post-grid">
           <Soft3DEmpty v-if="loading" class="post-item" loading :message="t('common.loading')" />
 
@@ -123,10 +142,7 @@
               :class="revealClass(i)"
             >
               <div class="z-item z-post" :class="{ 'z-post-raised': i % 2 === 1 }">
-                <Soft3DPostCard
-                  :post="post"
-                  :variant="postVariants[i % postVariants.length]"
-                />
+                <Soft3DPostCard :post="post" :variant="postVariants[i % postVariants.length]" />
               </div>
             </div>
 
@@ -162,10 +178,7 @@
             class="reveal-wrap scroll-reveal scroll-reveal-up"
             :class="revealClass(i)"
           >
-            <Soft3DContactPod
-              :item="item"
-              :variant="contactVariants[i % contactVariants.length]"
-            />
+            <Soft3DContactPod :item="item" :variant="contactVariants[i % contactVariants.length]" />
           </div>
         </div>
       </section>
@@ -256,6 +269,15 @@ const navSections = computed(() => [
   { id: 'posts', label: t('nav.blog') },
   { id: 'contact', label: t('nav.contact') },
 ])
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/soft-3d/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 
 // —— 配色轮换（纯装饰，索引取模，SSR 安全） ——
 const coverVariants = ['violet', 'cyan', 'warm', 'mint', 'sun', 'grape'] as const
@@ -394,8 +416,13 @@ function revealClass(index: number): string {
   font-weight: 700;
   text-decoration: none;
   border-radius: 999px;
-  transition: transform var(--transition), box-shadow var(--transition), background var(--transition),
-    color var(--transition), border-color var(--transition), filter var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    filter var(--transition);
 }
 
 .cta-solid {
@@ -548,6 +575,45 @@ function revealClass(index: number): string {
   grid-template-columns: 1fr;
 }
 
+/* —— 文章区搜索入口：胶囊浮条（与 CTA 同一表面语言） —— */
+.post-search {
+  display: flex;
+  margin-top: calc(var(--space) * 0.9);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 22px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: color-mix(in srgb, var(--c-surface) 88%, transparent);
+  border: var(--border-w) solid var(--c-border);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:hover {
+  border-color: color-mix(in srgb, var(--c-accent) 52%, transparent);
+  box-shadow: 0 10px 20px rgb(124 58 237 / 0.18);
+  transform: translateY(-2px);
+}
+
+.post-search input:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
 @media (min-width: 768px) {
   .post-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -580,7 +646,10 @@ function revealClass(index: number): string {
   border: var(--border-w) solid var(--c-border);
   border-radius: 999px;
   box-shadow: var(--shadow);
-  transition: transform var(--transition), box-shadow var(--transition), color var(--transition),
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    color var(--transition),
     border-color var(--transition);
 }
 
@@ -621,14 +690,22 @@ function revealClass(index: number): string {
   justify-content: center;
   width: 52px;
   height: 52px;
-  background: radial-gradient(circle at 32% 26%, #e9d5ff 0%, #a78bfa 38%, #7c3aed 72%, #3f2d8f 100%);
+  background: radial-gradient(
+    circle at 32% 26%,
+    #e9d5ff 0%,
+    #a78bfa 38%,
+    #7c3aed 72%,
+    #3f2d8f 100%
+  );
   border: var(--border-w) solid rgb(255 255 255 / 0.3);
   border-radius: 50%;
   box-shadow:
     inset -6px -9px 14px rgb(9 5 40 / 0.5),
     inset 2px 3px 6px rgb(255 255 255 / 0.4),
     0 14px 26px rgb(139 92 246 / 0.45);
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 
 .top-orb:hover {

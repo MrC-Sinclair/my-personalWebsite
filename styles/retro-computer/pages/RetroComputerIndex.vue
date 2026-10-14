@@ -62,7 +62,7 @@
           class="rc-pos-about scroll-reveal"
           @activate="activate('win-about')"
         >
-          <RetroComputerAboutBlock/>
+          <RetroComputerAboutBlock />
         </RetroComputerWindow>
 
         <!-- ============ 项目窗口：精选项目 ============ -->
@@ -76,7 +76,7 @@
           @activate="activate('win-projects')"
         >
           <div v-if="projectsLoading" class="rc-loading" role="status">
-            <span class="rc-loading__blocks" aria-hidden="true"><i/><i/><i/></span>
+            <span class="rc-loading__blocks" aria-hidden="true"><i /><i /><i /></span>
             <span>{{ t('common.loading') }}</span>
           </div>
           <p v-else-if="!safeProjects.length" class="rc-empty">
@@ -102,8 +102,18 @@
           class="rc-pos-blog scroll-reveal"
           @activate="activate('win-blog')"
         >
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="rc-post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
           <div v-if="postsLoading" class="rc-loading" role="status">
-            <span class="rc-loading__blocks" aria-hidden="true"><i/><i/><i/></span>
+            <span class="rc-loading__blocks" aria-hidden="true"><i /><i /><i /></span>
             <span>{{ t('common.loading') }}</span>
           </div>
           <p v-else-if="!safePosts.length" class="rc-empty">
@@ -124,7 +134,7 @@
           class="rc-pos-contact scroll-reveal"
           @activate="activate('win-contact')"
         >
-          <RetroComputerContactBlock/>
+          <RetroComputerContactBlock />
         </RetroComputerWindow>
       </div>
     </main>
@@ -132,7 +142,7 @@
     <RetroComputerTaskbar :windows="taskbarWindows" :active-id="activeWindow" />
 
     <!-- CRT 覆盖层：扫描线 + 暗角 + 扫描亮带（纯装饰） -->
-    <div class="rc-crt" aria-hidden="true"/>
+    <div class="rc-crt" aria-hidden="true" />
   </div>
 </template>
 
@@ -159,12 +169,24 @@ import RetroComputerWindow from '../components/RetroComputerWindow.vue'
 
 const { t } = useI18n()
 
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
+
 // —— 共享业务层：项目 / 博客 / 滚动动画 ——
 // （站点信息 skillGroups / timeline / socialLinks 已随 About、Contact
 //   两个区块抽出，本页不再直接消费）
 const { getFeaturedProjects } = useProjects()
 const { getFeaturedPosts } = useBlog()
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/retro-computer/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 
 // —— 异步数据状态（首帧与 SSG 输出一致：加载态）——
 const projects = ref<Project[]>([])
@@ -333,6 +355,38 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
 }
 
 /* ============ 加载态 / 空状态 ============ */
+/* —— 文章窗口搜索入口：Win95 凹槽输入框（sunken 边框） —— */
+.rc-post-search {
+  display: flex;
+  margin-bottom: 10px;
+  padding: 2px;
+  background: var(--c-surface);
+  box-shadow:
+    inset 1px 1px 0 rgb(0 0 0 / 0.35),
+    inset -1px -1px 0 rgb(255 255 255 / 0.8);
+}
+
+.rc-post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 40px;
+  padding: 6px 8px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: #fff;
+  border: 1px solid var(--c-border);
+  outline: none;
+}
+
+.rc-post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.rc-post-search input:focus-visible {
+  border-color: var(--c-accent);
+}
+
 .rc-loading {
   display: flex;
   align-items: center;

@@ -18,14 +18,14 @@
     <main id="top" class="main">
       <div class="container">
         <!-- 极淡的 12 栏背景网格线：版面骨架的可见提示 -->
-        <div class="grid-lines" aria-hidden="true"/>
+        <div class="grid-lines" aria-hidden="true" />
 
         <SwissHero />
 
         <!-- 加载骨架（防御分支：正常情况下 await 后数据已就绪） -->
         <div v-if="loading" class="skeleton-zone" role="status" aria-live="polite">
           <p class="sr-only">{{ t('common.loading') }}</p>
-          <div v-for="i in 3" :key="i" class="skeleton-row"/>
+          <div v-for="i in 3" :key="i" class="skeleton-row" />
         </div>
 
         <template v-else>
@@ -44,14 +44,14 @@
             />
             <div class="section-body">
               <p class="sub-label">
-                <span class="sub-mark" aria-hidden="true"/>
+                <span class="sub-mark" aria-hidden="true" />
                 {{ t('about.skills') }}
               </p>
               <SwissSkillTable v-if="skillList.length" :groups="skillList" />
               <p v-else class="empty">{{ t('projects.noResults') }}</p>
 
               <p class="sub-label sub-label--gap">
-                <span class="sub-mark" aria-hidden="true"/>
+                <span class="sub-mark" aria-hidden="true" />
                 {{ t('about.experience') }}
               </p>
               <SwissTimeline v-if="timelineList.length" :items="timelineList" />
@@ -91,6 +91,17 @@
               :title="t('home.latestPosts')"
               :meta="t('blog.description')"
             />
+
+            <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+            <form class="post-search" role="search" @submit.prevent="submitSearch">
+              <input
+                v-model="searchKeyword"
+                type="search"
+                :placeholder="t('blog.search')"
+                :aria-label="t('blog.search')"
+                autocomplete="off"
+              >
+            </form>
             <div class="section-body">
               <template v-if="latestPosts.length">
                 <SwissPostList :posts="latestPosts" />
@@ -187,6 +198,15 @@ watch(locale, () => {
 // 滚动进入视口的区块动画（共享层行为，SSG 友好）
 useScrollReveal()
 
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/swiss/blog')}?q=${encodeURIComponent(keyword)}`)
+}
+
 // —— 数据防御与视图推导（同步计算，SSR 安全） ——
 const latestPosts = computed<BlogPost[]>(() =>
   Array.isArray(postsData.value) ? postsData.value : [],
@@ -248,6 +268,38 @@ const loading = computed(
 /* —— 区块节奏：大留白分隔编号区块 —— */
 .section {
   margin-top: calc(var(--space) * 2.4);
+}
+
+/* —— 文章区搜索入口：直角细边输入条（瑞士网格纪律） —— */
+.post-search {
+  display: flex;
+  margin-bottom: var(--gap);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: transparent;
+  border: 1px solid var(--c-text);
+  border-radius: 0;
+  outline: none;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search input:focus-visible {
+  border-color: var(--c-accent);
+  box-shadow: inset 0 0 0 1px var(--c-accent);
 }
 
 .section-body {

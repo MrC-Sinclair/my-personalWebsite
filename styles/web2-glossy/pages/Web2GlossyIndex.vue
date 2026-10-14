@@ -21,7 +21,7 @@
     <main>
       <!-- ============ 英雄区：Web 2.0 天空 + 光泽 ============ -->
       <section class="hero" data-section="hero" aria-labelledby="hero-title">
-        <span class="hero__burst" aria-hidden="true"/>
+        <span class="hero__burst" aria-hidden="true" />
 
         <div class="container hero__inner">
           <p class="hero__greeting scroll-reveal">{{ t('home.greeting') }}</p>
@@ -35,7 +35,9 @@
           <p class="hero__desc scroll-reveal scroll-reveal-delay-3">{{ t('home.description') }}</p>
 
           <div class="hero__actions scroll-reveal scroll-reveal-delay-4">
-            <Web2GlossyGelButton href="#blog" size="lg">{{ t('home.viewBlog') }}</Web2GlossyGelButton>
+            <Web2GlossyGelButton href="#blog" size="lg">{{
+              t('home.viewBlog')
+            }}</Web2GlossyGelButton>
             <Web2GlossyGelButton href="#projects" variant="orange" size="lg">
               {{ t('home.viewProjects') }}
             </Web2GlossyGelButton>
@@ -47,7 +49,7 @@
       <section id="about" data-section="about" class="section" aria-labelledby="about-title">
         <!-- 关于内容抽成区块组件：「关于」子页复用同一块（见 Web2GlossyAboutBlock） -->
         <div class="container">
-          <Web2GlossyAboutBlock/>
+          <Web2GlossyAboutBlock />
         </div>
       </section>
 
@@ -72,7 +74,7 @@
             role="status"
             :aria-label="t('common.loading')"
           >
-            <div v-for="n in 3" :key="n" class="skel skel--panel" aria-hidden="true"/>
+            <div v-for="n in 3" :key="n" class="skel skel--panel" aria-hidden="true" />
           </div>
 
           <!-- 空状态 -->
@@ -97,11 +99,31 @@
       <!-- ============ 最新文章：光泽行条目 ============ -->
       <section id="blog" data-section="blog" class="section" aria-labelledby="blog-title">
         <div class="container">
-          <Web2GlossySectionHead id="blog-title" :badge="t('nav.blog')" :title="t('home.latestPosts')" />
+          <Web2GlossySectionHead
+            id="blog-title"
+            :badge="t('nav.blog')"
+            :title="t('home.latestPosts')"
+          />
+
+          <!-- 搜索入口：提交后到博客子页执行全量搜索（共享层 URL 同步） -->
+          <form class="post-search" role="search" @submit.prevent="submitSearch">
+            <input
+              v-model="searchKeyword"
+              type="search"
+              :placeholder="t('blog.search')"
+              :aria-label="t('blog.search')"
+              autocomplete="off"
+            >
+          </form>
 
           <!-- 加载中：行骨架屏 -->
-          <div v-if="postsLoading" class="posts-list" role="status" :aria-label="t('common.loading')">
-            <div v-for="n in 3" :key="n" class="skel skel--row" aria-hidden="true"/>
+          <div
+            v-if="postsLoading"
+            class="posts-list"
+            role="status"
+            :aria-label="t('common.loading')"
+          >
+            <div v-for="n in 3" :key="n" class="skel skel--row" aria-hidden="true" />
           </div>
 
           <!-- 空状态 -->
@@ -178,12 +200,24 @@ import Web2GlossySocialTile from '../components/Web2GlossySocialTile.vue'
 
 const { t } = useI18n()
 
+// 对外路由链接的本地化路径（搜索入口跳转博客子页用）
+const localePath = useLocalePath()
+
 // —— 共享业务层：站点信息 / 项目 / 博客 / 滚动动画 ——
 // 技能分组与经历时间线已随「关于」区块下沉到 Web2GlossyAboutBlock
 const { socialLinks } = useAppInfo()
 const { getFeaturedProjects } = useProjects()
 const { getFeaturedPosts } = useBlog()
 useScrollReveal()
+
+// —— 搜索入口（首页只做入口：提交后到博客子页对全量文章执行搜索） ——
+const searchKeyword = ref('')
+
+function submitSearch(): void {
+  const keyword = searchKeyword.value.trim()
+  if (!keyword) return
+  navigateTo(`${localePath('/style/web2-glossy/blog')}?q=${encodeURIComponent(keyword)}`)
+}
 
 // —— 异步数据状态（首帧与 SSG 输出一致：骨架屏） ——
 const projects = ref<Project[]>([])
@@ -219,7 +253,6 @@ onMounted(async () => {
 const safeProjects = computed(() => (Array.isArray(projects.value) ? projects.value : []))
 const safePosts = computed(() => (Array.isArray(posts.value) ? posts.value : []))
 const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socialLinks.value : []))
-
 </script>
 
 <style scoped>
@@ -543,7 +576,9 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
   background:
     linear-gradient(180deg, rgb(255 255 255 / 0.55) 0%, rgb(255 255 255 / 0) 46%),
     linear-gradient(100deg, #e4eefb 42%, #f9fcff 50%, #e4eefb 58%);
-  background-size: 100% 100%, 220% 100%;
+  background-size:
+    100% 100%,
+    220% 100%;
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.8),
     0 2px 6px rgb(23 74 128 / 0.1);
@@ -617,5 +652,41 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
   .skel {
     animation: none;
   }
+}
+/* —— 文章区搜索入口：光泽凝胶输入条（同 GelButton 语言） —— */
+.post-search {
+  display: flex;
+  margin: 20px 0 4px;
+  padding: 0 8px 0 18px;
+  min-height: 52px;
+  background: linear-gradient(180deg, #fff, #e8eef7);
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 3px rgb(15 23 42 / 0.12),
+    0 1px 0 rgb(255 255 255 / 0.9);
+}
+
+.post-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-text);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.post-search input::placeholder {
+  color: var(--c-muted);
+}
+
+.post-search:focus-within {
+  border-color: var(--c-accent);
+  box-shadow:
+    inset 0 1px 3px rgb(15 23 42 / 0.12),
+    0 0 0 3px color-mix(in srgb, var(--c-accent) 25%, transparent);
 }
 </style>
