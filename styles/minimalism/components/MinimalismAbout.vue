@@ -7,14 +7,20 @@
   细线分隔，悬停时浮起 --deco 静默底色（最小限度的反馈）。
   数据来自共享层 useAppInfo（skillGroups / timeline），数组
   字段全部做 Array.isArray 防御。
+
+  quiet（子页用）：页头 h1 已经是「关于」，区块头再排一遍同量级
+  的「关于我」大标题就是重复标注（实测子页顶部出现两个大字的
+  重复标题）；改为 MinimalismSection 的题注模式——降到列表上方
+  一行等宽小字，语义仍是 h2，视觉上让位给页头。
 -->
 <template>
   <MinimalismSection
     id="about"
     data-section="about"
-    :eyebrow="t('nav.about')"
+    :quiet="quiet"
+    :eyebrow="quiet ? undefined : t('nav.about')"
     :title="t('about.title')"
-    :desc="t('about.description')"
+    :desc="quiet ? undefined : t('about.description')"
   >
     <!-- 技能：类别 → 纯文本技能串 -->
     <h3 class="sub">{{ t('about.skills') }}</h3>
@@ -34,7 +40,8 @@
         <span class="xp-period">{{ item.period }}</span>
         <div class="xp-main">
           <p class="xp-title">
-            {{ item.title }}<span v-if="item.organization" class="xp-org"> · {{ item.organization }}</span>
+            {{ item.title
+            }}<span v-if="item.organization" class="xp-org"> · {{ item.organization }}</span>
           </p>
           <p class="xp-desc">{{ item.description }}</p>
         </div>
@@ -45,6 +52,14 @@
 
 <script setup lang="ts">
 import MinimalismSection from './MinimalismSection.vue'
+
+defineProps<{
+  /**
+   * 子页模式：区块头降为列表上方的一行题注。
+   * 首页 false（区块头是左右分栏里的秩序锚点），子页 true（页头已是大标题）。
+   */
+  quiet?: boolean
+}>()
 
 const { t } = useI18n()
 

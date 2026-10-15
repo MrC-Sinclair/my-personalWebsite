@@ -13,6 +13,9 @@
  * 入参是**已获取**的列表（Ref/Computed），不负责取数：
  * 取数仍由各页面的 useAsyncData 承担（SSG 预渲染 payload 需要它）。
  *
+ * 两个入参都可选：项目子页只画项目相关的图（不取文章），管理页相反。
+ * 缺哪一路就返回空的统计，图表各自判空渲染空状态，不用传假数据填空。
+ *
  * ★ 图表数据源刻意保持四路不同（posts.category / projects.tags /
  * skillGroups / posts.date）：把同一份文章切四刀（分类/标签/技能/趋势）
  * 信息增量低，首页会沦为「图表组件陈列」而不是控制台。
@@ -71,10 +74,16 @@ function toSortedItems(counts: Map<string, number>): StatItem[] {
 }
 
 export function useDashboardStats(
-  posts: Ref<BlogPost[]> | ComputedRef<BlogPost[]>,
+  posts?: Ref<BlogPost[]> | ComputedRef<BlogPost[]>,
   projects?: Ref<Project[]> | ComputedRef<Project[]>,
 ): DashboardStats {
   const { skillGroups } = useAppInfo()
+
+  /** 文章列表防御（入参可选：不画文章图表的页面不传） */
+  const postList = computed<BlogPost[]>(() => {
+    const list = posts?.value
+    return Array.isArray(list) ? list : []
+  })
 
   /** 项目列表防御（入参可选：不画技术栈图的页面不传） */
   const projectList = computed<Project[]>(() => {
@@ -85,7 +94,7 @@ export function useDashboardStats(
   /** 分类分布 */
   const categoryStats = computed<StatItem[]>(() => {
     const counts = new Map<string, number>()
-    for (const post of posts.value) {
+    for (const post of postList.value) {
       const key = typeof post.category === 'string' ? post.category.trim() : ''
       if (!key) continue
       counts.set(key, (counts.get(key) ?? 0) + 1)
@@ -96,7 +105,7 @@ export function useDashboardStats(
   /** 全量标签计数（KPI 用） */
   const fullTagStats = computed<StatItem[]>(() => {
     const counts = new Map<string, number>()
-    for (const post of posts.value) {
+    for (const post of postList.value) {
       const tags = Array.isArray(post.tags) ? post.tags : []
       for (const tag of tags) {
         const key = String(tag).trim()
@@ -143,7 +152,7 @@ export function useDashboardStats(
   const trend = computed<{ values: number[]; labels: string[] }>(() => {
     let anchorYear = 0
     let anchorMonth = 0
-    for (const post of posts.value) {
+    for (const post of postList.value) {
       const year = Number(String(post.date).slice(0, 4))
       const month = Number(String(post.date).slice(5, 7))
       if (!Number.isFinite(year) || !Number.isFinite(month) || month < 1 || month > 12) continue
@@ -169,7 +178,7 @@ export function useDashboardStats(
         year -= 1
       }
     }
-    for (const post of posts.value) {
+    for (const post of postList.value) {
       const key = String(post.date).slice(0, 7)
       if (counts.has(key)) counts.set(key, (counts.get(key) ?? 0) + 1)
     }

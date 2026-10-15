@@ -45,6 +45,8 @@ export interface TerminalCopy {
   themeHint: string
   /** search 命令缺关键词时的用法提示 */
   searchHint: string
+  /** 输入行上方「快捷命令」栏的说明（ SSR 静态可见，填所在的黑场） */
+  quickLabel: string
 }
 
 const zhCopy: TerminalCopy = {
@@ -73,6 +75,7 @@ const zhCopy: TerminalCopy = {
   blogHint: '标题可进入文章详情页。',
   themeHint: '本站是「一站多风格」实验：同一份内容，完全不同的界面。',
   searchHint: '用法：search <关键词>，跳转博客页搜索文章',
+  quickLabel: '快捷命令（点击即执行）',
 }
 
 const enCopy: TerminalCopy = {
@@ -101,6 +104,7 @@ const enCopy: TerminalCopy = {
   blogHint: 'Titles open the post detail page.',
   themeHint: 'This site is a one-site-many-styles lab: same content, entirely different UIs.',
   searchHint: 'usage: search <keyword> — opens the blog page with results',
+  quickLabel: 'Quick commands (click to run)',
 }
 
 /** 按语言取文案（zh → 中文，其余 → 英文；纯函数，无副作用） */

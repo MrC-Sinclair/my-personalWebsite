@@ -61,6 +61,23 @@
       <p v-else class="line line--idle" aria-hidden="true"><span class="cursor">█</span></p>
     </div>
 
+    <!-- 快捷命令栏：静态渲染（SSG 预渲染即含），既把底部的黑场填上，
+         也让不想手敲命令的人有一条直达路径——点击等同于输入该命令 -->
+    <div class="quick">
+      <p :id="QUICK_LABEL_ID" class="quick-label">{{ copy.quickLabel }}</p>
+      <div class="quick-list" role="group" :aria-labelledby="QUICK_LABEL_ID">
+        <button
+          v-for="name in QUICK_COMMANDS"
+          :key="name"
+          type="button"
+          class="quick-chip"
+          @click="exec(name)"
+        >
+          <span class="quick-mark" aria-hidden="true">$</span>{{ name }}
+        </button>
+      </div>
+    </div>
+
     <!-- 命令输入行 -->
     <div class="input-row">
       <label class="sr-only" for="terminal-input">{{ copy.inputLabel }}</label>
@@ -92,6 +109,13 @@ import TerminalBlockSkills from './TerminalBlockSkills.vue'
 import TerminalBlockTheme from './TerminalBlockTheme.vue'
 import TerminalBlockWorks from './TerminalBlockWorks.vue'
 import { pickTerminalCopy } from '../copy'
+import { styleRegistry } from '~/styles/registry'
+
+/** 快捷命令栏的说明文字 id（固定值：SSR 与客户端必须一致，不能用随机串） */
+const QUICK_LABEL_ID = 'terminal-quick-label'
+
+/** 输入行上方常驻的快捷命令（help 的子集：不必先知道有 help 才知道能点） */
+const QUICK_COMMANDS = ['help', 'about', 'skills', 'works', 'blog', 'contact'] as const
 
 const props = defineProps<{
   /** 最新文章（来自共享层 useBlog，页面经 useAsyncData 传入） */
@@ -382,6 +406,15 @@ function toneClass(tone: Tone): string {
 const blockPosts = computed(() => (Array.isArray(props.posts) ? props.posts : []))
 const blockProjects = computed(() => (Array.isArray(props.projects) ? props.projects : []))
 
+/** MOTD 的 Skills 行：真实的技能条目总数（来自共享层 useAppInfo） */
+const { skillGroups } = useAppInfo()
+const skillCount = computed<number>(() =>
+  (Array.isArray(skillGroups.value) ? skillGroups.value : []).reduce(
+    (sum, group) => sum + (Array.isArray(group.skills) ? group.skills.length : 0),
+    0,
+  ),
+)
+
 /** 开机横幅：程序化拼装的等宽框线（ASCII 限定，保证对齐且确定性） */
 const bannerText = computed(() => {
   const title = ` TERMINAL-OS · ${t('home.name')} `.toLowerCase()
@@ -394,7 +427,28 @@ const bannerText = computed(() => {
  * MOTD：neofetch 式信息块（左 ASCII 徽标 + 右侧站点信息表）
  * 标签统一用英文——终端/neofetch 的惯例，同时避免中英混排时
  * 全角字符导致的等宽对齐错位。数值取真实统计，不是装饰。
+ *
+ * 信息行刻意给足站点的真实规模（风格数 / 技能总数 / 文章数 / 项目数）：
+ * 终端机没有视觉分区，首屏的信息密度全靠这一块撑着——行太少时，
+ * 整页会是一大片纯黑，读起来像没加载完而不是一个完整的界面。
  */
+/**
+ * 等宽渲染宽度：制表符 / 块元素（U+2500 区）等全角字形按 2 个半角列计，
+ * 其余按 1。String.length 与 padEnd 都按字符数，而浏览器渲染时全角字形
+ * 占两列——之前用 padEnd 拼徽标 + 信息表，实测 Posts/Works 的起点各差
+ * 几十像素（信息行整体歪掉）。按渲染宽度补空格才能列对齐。
+ */
+function monoWidth(text: string): number {
+  let width = 0
+  for (const ch of text) width += ch.charCodeAt(0) > 0x2e7f ? 2 : 1
+  return width
+}
+
+/** 按渲染宽度右侧补半角空格 */
+function padMono(text: string, width: number): string {
+  return text + ' '.repeat(Math.max(0, width - monoWidth(text)))
+}
+
 const motdText = computed(() => {
   const logo = [
     '  ┌────────────┐ ',
@@ -407,19 +461,21 @@ const motdText = computed(() => {
   ]
   const postCount = props.postCount ?? blockPosts.value.length
   const projectCount = props.projectCount ?? blockProjects.value.length
+  // 信息行数刻意与徽标齐平（标题 + 6 条数据 = 7）：多一行就会掉到
+  // 徽标正下方，那一行的起点列和上面各行不一致，肉眼可见地歪
   const info = [
     `${t('home.name').toLowerCase().replace(/\s+/g, '-')}@terminal-os`,
-    '─'.repeat(21),
     'OS     : TERMINAL-OS',
     'Shell  : nuxt-tsc',
+    `Styles : ${styleRegistry.length}`,
+    `Skills : ${skillCount.value}`,
     `Posts  : ${postCount}`,
     `Works  : ${projectCount}`,
   ]
-  const gutter = Math.max(...logo.map((l) => l.length)) + 2
-  const rows = Math.max(logo.length, info.length)
+  const gutter = Math.max(...logo.map(monoWidth)) + 2
   return Array.from(
-    { length: rows },
-    (_, i) => (logo[i] ?? '').padEnd(gutter) + (info[i] ?? ''),
+    { length: Math.max(logo.length, info.length) },
+    (_, i) => padMono(logo[i] ?? '', gutter) + (info[i] ?? ''),
   ).join('\n')
 })
 
@@ -662,6 +718,70 @@ onUnmounted(() => {
   }
 }
 
+/* —— 快捷命令栏：输入框上方的常驻命令条 ——
+      终端的下半屏原先只有一条输入行伏在底部，中间是一整块空黑；
+      这条静态栏既把下部填上，也让「不用手敲命令」有一条直达路径 */
+.quick {
+  padding: 10px var(--space);
+  border-top: var(--border-w) dashed var(--c-border);
+  background: color-mix(in srgb, var(--c-accent) 4%, transparent);
+}
+
+.quick-label {
+  margin: 0 0 6px;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.quick-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.quick-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  min-width: 40px;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-accent);
+  background: transparent;
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--transition),
+    background var(--transition),
+    border-color var(--transition);
+}
+
+.quick-mark {
+  color: var(--c-border);
+}
+
+.quick-chip:hover {
+  color: var(--c-on-accent);
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+.quick-chip:hover .quick-mark {
+  color: var(--c-on-accent);
+}
+
+.quick-chip:active {
+  transform: var(--press-transform);
+}
+
+.quick-chip:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 /* —— 输入行 —— */
 .input-row {
   display: flex;
@@ -737,8 +857,13 @@ onUnmounted(() => {
     animation: none;
   }
 
-  .input-row {
+  .input-row,
+  .quick-chip {
     transition: none;
+  }
+
+  .quick-chip:active {
+    transform: none;
   }
 }
 </style>
