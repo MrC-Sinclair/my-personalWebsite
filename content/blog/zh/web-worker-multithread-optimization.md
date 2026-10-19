@@ -2,6 +2,7 @@
 title: 用 Web Worker 多线程机制优化前端性能与后台通知
 description: 从主线程阻塞问题出发，详解如何利用 Web Worker 将耗时计算与后台通知推送移出主线程，实现流畅的用户体验与毫秒级消息响应。
 date: '2025-05-20'
+image: /images/covers/web-worker-multithread-optimization.jpg
 tags:
   - Web Worker
   - 性能优化

@@ -2,6 +2,7 @@
 title: 'Vibe Coding: The Efficiency Revolution of the AI Era and Practical Implementation'
 description: Starting from the concept coined by Andrej Karpathy, this article dives into the core principles of Vibe Coding, compares it with traditional development, explores practical implementation paths and boundaries, and examines the efficiency revolution for frontend developers in the AI era.
 date: '2026-02-22'
+image: /images/covers/vibe-coding-practice.jpg
 tags:
   - AI
   - Vibe Coding

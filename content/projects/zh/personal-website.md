@@ -2,6 +2,7 @@
 title: 个人网站项目
 description: 基于 Nuxt 3 SSG 构建的综合型个人网站，完整适配移动端，支持 PWA 离线访问，包含博客、项目集锦、关于和联系模块。
 date: '2025-04-10'
+image: /images/covers/personal-website.jpg
 updated: '2025-04-20'
 tags:
   - Nuxt

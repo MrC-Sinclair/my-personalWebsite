@@ -2,6 +2,7 @@
 title: 「氛围编程」：AI 时代的效率革命与落地实践
 description: 从 Andrej Karpathy 提出的概念出发，详解氛围编程（Vibe Coding）的核心原则、与传统开发的对比、落地实践路径以及适用边界，探讨 AI 时代前端开发者的效率革命。
 date: '2026-02-22'
+image: /images/covers/vibe-coding-practice.jpg
 tags:
   - AI
   - Vibe Coding

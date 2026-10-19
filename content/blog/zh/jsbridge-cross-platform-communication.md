@@ -2,6 +2,7 @@
 title: '跨端原生能力对接：JSBridge 通信桥接层从设计到落地'
 description: 深入解析在 AI 学习平板项目中如何封装 JSBridge 通信桥接层，实现 Web 端与原生客户端的双向通信，涵盖架构设计、协议规范、音频/视频/Office 预览等实战优化。
 date: '2025-09-20'
+image: /images/covers/jsbridge-cross-platform-communication.jpg
 tags:
   - JSBridge
   - 跨端开发

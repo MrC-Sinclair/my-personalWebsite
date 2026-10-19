@@ -2,6 +2,7 @@
 title: 'Wrapping the Native Editor Component: A Practical Approach to Custom Rich Text Editing in WeChat Mini Programs'
 description: In an education supervision mini-program, facing the complex demands of composing inspection reports, I wrapped the native wechat editor component to deliver custom toolbars, content templates, format validation, and offline draft support — ultimately helping the project win the tender for the Longgang Education Bureau.
 date: '2021-01-15'
+image: /images/covers/native-editor-wrapper-rich-text.jpg
 tags:
   - WeChat Mini Program
   - Rich Text Editing

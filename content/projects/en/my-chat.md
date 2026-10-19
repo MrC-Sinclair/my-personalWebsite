@@ -1,7 +1,8 @@
 ---
-title: my-chat
+title: 'My Chat: General-Purpose AI Chat'
 description: A general-purpose AI chat app built on Nuxt 3 + Vercel AI SDK, with safe Markdown/LaTeX rendering, multimodal image chat, speech transcription with sentiment detection, TTS, tool calling and long-term memory across sessions.
 date: '2026-04-20'
+image: /images/covers/my-chat.jpg
 updated: '2026-09-13'
 tags:
   - Nuxt

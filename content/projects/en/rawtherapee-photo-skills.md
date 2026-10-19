@@ -1,7 +1,8 @@
 ---
-title: rawtherapee-photo-skills
+title: 'RawTherapee AI Photo Skills'
 description: An AI photo post-processing toolkit packaged as one installable skill, with three modules sharing a single config.toml and the RawTherapee CLI as the grading engine.
 date: '2026-09-16'
+image: /images/covers/rawtherapee-photo-skills.jpg
 updated: '2026-10-05'
 tags:
   - Python

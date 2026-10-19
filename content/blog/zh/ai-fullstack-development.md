@@ -2,6 +2,7 @@
 title: AI 全流程开发实战指南：一个项目如何从零到一走通 AI 驱动开发
 description: 从需求分析到部署上线，完整演示如何利用 AI 工具驱动一个前端项目的全流程开发，涵盖架构设计、代码生成、测试覆盖和部署监控，结合实战案例分享每条阶段的关键技巧与避坑指南。
 date: '2026-03-02'
+image: /images/covers/ai-fullstack-development.jpg
 tags:
   - AI
   - 全流程开发

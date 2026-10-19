@@ -1,7 +1,8 @@
 ---
-title: my-chat
+title: 'My Chat：通用 AI 对话应用'
 description: 基于 Nuxt 3 + Vercel AI SDK 的通用 AI 对话应用，支持 Markdown 与 LaTeX 安全渲染、图片多模态对话、语音转写与情感识别、TTS 朗读、工具调用与跨会话长期记忆。
 date: '2026-04-20'
+image: /images/covers/my-chat.jpg
 updated: '2026-09-13'
 tags:
   - Nuxt

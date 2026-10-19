@@ -1,7 +1,8 @@
 ---
-title: miniprogram-devtools-mcp
+title: '微信开发者工具 MCP Server'
 description: 操控微信开发者工具的 MCP server（30 个工具），双通道设计让 AI Agent 自动调试微信小程序。
 date: '2026-09-16'
+image: /images/covers/miniprogram-devtools-mcp.jpg
 updated: '2026-09-19'
 tags:
   - MCP

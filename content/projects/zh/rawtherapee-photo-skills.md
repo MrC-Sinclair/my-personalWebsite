@@ -1,7 +1,8 @@
 ---
-title: rawtherapee-photo-skills
+title: 'RawTherapee AI 摄影后期技能包'
 description: 打包成一个可安装技能包的 AI 摄影后期工具集，三个模块共用一个 config.toml，以 RawTherapee CLI 作为调色引擎。
 date: '2026-09-16'
+image: /images/covers/rawtherapee-photo-skills.jpg
 updated: '2026-10-05'
 tags:
   - Python

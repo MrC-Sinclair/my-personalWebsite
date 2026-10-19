@@ -2,6 +2,7 @@
 title: '攻克 KaTeX 超长公式渲染性能瓶颈：60秒到1.5秒的优化之路'
 description: 在 AI 学习平板项目中，KaTeX 超长公式渲染耗时高达 60 秒。本文详细拆解如何通过分片异步渲染 + 可视化懒加载技术，将渲染时间压缩至 1.5 秒，并分享了完整的优化思路与工程实践。
 date: '2025-08-15'
+image: /images/covers/katex-performance-optimization.jpg
 tags:
   - KaTeX
   - 性能优化

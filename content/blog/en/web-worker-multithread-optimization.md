@@ -2,6 +2,7 @@
 title: Optimizing Frontend Performance and Background Notifications with Web Worker Multithreading
 description: Starting from main thread blocking issues, this article details how to leverage Web Workers to offload heavy computations and background notification delivery from the main thread, achieving smooth UX and millisecond-level message response.
 date: '2025-05-20'
+image: /images/covers/web-worker-multithread-optimization.jpg
 tags:
   - Web Worker
   - Performance Optimization

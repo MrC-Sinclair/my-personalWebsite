@@ -2,6 +2,7 @@
 title: 'Building a Unified Payment Abstraction Layer: Integrating WeChat Pay & Alipay with One Codebase'
 description: A deep dive into designing a unified payment abstraction layer for UniApp cross-platform mini-programs. Learn how to use Strategy and Adapter patterns to bridge WeChat Pay and Alipay differences, with complete code examples and real-world pitfalls.
 date: '2022-03-15'
+image: /images/covers/unified-payment-abstraction-layer.jpg
 tags:
   - Payment
   - WeChat Pay

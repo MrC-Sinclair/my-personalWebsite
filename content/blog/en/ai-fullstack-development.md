@@ -2,6 +2,7 @@
 title: 'AI Full-Process Development: A Practical Guide from Zero to Deploy'
 description: A step-by-step walkthrough of how to leverage AI tools across every phase of frontend project development — from requirements analysis and architecture design to code generation, testing, deployment, and monitoring. Includes real project examples and actionable tips for each stage.
 date: '2026-03-02'
+image: /images/covers/ai-fullstack-development.jpg
 tags:
   - AI
   - Full-Process Development

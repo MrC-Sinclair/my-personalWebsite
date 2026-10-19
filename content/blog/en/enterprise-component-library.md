@@ -2,6 +2,7 @@
 title: 'Building an Enterprise-Grade Component Library from Scratch: Lessons from Two Years of Practice'
 description: A complete guide to building a company-wide Vue3 component library from requirements analysis to deployment, covering layered architecture design, JSON-driven development, build and publish, multi-threaded performance optimization, and real-world results.
 date: '2023-04-28'
+image: /images/covers/enterprise-component-library.jpg
 tags:
   - Component Library
   - Vue3

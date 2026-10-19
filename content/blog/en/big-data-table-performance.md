@@ -2,6 +2,7 @@
 title: 'Big Data Table Performance Optimization: Pagination + Virtual Scroll + API Debounce'
 description: An in-depth guide to solving lag issues in enterprise table components with a combined approach — paginated loading, virtual scrolling, and debounced API calls. Real-world case study with 60% response time improvement from a CRM system.
 date: '2024-04-20'
+image: /images/covers/big-data-table-performance.jpg
 tags:
   - Performance Optimization
   - Virtual Scroll

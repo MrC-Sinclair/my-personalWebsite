@@ -2,6 +2,7 @@
 title: 「语音指令与触控反馈」：为数据大屏拓展沉浸式展厅交互体验
 description: 从全校数据可视化监控大屏项目出发，详解如何将语音识别与触控交互融入大屏展示系统，让参观者从被动观看变为主动探索，涵盖语音指令解析、手势交互设计、多模态反馈等关键技术实现与踩坑记录。
 date: '2024-06-15'
+image: /images/covers/voice-touch-interaction-exhibition-hall.jpg
 tags:
   - 语音识别
   - 触控交互

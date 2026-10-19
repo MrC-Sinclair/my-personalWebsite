@@ -2,6 +2,7 @@
 title: 'Building a Micro-Frontend Architecture from Scratch: Enterprise Frontend Decomposition in Practice'
 description: A complete hands-on guide to building an enterprise micro-frontend architecture with Vue3 and qiankun, covering tech selection, main app setup, SSO authentication, inter-app communication, multi-framework coexistence, and real-world pitfalls.
 date: '2024-10-08'
+image: /images/covers/micro-frontend-architecture.jpg
 tags:
   - Micro-Frontend
   - qiankun

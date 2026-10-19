@@ -2,6 +2,7 @@
 title: 使用 Nuxt 3 构建个人网站
 description: 记录使用 Nuxt 3 + Nuxt UI + @nuxt/content 搭建个人网站的全过程，分享技术选型、移动端适配与 PWA 实现细节。
 date: '2025-04-15'
+image: /images/covers/building-personal-website-with-nuxt3.jpg
 updated: '2025-04-28'
 tags:
   - Nuxt

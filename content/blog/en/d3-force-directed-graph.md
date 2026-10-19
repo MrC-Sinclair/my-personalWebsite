@@ -2,6 +2,7 @@
 title: 'Building a Force-Directed Graph Knowledge Map with D3.js: Visualizing Student Knowledge Mastery'
 description: A hands-on guide to implementing a force-directed graph knowledge map from scratch using D3.js, featuring multi-level force simulation, interaction design, and real-world optimization for visualizing student knowledge mastery.
 date: '2025-10-15'
+image: /images/covers/d3-force-directed-graph.jpg
 tags:
   - D3.js
   - Data Visualization

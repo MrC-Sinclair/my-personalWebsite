@@ -2,6 +2,7 @@
 title: Building a Personal Website with Nuxt 3
 description: Documenting the process of building a personal website using Nuxt 3 + Nuxt UI + @nuxt/content, sharing technical choices, mobile adaptation, and PWA implementation details.
 date: '2025-04-15'
+image: /images/covers/building-personal-website-with-nuxt3.jpg
 updated: '2025-04-28'
 tags:
   - Nuxt

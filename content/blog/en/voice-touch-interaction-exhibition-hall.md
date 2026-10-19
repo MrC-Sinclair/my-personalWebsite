@@ -2,6 +2,7 @@
 title: "Voice Commands and Touch Feedback: Bringing Immersive Interaction to Data Dashboards"
 description: From a real-world school data monitoring dashboard, this article details how voice recognition and touch interaction were integrated into a large-screen exhibit system — transforming passive viewers into active explorers. Covers voice command parsing, gesture design, multimodal feedback, and hard-won lessons.
 date: '2024-06-15'
+image: /images/covers/voice-touch-interaction-exhibition-hall.jpg
 tags:
   - Voice Recognition
   - Touch Interaction

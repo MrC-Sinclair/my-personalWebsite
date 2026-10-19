@@ -2,6 +2,7 @@
 title: Personal Website
 description: A comprehensive personal website built with Nuxt 3 SSG, fully adapted for mobile, with PWA support for offline access, featuring blog, projects portfolio, about, and contact modules.
 date: '2025-04-10'
+image: /images/covers/personal-website.jpg
 updated: '2025-04-20'
 tags:
   - Nuxt

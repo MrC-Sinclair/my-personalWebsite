@@ -2,6 +2,7 @@
 title: 设计统一支付抽象层：一套代码集成微信支付与支付宝支付
 description: 基于 UniApp 跨端小程序项目，详细讲解如何设计统一支付抽象层，通过策略模式和适配器模式封装微信支付与支付宝支付的差异，实现一套代码无缝兼容两大主流支付渠道，附完整代码示例与踩坑记录。
 date: '2022-03-15'
+image: /images/covers/unified-payment-abstraction-layer.jpg
 tags:
   - 支付
   - 微信支付

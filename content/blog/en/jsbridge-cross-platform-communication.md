@@ -2,6 +2,7 @@
 title: 'Cross-Platform Native Capability Integration: Building a JSBridge Communication Layer'
 description: A comprehensive guide to designing and implementing a JSBridge communication bridge for bidirectional Web-to-Native messaging in an AI education tablet project, covering architecture design, protocol specification, and real-world optimizations for audio, video, and Office document preview.
 date: '2025-09-20'
+image: /images/covers/jsbridge-cross-platform-communication.jpg
 tags:
   - JSBridge
   - Cross-Platform

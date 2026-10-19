@@ -2,6 +2,7 @@
 title: '从 0 到 1 搭建微前端架构：企业级前端拆分实战'
 description: 基于 Vue3 + qiankun 从零搭建企业级微前端架构的完整实践分享，涵盖技术选型、主应用搭建、SSO 统一认证、主子应用通信、多框架共存等核心议题，附真实踩坑记录与解决方案。
 date: '2024-10-08'
+image: /images/covers/micro-frontend-architecture.jpg
 tags:
   - 微前端
   - qiankun

@@ -2,6 +2,7 @@
 title: Integrating Baidu Maps with WebSocket for Real-Time Salesperson Tracking
 description: From the real-world requirements of a business analysis system, this article details how to combine Baidu Maps with WebSocket real-time data streams to deliver salesperson route visualization, playback, and anomaly alerts — covering tech selection, architecture design, core implementation, and hard-won lessons.
 date: '2024-01-10'
+image: /images/covers/baidu-map-websocket-tracking.jpg
 tags:
   - Baidu Maps
   - WebSocket

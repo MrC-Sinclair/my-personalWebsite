@@ -1,7 +1,8 @@
 ---
-title: ardot-design-expert
+title: 'Ardot Design Expert Pack'
 description: A self-contained Ardot design expert package with skills and rules bundled inline, whose only external dependency is a connected Ardot MCP service, runnable in any MCP-capable IDE.
 date: '2026-08-05'
+image: /images/covers/ardot-design-expert.jpg
 updated: '2026-10-05'
 tags:
   - Expert Package

@@ -1,7 +1,8 @@
 ---
-title: ardot-design-expert
+title: 'Ardot 设计专家包'
 description: 自包含的 Ardot 设计专家包，技能与规则随包内置，唯一外部依赖是 Ardot MCP 服务保持连接，可在任意支持 MCP 的 IDE 中运行。
 date: '2026-08-05'
+image: /images/covers/ardot-design-expert.jpg
 updated: '2026-10-05'
 tags:
   - 专家包

@@ -2,6 +2,7 @@
 title: 「集成百度地图与 WebSocket」：绘出业务员行动轨迹的实时追踪方案
 description: 从经营分析系统的实际需求出发，详解如何将百度地图与 WebSocket 实时数据流结合，实现业务员轨迹绘制、回放与异常预警，涵盖技术选型、架构设计、核心实现与踩坑记录。
 date: '2024-01-10'
+image: /images/covers/baidu-map-websocket-tracking.jpg
 tags:
   - 百度地图
   - WebSocket

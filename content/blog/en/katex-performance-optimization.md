@@ -2,6 +2,7 @@
 title: 'Conquering KaTeX Long Formula Rendering: From 60 Seconds to 1.5 Seconds'
 description: A deep dive into how sharded async rendering and visual lazy loading reduced KaTeX long formula rendering time from 60 seconds to 1.5 seconds in an AI education tablet project. Full optimization strategy and engineering practices included.
 date: '2025-08-15'
+image: /images/covers/katex-performance-optimization.jpg
 tags:
   - KaTeX
   - Performance Optimization

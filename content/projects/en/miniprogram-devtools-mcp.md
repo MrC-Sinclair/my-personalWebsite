@@ -1,7 +1,8 @@
 ---
-title: miniprogram-devtools-mcp
+title: 'WeChat DevTools MCP Server'
 description: An MCP server (30 tools) that drives the WeChat DevTools, using a dual-channel design so AI agents can debug WeChat Mini Programs on their own.
 date: '2026-09-16'
+image: /images/covers/miniprogram-devtools-mcp.jpg
 updated: '2026-09-19'
 tags:
   - MCP

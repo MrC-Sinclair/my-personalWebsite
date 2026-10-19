@@ -2,6 +2,7 @@
 title: '从 0 到 1 搭建企业级组件库：两年沉淀的实战经验'
 description: 从需求分析到落地发布，完整分享搭建公司级 Vue3 通用组件库的全过程，涵盖组件库分层设计、JSON 配置化开发、构建发布、性能优化（多线程）等核心议题，附真实数据与避坑指南。
 date: '2023-04-28'
+image: /images/covers/enterprise-component-library.jpg
 tags:
   - 组件库
   - Vue3

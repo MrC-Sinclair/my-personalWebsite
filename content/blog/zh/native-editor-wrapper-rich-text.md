@@ -2,6 +2,7 @@
 title: '「封装原生 Editor 组件」：小程序富文本编辑的二次封装实战'
 description: 在教育督导工作管理小程序中，面对复杂的督导报告编辑场景，对微信原生 editor 组件进行二次封装，实现自定义工具栏、内容模板、格式校验等富文本定制能力，最终支撑项目成功中标龙岗教育局。
 date: '2021-01-15'
+image: /images/covers/native-editor-wrapper-rich-text.jpg
 tags:
   - 微信小程序
   - 富文本编辑

@@ -2,6 +2,7 @@
 title: '基于 D3.js 从零实现力导向图知识图谱：学生知识掌握可视化实践'
 description: 在 AI 错题本项目中，基于 D3.js 从零实现力导向图知识图谱，支持多层级节点力学模拟与交互，实现学生知识掌握情况可视化。本文完整分享从数据模型设计、力学仿真调参到交互优化的全过程。
 date: '2025-10-15'
+image: /images/covers/d3-force-directed-graph.jpg
 tags:
   - D3.js
   - 数据可视化

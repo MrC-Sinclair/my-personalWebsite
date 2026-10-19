@@ -4,6 +4,7 @@
 title: 'Jintian: 1851'
 description: An AI-driven text strategy game set in the late Qing dynasty (1851–1912). Choose an identity and a faction, balance military, economy, politics, public support and diplomacy, and rewrite the fate of a nation through the Taiping Rebellion, the Self-Strengthening Movement and the First Sino-Japanese War.
 date: '2026-08-06'
+image: /images/covers/jintian-1851.jpg
 updated: '2026-09-06'
 tags:
   - uni-app
