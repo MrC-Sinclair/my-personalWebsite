@@ -146,7 +146,8 @@
     "noproxy",
     "taskkill",
     "confck",
-    "subnav"
+    "subnav",
+    "jsbridge"
   ],
   "ignorePaths": [
     "node_modules",
