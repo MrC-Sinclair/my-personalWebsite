@@ -14,6 +14,14 @@
     </div>
 
     <div class="project-card__body">
+      <NuxtImg
+        v-if="project.image"
+        class="proj-cover"
+        :src="project.image"
+        :alt="project.title"
+        sizes="sm:100vw md:50vw"
+        loading="lazy"
+      />
       <h3 class="project-card__title">
         <NuxtLink :to="detailLink" class="project-card__link">{{ project.title }}</NuxtLink>
       </h3>
@@ -74,8 +82,8 @@ const tone = computed(() => flatTone(props.toneIndex))
 const variant = computed(() => ((props.toneIndex % 4) + 4) % 4)
 
 /** 详情页地址：slug 换算复用共享层 contentSlug，再拼本地化详情路由 */
-const detailLink = computed(
-  () => localePath(`/style/${styleId.value}/projects/${contentSlug(props.project.path)}`),
+const detailLink = computed(() =>
+  localePath(`/style/${styleId.value}/projects/${contentSlug(props.project.path)}`),
 )
 
 /** 本地化日期（共享层 formatDate） */
@@ -341,5 +349,15 @@ const topTags = computed(() =>
 .project-card__ext:focus-visible {
   outline: 3px solid var(--tone);
   outline-offset: 2px;
+}
+
+/* —— 内容封面：全站统一 16:9 裁切，圆角与底色继承本风格 token —— */
+.proj-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

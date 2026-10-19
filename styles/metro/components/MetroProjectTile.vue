@@ -11,7 +11,11 @@
       <span v-for="tag in topTags" :key="tag" class="proj__tag">{{ tag }}</span>
     </p>
     <div>
-      <h3 class="proj__title" :class="{ 'proj__title--wide': span === 'wide' }">{{ project.title }}</h3>
+      <!-- 刻意不接封面：MetroTile 是高度固定的色块，塞图会把标题挤出可视区，
+           而且这块的语言就是「信息直接铺在色块上」，缩略图会破坏它 -->
+      <h3 class="proj__title" :class="{ 'proj__title--wide': span === 'wide' }">
+        {{ project.title }}
+      </h3>
       <p v-if="project.description" class="proj__desc">{{ project.description }}</p>
     </div>
   </MetroTile>
@@ -37,12 +41,14 @@ const localePath = useLocalePath()
 const { styleId } = useStyleContentPath()
 
 /** 详情页地址：风格内路由 */
-const detailLink = computed(
-  () => localePath(`/style/${styleId.value}/projects/${contentSlug(props.project.path)}`),
+const detailLink = computed(() =>
+  localePath(`/style/${styleId.value}/projects/${contentSlug(props.project.path)}`),
 )
 
 /** 防御：tags 非数组时回退空列表，只取前三个 */
-const topTags = computed(() => (Array.isArray(props.project.tags) ? props.project.tags.slice(0, 3) : []))
+const topTags = computed(() =>
+  Array.isArray(props.project.tags) ? props.project.tags.slice(0, 3) : [],
+)
 </script>
 
 <style scoped>
@@ -87,4 +93,5 @@ const topTags = computed(() => (Array.isArray(props.project.tags) ? props.projec
   font-size: var(--fs-small);
   line-height: 1.55;
 }
+
 </style>

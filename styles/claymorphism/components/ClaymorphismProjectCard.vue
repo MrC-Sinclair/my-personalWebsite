@@ -11,9 +11,19 @@
 <template>
   <NuxtLink class="card-link" :to="localePath(projectRoute)">
     <article class="card" :class="`tone-${tone}`">
+      <!-- 封面必须放在 .card-head 之外：.card-head 是「小球 + 标题 + 徽标」的横向 flex，
+           width:100% 的图进去会把标题挤成 0 宽 —— 实测标题每字一行并溢出卡片 -->
+      <NuxtImg
+        v-if="project.image"
+        class="proj-cover"
+        :src="project.image"
+        :alt="project.title"
+        sizes="sm:100vw md:50vw"
+        loading="lazy"
+      />
       <header class="card-head">
         <!-- 3D 黏土球图标（纯 CSS：径向高光 + 内底影） -->
-        <span class="orb" aria-hidden="true"/>
+        <span class="orb" aria-hidden="true" />
         <h3 class="name">{{ project.title }}</h3>
         <span v-if="project.featured" class="badge">{{ t('projects.featured') }}</span>
       </header>
@@ -327,5 +337,15 @@ const projectRoute = computed(
   .action:active {
     transform: none;
   }
+}
+
+/* —— 内容封面：全站统一 16:9 裁切，圆角与底色继承本风格 token —— */
+.proj-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

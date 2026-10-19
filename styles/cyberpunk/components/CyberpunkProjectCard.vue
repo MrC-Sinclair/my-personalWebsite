@@ -21,7 +21,7 @@
           loading="lazy"
         >
         <span v-else class="visual-glyph" aria-hidden="true">▞▚</span>
-        <span class="visual-scan" aria-hidden="true"/>
+        <span class="visual-scan" aria-hidden="true" />
       </div>
 
       <div class="main">
@@ -121,7 +121,14 @@ const projectRoute = computed(
     var(--c-border) 40%,
     rgb(255 45 149 / 0.55)
   );
-  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  clip-path: polygon(
+    0 0,
+    calc(100% - 20px) 0,
+    100% 20px,
+    100% 100%,
+    20px 100%,
+    0 calc(100% - 20px)
+  );
   transition:
     box-shadow var(--transition),
     transform var(--transition);
@@ -146,7 +153,14 @@ const projectRoute = computed(
   min-width: 0;
   padding: var(--space);
   background: var(--c-surface);
-  clip-path: polygon(0 0, calc(100% - 19px) 0, 100% 19px, 100% 100%, 19px 100%, 0 calc(100% - 19px));
+  clip-path: polygon(
+    0 0,
+    calc(100% - 19px) 0,
+    100% 19px,
+    100% 100%,
+    19px 100%,
+    0 calc(100% - 19px)
+  );
 }
 
 /* —— 视觉区：封面 / 网格占位 + 扫描线 + hover 扫光 —— */
@@ -157,15 +171,21 @@ const projectRoute = computed(
   overflow: hidden;
   height: 132px;
   background: var(--c-bg);
-  clip-path: polygon(0 0, calc(100% - 19px) 0, 100% 19px, 100% 100%, 19px 100%, 0 calc(100% - 19px));
+  clip-path: polygon(
+    0 0,
+    calc(100% - 19px) 0,
+    100% 19px,
+    100% 100%,
+    19px 100%,
+    0 calc(100% - 19px)
+  );
 }
 
 /* 纯 CSS 网格占位：无封面图时的数据网格 */
 .visual-plain {
   background:
     repeating-linear-gradient(90deg, rgb(34 211 238 / 0.14) 0 1px, transparent 1px 26px),
-    repeating-linear-gradient(0deg, rgb(255 45 149 / 0.1) 0 1px, transparent 1px 22px),
-    var(--c-bg);
+    repeating-linear-gradient(0deg, rgb(255 45 149 / 0.1) 0 1px, transparent 1px 22px), var(--c-bg);
 }
 
 .visual-img {

@@ -11,6 +11,14 @@
   <article class="card">
     <span class="card-no" aria-hidden="true">{{ no }}</span>
 
+    <NuxtImg
+      v-if="project.image"
+      class="proj-cover"
+      :src="project.image"
+      :alt="project.title"
+      sizes="sm:100vw md:50vw"
+      loading="lazy"
+    />
     <h3 class="card-title">
       <NuxtLink
         class="card-link"
@@ -92,7 +100,9 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
 /* hover：光影加深 + 微上浮 */
 .card:hover {
   transform: translateY(-3px);
-  box-shadow: 12px 12px 24px #a3b1c6, -12px -12px 24px #ffffff;
+  box-shadow:
+    12px 12px 24px #a3b1c6,
+    -12px -12px 24px #ffffff;
 }
 
 /* 右上角凹陷编号（装饰） */
@@ -169,7 +179,9 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   color: var(--c-accent);
   background: var(--c-bg);
   border-radius: 999px;
-  box-shadow: 2px 2px 5px #a3b1c6, -2px -2px 5px #ffffff;
+  box-shadow:
+    2px 2px 5px #a3b1c6,
+    -2px -2px 5px #ffffff;
 }
 
 .card-actions {
@@ -192,7 +204,9 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   text-decoration: none;
   background: var(--c-bg);
   border-radius: 999px;
-  box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+  box-shadow:
+    4px 4px 8px #a3b1c6,
+    -4px -4px 8px #ffffff;
   transition:
     box-shadow var(--transition),
     color var(--transition);
@@ -200,7 +214,9 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
 
 .mini-btn:hover {
   color: var(--c-text);
-  box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+  box-shadow:
+    6px 6px 12px #a3b1c6,
+    -6px -6px 12px #ffffff;
 }
 
 .mini-btn:active {
@@ -221,7 +237,9 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
 @media (max-width: 640px) {
   .card:hover {
     transform: none;
-    box-shadow: 8px 8px 16px #a3b1c6, -8px -8px 16px #ffffff;
+    box-shadow:
+      8px 8px 16px #a3b1c6,
+      -8px -8px 16px #ffffff;
   }
 }
 
@@ -238,5 +256,17 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   .mini-btn {
     transition: none;
   }
+}
+
+/* —— 内容封面：全站统一 16:9 裁切，圆角与底色继承本风格 token —— */
+.proj-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  /* 单列大卡里 16:9 全宽会算出 500px+ 的高度、占满首屏；限高后交给 cover 裁切 */
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

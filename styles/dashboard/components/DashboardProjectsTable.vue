@@ -9,7 +9,11 @@
 <template>
   <div class="table-wrap">
     <table class="data-table">
-      <caption class="sr-only">{{ caption }}</caption>
+      <caption class="sr-only">
+        {{
+          caption
+        }}
+      </caption>
       <thead>
         <tr>
           <th scope="col">{{ t('projects.title') }}</th>

@@ -17,6 +17,16 @@
     <span v-if="wide" class="seal-label">{{ t('projects.featured') }}</span>
 
     <div class="paper-body">
+      <!-- 封面：像一张压在纸上的照片——细边框 + 轻微投影，与纸质材质同一套光影 -->
+      <NuxtImg
+        v-if="project.image"
+        class="paper-cover"
+        :src="project.image"
+        :alt="project.title"
+        sizes="sm:100vw md:50vw"
+        loading="lazy"
+      />
+
       <h3 class="paper-title">
         <NuxtLink
           class="paper-link"
@@ -38,10 +48,22 @@
     </div>
 
     <div v-if="project.demoUrl || project.githubUrl" class="paper-actions">
-      <a v-if="project.demoUrl" class="paper-btn" :href="project.demoUrl" target="_blank" rel="noopener">
+      <a
+        v-if="project.demoUrl"
+        class="paper-btn"
+        :href="project.demoUrl"
+        target="_blank"
+        rel="noopener"
+      >
         {{ t('projects.demo') }}<span class="paper-ext" aria-hidden="true"> ↗</span>
       </a>
-      <a v-if="project.githubUrl" class="paper-btn paper-btn--wood" :href="project.githubUrl" target="_blank" rel="noopener">
+      <a
+        v-if="project.githubUrl"
+        class="paper-btn paper-btn--wood"
+        :href="project.githubUrl"
+        target="_blank"
+        rel="noopener"
+      >
         {{ t('projects.github') }}<span class="paper-ext" aria-hidden="true"> ↗</span>
       </a>
     </div>
@@ -99,10 +121,7 @@ function slugOf(path: string): string {
   border-radius: var(--radius-sm);
   /* 米白纸：纸色渐变 + 细横线（28px 节距） */
   background:
-    repeating-linear-gradient(
-      transparent 0 27px,
-      rgb(109 83 53 / 0.16) 27px 28px
-    ),
+    repeating-linear-gradient(transparent 0 27px, rgb(109 83 53 / 0.16) 27px 28px),
     linear-gradient(176deg, #f8f2e2 0%, #f3ead7 56%, #ebdfc4 100%);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.8),
@@ -142,7 +161,13 @@ function slugOf(path: string): string {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: radial-gradient(circle at 34% 28%, #f6e7ba 0%, #c39a4c 48%, #6e4c1a 88%, #4a320e 100%);
+  background: radial-gradient(
+    circle at 34% 28%,
+    #f6e7ba 0%,
+    #c39a4c 48%,
+    #6e4c1a 88%,
+    #4a320e 100%
+  );
   box-shadow:
     inset 0 -2px 3px rgb(0 0 0 / 0.5),
     0 4px 5px rgb(10 4 0 / 0.5);
@@ -207,6 +232,21 @@ function slugOf(path: string): string {
   min-width: 0;
 }
 
+/* 封面：纸质上的照片——细边框 + 柔和投影（沿用纸卡自身的光影方向） */
+.paper-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  /* 单列大卡里 16:9 全宽会算出 500px+ 的高度、占满首屏；限高后交给 cover 裁切 */
+  max-height: 240px;
+  object-fit: cover;
+  margin-bottom: 4px;
+  border: 1px solid color-mix(in srgb, var(--c-text) 22%, transparent);
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+  background: var(--c-surface);
+}
+
 .paper-title {
   margin: 0;
   font-family: var(--font-head);
@@ -269,7 +309,9 @@ function slugOf(path: string): string {
   border-radius: 3px;
   background: rgb(255 255 255 / 0.42);
   box-shadow: 0 1px 2px rgb(10 4 0 / 0.2);
-  transition: transform var(--transition), color var(--transition);
+  transition:
+    transform var(--transition),
+    color var(--transition);
 }
 
 .paper:hover .paper-tag {

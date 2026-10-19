@@ -3,7 +3,8 @@
   Web2GlossyProjectCard - Web 2.0 光泽风格的项目卡片
   ------------------------------------------------------------
   白色光泽面板 + 纯 CSS「浏览器截图」缩略图（窗口栏三圆点 +
-  蓝色渐变画布 + 斜向高光扫过）。标题进入风格内项目详情页
+  蓝色渐变画布 + 斜向高光扫过）。**不接内容封面图**：这个缩略图本身
+  就是本风格的视觉签名，叠真实图会变成双重视觉区。标题进入风格内项目详情页
   （/style/web2-glossy/projects/<slug>）；整卡不包链接，因为卡内的
   「在线演示 / GitHub」凝胶按钮本身就是 <a>（a 不能嵌套 a）。
   wide 模式：首屏大卡，附「精选」橙色徽章，网格中横跨两列。
@@ -22,6 +23,8 @@
     </div>
 
     <div class="pcard__body">
+      <!-- 刻意不接内容封面：卡片顶部已有纯 CSS「浏览器窗口」缩略图（pcard__thumb），
+           再叠一张真实图就是双重视觉区，且会把卡片撑到一屏放不下 -->
       <h3 class="pcard__title">
         <NuxtLink class="pcard__link" :to="detailLink">{{ project.title }}</NuxtLink>
       </h3>
@@ -159,6 +162,8 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   position: relative;
   overflow: hidden;
   aspect-ratio: 16 / 7;
+  /* wide 卡横跨两列（约 1000px），16:7 会算出 437px 高、首屏只看得到一张缩略图；限高保住信息密度 */
+  max-height: 260px;
   border: 1px solid #14417e;
   border-radius: 12px;
   background: linear-gradient(160deg, #6cb0f4 0%, #2b72c6 55%, #1a56a4 100%);
@@ -297,4 +302,5 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   gap: 10px;
   margin-top: 4px;
 }
+
 </style>

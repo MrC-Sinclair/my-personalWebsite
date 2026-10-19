@@ -76,7 +76,9 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 
 const eyebrowText = computed(() => (standalone ? '' : t('nav.projects')))
-const headingText = computed(() => (standalone ? t('projects.allProjects') : t('home.featuredProjects')))
+const headingText = computed(() =>
+  standalone ? t('projects.allProjects') : t('home.featuredProjects'),
+)
 // 详情链接走风格内路由（/style/<id>/projects/<slug>），旧的 /projects/<slug> 已 404
 const { styleId } = useStyleContentPath()
 

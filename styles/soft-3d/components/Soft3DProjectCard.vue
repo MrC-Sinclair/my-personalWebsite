@@ -17,6 +17,16 @@
     </div>
 
     <div class="project-card-body">
+      <!-- 封面必须放在 .project-card-top 之外：它是「标题 + 日期」两端对齐的横向 flex，
+           width:100% 的图进去会把标题挤成窄条 -->
+      <NuxtImg
+        v-if="project.image"
+        class="proj-cover"
+        :src="project.image"
+        :alt="project.title"
+        sizes="sm:100vw md:50vw"
+        loading="lazy"
+      />
       <div class="project-card-top">
         <!-- 标题链接进详情；整卡不包链接是因为卡内有 demo/github 外链（a 不能嵌套 a） -->
         <h3 class="project-card-title">
@@ -347,5 +357,15 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   .project-card-link:active {
     transform: none;
   }
+}
+
+/* —— 内容封面：全站统一 16:9 裁切，圆角与底色继承本风格 token —— */
+.proj-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

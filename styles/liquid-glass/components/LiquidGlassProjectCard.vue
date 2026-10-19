@@ -10,8 +10,16 @@
 <template>
   <NuxtLink :to="localePath(projectRoute)" class="card-link">
     <article class="card glass">
-      <span class="sheen" aria-hidden="true"/>
+      <span class="sheen" aria-hidden="true" />
       <header class="top">
+        <NuxtImg
+          v-if="project.image"
+          class="proj-cover"
+          :src="project.image"
+          :alt="project.title"
+          sizes="sm:100vw md:50vw"
+          loading="lazy"
+        />
         <h3 class="name">{{ project.title }}</h3>
         <span v-if="project.featured" class="badge">{{ t('projects.featured') }}</span>
       </header>
@@ -93,7 +101,12 @@ const projectRoute = computed(
   overflow: hidden;
   padding: clamp(20px, 2.6vw, 30px);
   background:
-    linear-gradient(120deg, rgb(167 139 255 / 0.1), rgb(94 227 255 / 0.05) 52%, rgb(255 122 184 / 0.1)),
+    linear-gradient(
+      120deg,
+      rgb(167 139 255 / 0.1),
+      rgb(94 227 255 / 0.05) 52%,
+      rgb(255 122 184 / 0.1)
+    ),
     linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.04));
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
@@ -149,7 +162,9 @@ const projectRoute = computed(
   pointer-events: none;
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.09), transparent);
   transform: rotate(14deg);
-  transition: left 1s cubic-bezier(0.45, 0, 0.2, 1), opacity var(--transition);
+  transition:
+    left 1s cubic-bezier(0.45, 0, 0.2, 1),
+    opacity var(--transition);
   opacity: 0;
 }
 
@@ -298,5 +313,15 @@ const projectRoute = computed(
     left: -40%;
     opacity: 0;
   }
+}
+
+/* —— 内容封面：全站统一 16:9 裁切，圆角与底色继承本风格 token —— */
+.proj-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

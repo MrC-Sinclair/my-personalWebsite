@@ -12,6 +12,16 @@
     class="project-card"
     :to="localePath(`/style/${styleId}/projects/${contentSlug(project.path)}`)"
   >
+    <!-- 封面必须放在 .card-top 之外：.card-top 是「标题 + 精选徽标」两端对齐的横向 flex，
+         width:100% 的图进去会把标题挤成窄条 —— 实测标题竖排并被裁切 -->
+    <NuxtImg
+      v-if="project.image"
+      class="proj-cover"
+      :src="project.image"
+      :alt="project.title"
+      sizes="sm:100vw md:50vw"
+      loading="lazy"
+    />
     <div class="card-top">
       <h3 class="card-title">{{ project.title }}</h3>
       <span v-if="project.featured" class="featured-badge">{{ t('projects.featured') }}</span>
@@ -221,5 +231,15 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   .link-pill:active {
     transform: none;
   }
+}
+
+/* —— 内容封面：全站统一 16:9 裁切，圆角与底色继承本风格 token —— */
+.proj-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

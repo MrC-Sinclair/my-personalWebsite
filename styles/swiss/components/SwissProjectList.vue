@@ -2,10 +2,11 @@
   SwissProjectList - swiss 风格精选项目列表
   ------------------------------------------------------------
   编号 + 非对称网格：卡片交替占据 7 栏 / 5 栏（宽窄悬殊，
-  拒绝三等分），末位留白也是构图的一部分。每张卡片：红色
-  编号 + 项目名（链接，强调色下划线生长）+ 描述 + 日期与
-  技术栈小标签 + 外链（演示 / GitHub，带 ↗）。数据来自
-  共享层 useProjects（页面获取后传入）。
+  拒绝三等分），末位留白也是构图的一部分。每张卡片：项目
+  封面（无图时回退为纯排版，不留空位）+ 红色编号 + 项目名
+  （链接，强调色下划线生长）+ 描述 + 日期与技术栈小标签 +
+  外链（演示 / GitHub，带 ↗）。数据来自共享层 useProjects
+  （页面获取后传入）。
 -->
 <template>
   <div class="proj-grid">
@@ -15,9 +16,22 @@
       class="proj-card"
       :class="i % 2 === 0 ? 'is-wide' : 'is-narrow'"
     >
+      <!-- 封面：此前 6 个项目一张图都没有，卡片视觉重量全靠排版硬撑；
+           直角、无边框，按瑞士派对待——图是版面元素，不是贴片 -->
+      <NuxtImg
+        v-if="project.image"
+        class="proj-img"
+        :src="project.image"
+        :alt="project.title"
+        sizes="sm:100vw md:58vw"
+        loading="lazy"
+      />
+
       <p class="proj-head">
         <span class="proj-no" aria-hidden="true">{{ pad(i + 1) }}</span>
-        <time class="proj-date" :datetime="project.date">{{ formatDate(project.date, locale) }}</time>
+        <time class="proj-date" :datetime="project.date">{{
+          formatDate(project.date, locale)
+        }}</time>
       </p>
 
       <h3 class="proj-title">
@@ -30,10 +44,7 @@
 
       <p v-if="tagsText(project.tags)" class="proj-tags">{{ tagsText(project.tags) }}</p>
 
-      <footer
-        v-if="project.demoUrl || project.githubUrl"
-        class="proj-links"
-      >
+      <footer v-if="project.demoUrl || project.githubUrl" class="proj-links">
         <a
           v-if="project.demoUrl"
           class="ext-link"
@@ -108,6 +119,18 @@ function tagsText(tags: unknown): string {
 
 .proj-card:last-child {
   border-bottom: var(--border-w) solid var(--c-border);
+}
+
+/* 封面：16:9 统一比例——不同项目截图尺寸不一，靠裁切对齐网格；
+   底色兜底加载中的空白（surface 而非透明，避免布局抖动） */
+.proj-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  /* 7 栏 / 5 栏两列宽差很大，不限高会让同一行的两张卡高度悬殊；200px 对齐网格 */
+  max-height: 200px;
+  object-fit: cover;
+  background: var(--c-surface);
 }
 
 /* 头部：红色编号 + 日期两端对齐 */

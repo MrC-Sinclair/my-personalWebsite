@@ -27,6 +27,14 @@
     </span>
 
     <div class="card-body">
+      <NuxtImg
+        v-if="project.image"
+        class="proj-cover"
+        :src="project.image"
+        :alt="project.title"
+        sizes="sm:100vw md:50vw"
+        loading="lazy"
+      />
       <h3 class="card-title">
         <NuxtLink class="card-link" :to="projectPath(contentSlug(project.path))">
           {{ project.title }}
@@ -43,7 +51,12 @@
         <Y2KChromeButton v-if="project.demoUrl" :href="project.demoUrl" external>
           {{ t('projects.demo') }}
         </Y2KChromeButton>
-        <Y2KChromeButton v-if="project.githubUrl" :href="project.githubUrl" external variant="plastic">
+        <Y2KChromeButton
+          v-if="project.githubUrl"
+          :href="project.githubUrl"
+          external
+          variant="plastic"
+        >
           {{ t('projects.github') }}
         </Y2KChromeButton>
       </div>
@@ -172,7 +185,12 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   border-radius: 50%;
   background:
     radial-gradient(46% 34% at 30% 22%, rgb(255 255 255 / 0.75), transparent 70%),
-    radial-gradient(100% 100% at 50% 50%, transparent 42%, rgb(255 255 255 / 0.18) 58%, transparent 72%);
+    radial-gradient(
+      100% 100% at 50% 50%,
+      transparent 42%,
+      rgb(255 255 255 / 0.18) 58%,
+      transparent 72%
+    );
 }
 
 /* 中心孔（透出深空底色） */
@@ -326,5 +344,17 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   .card:hover .card-disc {
     transform: none;
   }
+}
+
+/* —— 内容封面：全站统一 16:9 裁切，圆角与底色继承本风格 token —— */
+.proj-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  /* 单列大卡里 16:9 全宽会算出 500px+ 的高度、占满首屏；限高后交给 cover 裁切 */
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

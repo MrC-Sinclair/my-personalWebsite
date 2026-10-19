@@ -10,6 +10,16 @@
 -->
 <template>
   <article class="rc-proj">
+    <!-- 封面必须放在 .rc-proj__head 之外：.rc-proj__head 是「像素图标 + 标题 + 徽标」
+         的横向 flex，width:100% 的图进去会把标题挤成 0 宽、每字一行 -->
+    <NuxtImg
+      v-if="project.image"
+      class="proj-cover"
+      :src="project.image"
+      :alt="project.title"
+      sizes="sm:100vw md:50vw"
+      loading="lazy"
+    />
     <header class="rc-proj__head">
       <RetroComputerPixelIcon variant="folder" />
       <h3 class="rc-proj__title">
@@ -215,5 +225,17 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .rc-proj__link:focus-visible {
   outline: 2px dotted var(--c-text);
   outline-offset: 0;
+}
+
+/* —— 内容封面：全站统一 16:9 裁切，圆角与底色继承本风格 token —— */
+.proj-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  /* 单列全宽卡片里 16:9 会算出 560px 高度、占满首屏；限高后交给 cover 裁切 */
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

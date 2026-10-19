@@ -23,14 +23,14 @@
           loading="lazy"
         >
         <span v-else class="visual-glyph" aria-hidden="true">✛</span>
-        <span class="visual-scan" aria-hidden="true"/>
+        <span class="visual-scan" aria-hidden="true" />
       </div>
 
       <div class="pod-main">
         <header class="pod-head">
           <span class="pod-code" aria-hidden="true">PAYLOAD-{{ code }}</span>
           <span v-if="project.featured" class="pod-flag">
-            <span class="flag-dot" aria-hidden="true"/>{{ t('projects.featured') }}
+            <span class="flag-dot" aria-hidden="true" />{{ t('projects.featured') }}
           </span>
         </header>
 
@@ -183,16 +183,8 @@ const projectRoute = computed(
   display: grid;
   place-items: center;
   background:
-    repeating-linear-gradient(
-      0deg,
-      rgb(74 240 198 / 0.07) 0 1px,
-      transparent 1px 20px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgb(74 240 198 / 0.07) 0 1px,
-      transparent 1px 20px
-    ),
+    repeating-linear-gradient(0deg, rgb(74 240 198 / 0.07) 0 1px, transparent 1px 20px),
+    repeating-linear-gradient(90deg, rgb(74 240 198 / 0.07) 0 1px, transparent 1px 20px),
     var(--c-bg);
 }
 
@@ -207,11 +199,7 @@ const projectRoute = computed(
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgb(4 16 26 / 0.22) 0 1px,
-    transparent 1px 4px
-  );
+  background: repeating-linear-gradient(0deg, rgb(4 16 26 / 0.22) 0 1px, transparent 1px 4px);
 }
 
 /* —— 主区 —— */

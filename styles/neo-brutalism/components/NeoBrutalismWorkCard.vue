@@ -14,6 +14,17 @@
     :to="localePath(`/style/${styleId}/projects/${contentSlug(project.path)}`)"
   >
     <article class="card">
+      <!-- 封面：必须排在编号之前并跨满整行——.card 是「编号 92px + 内容 1fr」
+           的两列网格，图放在编号之后会被挤进 92px 的窄列 -->
+      <NuxtImg
+        v-if="project.image"
+        class="cover"
+        :src="project.image"
+        :alt="project.title"
+        sizes="sm:100vw md:50vw"
+        loading="lazy"
+      />
+
       <span class="no" aria-hidden="true">{{ no }}</span>
       <div class="body">
         <h3 class="title">
@@ -72,7 +83,9 @@ const { styleId } = useStyleContentPath()
 const no = computed(() => String(props.index + 1).padStart(2, '0'))
 
 /** 防御性归一化：tags 数组字段用 Array.isArray 检查 */
-const safeTags = computed<string[]>(() => (Array.isArray(props.project.tags) ? props.project.tags : []))
+const safeTags = computed<string[]>(() =>
+  Array.isArray(props.project.tags) ? props.project.tags : [],
+)
 </script>
 
 <style scoped>
@@ -87,6 +100,20 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.project.tags) ? p
   transition:
     transform var(--transition),
     box-shadow var(--transition);
+}
+
+/* 封面：跨满两列铺在卡片顶部，粗黑边框 + 直角（粗野派不收圆角） */
+.cover {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  /* 单列全宽卡片里 16:9 会算出 560px 高度、占满首屏；限高后交给 cover 裁切 */
+  max-height: 240px;
+  object-fit: cover;
+  border: var(--border-w) solid var(--c-border);
+  border-radius: 0;
+  background: var(--c-surface);
 }
 
 /* —— 底色循环：海报黄 / 粉 / 浅蓝（风格签名撞色） —— */
