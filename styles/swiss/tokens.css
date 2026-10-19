@@ -53,9 +53,14 @@
   --shadow: none;
   --shadow-press: none;
 
-  /* —— 字体（Helvetica 系系统栈，一种家族贯穿全站） —— */
-  --font-body: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei',
-    'Noto Sans SC', system-ui, sans-serif;
+  /* —— 字体（Helvetica 系系统栈，一种家族贯穿全站） ——
+     macOS 上仍是真 Helvetica Neue（瑞士排版的本体，不动）；Windows 没有
+     Helvetica，原先直接落到 Arial——字重发糊、字距偏松，把「严格网格」
+     的精致感全丢掉了。这里在 Arial 之前插入 Inter：没有 Helvetica 的
+     机器用 Inter，比 Arial 更接近瑞士派的中性几何，性质没变。 */
+  --font-body:
+    'Helvetica Neue', Helvetica, 'Inter', Arial, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC',
+    system-ui, sans-serif;
   --font-head: var(--font-body);
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;

@@ -36,7 +36,11 @@
   --shadow-press: 0 1px 1px rgb(0 0 0 / 0.12);
 
   /* —— 字体 —— */
-  --font-body: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  /* 'Inter' 排在首位：它由 _base/base.css 的 @font-face 真正加载（此前
+     字体栈里写着 Inter 却没加载，实际一直回落到系统默认 sans）。
+     Inter 只有 latin 字形，中文会自动回落到后面的苹方 / 微软雅黑。 */
+  --font-body:
+    'Inter', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
   --font-head: var(--font-body);
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto; /* 像素风会把它关掉 */

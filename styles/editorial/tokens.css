@@ -45,9 +45,15 @@
   --shadow: none;
   --shadow-press: none;
 
-  /* —— 字体（标题换衬线栈，正文保持无衬线，构成印刷对比） —— */
-  --font-body: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-head: Georgia, 'Times New Roman', 'Songti SC', 'STSong', SimSun, serif;
+  /* —— 字体（标题换衬线栈，正文保持无衬线，构成印刷对比） ——
+     标题从系统 Georgia 换成自托管的 Instrument Serif：Georgia 在 Windows
+     上字形发糊、字重只有 regular/bold 两级，做不出杂志的编辑感；中文仍
+     回落宋体，保持「标题是印刷体」这一性质不变。
+     正文前置 Inter（由 _base 加载）：此前 system-ui 在 Windows 上落到
+     微软雅黑，西文与数字的字重、字距都撑不起杂志级排版。 */
+  --font-body:
+    'Inter', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  --font-head: 'Instrument Serif', Georgia, 'Times New Roman', 'Songti SC', 'STSong', SimSun, serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 

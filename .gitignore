@@ -35,6 +35,8 @@ Thumbs.db
 .shots
 .shots-new
 .shots-search
+# 分轮验收时按批次起的临时目录（.shots-v2 / .shots-v3 …）
+.shots-v*
 
 # CVM 部署：产物与自签证书都不入库。
 # deploy/dist 已被上面的 `dist` 规则覆盖，这里只补证书目录——

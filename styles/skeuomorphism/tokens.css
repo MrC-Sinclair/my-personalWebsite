@@ -47,14 +47,15 @@
   --border-w: 2px;
 
   /* —— 阴影（真实光影：左上光源 + 接触落影 / 按压内凹行程） —— */
-  --shadow:
-    0 12px 24px rgb(10 4 0 / 0.45),
-    0 2px 6px rgb(10 4 0 / 0.4);
+  --shadow: 0 12px 24px rgb(10 4 0 / 0.45), 0 2px 6px rgb(10 4 0 / 0.4);
   --shadow-press: inset 0 2px 5px rgb(0 0 0 / 0.5);
 
   /* —— 字体（衬线印刷 / 打字机，禁止引入字体文件） —— */
   --font-body: Georgia, 'Times New Roman', 'STSong', 'SimSun', 'Noto Serif SC', serif;
-  --font-head: Georgia, 'Times New Roman', 'STZhongsong', 'SimSun', 'Noto Serif SC', serif;
+  /* 标题改用自托管的 Instrument Serif：系统 Georgia 字重只有两级且屏幕
+     上发糊，撑不起「真材质 + 真印刷」的拟物感；中文回落宋体，性质不变 */
+  --font-head:
+    'Instrument Serif', Georgia, 'Times New Roman', 'STZhongsong', 'SimSun', 'Noto Serif SC', serif;
   --font-mono: 'Courier New', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 

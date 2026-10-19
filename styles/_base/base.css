@@ -27,6 +27,90 @@
    只做盒模型、基础排版与共享行为。风格外观一律留在各风格自己的 CSS。
    ============================================================ */
 
+/* ---------- 0. 自托管字体（全站排版质感的地基） ---------- */
+/*
+ * 为什么必须有这一段：此前 base.css 与 tokens.css 的字体栈里都写着
+ * 'Inter' / 'Instrument Serif'，但**这些字体从未被加载过**——没有
+ * @font-face、没有字体文件、也没注册 @nuxt/fonts。浏览器找不到就静默
+ * 回落到系统的默认 sans（Windows 上是 Arial/微软雅黑），于是全站排版
+ * 被锁死在「系统默认」这一档：字重发糊、字距松散、数字不对齐，怎么调
+ * 版式都像模板。
+ *
+ * 为什么自托管而不是用 CDN：站点挂在 /my-personalWebsite/ 子路径下、
+ * 且线上是自签证书的国内 CVM，外链 Google Fonts 既慢又可能取不到，
+ * 取不到就又变回系统字体。woff2 打包进产物后由 workbox 一并预缓存，
+ * 离线也生效。
+ *
+ * 为什么放 assets/ 而不是 public/：public/ 下的文件要用绝对路径引用，
+ * 而 CSS 里的 /fonts/xxx.woff2 在 /my-personalWebsite/ 前缀部署下会
+ * 请求站点根目录 → 404。交给 Vite 打包（相对路径 url()）后，它会按
+ * 构建期的 baseURL 生成正确 URL。
+ *
+ * 只加载 latin 子集：中文继续回落系统字体（苹方 / 微软雅黑 / Noto），
+ * 避免引入 10MB 级的中文字体。西文与数字的质感由 Inter 提供——这恰恰
+ * 是中文站最容易被忽略、也最影响「高级感」的部分。
+ */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../../assets/fonts/inter-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../../assets/fonts/inter-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../../assets/fonts/inter-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../../assets/fonts/inter-latin-700-normal.woff2') format('woff2');
+}
+
+/* 标题用的现代衬线：替代系统的 Georgia / Times（Windows 上字形发糊、
+   字重只有 regular/bold 两级，做不出编辑感） */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../../assets/fonts/instrument-serif-latin-400-normal.woff2') format('woff2');
+}
+
+/* 备用的几何无衬线：留给理性/技术向风格的标题（首轮先不启用，
+   等 Inter 落地验证后再决定哪些风格换用它） */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../../assets/fonts/space-grotesk-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../../assets/fonts/space-grotesk-latin-700-normal.woff2') format('woff2');
+}
+
 /* ---------- 1. 全局 reset（复刻 Tailwind v4 preflight） ---------- */
 
 *,
@@ -46,8 +130,17 @@ html,
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
   /* 默认字体栈与过渡层 @theme 的 --font-sans 保持一致：
-     部分风格有元素继承默认字体（未在根上声明），换成别的栈会改变换行与行高。 */
-  font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+     部分风格有元素继承默认字体（未在根上声明），换成别的栈会改变换行与行高。
+     Inter 由本文件顶部的 @font-face 加载（此前只是写了名字、从未加载）；
+     中文按平台回落苹方 / 微软雅黑，避免只在装了 Noto Sans SC 的机器好看。 */
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    'PingFang SC',
+    'Microsoft YaHei',
+    'Noto Sans SC',
+    sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 

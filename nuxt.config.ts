@@ -395,9 +395,11 @@ export default defineNuxtConfig({
 
   // 这里原本有一段 `fonts: { providers: { google: false } }`，已删除：
   // 该配置属于 @nuxt/fonts 模块，而 modules 里没有注册它，属于永不生效的死配置
-  //（TS 也报 InputConfig 上不存在 fonts）。各风格字体一律用系统字体栈
-  //（见 styles/<id>/tokens.css 的 --font-*，约定禁止引入字体文件），
-  // 本就不存在从 Google Fonts 拉字体的路径。
+  //（TS 也报 InputConfig 上不存在 fonts）。
+  // 字体方案（2026-10-18 起）：不再「一律系统字体栈」——西文字体改为自托管
+  // woff2（assets/fonts/，@font-face 声明在 styles/_base/base.css），Vite 打包
+  // 后 URL 自带 baseURL 前缀；中文仍回落苹方 / 微软雅黑。不注册 @nuxt/fonts、
+  // 不外链 Google Fonts（国内 CVM 取不到，取不到就静默退回系统字体）。
 
   pwa: {
     registerType: 'autoUpdate',
