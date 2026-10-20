@@ -13,6 +13,14 @@
       <span class="sheen" aria-hidden="true"/>
       <time class="date" :datetime="post.date">{{ displayDate }}</time>
       <div class="main">
+        <NuxtImg
+          v-if="post.image"
+          class="post-cover"
+          :src="post.image"
+          :alt="post.title"
+          sizes="sm:100vw md:50vw"
+          loading="lazy"
+        />
         <h3 class="title">{{ post.title }}</h3>
         <p v-if="post.description" class="desc">{{ post.description }}</p>
         <ul v-if="displayTags.length" class="tags">
@@ -259,5 +267,16 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
     left: -40%;
     opacity: 0;
   }
+}
+/* —— 文章封面：与项目卡同一套 16:9 裁切。博客是长列表，限高比项目卡的 240px 更紧 —— */
+.post-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  max-height: 180px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

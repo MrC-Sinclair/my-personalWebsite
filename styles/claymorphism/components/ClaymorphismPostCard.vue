@@ -13,6 +13,14 @@
       <time class="date" :datetime="post.date">{{ formatDate(post.date, locale) }}</time>
 
       <div class="body">
+        <NuxtImg
+          v-if="post.image"
+          class="post-cover"
+          :src="post.image"
+          :alt="post.title"
+          sizes="sm:100vw md:50vw"
+          loading="lazy"
+        />
         <h3 class="title">{{ post.title }}</h3>
         <p v-if="post.description" class="excerpt">{{ post.description }}</p>
         <div class="meta">
@@ -270,5 +278,16 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   .row-link:hover .go {
     transform: none;
   }
+}
+/* —— 文章封面：与项目卡同一套 16:9 裁切。博客是长列表，限高比项目卡的 240px 更紧 —— */
+.post-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  max-height: 180px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

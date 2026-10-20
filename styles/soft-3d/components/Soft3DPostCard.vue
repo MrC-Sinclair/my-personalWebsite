@@ -13,6 +13,14 @@
     </div>
 
     <div class="post-body">
+      <NuxtImg
+        v-if="post.image"
+        class="post-cover"
+        :src="post.image"
+        :alt="post.title"
+        sizes="sm:100vw md:50vw"
+        loading="lazy"
+      />
       <div class="post-meta">
         <time v-if="post.date" class="post-time">{{
           formatDate(post.date, locale === 'zh' ? 'zh-CN' : 'en-US')
@@ -218,5 +226,16 @@ const monthLabel = computed(() => {
   .post:hover {
     transform: none;
   }
+}
+/* —— 文章封面：与项目卡同一套 16:9 裁切。博客是长列表，限高比项目卡的 240px 更紧 —— */
+.post-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  max-height: 180px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>

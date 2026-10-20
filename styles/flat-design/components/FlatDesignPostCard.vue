@@ -10,6 +10,15 @@
     <span class="post-card__bar" aria-hidden="true"/>
 
     <div class="post-card__body">
+      <!-- 封面独占一行：放进横向 flex 容器时 width:100% 会把标题挤成 0 宽、每字一行 -->
+      <NuxtImg
+        v-if="post.image"
+        class="post-cover"
+        :src="post.image"
+        :alt="post.title"
+        sizes="sm:100vw md:50vw"
+        loading="lazy"
+      />
       <p class="post-card__meta-top">
         <span v-if="post.category" class="post-card__chip">{{ post.category }}</span>
         <span class="post-card__date">{{ formattedDate }}</span>
@@ -193,5 +202,16 @@ const tagText = computed(() =>
 
 .post-card:hover .post-card__more span {
   color: var(--tone-deep);
+}
+/* —— 文章封面：与项目卡同一套 16:9 裁切。博客是长列表，限高比项目卡的 240px 更紧 —— */
+.post-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  max-height: 180px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
 }
 </style>
