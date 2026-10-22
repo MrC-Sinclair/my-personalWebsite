@@ -102,10 +102,13 @@ describe('useScrollReveal', () => {
     wrapper.unmount()
   })
 
-  it('观察选项固定为 threshold 0.1 + 底部 -40px 根边距', () => {
+  // threshold 必须是 0：长容器（整段 section 裹住十几张卡片时有 7000px+）的 10%
+  // 会超过首屏可见高度，用 0.1 就永远等不到阈值、整块停在 opacity: 0。
+  // 触发时机交给 rootMargin 的底部 -40px 控制。
+  it('观察选项固定为 threshold 0 + 底部 -40px 根边距', () => {
     const wrapper = mount(Harness, { attachTo: document.body })
     expect(MockIntersectionObserver.instances[0].options).toEqual({
-      threshold: 0.1,
+      threshold: 0,
       rootMargin: '0px 0px -40px 0px',
     })
     wrapper.unmount()

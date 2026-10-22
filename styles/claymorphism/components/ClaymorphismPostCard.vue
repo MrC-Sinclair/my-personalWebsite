@@ -261,6 +261,12 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
     gap: 10px;
   }
 
+  /* 正文独占整行：日期压印最窄 84px，若与正文同排，16:9 的封面只能分到 ~200px，
+     标题会被挤成三行窄条（2026-10-23 在 390 宽实测） */
+  .body {
+    flex-basis: 100%;
+  }
+
   .go {
     display: none;
   }

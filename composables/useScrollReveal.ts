@@ -43,7 +43,11 @@ export function useScrollReveal() {
           }
         })
       },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
+      // threshold 必须是 0：长容器的 10% 可能超过首屏可见高度 → 永不触发、
+      // 整块停在 opacity: 0。2026-10-23 实测 soft-3d 博客页：section 高 7364px，
+      // 首屏可见 701px = 9.52%，用 0.1 就永远等不到那个阈值。
+      // 触发时机交给 rootMargin 的 -40px 控制（元素露出到距底 40px 内就播）。
+      { threshold: 0, rootMargin: '0px 0px -40px 0px' },
     )
 
     observeAll()
