@@ -45,6 +45,15 @@
         </div>
       </header>
 
+      <!-- 封面：标题区下方独占一行。不放进横向 flex，避免 width:100% 挤坏标题 -->
+      <NuxtImg
+        v-if="view.doc.image"
+        class="detail-cover"
+        :src="view.doc.image"
+        :alt="view.doc.title"
+        sizes="sm:100vw md:80vw"
+      />
+
       <div class="body clay-inner">
         <ContentRenderer v-if="view.content" :value="view.content" class="prose" />
         <p v-else class="empty">{{ t('common.noData') }}</p>
@@ -439,5 +448,17 @@ const projectLinks = computed(() => {
   font-weight: 700;
   color: var(--c-muted);
   opacity: 0.7;
+}
+/* 详情页封面：标题区下方独占一行。16:9 裁切后限高 300px——
+   详情页的图可以比列表卡大，但不能把正文整块推到第二屏 */
+.detail-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  max-height: 300px;
+  object-fit: cover;
+  margin-bottom: 18px;
+  border-radius: var(--radius);
+  background: var(--c-surface);
 }
 </style>
