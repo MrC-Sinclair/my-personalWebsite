@@ -264,16 +264,22 @@ function submitSearch(): void {
   line-height: var(--lh-body);
   /* 深色材质上的正文默认使用「象牙墨水」（即米白纸面颜料） */
   color: var(--c-surface);
-  /* 木桌：左上暖光光源 + 右下暗角 + 横向拼板缝 + 竖向木纹 */
+  /* 木桌：左上暖光光源 + 右下暗角 + 横向拼板缝 + 竖向木纹
+     新增最上面一层 --sk-wood：各向异性的分形噪声，专门用来打散下面
+     那些规则竖条纹的周期性（条纹本身保留，只是不再可数） */
   background:
+    var(--sk-wood),
     radial-gradient(120% 90% at 8% 0%, rgb(255 214 150 / 0.1), transparent 52%),
     radial-gradient(140% 120% at 50% 110%, rgb(0 0 0 / 0.42), transparent 60%),
     repeating-linear-gradient(0deg, rgb(0 0 0 / 0.22) 0 2px, transparent 2px 168px),
+    /* 竖向纤维的**规则**部分只留极淡的暗示：它一旦够强就会盖过上面那层
+       非周期噪声，等宽条纹的机械感就是这么来的。木纹的主体交给
+       --sk-wood，这里只负责一点点方向性。 */
     repeating-linear-gradient(
       90deg,
-      rgb(0 0 0 / 0.11) 0 2px,
+      rgb(0 0 0 / 0.05) 0 2px,
       transparent 2px 9px,
-      rgb(0 0 0 / 0.05) 9px 13px,
+      rgb(0 0 0 / 0.02) 9px 13px,
       transparent 13px 24px
     ),
     repeating-linear-gradient(

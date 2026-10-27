@@ -135,6 +135,7 @@ const projectLinks = computed(() => {
     var(--shadow);
 }
 
+/* 缝线：与首页皮革板同源——加凹痕阴影，避免均匀的虚线显得像贴图 */
 .leather::before {
   position: absolute;
   inset: 8px;
@@ -142,6 +143,7 @@ const projectLinks = computed(() => {
   border: 1px dashed rgb(232 213 181 / 0.45);
   border-radius: calc(var(--radius) - 6px);
   pointer-events: none;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.45));
 }
 
 /* 纸张：正文与导航都落在纸上 */

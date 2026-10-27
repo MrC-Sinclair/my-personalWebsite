@@ -39,6 +39,34 @@
   --c-accent: #b8893a;
   --c-accent-2: #a84632;
   --c-border: #1c1006;
+
+  /* 皮革颗粒：用 SVG turbulence 生成**真随机**噪点。
+     ★ 为什么不能用 repeating radial-gradient：那种做法每个 tile 里放
+     一个圆点，本质是规则点阵——就算把网格改成非正方、叠四层不同
+     尺寸，周期性依然会被眼睛识破，近看就是「平铺图案」。
+     feTurbulence 的分形噪声没有周期，才是可信的皮革/翻毛颗粒。
+     不透明度写在 SVG 内部，方便直接作为 background 的一层。 */
+  /* ★ 关键：feTurbulence 默认输出的是**彩色**噪声（RGB 三通道各自随机），
+     直接叠在深棕底上会变成一层彩色杂色，看着脏而不是纹理。必须接一个
+     feColorMatrix 把它转灰度，它才能只提供明暗、不引入色相。 */
+  --sk-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E");
+
+  /* 皮革的「斑块起伏」：低频噪声。
+     只有细颗粒（毛孔）没有粗斑块，材质就会像磨砂纸——真实皮革的
+     表面在中尺度上有明暗不均的区域（褶皱、油脂分布），这一层就是
+     那个尺度，同样要灰度化。 */
+  --sk-hide: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.09' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23h)' opacity='0.22'/%3E%3C/svg%3E");
+
+  /* 木纹扰动：各向异性的分形噪声。
+     baseFrequency 写成 '0.55 0.012' —— **x 方向高频、y 方向低频**。
+     这里有个容易搞反的点：变化慢的那个方向才是纹理「延伸」的方向，
+     所以想要竖向纤维（沿 y 拉长）必须让 y 的频率低、x 的频率高。
+     第一版写成 '0.012 0.55'，出来的是水平带，跟竖向木纹完全不同。
+     用途不是画木纹，而是叠在规则竖条纹之上把周期性打散：规则条纹
+     再怎么调间距都是可数的，叠一层无周期的纤维之后才会像真木头。 */
+  /* tile 取 600px：300px 在 1440 宽的屏上横向要平铺近 5 次，噪声自己的
+     重复也会变得可数——加大尺寸把周期推到人眼看不出来为止。 */
+  --sk-wood: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55 0.012' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23w)' opacity='0.28'/%3E%3C/svg%3E");
   --c-on-accent: #2a1808;
 
   /* —— 形态（材质厚度） —— */

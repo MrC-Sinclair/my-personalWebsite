@@ -59,14 +59,26 @@ const { t } = useI18n()
   border: 1px solid rgb(0 0 0 / 0.6);
   border-radius: var(--radius);
   overflow: hidden;
-  /* 皮革：深棕底 + 多层小噪点 + 斜向明暗 */
+  /* 皮革：深棕底 + 多层小噪点 + 斜向明暗 + 使用痕迹
+     三处针对「均匀贴图感」的修正：
+     1) 颗粒网格改成**非正方**（9×11 / 13×9 / 15×17 / 11×8）：正方网格
+        是最容易被一眼看穿的规则性，长宽不等之后重复感大幅下降；
+     2) 加两层大尺度明暗——左上一处磨损亮斑、右下一处压暗，模拟长期
+        使用后的不均匀。纯颗粒纹理再密也是「均匀的」，真正让材质可信
+        的是大尺度的明暗起伏；
+     3) 底下兜一层 128deg 的斜向渐变作为皮面的整体走向。 */
   background:
-    radial-gradient(circle at 18% 28%, rgb(255 255 255 / 0.055) 1.2px, transparent 2px),
-    radial-gradient(circle at 62% 66%, rgb(0 0 0 / 0.16) 1.4px, transparent 2.2px),
-    radial-gradient(circle at 84% 18%, rgb(255 255 255 / 0.05) 1px, transparent 1.8px),
-    radial-gradient(circle at 40% 82%, rgb(0 0 0 / 0.13) 1.2px, transparent 2px),
+    /* 使用痕迹：两处大尺度明暗（左上磨损、右下压暗） */
+    radial-gradient(34% 26% at 26% 22%, rgb(255 226 180 / 0.09), transparent 62%),
+    radial-gradient(46% 38% at 74% 78%, rgb(0 0 0 / 0.2), transparent 70%),
+    /* 中尺度斑块起伏（褶皱/油脂分布）+ 细颗粒（毛孔），两层都是灰度分形噪声 */
+    var(--sk-hide),
+    var(--sk-grain),
+    /* 保留两层极淡的规则点：给颗粒一点「皮纹走向」，不是主角 */
+    radial-gradient(circle at 18% 28%, rgb(255 255 255 / 0.04) 1.2px, transparent 2px),
+    radial-gradient(circle at 62% 66%, rgb(0 0 0 / 0.1) 1.4px, transparent 2.2px),
     linear-gradient(128deg, #6d4626 0%, #5d3819 42%, #4c2a12 100%);
-  background-size: 9px 9px, 12px 12px, 15px 15px, 11px 11px, 100% 100%;
+  background-size: 100% 100%, 100% 100%, 320px 320px, 180px 180px, 9px 11px, 13px 9px, 100% 100%;
   box-shadow:
     inset 0 2px 0 rgb(255 240 210 / 0.16),
     inset 0 -18px 40px rgb(0 0 0 / 0.42),
@@ -99,13 +111,47 @@ const { t } = useI18n()
 .rivet--bl { bottom: 16px; left: 16px; }
 .rivet--br { bottom: 16px; right: 16px; }
 
-/* —— 内圈缝线（dashed 边框模拟针脚） —— */
+/* —— 内圈缝线（dashed 边框模拟针脚） ——
+   加了 drop-shadow：真实缝线是**陷进**皮革里的，线本身会在一侧留下
+   凹痕阴影。没有这道阴影时，均匀的虚线看起来就是浮在表面的一圈
+   「AI 贴图」——这正是模型指出的贴图感来源。 */
+/* 缝线本体只留「位置」：inset 定位，线由两个伪元素画 */
 .stitch {
   position: absolute;
   inset: 12px;
-  border: 2px dashed rgb(243 234 215 / 0.32);
   border-radius: calc(var(--radius) - 4px);
   pointer-events: none;
+}
+
+/* 凹槽：用两条错位的虚线做，而不是给一条线加投影。
+   filter: drop-shadow 在 2px 的虚线上几乎看不出来（实测被判为「平面
+   的线」）；改成下沿一条暗虚线、上沿一条亮虚线、彼此错开 1.5px，
+   才真正读得出「线是陷进皮革的沟」——暗的是沟壁背光面，亮的是被
+   光照到的沟沿。 */
+.stitch::before,
+.stitch::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  border: 2px dashed transparent;
+  border-radius: inherit;
+}
+
+/* 暗：沟的下壁（往下一格） */
+.stitch::before {
+  border-top-color: rgb(0 0 0 / 0.5);
+  border-right-color: rgb(0 0 0 / 0.5);
+  border-bottom-color: rgb(0 0 0 / 0.5);
+  border-left-color: rgb(0 0 0 / 0.5);
+  transform: translateY(1.5px);
+}
+
+/* 亮：被照到的沟沿（在原位） */
+.stitch::after {
+  border-top-color: rgb(248 236 210 / 0.5);
+  border-right-color: rgb(248 236 210 / 0.5);
+  border-bottom-color: rgb(248 236 210 / 0.5);
+  border-left-color: rgb(248 236 210 / 0.5);
 }
 
 /* —— 烫印文字 —— */
