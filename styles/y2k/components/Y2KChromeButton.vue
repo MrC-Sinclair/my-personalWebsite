@@ -6,7 +6,8 @@
   - 传 href（页内锚点 / 外链）→ 原生 <a>（external 时补 target/rel）
   - 都不传 → <button type="button">
   质感签名：多段银蓝「铬」渐变 + 顶部白色 inset 高光 + 蓝紫辉光
-  投影；variant="plastic" 时切换为半透明塑料气泡按钮。
+  投影；variant="plastic" 时为深铬（枪色），用作次要层级——主次靠
+  明暗区分，不换材质，保证按钮语言统一。
   交互：hover 辉光增强 + 上浮 + 高光斜扫；active 内凹下沉。
 -->
 <template>
@@ -110,13 +111,26 @@ const {
 /* —— 塑料气泡：糖果实底 + 顶部高光。
       曾用半透明白叠底，在深空 #171048 上明度差只有约 2.6:1，
       CTA 几乎隐形；改实底渐变后与背景 ≥ 3.5:1、白字 ≥ 7:1 —— */
+/* —— 深铬（枪色）：次要层级的按钮 ——
+     原来是紫色的「半透明塑料气泡」，与亮铬的主按钮并排时是两种材质
+     语言（一个拟物金属、一个扁平色块），在千禧金属题材里显得随手。
+     改成同一族的深铬之后：主次靠**明暗**区分，而不是换材质——亮银是
+     主 CTA，深铬是次级动作，两者都是金属，语言才统一。 */
 .y2k-btn--plastic {
   color: #ffffff;
-  background: linear-gradient(180deg, #6a5ce2 0%, #5646cf 55%, #4335b0 100%);
-  border-color: rgb(235 240 255 / 0.8);
+  background: linear-gradient(
+    180deg,
+    #e2e9fb 0%,
+    #9aa6d6 26%,
+    #4a5488 48%,
+    #2c3358 62%,
+    #7d89c1 88%,
+    #b6c0e8 100%
+  );
+  border-color: rgb(235 240 255 / 0.6);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.65),
-    inset 0 0 14px rgb(255 255 255 / 0.12),
+    inset 0 1px 0 rgb(255 255 255 / 0.8),
+    inset 0 -3px 6px rgb(5 0 42 / 0.5),
     0 8px 22px rgb(5 0 42 / 0.45);
 }
 
@@ -132,11 +146,19 @@ const {
 
 .y2k-btn--plastic:hover {
   transform: translateY(-2px);
-  background: linear-gradient(180deg, #8d80ff 0%, #6a5ae8 55%, #5243c8 100%);
+  background: linear-gradient(
+    180deg,
+    #eef2ff 0%,
+    #aab5e2 26%,
+    #55609a 48%,
+    #343c68 62%,
+    #8c98cf 88%,
+    #c6cff2 100%
+  );
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.75),
-    inset 0 0 16px rgb(255 255 255 / 0.16),
-    0 14px 30px rgb(139 92 255 / 0.5);
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    inset 0 -3px 6px rgb(5 0 42 / 0.45),
+    0 14px 30px rgb(110 90 255 / 0.45);
 }
 
 /* active：塑料被按瘪（内凹 + 下沉） */
