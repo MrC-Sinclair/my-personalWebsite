@@ -82,8 +82,8 @@ const localePath = useLocalePath()
   display: none;
   border-radius: 50%;
   background: linear-gradient(150deg, rgb(255 255 255 / 0.4) 0%, rgb(255 255 255 / 0.08) 100%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
   border: var(--border-w) solid rgb(255 255 255 / 0.55);
   box-shadow: var(--shadow), inset 0 1px 0 rgb(255 255 255 / 0.6);
   animation: disc-float 7s ease-in-out infinite;

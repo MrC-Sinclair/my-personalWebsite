@@ -35,8 +35,8 @@ const { t } = useI18n()
   gap: 12px;
   padding: 16px 24px;
   background: rgb(255 255 255 / 0.4);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
   border: var(--border-w) solid rgb(255 255 255 / 0.55);
   border-radius: var(--radius);
   box-shadow: var(--shadow);

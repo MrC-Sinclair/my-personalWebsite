@@ -22,11 +22,12 @@
   position: relative;
   overflow: hidden;
   background: var(--c-surface);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  /* 投影 + 内暗环（玻璃厚度，均匀是它的本分，与有方向性的高光环不同） */
+  box-shadow: var(--shadow), var(--gm-edge);
   transition:
     transform var(--transition),
     box-shadow var(--transition),
@@ -42,21 +43,21 @@
   transform: translateY(-4px);
 }
 
-/* 上缘高光条：中亮两端渐隐的 1px 反光 */
+/* 镜面高光环：由原来的「上缘 1px 渐隐条」升级为整圈环。
+   原来只有顶边有反光、两侧和底部完全没有转折，玻璃因此缺了立体感；
+   改成整圈之后，亮度仍沿轮廓衰减（顶最亮），四面都有了转折。
+   实现同 liquid-glass：渐变 + mask-composite 挖出环带。 */
 .sheen {
   position: absolute;
-  top: 0;
-  right: 12%;
-  left: 12%;
-  height: 1px;
+  inset: 0;
+  padding: var(--gm-spec-w);
+  border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgb(255 255 255 / 0.85) 22%,
-    rgb(255 255 255 / 0.2) 60%,
-    transparent 100%
-  );
+  background: var(--gm-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
 .panel-body {

@@ -45,6 +45,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
 <style scoped>
 /* 单行玻璃条：网格排布（日期 | 内容 | 箭头） */
 .post-row {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -54,11 +55,28 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   background: rgb(255 255 255 / 0.38);
   border: var(--border-w) solid rgb(255 255 255 / 0.55);
   border-radius: var(--radius-sm);
+  /* 列表行不悬浮，所以只留厚度环、不加投影 */
+  box-shadow: var(--gm-edge);
   transition:
     background var(--transition),
     border-color var(--transition),
     box-shadow var(--transition),
     transform var(--transition);
+}
+
+/* 镜面高光环：列表行同样需要一圈转折，否则一整列行看起来是纸片 */
+.post-row::after {
+  position: absolute;
+  inset: 0;
+  padding: var(--gm-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--gm-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
 /* 交互反馈：亮起玻璃底 + 右移微动 + Glow */

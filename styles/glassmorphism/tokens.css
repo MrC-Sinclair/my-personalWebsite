@@ -37,12 +37,23 @@
 [data-style='glassmorphism'] {
   /* —— 色彩（常亮彩色场景：亮底 + 深靛文字） —— */
   --c-bg: #e9edfb;
-  --c-surface: rgb(255 255 255 / 0.55);
+  /* ★ 白填充从 0.55 降到 0.38：这是本轮最关键的一处改动。
+     磨砂玻璃「像雾面塑料」的根因就是白填充太重——0.55 的白把背景
+     的彩色整个洗掉，卡片于是一块发白的板子，只靠 blur 撑着「磨砂」
+     的名义。玻璃的本质是「背景透过来」，所以白只能负责给文字垫出
+     可读性，颜色必须让位给背景。
+     配合 backdrop-filter 的 saturate 提到 180%，透出来的彩色反而比
+     原来更鲜亮——这是 Apple 亮底毛玻璃的做法：少加白、多加饱和。 */
+  --c-surface: rgb(255 255 255 / 0.3);
   --c-text: #1c2140;
   --c-muted: #454e78;
   --c-accent: #6d28d9;
   --c-accent-2: #0e7490;
-  --c-border: rgb(255 255 255 / 0.6);
+  /* 描边从 0.6 一路降到 0.26：它是一圈**均匀**的白线，而均匀的线会
+     盖掉镜面环的明暗转折（实测：0.5 时整圈都是白的，环的「上亮下暗」
+     根本读不出来）。现在它退居为极淡的 hairline，把边缘的立体感
+     完全交给 --gm-spec（那条沿轮廓变化的环）。 */
+  --c-border: rgb(255 255 255 / 0.26);
   --c-on-accent: #ffffff;
 
   /* —— 形态（大圆角玻璃板 + 1px 半透白描边） —— */
@@ -51,11 +62,17 @@
   --border-w: 1px;
 
   /* —— 阴影（悬浮景深：大扩散 + 靛蓝色调） —— */
-  --shadow: 0 8px 32px rgb(31 38 135 / 0.16);
-  --shadow-press: 0 4px 16px rgb(31 38 135 / 0.2);
+  /* 三层：一层贴地的接触影负责「压在背景上」，中层与远层负责浮起。
+     旧值只有一层 32px 的扩散，卡片因此像贴纸而不是悬浮的玻璃板。 */
+  --shadow: 0 1px 2px rgb(31 38 135 / 0.07), 0 6px 16px rgb(31 38 135 / 0.1),
+    0 18px 40px rgb(31 38 135 / 0.14);
+  --shadow-press: 0 1px 2px rgb(31 38 135 / 0.08), 0 4px 12px rgb(31 38 135 / 0.12);
 
   /* —— 字体（系统栈，不引入外部字体文件） —— */
-  --font-body: 'Segoe UI', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  /* 同 liquid-glass：Apple 设备上取 SF（本风格对标的就是苹果式毛
+     玻璃），其余平台回落到已自托管的 Inter，比 Segoe UI 精到一档 */
+  --font-body: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'PingFang SC', 'Noto Sans SC',
+    'Microsoft YaHei', system-ui, sans-serif;
   --font-head: var(--font-body);
   --font-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
@@ -81,4 +98,37 @@
 
   /* —— 装饰开关（本风格用作：签名极光渐变带，青→紫→粉） —— */
   --deco: linear-gradient(90deg, #22d3ee 0%, #8b5cf6 52%, #f472b6 100%);
+
+  /* 噪点：亮底上大面积渐变比暗底更容易出现色带（banding）——浅色区
+     域的量化台阶肉眼更敏感。3.5% 的颗粒足以打散台阶（比暗底的 5%
+     更淡，亮底上噪点更容易被看见）。不透明度写在 SVG 内部，方便
+     直接作为 background 的一层使用。 */
+  --gm-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+
+  /* 镜面高光环：亮底玻璃同样需要「亮度沿轮廓变化」的高光，只是取值
+     与暗底不同——顶部 0.95（比卡片本体更白，是正对光源的镜面）→
+     两侧 0.4（掠射）→ 底部 0.25。旧版只有一条「顶部 1px 渐隐条」，
+     两侧和底部完全没有转折，玻璃因此缺了最关键的一圈立体感。
+     仍用 mask-composite 挖环带，理由同 liquid-glass：只有渐变+mask
+     才能做出沿轮廓连续变化的高光，box-shadow inset 只能画等宽的。 */
+  --gm-spec: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.95) 0%,
+    rgb(255 255 255 / 0.5) 14%,
+    /* 中部掠射：几乎无反射，用极淡的靛蓝表示「透过去看见背景」 */
+    rgb(31 38 135 / 0.05) 48%,
+    /* ★ 底部必须是暗的，不是「更淡的白」：亮底上的玻璃，背光面看到的
+       是玻璃自身的边缘厚度与阴影，所以那里是暗边。上一版底部写 0.25
+       白，整圈就全是白、没有明暗差，在浅色卡片上等于看不见——这也是
+       「加了高光环却显得没有转折」的原因。上亮下暗，环才成立。 */
+    rgb(31 38 135 / 0.16) 80%,
+    rgb(31 38 135 / 0.08) 100%
+  );
+  /* 1.5px：亮底上 1.2px 的白环与浅色卡片对比太弱，实测偏不可见 */
+  --gm-spec-w: 1.5px;
+
+  /* 内暗环：紧贴镜面环内侧的一圈极淡靛蓝，是玻璃的「厚度」。
+     与高光不同，厚度环本来就该是均匀的，所以用 inset box-shadow
+     即可，不需要渐变。 */
+  --gm-edge: inset 0 0 0 1px rgb(31 38 135 / 0.07);
 }

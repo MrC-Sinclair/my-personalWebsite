@@ -120,7 +120,7 @@ const projectLinks = computed(() => {
   border: 1px solid rgb(255 255 255 / 0.28);
   border-radius: var(--radius);
   background: rgb(255 255 255 / 0.16);
-  backdrop-filter: blur(22px) saturate(1.3);
+  backdrop-filter: blur(22px) saturate(1.6);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.5),
     0 16px 40px rgb(31 20 60 / 0.28);
@@ -131,7 +131,7 @@ const projectLinks = computed(() => {
   border: 1px solid rgb(255 255 255 / 0.24);
   border-radius: var(--radius-sm);
   background: rgb(255 255 255 / 0.26);
-  backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.5);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45);
 }
 

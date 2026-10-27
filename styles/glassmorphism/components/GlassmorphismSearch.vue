@@ -74,7 +74,7 @@ const { t } = useI18n()
   border: var(--border-w) solid rgb(255 255 255 / 0.45);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(170%);
   transition:
     background var(--transition),
     color var(--transition),

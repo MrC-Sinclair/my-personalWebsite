@@ -15,7 +15,9 @@
     <span class="blob blob--violet"/>
     <span class="blob blob--pink"/>
     <span class="blob blob--amber"/>
+    <span class="blob blob--indigo"/>
     <span class="veil"/>
+    <span class="grain"/>
   </div>
 </template>
 
@@ -43,7 +45,7 @@
   left: -14vmax;
   width: 58vmax;
   height: 58vmax;
-  background: radial-gradient(circle at 50% 50%, rgb(34 211 238 / 0.5), transparent 66%);
+  background: radial-gradient(circle at 50% 50%, rgb(34 211 238 / 0.62), transparent 66%);
   animation-duration: 24s;
   animation-delay: -3s;
 }
@@ -53,7 +55,7 @@
   right: -20vmax;
   width: 64vmax;
   height: 64vmax;
-  background: radial-gradient(circle at 50% 50%, rgb(79 140 255 / 0.44), transparent 66%);
+  background: radial-gradient(circle at 50% 50%, rgb(79 140 255 / 0.3), transparent 66%);
   animation-duration: 30s;
   animation-delay: -12s;
 }
@@ -63,7 +65,7 @@
   left: 8%;
   width: 70vmax;
   height: 70vmax;
-  background: radial-gradient(circle at 50% 50%, rgb(139 92 246 / 0.42), transparent 66%);
+  background: radial-gradient(circle at 50% 50%, rgb(139 92 246 / 0.58), transparent 66%);
   animation-duration: 28s;
   animation-delay: -20s;
 }
@@ -73,7 +75,7 @@
   right: -8vmax;
   width: 44vmax;
   height: 44vmax;
-  background: radial-gradient(circle at 50% 50%, rgb(244 114 182 / 0.36), transparent 66%);
+  background: radial-gradient(circle at 50% 50%, rgb(244 114 182 / 0.24), transparent 66%);
   animation-duration: 32s;
   animation-delay: -8s;
 }
@@ -88,11 +90,35 @@
   animation-delay: -16s;
 }
 
-/* 渐晕：边缘拉回底色，压住光斑亮度，保证边缘文本区可读 */
+/* 深靛光斑：本轮新增的「暗部」。
+   上一版的问题不是不透，而是整屏全是高明度的青/紫/粉，缺少一块
+   压得住的深色——没有暗部就没有明暗对比，玻璃的「透」与背景的
+   「实」也就分不出来（卡片和背景一样亮，等于没有层次）。
+   这一团放在中右部（hero 玻璃板覆盖区），让板内真的出现明暗起伏。 */
+.blob--indigo {
+  top: 30%;
+  right: 12%;
+  width: 40vmax;
+  height: 40vmax;
+  background: radial-gradient(circle at 50% 50%, rgb(85 74 217 / 0.34), transparent 66%);
+  animation-duration: 29s;
+  animation-delay: -5s;
+}
+
+/* 渐晕：边缘拉回底色，压住光斑亮度，保证边缘文本区可读。
+   强度从 0.7 降到 0.55——上一版把光斑压得太狠，等于白放了那些
+   彩色；0.55 仍足以把边缘收干净，同时让中部的色彩真正显出来。 */
 .veil {
   position: absolute;
   inset: 0;
-  background: radial-gradient(115% 88% at 50% 36%, transparent 44%, rgb(233 237 251 / 0.78) 100%);
+  background: radial-gradient(115% 88% at 50% 36%, transparent 52%, rgb(233 237 251 / 0.55) 100%);
+}
+
+/* 噪点：打散大面积渐变的色带（亮底比暗底更容易出现可见台阶） */
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gm-noise);
 }
 
 /* 光斑漂移：小幅位移 + 轻微缩放，营造「背景在呼吸」 */

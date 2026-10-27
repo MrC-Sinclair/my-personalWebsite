@@ -79,21 +79,37 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 <style scoped>
 /* 整卡为链接：磨砂玻璃 + hover 上浮与彩色 Glow */
 .project-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   padding: clamp(18px, 2.6vw, 28px);
   text-decoration: none;
   background: var(--c-surface);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), var(--gm-edge);
   transition:
     transform var(--transition),
     box-shadow var(--transition),
     border-color var(--transition);
+}
+
+/* 镜面高光环 */
+.project-card::after {
+  position: absolute;
+  inset: 0;
+  padding: var(--gm-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--gm-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
 .project-card:hover {
@@ -101,6 +117,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   border-color: rgb(255 255 255 / 0.85);
   box-shadow:
     var(--shadow),
+    var(--gm-edge),
     0 0 40px rgb(139 92 246 / 0.22);
 }
 

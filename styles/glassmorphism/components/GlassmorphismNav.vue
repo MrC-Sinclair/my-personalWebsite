@@ -70,6 +70,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 
 /* 玻璃胶囊本体：强磨砂（导航浮在彩色渐变之上，blur 稍高） */
 .nav-capsule {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -79,11 +80,26 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   padding: 6px 10px 6px 18px;
   pointer-events: auto;
   background: rgb(255 255 255 / 0.5);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
   border: var(--border-w) solid var(--c-border);
   border-radius: 999px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), var(--gm-edge);
+}
+
+/* 镜面高光环（亮底版，取值理由见 tokens.css 的 --gm-spec） */
+.nav-capsule::after {
+  position: absolute;
+  inset: 0;
+  padding: var(--gm-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--gm-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
 /* 品牌区：发光圆点 + 名称（触控目标 ≥ 40px） */
