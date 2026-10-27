@@ -315,7 +315,7 @@ function submitSearch(): void {
   background: linear-gradient(180deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.03));
   border: var(--border-w) solid rgb(255 255 255 / 0.14);
   border-radius: var(--radius);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
   animation: skeleton-shimmer 1.6s ease-in-out infinite;
 }
 

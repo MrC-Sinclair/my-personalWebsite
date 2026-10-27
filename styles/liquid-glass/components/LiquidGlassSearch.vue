@@ -74,8 +74,10 @@ const { t } = useI18n()
   background: var(--c-surface);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(14px) saturate(140%);
+  /* 输入框是贴地的小控件，用主玻璃的三段投影会把它顶起来；
+     saturate 也从 140% 降到 120%（放大背景彩色会让小控件发腻） */
+  box-shadow: 0 2px 8px rgb(4 2 18 / 0.18);
+  backdrop-filter: blur(var(--lg-blur-sm)) saturate(120%);
   transition:
     background var(--transition),
     border-color var(--transition),

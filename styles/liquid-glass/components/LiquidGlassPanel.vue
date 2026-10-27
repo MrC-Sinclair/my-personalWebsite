@@ -2,14 +2,24 @@
   LiquidGlassPanel - liquid-glass 风格的玻璃主板区块外壳
   ------------------------------------------------------------
   通用玻璃面板：eyebrow + 标题（可带 meta 计数）+ 默认插槽。
-  承载玻璃签名配方（半透填充 / 折射微染色 / 半透描边 / 上缘
-  高光弧 / 顶部镜面高光 / 深投影 + 内高光 / backdrop-blur）。
+  承载玻璃签名配方：单层中性填充 / backdrop-blur 折射 / 极淡
+  轮廓描边 / 镜面高光环 / 折射环 / 顶部泛光 / 分层轻投影。
+
+  三次迭代：配方从「十几层叠加」收敛为「四件事」——
+  填充（--lg-fill，一层）、镜面环（--lg-spec）、折射环
+  （--lg-refract）、模糊（--lg-blur）。旧版在这里叠了 3 层填充
+  渐变 + 3 个径向高光 + 高光弧 + 6 条 inset/外扩描边，结果是
+  半透明白互相叠加把板子搅成发灰的亚克力。iOS 的玻璃板内几乎
+  纯净，质感集中在边缘一圈，所以这里把中间区域让给背景，
+  只保留边缘的光学层级。
+
   注意：reveal 动画类不要加在本组件根元素上（避免 opacity
   过渡期间 backdrop-filter 采样失效造成闪烁），应加在插槽内
   的内容元素上。
 -->
 <template>
   <section class="panel glass">
+    <span class="lens" aria-hidden="true"/>
     <span class="sheen" aria-hidden="true"/>
     <header class="head">
       <p class="eyebrow">{{ eyebrow }}</p>
@@ -46,45 +56,20 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 </script>
 
 <style scoped>
-/* —— 玻璃配方（面板级，模糊半径 22px） ——
-   二次迭代要点：上一次的配方在实测中「偏温和」——板内几乎看不到折射，
-   原因有三，逐一在此修正：
-   1) 折射染色太淡（0.04~0.08）：拉到 0.1~0.24，玻璃内部才有可辨的彩色
-      光路；同时叠加一层 160deg 的「液面反光」，模拟缓慢流动的液膜
-   2) 只做了上下内高光：补上左右两侧的 inset 边缘光，玻璃才有「厚度」
-   3) 缺色散：真实玻璃边缘会把光拆成冷暖两道细线，用 1px 的半透射
-      box-shadow 在左右各描一道（青 / 洋红），是廉价但有效的色散暗示
-   另外把 backdrop-blur 从 16px 提到 22px 并加了微对比度——模糊越大，
-   背景的高频焦散纹理被揉得越开，板内波纹越明显。 */
+/* —— 玻璃本体 ——
+   只有一层填充：颜色全部来自被折射的背景，多一层白就多一分灰。
+   saturate 从旧版的 1.55 降到 1.2——把背景的彩色放大只会让板子发腻，
+   iOS 的玻璃是中性偏冷的，它提亮、但不加浓。 */
 .glass {
   position: relative;
   overflow: hidden;
   padding: clamp(22px, 3.4vw, 36px);
-  background:
-    linear-gradient(
-      160deg,
-      rgb(255 255 255 / 0.16) 0%,
-      rgb(255 255 255 / 0.03) 26%,
-      rgb(255 255 255 / 0.07) 58%,
-      rgb(255 255 255 / 0.02) 100%
-    ),
-    linear-gradient(115deg, rgb(167 139 255 / 0.16), rgb(94 227 255 / 0.08) 46%, rgb(255 122 184 / 0.15)),
-    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.04));
+  background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
-  box-shadow:
-    var(--shadow),
-    /* 上缘强高光 + 下缘弱反光：玻璃的主要厚度来源 */
-    inset 0 1px 0 rgb(255 255 255 / 0.42),
-    inset 0 -1px 0 rgb(255 255 255 / 0.08),
-    /* 左右边缘光：让玻璃的两侧也有转折，不再像一张平贴的纸 */
-    inset 1px 0 0 rgb(255 255 255 / 0.14),
-    inset -1px 0 0 rgb(255 255 255 / 0.1),
-    /* 色散：外扩 1px 的冷暖细线（青 / 洋红） */
-    1px 0 0 rgb(94 227 255 / 0.18),
-    -1px 0 0 rgb(255 122 184 / 0.14);
-  backdrop-filter: blur(22px) saturate(1.55) brightness(1.06) contrast(1.05);
-  -webkit-backdrop-filter: blur(22px) saturate(1.55) brightness(1.06) contrast(1.05);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
 }
 
 @supports not (backdrop-filter: blur(1px)) {
@@ -93,35 +78,81 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   }
 }
 
-/* 上缘高光弧（--deco）：加粗到 2px 并提高亮度——玻璃的「壳」主要靠这条 */
+/* —— 镜面高光环（specular）：玻璃质感的主要来源 ——
+   用 mask-composite 挖出一条 1.2px 的环带，环上跑 --lg-spec 渐变：
+   顶部 0.78（正对光源）→ 两侧 0.12（掠射）→ 底部 0.26（环境回光）。
+   这条「亮度沿轮廓连续变化」的高光是玻璃与塑料的分界；旧版用的是
+   inset 0 1px 0 —— 等宽等亮，正是廉价玻璃拟态的招牌破绽。
+   环画在内容之上（::after 的绘制顺序在后），玻璃表面的反光本就该
+   盖在内容上方，而它只占最外一圈，不影响文字。 */
 .glass::after {
   position: absolute;
-  top: 0;
-  right: 10%;
-  left: 10%;
-  height: 2px;
+  inset: 0;
+  padding: var(--lg-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
   content: '';
-  background: var(--deco);
-  opacity: 0.95;
+  background: var(--lg-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
-/* 顶部镜面高光 + 弧形液面反光
-   两层叠加：顶部大范围镜面反射（光源在上方）+ 一道斜向的液膜亮弧，
-   后者是「液态」而不是「亚克力板」的关键——液面反光是弯的、不对称的。 */
+/* 顶部镜面泛光：光源在正上方的一抹柔光。
+   旧版这里叠了 3 个径向（0.18~0.24）把板子搅灰，现在只留一抹 0.11。 */
 .glass::before {
   position: absolute;
   inset: 0;
   pointer-events: none;
   content: '';
-  background:
-    radial-gradient(38% 62% at 18% 4%, rgb(255 255 255 / 0.22), transparent 62%),
-    radial-gradient(26% 44% at 84% 2%, rgb(167 139 255 / 0.16), transparent 60%),
-    radial-gradient(120% 46% at 50% 0%, rgb(255 255 255 / 0.18), transparent 58%);
+  background: var(--lg-luster);
 }
 
-/* 折射光带：hover 时扫过（默认低透明度静置）
-   二次迭代：默认态不再是完全隐形。玻璃在静态下也该有一道常驻的折射
-   亮带（真实玻璃总有一道固定的高光），hover 时再放大并扫过。 */
+/* —— 折射环：透镜边缘把背景「拉进来」的增厚 ——
+   15px 宽的环带跑 --lg-refract（冷紫 → 青，取自背景光斑主色，
+   是「被折射的环境色」而不是装饰色，所以 0.1 封顶）。
+   内缘用子元素再叠一道 6px 的窄环做出浓→淡的阶梯，避免 mask
+   挖出的硬边在板内留下一道可见的圈。 */
+.lens {
+  position: absolute;
+  inset: 0;
+  padding: var(--lg-refract-w);
+  border-radius: inherit;
+  pointer-events: none;
+  /* —— 边缘透镜：真实的折射，而不是画上去的色环 ——
+     板内主体用 20~24px 的模糊，而边缘这一圈只用 6px：同一片背景
+     在边缘处明显更「实」、更亮、更浓，读起来就是透镜边缘把背景
+     拉近放大后的样子——这是 iOS 液态玻璃最核心的一处光学特征，
+     也是 CSS 能对「折射」做出的最接近的近似。
+     （mask 会把 backdrop-filter 的结果一起裁成环带，所以只在
+     边缘生效，不会让整块板变清晰。） */
+  backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  background: var(--lg-refract);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.lens::after {
+  position: absolute;
+  inset: 0;
+  padding: 6px;
+  border-radius: inherit;
+  content: '';
+  background: var(--lg-refract);
+  opacity: 0.6;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* 折射光带：默认隐形，hover 才扫过。
+   旧版让它在静态下常驻 0.55——一块永远挂着的斜向亮条是玻璃拟态的
+   套路痕迹，iOS 的玻璃静止时是干净的。 */
 .sheen {
   position: absolute;
   top: -30%;
@@ -129,17 +160,10 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   left: -40%;
   width: 34%;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.07), transparent);
   transform: rotate(14deg);
   transition: left 1.1s cubic-bezier(0.45, 0, 0.2, 1), opacity var(--transition);
-  opacity: 0.55;
-}
-
-.sheen::after {
-  position: absolute;
-  inset: 0;
-  content: '';
-  background: linear-gradient(90deg, transparent, rgb(94 227 255 / 0.12), transparent);
+  opacity: 0;
 }
 
 .panel:hover .sheen {
@@ -184,10 +208,9 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-accent);
-  background: rgb(94 227 255 / 0.1);
-  border: var(--border-w) solid rgb(94 227 255 / 0.35);
+  background: rgb(94 227 255 / 0.08);
+  border: var(--border-w) solid rgb(94 227 255 / 0.3);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25);
 }
 
 .body {
@@ -197,12 +220,12 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 @media (prefers-reduced-motion: reduce) {
   .sheen {
     transition: none;
-    opacity: 0.5;
+    opacity: 0;
   }
 
   .panel:hover .sheen {
     left: -40%;
-    opacity: 0.5;
+    opacity: 0;
   }
 }
 </style>

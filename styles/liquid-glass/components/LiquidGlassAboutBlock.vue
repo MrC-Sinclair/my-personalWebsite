@@ -105,7 +105,7 @@ const { skillGroups, timeline } = useAppInfo()
   left: 10px;
   width: 2px;
   content: '';
-  background: linear-gradient(180deg, rgb(94 227 255 / 0.4), rgb(167 139 255 / 0.12));
+  background: linear-gradient(180deg, rgb(94 227 255 / 0.28), rgb(167 139 255 / 0.1));
 }
 
 .rail-item:last-child::before {

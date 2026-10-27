@@ -26,8 +26,13 @@ const localePath = useLocalePath()
 </script>
 
 <style scoped>
-/* —— 玻璃配方（页脚横架，整宽、上圆角） —— */
+/* —— 玻璃配方（页脚横架，整宽、上圆角） ——
+   与导航同源：去掉彩虹渐变填充，边缘质感交给镜面环。
+   注意底边是敞开的（border-bottom: none），所以镜面环在底部会画出
+   一条本不该有的亮线——用 mask 把底部 4% 抹掉，保持「从页面底部
+   升起来的一块玻璃」的形态。 */
 .glass {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -36,17 +41,37 @@ const localePath = useLocalePath()
   max-width: calc(var(--page-w) + 2 * var(--space));
   margin: 0 auto;
   padding: 18px var(--space);
-  background:
-    linear-gradient(90deg, rgb(167 139 255 / 0.07), rgb(94 227 255 / 0.04) 50%, rgb(255 122 184 / 0.07)),
-    var(--c-surface);
+  background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-bottom: none;
   border-radius: var(--radius) var(--radius) 0 0;
-  box-shadow:
-    var(--shadow),
-    inset 0 1px 0 rgb(255 255 255 / 0.28);
-  backdrop-filter: blur(18px) saturate(1.3);
-  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+}
+
+/* 镜面高光环：底部敞开，环只画到 96% 高度 */
+.glass::after {
+  position: absolute;
+  inset: 0;
+  padding: var(--lg-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-spec);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(180deg, #000 0 96%, transparent 96%);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(180deg, #000 0 96%, transparent 96%);
+  -webkit-mask-composite: xor;
+}
+
+/* 顶部泛光 */
+.glass::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-luster);
 }
 
 @supports not (backdrop-filter: blur(1px)) {
@@ -109,7 +134,7 @@ const localePath = useLocalePath()
   background: rgb(94 227 255 / 0.08);
   border: var(--border-w) solid rgb(94 227 255 / 0.35);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.24);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
   transition:
     color var(--transition),
     background var(--transition),
@@ -121,7 +146,7 @@ const localePath = useLocalePath()
   color: var(--c-on-accent);
   background: linear-gradient(140deg, var(--c-accent), var(--c-accent-2));
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    inset 0 1px 0 var(--lg-bevel-solid),
     0 0 18px rgb(94 227 255 / 0.35);
 }
 

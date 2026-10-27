@@ -10,7 +10,7 @@
 -->
 <template>
   <header class="nav-wrap safe-top">
-    <nav class="nav glass" :aria-label="t('common.mobileNav')">
+    <nav class="nav glass pill" :aria-label="t('common.mobileNav')">
       <a class="brand" href="#home">
         <span class="brand-orb" aria-hidden="true"/>
         <span class="brand-name">{{ t('home.name') }}</span>
@@ -53,24 +53,51 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   padding: 14px var(--gap) 6px;
 }
 
-/* —— 玻璃胶囊配方：半透填充 + 折射微染色 + 半透描边 + 内高光 + 背景模糊 —— */
+/* —— 玻璃胶囊配方 ——
+   三次迭代：去掉了那道「紫 → 青 → 粉」的彩虹渐变填充。导航是整站
+   唯一横跨全屏宽度的玻璃，一条带色相的渐变横贯顶部会把它变成一根
+   彩色塑料管；iOS 的导航栏是纯中性的，颜色只来自背后的内容。
+   填充换成 --lg-fill，边缘质感交给镜面环。 */
 .glass {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--gap);
   max-width: var(--page-w);
   margin: 0 auto;
   padding: 6px 10px 6px 18px;
-  background:
-    linear-gradient(90deg, rgb(167 139 255 / 0.09), rgb(94 227 255 / 0.06) 50%, rgb(255 122 184 / 0.09)),
-    var(--c-surface);
+  background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: 999px;
-  box-shadow:
-    var(--shadow),
-    inset 0 1px 0 rgb(255 255 255 / 0.3);
-  backdrop-filter: blur(22px) saturate(1.35);
-  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  /* 胶囊细长，远层投影会散成一片没有形状的暗区，所以只留接触影 + 中层 */
+  box-shadow: 0 0.5px 1px rgb(0 0 0 / 0.12), 0 4px 14px rgb(4 2 18 / 0.24);
+  backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+}
+
+/* 镜面高光环：胶囊的受光面在正上方，环的亮度依然沿轮廓衰减 */
+.glass::after {
+  position: absolute;
+  inset: 0;
+  padding: var(--lg-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* 顶部泛光 */
+.glass::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-luster);
 }
 
 /* 不支持 backdrop-filter 的环境：提高填充不透明度保底可读 */
@@ -164,7 +191,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .link:hover {
   color: var(--c-text);
   background: rgb(255 255 255 / 0.1);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
 }
 
 .link:active {
@@ -186,7 +213,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   white-space: nowrap;
   background: var(--c-surface);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-text) 22%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-text) 12%, transparent);
   transition:
     color var(--transition),
     background var(--transition),
@@ -222,7 +249,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   background: rgb(94 227 255 / 0.1);
   border: var(--border-w) solid rgb(94 227 255 / 0.4);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
   transition:
     color var(--transition),
     background var(--transition),
@@ -234,7 +261,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   color: var(--c-on-accent);
   background: linear-gradient(140deg, var(--c-accent), var(--c-accent-2));
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    inset 0 1px 0 var(--lg-bevel-solid),
     0 0 18px rgb(94 227 255 / 0.35);
 }
 

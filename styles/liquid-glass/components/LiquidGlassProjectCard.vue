@@ -10,7 +10,8 @@
 <template>
   <NuxtLink :to="localePath(projectRoute)" class="card-link">
     <article class="card glass">
-      <span class="sheen" aria-hidden="true" />
+      <span class="lens" aria-hidden="true"/>
+      <span class="sheen" aria-hidden="true"/>
       <header class="top">
         <NuxtImg
           v-if="project.image"
@@ -92,7 +93,9 @@ const projectRoute = computed(
   border-radius: var(--radius);
 }
 
-/* —— 玻璃配方（卡片级，模糊半径 14px，比面板浅一级形成景深） —— */
+/* —— 玻璃配方（卡片级：模糊比面板浅一级，形成景深） ——
+   与 Panel 同源，只换尺寸档位：更小的板子用更浅的模糊与更窄的
+   折射环，否则小卡会被自己的边缘光学吃掉内容区。 */
 .glass {
   position: relative;
   display: flex;
@@ -100,22 +103,12 @@ const projectRoute = computed(
   height: 100%;
   overflow: hidden;
   padding: clamp(20px, 2.6vw, 30px);
-  background:
-    linear-gradient(
-      120deg,
-      rgb(167 139 255 / 0.1),
-      rgb(94 227 255 / 0.05) 52%,
-      rgb(255 122 184 / 0.1)
-    ),
-    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.04));
+  background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
-  box-shadow:
-    var(--shadow-press),
-    inset 0 1px 0 rgb(255 255 255 / 0.3),
-    inset 0 -1px 0 rgb(255 255 255 / 0.05);
-  backdrop-filter: blur(14px) saturate(1.35);
-  -webkit-backdrop-filter: blur(14px) saturate(1.35);
+  box-shadow: var(--shadow-press);
+  backdrop-filter: blur(var(--lg-blur-sm)) saturate(1.28) brightness(1.03) contrast(1.12);
+  -webkit-backdrop-filter: blur(var(--lg-blur-sm)) saturate(1.28) brightness(1.03) contrast(1.12);
   transition:
     transform var(--transition),
     box-shadow var(--transition),
@@ -128,12 +121,12 @@ const projectRoute = computed(
   }
 }
 
+/* hover：上浮 + 投影加深。不再加 inset 高光与青色外发光——
+   卡片悬停时边缘突然亮起来是「塑料感」的重灾区，玻璃浮起来靠的是
+   投影变化，不是自己发光。 */
 .card-link:hover .glass {
-  border-color: rgb(255 255 255 / 0.32);
-  box-shadow:
-    var(--shadow),
-    inset 0 1px 0 rgb(255 255 255 / 0.36),
-    0 0 24px rgb(94 227 255 / 0.12);
+  border-color: rgb(255 255 255 / 0.2);
+  box-shadow: var(--shadow);
   transform: translateY(-6px);
 }
 
@@ -141,18 +134,65 @@ const projectRoute = computed(
   transform: var(--press-transform);
 }
 
-/* 上缘高光弧（--deco） */
+/* 镜面高光环 */
 .glass::after {
   position: absolute;
-  top: 0;
-  right: 16%;
-  left: 16%;
-  height: 1px;
+  inset: 0;
+  padding: var(--lg-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
   content: '';
-  background: var(--deco);
+  background: var(--lg-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
-/* 折射光带：hover 扫过 */
+/* 顶部泛光 */
+.glass::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-luster);
+}
+
+/* 折射环：小卡用 12px，比面板的 15px 窄 */
+.lens {
+  position: absolute;
+  inset: 0;
+  padding: 12px;
+  border-radius: inherit;
+  pointer-events: none;
+  /* 透镜环带 + 折射染色 */
+  backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  background: var(--lg-refract);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.lens::after {
+  position: absolute;
+  inset: 0;
+  padding: 5px;
+  border-radius: inherit;
+  content: '';
+  /* 透镜环带 + 折射染色 */
+  backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  background: var(--lg-refract);
+  opacity: 0.6;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* 折射光带：hover 扫过（默认隐形） */
 .sheen {
   position: absolute;
   top: -30%;
@@ -160,7 +200,7 @@ const projectRoute = computed(
   left: -40%;
   width: 32%;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.09), transparent);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.07), transparent);
   transform: rotate(14deg);
   transition:
     left 1s cubic-bezier(0.45, 0, 0.2, 1),
@@ -200,7 +240,7 @@ const projectRoute = computed(
   background: rgb(94 227 255 / 0.1);
   border: var(--border-w) solid rgb(94 227 255 / 0.35);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
 }
 
 .desc {
@@ -263,12 +303,12 @@ const projectRoute = computed(
   color: var(--c-on-accent);
   background: linear-gradient(140deg, var(--c-accent), var(--c-accent-2));
   border: var(--border-w) solid rgb(255 255 255 / 0.4);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
+  box-shadow: inset 0 1px 0 var(--lg-bevel-solid);
 }
 
 .action-solid:hover {
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    inset 0 1px 0 var(--lg-bevel-solid),
     0 8px 20px rgb(94 227 255 / 0.35);
 }
 
@@ -276,7 +316,7 @@ const projectRoute = computed(
   color: var(--c-text);
   background: rgb(255 255 255 / 0.08);
   border: var(--border-w) solid var(--c-border);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.24);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
 }
 
 .action-ghost:hover {

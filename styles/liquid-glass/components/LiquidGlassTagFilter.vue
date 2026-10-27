@@ -98,8 +98,9 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   background: var(--c-surface);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(14px) saturate(140%);
+  /* 同搜索框：小控件用贴地的轻投影，saturate 降到 120% */
+  box-shadow: 0 2px 8px rgb(4 2 18 / 0.18);
+  backdrop-filter: blur(var(--lg-blur-sm)) saturate(120%);
   cursor: pointer;
   transition:
     background var(--transition),

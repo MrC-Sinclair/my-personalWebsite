@@ -10,6 +10,7 @@
 <template>
   <NuxtLink :to="localePath(postRoute)" class="post-link">
     <article class="bar glass">
+      <span class="lens" aria-hidden="true"/>
       <span class="sheen" aria-hidden="true"/>
       <time class="date" :datetime="post.date">{{ displayDate }}</time>
       <div class="main">
@@ -70,7 +71,9 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   border-radius: var(--radius-sm);
 }
 
-/* —— 玻璃配方（长条级，模糊半径 12px，景深最浅） —— */
+/* —— 玻璃配方（长条级：全站最浅的一档景深） ——
+   高度只有 96px 的长条上，15px 的折射环会占掉两侧近三分之一，
+   所以这里只留镜面环，折射环收窄到 9px。 */
 .glass {
   position: relative;
   display: flex;
@@ -79,16 +82,12 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   overflow: hidden;
   min-height: 96px;
   padding: 18px 22px;
-  background:
-    linear-gradient(120deg, rgb(167 139 255 / 0.07), rgb(94 227 255 / 0.04) 55%, rgb(255 122 184 / 0.07)),
-    linear-gradient(180deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.03));
-  border: var(--border-w) solid rgb(255 255 255 / 0.16);
+  background: var(--lg-depth), var(--lg-fill);
+  border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
-  box-shadow:
-    0 12px 28px rgb(4 2 18 / 0.32),
-    inset 0 1px 0 rgb(255 255 255 / 0.24);
-  backdrop-filter: blur(12px) saturate(1.3);
-  -webkit-backdrop-filter: blur(12px) saturate(1.3);
+  box-shadow: var(--shadow-press);
+  backdrop-filter: blur(var(--lg-blur-sm)) saturate(1.28) brightness(1.03) contrast(1.12);
+  -webkit-backdrop-filter: blur(var(--lg-blur-sm)) saturate(1.28) brightness(1.03) contrast(1.12);
   transition:
     transform var(--transition),
     box-shadow var(--transition),
@@ -101,11 +100,10 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   }
 }
 
+/* hover：只换投影与描边，不加 inset 高光（理由同项目卡） */
 .post-link:hover .glass {
-  border-color: rgb(255 255 255 / 0.3);
-  box-shadow:
-    0 18px 36px rgb(4 2 18 / 0.4),
-    inset 0 1px 0 rgb(255 255 255 / 0.32);
+  border-color: rgb(255 255 255 / 0.2);
+  box-shadow: 0 8px 20px rgb(4 2 18 / 0.24);
   transform: translateY(-3px);
 }
 
@@ -113,18 +111,65 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   transform: var(--press-transform);
 }
 
-/* 上缘高光弧（--deco） */
+/* 镜面高光环 */
 .glass::after {
   position: absolute;
-  top: 0;
-  right: 20%;
-  left: 20%;
-  height: 1px;
+  inset: 0;
+  padding: var(--lg-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
   content: '';
-  background: var(--deco);
+  background: var(--lg-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
-/* 折射光带：hover 扫过 */
+/* 顶部泛光 */
+.glass::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-luster);
+}
+
+/* 折射环：长条专用窄环 */
+.lens {
+  position: absolute;
+  inset: 0;
+  padding: 9px;
+  border-radius: inherit;
+  pointer-events: none;
+  /* 透镜环带 + 折射染色 */
+  backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  background: var(--lg-refract);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.lens::after {
+  position: absolute;
+  inset: 0;
+  padding: 4px;
+  border-radius: inherit;
+  content: '';
+  /* 透镜环带 + 折射染色 */
+  backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  background: var(--lg-refract);
+  opacity: 0.6;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* 折射光带：hover 扫过（默认隐形） */
 .sheen {
   position: absolute;
   top: -40%;
@@ -132,7 +177,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   left: -40%;
   width: 26%;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.08), transparent);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.07), transparent);
   transform: rotate(14deg);
   transition: left 0.9s cubic-bezier(0.45, 0, 0.2, 1), opacity var(--transition);
   opacity: 0;
@@ -156,7 +201,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   background: rgb(94 227 255 / 0.08);
   border: var(--border-w) solid rgb(94 227 255 / 0.3);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
 }
 
 .main {
@@ -227,7 +272,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   background: rgb(94 227 255 / 0.1);
   border: var(--border-w) solid rgb(94 227 255 / 0.35);
   border-radius: 50%;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
   transition: transform var(--transition);
 }
 

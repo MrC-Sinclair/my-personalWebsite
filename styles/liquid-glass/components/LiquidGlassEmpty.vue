@@ -39,12 +39,10 @@ defineProps<{
   height: 72px;
   font-size: 26px;
   color: var(--c-accent);
-  background: linear-gradient(160deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.03));
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02));
   border: var(--border-w) solid var(--c-border);
   border-radius: 50%;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.35),
-    0 10px 24px rgb(4 2 18 / 0.3);
+  box-shadow: 0 8px 20px rgb(4 2 18 / 0.2);
 }
 
 .message {

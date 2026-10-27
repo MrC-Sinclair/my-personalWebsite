@@ -37,17 +37,16 @@ defineProps<{
 /* 内嵌玻璃托盘：比外层面板更透一级（无 backdrop-filter，避免嵌套模糊） */
 .tray {
   padding: 16px 18px;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.02));
-  border: var(--border-w) solid rgb(255 255 255 / 0.14);
+  background: var(--lg-depth), var(--lg-fill);
+  border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
   transition: border-color var(--transition), background var(--transition);
 }
 
 /* 交互反馈：托盘 hover 边缘泛光 */
 .tray:hover {
-  border-color: rgb(255 255 255 / 0.28);
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.09), rgb(255 255 255 / 0.03));
+  border-color: rgb(255 255 255 / 0.24);
+  background: rgb(255 255 255 / 0.085);
 }
 
 .tray-name {
@@ -77,7 +76,7 @@ defineProps<{
   background: rgb(255 255 255 / 0.09);
   border: var(--border-w) solid rgb(255 255 255 / 0.2);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
   transition:
     transform var(--transition),
     background var(--transition),
@@ -88,7 +87,7 @@ defineProps<{
 .chip:hover {
   background: rgb(255 255 255 / 0.14);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 1px 0 var(--lg-bevel),
     0 6px 14px rgb(4 2 18 / 0.25);
   transform: translateY(-2px);
 }

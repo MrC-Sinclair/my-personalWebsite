@@ -11,11 +11,25 @@
 <template>
   <section id="home" data-section="home" class="hero-zone">
     <!-- 漂浮的小玻璃片（景深装饰，无业务含义） -->
-    <span class="shard shard-1" aria-hidden="true"/>
-    <span class="shard shard-2" aria-hidden="true"/>
+    <!-- 漂浮小玻璃片已整体移除：不承载任何信息的漂浮方块在深底上
+         只会变成一团被读成「模糊污渍」的深色形状，而 iOS 的界面里
+         不存在无意义的漂浮装饰。景深改由玻璃板自身的边缘光学承担。 -->
+
+    <!--
+      板下光源：位于玻璃板正下方的两团彩色光。
+      存在的理由：玻璃的通透感不是靠把板子调透明，而是靠「板内有东西
+      可看」。全局背景的光斑离板太远、太散，采样进板里只剩一片均匀
+      暗色，玻璃因此读起来是实心的。这两团光紧贴 hero 板（一部分露在
+      板外、一部分被板盖住），露在外面的部分清晰、被盖住的部分经
+      backdrop-blur 柔化——「同一团光在玻璃内外呈现两种清晰度」，
+      这正是玻璃透光的判据，也是本轮最关键的一处改动。
+    -->
+    <span class="glow glow-1" aria-hidden="true"/>
+    <span class="glow glow-2" aria-hidden="true"/>
 
     <div class="hero glass">
-      <!-- 折射光带：缓慢扫过玻璃的镜面反光（纯装饰） -->
+      <!-- 折射环 + 扫光带：玻璃边缘的光学增厚与镜面反光（纯装饰） -->
+      <span class="lens" aria-hidden="true"/>
       <span class="sheen" aria-hidden="true"/>
 
       <div class="hero-body">
@@ -51,39 +65,58 @@ const { t } = useI18n()
   padding: var(--space) var(--gap);
 }
 
-/* —— 巨型玻璃主板：与导航同源的玻璃配方，模糊半径更深 ——
-   二次迭代：hero 是全站最大的一块玻璃，最该「看得出是玻璃」。
-   与 Panel 同向加强——折射染色拉高、四边补边缘光、加色散细线、
-   blur 提到 26px（大板子需要更深的模糊才有厚度），投影换成
-   --shadow-lg（尺寸与景深必须耦合）。 */
+/* —— 板下光源 ——
+   两团紧贴玻璃板的高亮彩色光，是板内「有东西可透」的保证。
+   尺寸刻意做大（46vmin / 38vmin）且跨过板的边界：只有一部分被板
+   盖住，玻璃内外才形成可对比的清晰度差；完全藏在板后的光只会让板
+   内变亮，看不出「透」。 */
+.glow {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.glow-1 {
+  width: 46vmin;
+  height: 46vmin;
+  /* 亮核必须露在板外：top 取负值把光团中心推到板的上边界之上，
+     于是板外能看到一团清晰的紫光、板内看到它柔化后的延续——
+     「同一光源、两种清晰度」才是透光的判据。中心若落在板内，
+     外面只剩一圈几乎看不见的暗边，等于没有光源。 */
+  left: 14%;
+  top: -12%;
+  background: radial-gradient(closest-side, rgb(139 108 255 / 0.75), rgb(124 92 255 / 0.28) 52%, transparent 74%);
+}
+
+.glow-2 {
+  width: 38vmin;
+  height: 38vmin;
+  /* 同上：亮核推到板的下边界之下 */
+  right: 16%;
+  bottom: -10%;
+  background: radial-gradient(closest-side, rgb(94 227 255 / 0.6), rgb(94 227 255 / 0.22) 52%, transparent 74%);
+}
+
+/* —— 巨型玻璃主板 ——
+   hero 是全站最大的一块玻璃，取分级里最深的一档模糊（--lg-blur-lg）
+   与最散的一档投影（--lg-shadow-lg 已并入 --shadow-lg）。
+   三次迭代：删掉了这里的 3 层填充渐变、4 条 inset 边缘光、2 道色散
+   细线——它们叠在一块 1000px 宽的大板上时，互相抵消的结果是板子
+   整片发灰，越大的板子越明显（面积越大，叠加的浑浊越容易被看见）。
+   现在它与 Panel 共用同一套四项配方，只是尺寸档位更高。 */
 .glass {
   position: relative;
   width: 100%;
   max-width: calc(var(--page-w) - 2 * var(--space));
   overflow: hidden;
   padding: clamp(32px, 6vw, 72px);
-  background:
-    linear-gradient(
-      158deg,
-      rgb(255 255 255 / 0.18) 0%,
-      rgb(255 255 255 / 0.035) 24%,
-      rgb(255 255 255 / 0.08) 56%,
-      rgb(255 255 255 / 0.02) 100%
-    ),
-    linear-gradient(115deg, rgb(167 139 255 / 0.18), rgb(94 227 255 / 0.09) 44%, rgb(255 122 184 / 0.16)),
-    linear-gradient(180deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.04));
+  background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
-  box-shadow:
-    var(--shadow-lg),
-    inset 0 1px 0 rgb(255 255 255 / 0.46),
-    inset 0 -1px 0 rgb(255 255 255 / 0.09),
-    inset 1px 0 0 rgb(255 255 255 / 0.16),
-    inset -1px 0 0 rgb(255 255 255 / 0.11),
-    2px 0 0 rgb(94 227 255 / 0.2),
-    -2px 0 0 rgb(255 122 184 / 0.16);
-  backdrop-filter: blur(26px) saturate(1.6) brightness(1.07) contrast(1.05);
-  -webkit-backdrop-filter: blur(26px) saturate(1.6) brightness(1.07) contrast(1.05);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(var(--lg-blur-lg)) saturate(1.3) brightness(1.04) contrast(1.14);
+  -webkit-backdrop-filter: blur(var(--lg-blur-lg)) saturate(1.3) brightness(1.04) contrast(1.14);
 }
 
 @supports not (backdrop-filter: blur(1px)) {
@@ -92,32 +125,70 @@ const { t } = useI18n()
   }
 }
 
-/* 上缘高光弧：消费 token 契约的 --deco（中亮两端渐隐） */
+/* 镜面高光环：大板子的环要略宽一点（1.2px 在 1000px 宽的板子上
+   会细到看不见），亮度仍沿轮廓连续衰减 */
 .glass::after {
   position: absolute;
-  top: 0;
-  right: 12%;
-  left: 12%;
-  height: 2px;
+  inset: 0;
+  padding: 1.6px;
+  border-radius: inherit;
+  pointer-events: none;
   content: '';
-  background: var(--deco);
-  opacity: 0.95;
+  background: var(--lg-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
-/* 顶部镜面高光：玻璃顶端的球面反光 + 斜向液膜亮弧
-   液膜反光是弯的、不对称的——这是「液态」与「亚克力板」的分界。 */
+/* 顶部镜面泛光：与 Panel 同源 */
 .glass::before {
   position: absolute;
   inset: 0;
   pointer-events: none;
   content: '';
-  background:
-    radial-gradient(34% 58% at 16% 3%, rgb(255 255 255 / 0.24), transparent 60%),
-    radial-gradient(24% 42% at 86% 2%, rgb(167 139 255 / 0.18), transparent 58%),
-    radial-gradient(110% 55% at 50% 0%, rgb(255 255 255 / 0.2), transparent 62%);
+  background: var(--lg-luster);
 }
 
-/* 折射光带：斜向高光缓慢扫过玻璃（reduced-motion 下静止） */
+/* 折射环：与 Panel 同源，大板子加宽到 18px（尺寸越大，边缘的
+   光学过渡区在视觉上就该越宽，否则会像描了一条边） */
+.lens {
+  position: absolute;
+  inset: 0;
+  padding: 18px;
+  border-radius: inherit;
+  pointer-events: none;
+  /* 透镜环带 + 折射染色 */
+  backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  background: var(--lg-refract);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.lens::after {
+  position: absolute;
+  inset: 0;
+  padding: 7px;
+  border-radius: inherit;
+  content: '';
+  /* 透镜环带 + 折射染色 */
+  backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.7) brightness(1.15) contrast(1.1);
+  background: var(--lg-refract);
+  opacity: 0.6;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* 折射光带：斜向高光缓慢扫过玻璃（reduced-motion 下静止）
+   三次迭代：峰值从 1 压到 0.45、周期从 9s 拉到 14s。一道总在板上
+   来回滚的亮条是玻璃拟态最俗套的动效，压暗放慢之后它才像「光掠过
+   表面」而不是「特效在播放」。 */
 .sheen {
   position: absolute;
   top: -30%;
@@ -126,9 +197,9 @@ const { t } = useI18n()
   width: 34%;
   pointer-events: none;
   content: '';
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.09), transparent);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent);
   transform: rotate(14deg);
-  animation: sheen-sweep 9s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  animation: sheen-sweep 14s cubic-bezier(0.45, 0, 0.2, 1) infinite;
 }
 
 @keyframes sheen-sweep {
@@ -138,11 +209,11 @@ const { t } = useI18n()
   }
 
   12% {
-    opacity: 1;
+    opacity: 0.45;
   }
 
   46% {
-    opacity: 1;
+    opacity: 0.45;
   }
 
   58%,
@@ -175,7 +246,10 @@ const { t } = useI18n()
   line-height: 1.04;
   letter-spacing: -0.02em;
   overflow-wrap: break-word;
-  background: linear-gradient(100deg, var(--c-text) 8%, var(--c-accent) 42%, var(--c-accent-2) 72%, #ff7ab8 96%);
+  /* 尾色从霓虹粉 #ff7ab8 换成淡紫 #e6d9ff：荧光粉在深底上是最扎眼的
+     一档，会把整个标题拽向「霓虹感」而离开玻璃的冷调。收在淡紫，
+     渐变从白到青到紫是连续的，不会再有末梢突然跳色的断层感。 */
+  background: linear-gradient(100deg, var(--c-text) 6%, var(--c-accent) 40%, var(--c-accent-2) 72%, #e6d9ff 96%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -193,7 +267,7 @@ const { t } = useI18n()
   background: rgb(255 255 255 / 0.09);
   border: var(--border-w) solid rgb(255 255 255 / 0.22);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
 }
 
 .desc {
@@ -232,15 +306,17 @@ const { t } = useI18n()
 .cta-primary {
   color: var(--c-on-accent);
   background: linear-gradient(140deg, var(--c-accent), var(--c-accent-2));
-  border: var(--border-w) solid rgb(255 255 255 / 0.4);
+  /* 描边从 0.4 降到 0.16：实心按钮上的亮白描边是最典型的塑料感来源，
+     Apple 的 filled button 只有一层极淡的顶边，没有整圈白框 */
+  border: var(--border-w) solid rgb(255 255 255 / 0.16);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    inset 0 1px 0 var(--lg-bevel-solid),
     0 10px 26px rgb(94 227 255 / 0.3);
 }
 
 .cta-primary:hover {
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    inset 0 1px 0 var(--lg-bevel-solid),
     0 14px 34px rgb(94 227 255 / 0.45);
   transform: translateY(-2px);
 }
@@ -251,15 +327,15 @@ const { t } = useI18n()
 
 .cta-ghost {
   color: var(--c-text);
-  background: var(--c-surface);
+  background: rgb(255 255 255 / 0.09);
   border: var(--border-w) solid var(--c-border);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
 }
 
 .cta-ghost:hover {
-  background: rgb(255 255 255 / 0.13);
+  background: rgb(255 255 255 / 0.14);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.34),
+    inset 0 1px 0 var(--lg-bevel-solid),
     0 10px 24px rgb(4 2 18 / 0.3);
   transform: translateY(-2px);
 }
@@ -283,7 +359,7 @@ const { t } = useI18n()
   background: var(--c-surface);
   border: var(--border-w) solid var(--c-border);
   border-radius: 50%;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
   transform: translateX(-50%);
   transition:
     color var(--transition),
@@ -307,65 +383,16 @@ const { t } = useI18n()
   }
 }
 
-/* 漂浮小玻璃片：层叠景深装饰 */
-.shard {
-  position: absolute;
-  display: block;
-  pointer-events: none;
-  background: linear-gradient(140deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.03));
-  border: var(--border-w) solid rgb(255 255 255 / 0.22);
-  box-shadow:
-    0 14px 30px rgb(4 2 18 / 0.35),
-    inset 0 1px 0 rgb(255 255 255 / 0.35);
-}
-
-.shard-1 {
-  width: 92px;
-  height: 92px;
-  top: 14%;
-  right: 8%;
-  border-radius: 30% 70% 62% 38% / 46% 40% 60% 54%;
-  animation: shard-bob 11s ease-in-out infinite alternate;
-}
-
-.shard-2 {
-  width: 60px;
-  height: 60px;
-  bottom: 16%;
-  left: 6%;
-  border-radius: 62% 38% 44% 56% / 52% 60% 40% 48%;
-  animation: shard-bob 14s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes shard-bob {
-  from {
-    transform: translate3d(0, -8px, 0) rotate(-3deg);
-  }
-
-  to {
-    transform: translate3d(0, 10px, 0) rotate(4deg);
-  }
-}
-
 /* 窄屏：布局回退（单列、缩小留白），玻璃签名保留 */
 @media (max-width: 640px) {
-  .shard-1 {
-    top: 6%;
-    right: -18px;
-    opacity: 0.7;
-  }
-
-  .shard-2 {
-    left: -14px;
-    opacity: 0.7;
+  .hero-body {
+    max-width: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sheen,
-  .scroll-hint,
-  .shard-1,
-  .shard-2 {
+  .scroll-hint {
     animation: none;
   }
 

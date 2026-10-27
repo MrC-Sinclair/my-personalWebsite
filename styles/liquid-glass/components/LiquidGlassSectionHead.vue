@@ -82,6 +82,6 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   border-radius: 999px;
   box-shadow:
     0 8px 20px rgb(4 2 18 / 0.3),
-    inset 0 1px 0 rgb(255 255 255 / 0.3);
+    inset 0 1px 0 var(--lg-bevel);
 }
 </style>

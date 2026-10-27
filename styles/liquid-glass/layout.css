@@ -13,3 +13,44 @@
 [data-style='liquid-glass'] {
   overflow-x: clip;
 }
+
+/* 滚动条：默认的系统滚动条是亮色粗条，在深底页面上是一条突兀的
+   白杠，会把「做工」拉低一档。改成细且低对比的暗色条。
+   ★ 必须作用在滚动容器（documentElement）上：scrollbar-* 只在真正
+   产生滚动条的元素上生效，而 data-style 挂在页面内容根节点上，挂在
+   它身上是无效的——所以用 :has 反向选到 html。 */
+html:has([data-style='liquid-glass']) {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.16) transparent;
+}
+
+html:has([data-style='liquid-glass']) ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html:has([data-style='liquid-glass']) ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html:has([data-style='liquid-glass']) ::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.16);
+  border-radius: 999px;
+}
+
+/* —— 连续曲率圆角（squircle） ——
+   border-radius 画的是正圆弧：直边与圆弧在接缝处曲率是跳变的，
+   所以正圆角看起来「硬」。iOS 的圆角是 superellipse（连续曲率），
+   直边平滑地弯进圆角，观感更软——在 26px 这个尺度上肉眼能分辨，
+   是「像不像 Apple」的细节之一。
+
+   corner-shape 目前只有较新的浏览器支持，用 @supports 保护，
+   不支持时自动回落到正圆角，无副作用。
+   .pill（导航胶囊）排除在外：胶囊的两端是半圆，再叠加
+   superellipse 会把端头拉成方角，反而破坏形态。 */
+@supports (corner-shape: superellipse(2)) {
+  [data-style='liquid-glass'] .glass:not(.pill),
+  [data-style='liquid-glass'] .glass-sm {
+    corner-shape: superellipse(1.6);
+  }
+}

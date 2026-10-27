@@ -13,7 +13,7 @@
 -->
 <template>
   <header class="nav-wrap safe-top">
-    <nav class="nav glass" :aria-label="t('common.subNav')">
+    <nav class="nav glass pill" :aria-label="t('common.subNav')">
       <NuxtLink class="brand" :to="localePath('/style/liquid-glass')">
         <span class="brand-orb" aria-hidden="true"/>
         <span class="brand-name">{{ t('home.name') }}</span>
@@ -77,24 +77,46 @@ function isActive(path: string): boolean {
   padding: 14px var(--gap) 6px;
 }
 
-/* —— 玻璃胶囊配方（与首页导航同源） —— */
+/* —— 玻璃胶囊配方（与首页导航同源，改动脉络见 LiquidGlassNav） —— */
 .glass {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--gap);
   max-width: var(--page-w);
   margin: 0 auto;
   padding: 6px 10px 6px 18px;
-  background:
-    linear-gradient(90deg, rgb(167 139 255 / 0.09), rgb(94 227 255 / 0.06) 50%, rgb(255 122 184 / 0.09)),
-    var(--c-surface);
+  background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: 999px;
-  box-shadow:
-    var(--shadow),
-    inset 0 1px 0 rgb(255 255 255 / 0.3);
-  backdrop-filter: blur(22px) saturate(1.35);
-  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  box-shadow: 0 0.5px 1px rgb(0 0 0 / 0.12), 0 4px 14px rgb(4 2 18 / 0.24);
+  backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+}
+
+/* 镜面高光环 */
+.glass::after {
+  position: absolute;
+  inset: 0;
+  padding: var(--lg-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* 顶部泛光 */
+.glass::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-luster);
 }
 
 /* 不支持 backdrop-filter 的环境：提高填充不透明度保底可读 */
@@ -188,7 +210,7 @@ function isActive(path: string): boolean {
 .link:hover {
   color: var(--c-text);
   background: rgb(255 255 255 / 0.1);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
 }
 
 .link:active {
@@ -200,7 +222,7 @@ function isActive(path: string): boolean {
   color: var(--c-on-accent);
   background: linear-gradient(140deg, rgb(94 227 255 / 0.85), rgb(167 139 255 / 0.85));
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    inset 0 1px 0 var(--lg-bevel-solid),
     0 0 16px rgb(94 227 255 / 0.35);
 }
 
@@ -219,7 +241,7 @@ function isActive(path: string): boolean {
   white-space: nowrap;
   background: var(--c-surface);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-text) 22%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-text) 12%, transparent);
   transition:
     color var(--transition),
     background var(--transition),
@@ -255,7 +277,7 @@ function isActive(path: string): boolean {
   background: rgb(94 227 255 / 0.1);
   border: var(--border-w) solid rgb(94 227 255 / 0.4);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
   transition:
     color var(--transition),
     background var(--transition),
@@ -267,7 +289,7 @@ function isActive(path: string): boolean {
   color: var(--c-on-accent);
   background: linear-gradient(140deg, var(--c-accent), var(--c-accent-2));
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    inset 0 1px 0 var(--lg-bevel-solid),
     0 0 18px rgb(94 227 255 / 0.35);
 }
 

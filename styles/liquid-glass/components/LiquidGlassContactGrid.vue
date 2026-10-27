@@ -78,10 +78,12 @@ const { t } = useI18n()
   padding: 18px;
   overflow: hidden;
   text-decoration: none;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02));
-  border: var(--border-w) solid rgb(255 255 255 / 0.15);
+  /* 内嵌展台：与外层面板同材质，只是更透一级（无 backdrop-filter，
+     避免面板内再叠一层模糊把背景揉成糊）。去掉 inset 高光——小方块
+     上那条等亮白边是最显廉价的一笔 */
+  background: var(--lg-depth), var(--lg-fill);
+  border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2);
   transition:
     transform var(--transition),
     border-color var(--transition),
@@ -92,7 +94,7 @@ const { t } = useI18n()
 a.cell:hover {
   border-color: rgb(94 227 255 / 0.45);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    inset 0 1px 0 var(--lg-bevel),
     0 10px 24px rgb(4 2 18 / 0.3),
     0 0 18px rgb(94 227 255 / 0.15);
   transform: translateY(-4px);

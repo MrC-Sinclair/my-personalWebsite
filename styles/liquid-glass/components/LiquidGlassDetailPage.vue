@@ -111,28 +111,66 @@ const projectLinks = computed(() => {
 </script>
 
 <style scoped>
-/* —— 玻璃板：半透明 + 板缘 1px 亮边（折边感） —— */
+/* —— 玻璃板 ——
+   与 Panel 同源的四项配方；详情正文是最长的一段阅读内容，板子越
+   干净越好读，所以这里连折射环都不加，只留镜面环与顶部泛光。 */
 .glass {
-  border: 1px solid rgb(255 255 255 / 0.16);
+  position: relative;
+  border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
-  background: linear-gradient(
-    160deg,
-    rgb(255 255 255 / 0.1) 0%,
-    rgb(255 255 255 / 0.04) 55%,
-    rgb(94 227 255 / 0.05) 100%
-  );
-  backdrop-filter: blur(18px) saturate(1.2);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.28),
-    0 18px 44px rgb(4 2 24 / 0.45);
+  background: var(--lg-depth), var(--lg-fill);
+  backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(1.3) brightness(1.04) contrast(1.14);
+  box-shadow: var(--shadow);
 }
 
+/* 镜面高光环 */
+.glass::after {
+  position: absolute;
+  inset: 0;
+  padding: var(--lg-spec-w);
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* 顶部泛光 */
+.glass::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-luster);
+}
+
+/* 内嵌小玻璃：比正文板浅一级（无投影，它贴在板子里） */
 .glass-sm {
-  border: 1px solid rgb(255 255 255 / 0.14);
+  position: relative;
+  border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
-  background: rgb(255 255 255 / 0.07);
-  backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+  background: var(--lg-depth), var(--lg-fill);
+  backdrop-filter: blur(var(--lg-blur-sm)) saturate(1.2);
+  -webkit-backdrop-filter: blur(var(--lg-blur-sm)) saturate(1.2);
+}
+
+.glass-sm::after {
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  content: '';
+  background: var(--lg-spec);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 
 .detail {
