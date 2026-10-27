@@ -147,7 +147,10 @@
     "taskkill",
     "confck",
     "subnav",
-    "jsbridge"
+    "jsbridge",
+    "squircle",
+    "superellipse",
+    "vite"
   ],
   "ignorePaths": [
     "node_modules",
