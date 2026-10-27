@@ -408,10 +408,17 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
 }
 
 /* 倒影：翻转 + 渐隐遮罩，纯装饰 */
+/* 倒影：翻转 + 渐隐遮罩，纯装饰。
+   三处调整让它更像镜面而不是「淡影子」：
+   1) 不透明度 0.32 → 0.4：原来太淡，几乎读不出是倒影
+   2) 加 0.8px 模糊：真实反射面不是完美镜面，一点点模糊才像「照出来的」
+      （纯 CSS 的矢量文字倒影太锐利，反而像复制了一份）
+   3) 遮罩起点 0.6 → 0.78：靠近标题的那一段要更实，倒影的说服力
+      来自「近处清晰、远处化开」这个梯度 */
 .hero__reflection {
   position: absolute;
   inset: 100% 0 auto 0;
-  opacity: 0.32;
+  opacity: 0.4;
   pointer-events: none;
   user-select: none;
   background: linear-gradient(180deg, #1b5cb0 0%, #0e3261 100%);
@@ -419,8 +426,9 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
   -webkit-background-clip: text;
   color: transparent;
   transform: scaleY(-1);
-  -webkit-mask-image: linear-gradient(to top, rgb(0 0 0 / 0.6) 0%, transparent 62%);
-  mask-image: linear-gradient(to top, rgb(0 0 0 / 0.6) 0%, transparent 62%);
+  filter: blur(0.8px);
+  -webkit-mask-image: linear-gradient(to top, rgb(0 0 0 / 0.78) 0%, transparent 62%);
+  mask-image: linear-gradient(to top, rgb(0 0 0 / 0.78) 0%, transparent 62%);
 }
 
 /* 标语：白色凝胶面板胶囊 */
