@@ -371,6 +371,11 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/svg+xml', href: `${SITE_BASE_URL}favicon.svg` },
         { rel: 'apple-touch-icon', href: `${SITE_BASE_URL}apple-touch-icon.png` },
       ],
+      // 无 JS 兜底：.scroll-reveal 的初始态是 opacity: 0，靠 JS 入场。
+      // 禁用 JS 时若不覆盖，整个页面内容会永久不可见（SSG 站点尤其致命）。
+      noscript: [
+        { innerHTML: '<style>.scroll-reveal{opacity:1!important;transform:none!important}</style>' },
+      ],
     },
     pageTransition: { name: 'page', mode: 'out-in' },
   },

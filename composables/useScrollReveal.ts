@@ -34,6 +34,15 @@ export function useScrollReveal() {
   }
 
   onMounted(() => {
+    // IntersectionObserver 不可用（老浏览器、JS 部分失效、被隐私插件屏蔽）时，
+    // 内容可见优先于入场动画：给 <html> 挂 .no-reveal，由 CSS 把所有
+    // .scroll-reveal 直接落到终态。用类名而不是逐个加 .revealed，是因为
+    // 后续异步插入的节点同样需要可见，逐个加会漏。
+    if (typeof IntersectionObserver === 'undefined') {
+      document.documentElement.classList.add('no-reveal')
+      return
+    }
+
     intersectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
