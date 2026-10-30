@@ -1,6 +1,6 @@
 # my-personalWebsite
 
-**一站多风格的个人网站**：同一套内容与业务逻辑，20 种完全不同的 UI 风格。采用 Nuxt 3 SSG 静态生成 + GitHub Pages 部署，内容通过 Markdown + @nuxt/content v3 管理，中英双语，支持 PWA 离线访问。
+**一站多风格的个人网站**：同一套内容与业务逻辑，20 种完全不同的 UI 风格。采用 Nuxt 3 SSG 静态生成 + 腾讯云 CVM 静态托管（Caddy），内容通过 Markdown + @nuxt/content v3 管理，中英双语，支持 PWA 离线访问。
 
 ## 站点形态
 
@@ -44,7 +44,7 @@
 | PWA    | @vite-pwa/nuxt ^1.1.1                           | 离线访问、添加到主屏幕      |
 | 测试   | Vitest (^3.1.4)                                 | 单元测试                    |
 | 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                    |
-| 部署   | GitHub Actions → GitHub Pages                   | CI/CD + 静态托管            |
+| 部署   | GitHub Actions 构建 → 腾讯云 CVM（Caddy） | CI 只出产物，发布由本机脚本推 |
 
 > Nuxt UI 与 Tailwind 已随过渡层整体移除（阶段 3），风格层与它们零耦合。
 
@@ -114,7 +114,8 @@ pnpm preview
 
 | 变量                   | 说明     | 默认值                           |
 | ---------------------- | -------- | -------------------------------- |
-| `NUXT_PUBLIC_SITE_URL` | 站点 URL | `https://yourusername.github.io` |
+| `NUXT_PUBLIC_SITE_URL` | 站点 URL（canonical / og / sitemap / feed 的绝对前缀） | `https://122.51.97.106:8444` |
+| `NUXT_APP_BASE_URL`    | 部署子路径（改它必须重新 generate）                    | `/`（CVM 按根路径发布）      |
 
 ## 规范检查
 
@@ -170,7 +171,7 @@ node scripts/publish-cvm.mjs <产物目录>       # 或用手头已解压的产�
 
 ### 关键配置
 
-- 部署子路径由构建期变量 `NUXT_APP_BASE_URL` 决定（默认 `/my-personalWebsite/`，CVM 发布时 CI 传 `/`）：`app.baseURL`、PWA `start_url`、sitemap / feed / og 全部从它派生，改它必须重新 generate
+- 部署子路径由构建期变量 `NUXT_APP_BASE_URL` 决定（默认 `/`，即根路径；需要挂子目录时才传 `/xxx/`）：`app.baseURL`、PWA `start_url`、sitemap / feed / og 全部从它派生，改它必须重新 generate
 - 站点对外 URL 取 `NUXT_PUBLIC_SITE_URL`（CI 默认 `https://122.51.97.106:8444`，可用仓库 variable `SITE_URL` 覆盖），sitemap / canonical / og:url 均由它拼接
 - `sitemap.xml` / `robots.txt` 由 nitro 的 `prerender:done` 钩子在构建时依据「真实预渲染成功的路由」自动生成，无需手工维护
 - i18n 使用 `prefix_except_default` 策略（中文无前缀，英文 URL 带 `/en/`）

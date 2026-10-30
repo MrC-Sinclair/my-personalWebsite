@@ -461,7 +461,7 @@ const args = process.argv.slice(2)
 if (args[0] === '--live') {
   const baseURL = args[1]
   if (!baseURL) {
-    console.error('用法：node scripts/contrast.mjs --live <baseURL>（例 http://localhost:3005/my-personalWebsite）')
+    console.error('用法：node scripts/contrast.mjs --live <baseURL>（例 http://localhost:3005）')
     process.exit(1)
   }
   await liveContrast(baseURL, process.env.CDP_PORT || '9222')

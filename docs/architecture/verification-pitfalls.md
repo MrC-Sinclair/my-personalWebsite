@@ -14,7 +14,8 @@
 ```bash
 pnpm build                                        # 约 4 分钟，会顺带把 101 条路由预渲染进 .output/public
 PORT=3005 node .output/server/index.mjs           # 或 node scripts/serve-static.mjs .output/public 4173 /
-# 探针的 BASE 传 http://localhost:3005/my-personalWebsite —— base 前缀不能漏
+# 探针的 BASE 传 http://localhost:3005 —— 默认构建就是根路径（baseURL=/）；
+# 若用 NUXT_APP_BASE_URL=/xxx/ 构建过，这里就必须带上同样的前缀
 ```
 
 `scripts/serve-static.mjs` 是照着生产 Caddy 的四条语义写的：目录无尾斜杠 → 308、

@@ -9,23 +9,21 @@ import { styleOgSvg } from './utils/og'
 
 /**
  * 站点对外 URL（canonical / og:url / sitemap 用）。
- * 部署在 GitHub Pages 用户域的子路径下：站点根 = https://mrc-sinclair.github.io/my-personalWebsite/
- * 可用 NUXT_PUBLIC_SITE_URL 覆盖（如未来启用自定义域名）。
+ * 默认就是正式站点（腾讯云 CVM），可用 NUXT_PUBLIC_SITE_URL 覆盖（如启用域名）。
+ * 历史：早期部署在 GitHub Pages 用户域子路径下，2026-10 已停用，
+ * 现在只有 CVM 一个发布目标，所以默认值直接给正式地址，不再留 github.io。
  */
-const SITE_URL = (process.env.NUXT_PUBLIC_SITE_URL || 'https://mrc-sinclair.github.io').replace(
+const SITE_URL = (process.env.NUXT_PUBLIC_SITE_URL || 'https://122.51.97.106:8444').replace(
   /\/+$/,
   '',
 )
 /**
- * 站点部署子路径，首尾都带斜杠：GitHub Pages 是 /my-personalWebsite/，
- * 自有服务器（CVM 按根路径发布）是 /。构建期由 NUXT_APP_BASE_URL 决定，
+ * 站点部署子路径，首尾都带斜杠。正式站（CVM）按根路径发布，所以默认是空 → '/';
+ * 需要挂在子目录下时用 NUXT_APP_BASE_URL=/xxx/ 覆盖。
  * app.baseURL、PWA start_url、sitemap/feed/og 全部从这里派生。
  * ⚠️ 改了它必须重新 generate —— 子路径是烘进每个 HTML 的资源链接里的。
  */
-const BASE_PATH = (process.env.NUXT_APP_BASE_URL ?? '/my-personalWebsite/').replace(
-  /^\/+|\/+$/g,
-  '',
-)
+const BASE_PATH = (process.env.NUXT_APP_BASE_URL ?? '/').replace(/^\/+|\/+$/g, '')
 const SITE_BASE_URL = BASE_PATH ? `/${BASE_PATH}/` : '/'
 
 /**

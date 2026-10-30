@@ -16,7 +16,7 @@
  *   PAGES=index,projects 指定页面（默认 index）
  *   CDP_PORT 默认 9222
  */
-const BASE = process.argv[2] || 'https://mrc-sinclair.github.io/my-personalWebsite'
+const BASE = process.argv[2] || 'https://122.51.97.106:8444'
 const WAIT = Number(process.argv[3] || 8000)
 const CDP_PORT = process.env.CDP_PORT || '9222'
 const LOCALE_PREFIX = process.env.LOCALE === 'en' ? '/en' : ''
