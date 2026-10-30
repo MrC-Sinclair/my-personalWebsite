@@ -44,7 +44,7 @@ defineProps<{
 .row {
   position: relative;
   display: flex;
-  gap: 14px;
+  gap: 16px;
 }
 
 /* 光轨：贯穿条目的渐变光线（末条不画） */
@@ -75,7 +75,7 @@ defineProps<{
   flex: none;
   width: 12px;
   height: 12px;
-  margin-top: 6px;
+  margin-top: 8px;
   background: var(--c-accent);
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
   box-shadow: 0 0 10px rgb(34 211 238 / 0.8);

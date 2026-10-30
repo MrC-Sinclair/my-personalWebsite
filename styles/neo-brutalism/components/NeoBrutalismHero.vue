@@ -77,7 +77,7 @@ const { t } = useI18n()
 .tagline {
   margin: 0;
   max-width: 36ch;
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--c-text);
 }
@@ -92,15 +92,15 @@ const { t } = useI18n()
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 10px;
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 12px 22px;
+  padding: 12px 24px;
   font-family: var(--font-head);
   font-size: 14px;
   font-weight: 900;
@@ -160,7 +160,7 @@ const { t } = useI18n()
   position: absolute;
   right: 10px;
   bottom: 20px;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 900;
   color: var(--c-text);
   animation: nb-bob 1.1s ease-in-out infinite;

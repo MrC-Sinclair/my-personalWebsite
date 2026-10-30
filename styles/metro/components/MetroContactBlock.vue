@@ -55,7 +55,7 @@ function pickVariant(list: MetroTileVariant[], index: number): MetroTileVariant 
 .contact__text {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(20px, 2.6vw, 32px);
+  font-size: clamp(21px, 2.6vw, 32px);
   font-weight: 300;
   line-height: 1.3;
 }

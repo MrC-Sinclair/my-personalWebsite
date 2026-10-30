@@ -57,7 +57,7 @@ const padIndex = computed(() => String(props.index + 1).padStart(2, '0'))
   gap: var(--gap);
   overflow: hidden;
   min-height: 40px;
-  padding: 16px 18px;
+  padding: 16px 20px;
   text-decoration: none;
   border: var(--border-w) solid rgb(190 200 255 / 0.3);
   border-radius: var(--radius-sm);
@@ -127,7 +127,7 @@ const padIndex = computed(() => String(props.index + 1).padStart(2, '0'))
 
 .prow-title {
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--c-text);
   transition: color var(--transition);
@@ -151,7 +151,7 @@ const padIndex = computed(() => String(props.index + 1).padStart(2, '0'))
   display: none;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .prow-cat {
@@ -178,7 +178,7 @@ const padIndex = computed(() => String(props.index + 1).padStart(2, '0'))
 .prow-arrow {
   flex: none;
   font-family: var(--font-head);
-  font-size: 20px;
+  font-size: 21px;
   color: var(--c-accent);
   transition: transform var(--transition);
 }

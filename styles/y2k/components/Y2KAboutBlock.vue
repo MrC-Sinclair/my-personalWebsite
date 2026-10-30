@@ -56,7 +56,7 @@ const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.va
 
 /* 小节标题：铬金属渐变字（与首页同款，字号用 --fs-title） */
 .about-sub {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-family: var(--font-head);
   font-size: var(--fs-title);
   font-weight: 900;

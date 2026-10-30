@@ -59,7 +59,7 @@ const { t } = useI18n()
 .field {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 /* —— 软键输入框：同色底 + 双向投影 —— */

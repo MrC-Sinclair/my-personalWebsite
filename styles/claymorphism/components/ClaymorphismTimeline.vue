@@ -45,7 +45,7 @@ function toneOf(index: number): string {
   flex-direction: column;
   gap: var(--gap);
   margin: 0;
-  padding: 0 0 0 26px;
+  padding: 0 0 0 28px;
   list-style: none;
 }
 
@@ -80,7 +80,7 @@ function toneOf(index: number): string {
 
 /* 每段经历一块厚黏土板 */
 .stone {
-  padding: 18px 22px;
+  padding: 20px 24px;
   background: var(--tone-bg);
   border-radius: var(--radius-sm);
   box-shadow:
@@ -102,7 +102,7 @@ function toneOf(index: number): string {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 4px;
 }
 

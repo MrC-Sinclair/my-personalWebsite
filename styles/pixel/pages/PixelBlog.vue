@@ -90,7 +90,7 @@ const loading = computed(() => pending.value && !postsData.value)
 .stack {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;

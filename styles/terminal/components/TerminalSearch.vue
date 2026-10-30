@@ -91,7 +91,7 @@ const { t } = useI18n()
   flex: 1 1 200px;
   min-width: 0;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -120,7 +120,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-accent-2);
@@ -154,7 +154,7 @@ const { t } = useI18n()
 }
 
 .result-mark {
-  margin-right: 6px;
+  margin-right: 8px;
   color: var(--c-accent);
 }
 </style>

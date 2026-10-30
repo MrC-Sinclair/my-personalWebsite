@@ -131,7 +131,7 @@ const projectLinks = computed(() => {
   gap: 8px;
   align-items: center;
   align-self: flex-start;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -159,7 +159,7 @@ const projectLinks = computed(() => {
 .detail-title {
   margin: 0 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(28px, 4.4vw, 52px);
+  font-size: clamp(28px, 4.4vw, 48px);
   font-weight: 900;
   line-height: 1.12;
   color: var(--c-text);
@@ -169,7 +169,7 @@ const projectLinks = computed(() => {
 .detail-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   margin-bottom: var(--gap);
 }
@@ -182,7 +182,7 @@ const projectLinks = computed(() => {
 }
 
 .detail-chip {
-  padding: 4px 14px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-text);
@@ -214,7 +214,7 @@ const projectLinks = computed(() => {
 
 /* —— 正文面板：塑料气泡质感 —— */
 .detail-body {
-  padding: clamp(20px, 3vw, 34px);
+  padding: clamp(20px, 3vw, 36px);
   border: var(--border-w) solid rgb(190 200 255 / 0.35);
   border-radius: var(--radius);
   background: linear-gradient(
@@ -234,7 +234,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.6em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(20px, 2.4vw, 26px);
+  font-size: clamp(21px, 2.4vw, 28px);
   font-weight: 800;
   color: var(--c-text);
 }
@@ -242,7 +242,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.4em 0 0.5em;
   font-family: var(--font-head);
-  font-size: clamp(17px, 2vw, 21px);
+  font-size: clamp(18px, 2vw, 21px);
   font-weight: 800;
   color: var(--c-text);
 }
@@ -271,7 +271,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(blockquote) {
   margin: 0 0 1.2em;
-  padding: 10px 16px;
+  padding: 12px 16px;
   color: var(--c-muted);
   border-left: 3px solid var(--c-accent);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
@@ -279,7 +279,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: 0.92em;
   color: var(--c-text);
@@ -337,8 +337,8 @@ const projectLinks = computed(() => {
 .detail-nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 14px 18px;
+  gap: 8px;
+  padding: 16px 20px;
   text-decoration: none;
   border: var(--border-w) solid rgb(190 200 255 / 0.35);
   border-radius: var(--radius-sm);
@@ -390,7 +390,7 @@ const projectLinks = computed(() => {
 .crumbs {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 8px;
   align-items: center;
   font-size: var(--fs-small);
 }
@@ -402,9 +402,11 @@ const projectLinks = computed(() => {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 0 13px;
+  padding: 0 12px;
   font-weight: 700;
-  color: var(--c-text);
+  /* 面包屑是「白/浅蓝渐变底 + 白边」的浅色地板，文字必须用深墨色。
+     原用 --c-text（#eef0ff 浅白），浅字压白底只有 1.13:1，几乎看不见。 */
+  color: var(--c-on-accent);
   text-decoration: none;
   border: 1px solid rgb(255 255 255 / 0.7);
   border-radius: 999px;
@@ -436,7 +438,7 @@ const projectLinks = computed(() => {
   aspect-ratio: 16 / 9;
   max-height: 300px;
   object-fit: cover;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
   background: var(--c-surface);

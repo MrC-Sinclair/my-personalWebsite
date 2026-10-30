@@ -83,7 +83,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: clamp(18px, 2.6vw, 28px);
+  padding: clamp(20px, 2.6vw, 28px);
   text-decoration: none;
   background: var(--c-surface);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
@@ -129,7 +129,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 }
 
 .card-title {
@@ -161,7 +161,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .card-desc {
   display: -webkit-box;
   overflow: hidden;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   font-size: var(--fs-small);
   line-height: var(--lh-body);
   color: var(--c-muted);
@@ -173,7 +173,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -192,17 +192,17 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .card-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-top: auto;
-  padding-top: 18px;
+  padding-top: 20px;
 }
 
 .link-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   text-decoration: none;

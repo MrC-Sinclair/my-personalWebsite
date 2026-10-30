@@ -53,7 +53,7 @@ const { t } = useI18n()
 .ftr__top {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   margin-left: auto;
   font-size: var(--fs-small);

@@ -32,7 +32,7 @@ const { t } = useI18n()
 
 .foot-inner {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   max-width: var(--page-w);
   margin: 0 auto;
   padding: calc(var(--space) * 0.9) clamp(20px, 5vw, 64px);

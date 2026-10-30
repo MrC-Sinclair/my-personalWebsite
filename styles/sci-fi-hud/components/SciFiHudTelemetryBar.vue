@@ -108,7 +108,7 @@ const localePath = useLocalePath()
 }
 
 .sep {
-  margin: 0 6px;
+  margin: 0 8px;
   color: color-mix(in srgb, var(--c-accent) 55%, transparent);
 }
 
@@ -125,7 +125,7 @@ const localePath = useLocalePath()
   align-items: center;
   gap: 4px;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   color: var(--c-accent);

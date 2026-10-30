@@ -133,7 +133,7 @@ const projectLinks = computed(() => {
   align-items: center;
   align-self: flex-start;
   min-height: 44px;
-  padding: 0 18px;
+  padding: 0 20px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-muted);
@@ -164,7 +164,7 @@ const projectLinks = computed(() => {
 .title {
   margin: 0 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(26px, 4.2vw, 46px);
+  font-size: clamp(28px, 4.2vw, 48px);
   font-weight: 800;
   line-height: 1.16;
   color: var(--c-text);
@@ -173,13 +173,13 @@ const projectLinks = computed(() => {
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   margin-bottom: var(--gap);
 }
 
 .pill {
-  padding: 5px 15px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-muted);
@@ -206,7 +206,7 @@ const projectLinks = computed(() => {
 
 .link {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 44px;
   padding: 0 20px;
@@ -236,7 +236,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.8em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.3vw, 25px);
+  font-size: clamp(18px, 2.3vw, 24px);
   font-weight: 800;
   color: var(--c-text);
 }
@@ -244,7 +244,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.5em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(16px, 1.9vw, 20px);
+  font-size: clamp(16px, 1.9vw, 21px);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -271,14 +271,14 @@ const projectLinks = computed(() => {
 
 .prose :deep(blockquote) {
   margin: 0 0 1.3em;
-  padding: 14px 18px;
+  padding: 16px 20px;
   color: var(--c-muted);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-press);
 }
 
 .prose :deep(code) {
-  padding: 3px 7px;
+  padding: 3px 8px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   border-radius: 8px;
@@ -286,7 +286,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.4em;
   overflow-x: auto;
   border-radius: var(--radius-sm);
@@ -323,7 +323,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 10px 12px;
+  padding: 12px 12px;
   text-align: left;
 }
 
@@ -334,14 +334,14 @@ const projectLinks = computed(() => {
 
 .nav {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
 }
 
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   padding: 16px 20px;
   text-decoration: none;
   transition:
@@ -407,7 +407,7 @@ const projectLinks = computed(() => {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 0 14px;
+  padding: 0 16px;
   color: var(--c-muted);
   text-decoration: none;
   border-radius: 999px;
@@ -438,7 +438,7 @@ const projectLinks = computed(() => {
   aspect-ratio: 16 / 9;
   max-height: 300px;
   object-fit: cover;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   border-radius: var(--radius);
   background: var(--c-surface);
 }

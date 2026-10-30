@@ -41,13 +41,13 @@ const { t } = useI18n()
   gap: 12px clamp(16px, 4vw, 40px);
   max-width: var(--page-w);
   margin-inline: auto;
-  padding: 26px clamp(16px, 4vw, 40px);
+  padding: 28px clamp(16px, 4vw, 40px);
 }
 
 .ftr__brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .ftr__mark {
@@ -74,7 +74,7 @@ const { t } = useI18n()
 .ftr__top {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   padding: 0 12px;
   font-size: var(--fs-small);

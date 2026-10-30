@@ -92,8 +92,8 @@ const variantClass = computed(() => (props.variant && props.variant !== 'neutral
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
-  padding: 18px;
+  gap: 12px;
+  padding: 20px;
   overflow: hidden;
   font: inherit;
   text-align: left;
@@ -189,7 +189,7 @@ const variantClass = computed(() => (props.variant && props.variant !== 'neutral
 
 @media (max-width: 768px) {
   .tile {
-    padding: 14px;
+    padding: 16px;
   }
 }
 

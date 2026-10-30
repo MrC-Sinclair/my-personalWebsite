@@ -60,7 +60,7 @@ const { t } = useI18n()
 .field {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* —— 输入框：硬边 + 硬投影，聚焦用 accent-2（绿）描边 —— */
@@ -68,7 +68,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -100,7 +100,7 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent-2);

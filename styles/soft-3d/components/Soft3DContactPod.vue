@@ -100,7 +100,7 @@ const { t } = useI18n()
   align-self: flex-start;
   width: 104px;
   height: 104px;
-  padding: 6px;
+  padding: 8px;
   background: #ffffff;
   border-radius: var(--radius-sm);
   box-shadow:
@@ -137,7 +137,7 @@ const { t } = useI18n()
 .contact-pod-link {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   min-height: 40px;
   padding: 8px 16px;
   font-size: var(--fs-small);

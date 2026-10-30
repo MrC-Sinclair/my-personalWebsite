@@ -59,7 +59,7 @@ const { t } = useI18n()
 .field {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* —— 胶囊输入框：全圆角 + 上半高光渐变 + 柔和投影 —— */
@@ -67,7 +67,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 11px 20px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -104,7 +104,7 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 44px;
-  padding: 11px 18px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 600;

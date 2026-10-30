@@ -127,6 +127,8 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 选中：紫→品红渐变实心 + 顶部高光带 */
 .blob--on,
 .blob--on:hover {
+  font-size: var(--fs-small);
+  font-weight: 700;
   color: #ffffff;
   background: linear-gradient(180deg, var(--c-accent) 0%, var(--c-accent-2) 100%);
   border-color: var(--c-accent-2);
@@ -149,7 +151,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 46px;
-  padding: 12px 10px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent-2);
@@ -180,7 +182,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 46px;
-  padding: 12px 10px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent-2);

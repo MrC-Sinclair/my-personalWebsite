@@ -135,7 +135,7 @@ const projectLinks = computed(() => {
 
 /* 漂浮卡：大范围柔影 + 纵向错位（与其他卡不同 top） */
 .float-card {
-  padding: clamp(18px, 2.8vw, 30px);
+  padding: clamp(20px, 2.8vw, 32px);
   border-radius: var(--radius);
   background: var(--c-surface);
   box-shadow: var(--shadow);
@@ -152,12 +152,12 @@ const projectLinks = computed(() => {
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
 
 .badge {
-  padding: 5px 14px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-muted);
@@ -172,7 +172,8 @@ const projectLinks = computed(() => {
 
 .badge--cat {
   color: var(--c-on-accent, #10102a);
-  background: var(--c-accent);
+  /* 同 Soft3DTagFilter：白字压紫用加深一档的同色相紫，5.33:1 */
+  background: #7c4ddb;
 }
 
 .links {
@@ -184,7 +185,7 @@ const projectLinks = computed(() => {
 /* 3D 感按钮：径向高光 + 落影 */
 .link {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 44px;
   padding: 0 20px;
@@ -193,7 +194,10 @@ const projectLinks = computed(() => {
   color: var(--c-on-accent, #10102a);
   text-decoration: none;
   border-radius: 999px;
-  background: radial-gradient(120% 120% at 30% 20%, #ffffff 0%, var(--c-accent) 45%, var(--c-accent-2, #8b5cf6) 100%);
+  /* 原渐变起点是 #ffffff —— 白字压在纯白高光上等于看不见（均值算 2.17:1，
+     最坏点其实是起点，比均值更糟）。整体加深到同色相的深紫/深青，
+     白字 5.33:1，3D 落影仍在，只是高光改为「亮紫」而非「纯白」。 */
+  background: radial-gradient(120% 120% at 30% 20%, #7c4ddb 0%, #5b2fb5 45%, #0e6f85 100%);
   box-shadow: var(--shadow);
   transition: transform var(--transition);
 }
@@ -205,7 +209,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.8em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.3vw, 25px);
+  font-size: clamp(18px, 2.3vw, 24px);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -213,7 +217,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.5em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(16px, 1.9vw, 20px);
+  font-size: clamp(16px, 1.9vw, 21px);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -240,7 +244,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(blockquote) {
   margin: 0 0 1.3em;
-  padding: 14px 18px;
+  padding: 16px 20px;
   color: var(--c-muted);
   border-radius: var(--radius-sm);
   background: rgb(255 255 255 / 0.05);
@@ -248,7 +252,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 3px 7px;
+  padding: 3px 8px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   border-radius: 8px;
@@ -256,7 +260,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.4em;
   overflow-x: auto;
   border-radius: var(--radius-sm);
@@ -288,7 +292,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 10px 12px;
+  padding: 12px 12px;
   text-align: left;
   border-bottom: 1px solid var(--c-border);
 }
@@ -300,15 +304,15 @@ const projectLinks = computed(() => {
 
 .nav {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-  padding-top: 6px;
+  padding-top: 8px;
 }
 
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   padding: 16px 20px;
   text-decoration: none;
   transition: transform var(--transition);
@@ -345,7 +349,7 @@ const projectLinks = computed(() => {
   align-items: center;
   align-self: flex-start;
   min-height: 44px;
-  padding: 0 18px;
+  padding: 0 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-muted);
@@ -395,7 +399,7 @@ const projectLinks = computed(() => {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 0 14px;
+  padding: 0 16px;
   font-weight: 700;
   color: var(--c-muted);
   text-decoration: none;

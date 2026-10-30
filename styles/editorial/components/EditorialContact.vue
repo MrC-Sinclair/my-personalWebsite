@@ -107,7 +107,7 @@ function padNo(n: number): string {
   margin: 0 0 calc(var(--space) * 0.9);
   max-width: 24ch;
   font-family: var(--font-head);
-  font-size: clamp(21px, 2.6vw, 30px);
+  font-size: clamp(21px, 2.6vw, 32px);
   line-height: 1.6;
   color: var(--c-text);
 }
@@ -116,7 +116,7 @@ function padNo(n: number): string {
 .out-link {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 44px;
   margin-right: 28px;
   font-family: var(--font-head);
@@ -163,9 +163,9 @@ function padNo(n: number): string {
 .plate {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
-  padding: 10px;
+  padding: 12px;
   background: var(--c-surface);
   border: var(--border-w) solid var(--c-border);
   transition:
@@ -190,7 +190,7 @@ function padNo(n: number): string {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 2px 10px;
+  gap: 2px 12px;
 }
 
 .cap-no {
@@ -202,7 +202,7 @@ function padNo(n: number): string {
 
 .cap-name {
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--c-text);
 }
@@ -220,7 +220,7 @@ function padNo(n: number): string {
 .copy {
   align-self: flex-start;
   min-height: 40px;
-  padding: 6px 0;
+  padding: 8px 0;
   font-size: var(--fs-small);
   letter-spacing: 0.1em;
   color: var(--c-text);
@@ -251,7 +251,7 @@ function padNo(n: number): string {
   }
 
   .col-plates {
-    padding-top: 22px;
+    padding-top: 24px;
     border-top: var(--border-w) solid var(--c-border);
   }
 }

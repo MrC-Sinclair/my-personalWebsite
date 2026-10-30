@@ -93,9 +93,9 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .tag {
   display: inline-flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-muted);

@@ -92,7 +92,7 @@ const safeTags = computed<string[]>(() =>
 .card {
   display: grid;
   grid-template-columns: 92px 1fr;
-  gap: 18px;
+  gap: 20px;
   align-items: start;
   padding: 20px;
   border: var(--border-w) solid var(--c-border);
@@ -153,7 +153,7 @@ const safeTags = computed<string[]>(() =>
 /* —— 大编号：描边空心字 —— */
 .no {
   font-family: var(--font-head);
-  font-size: 56px;
+  font-size: 60px;
   font-weight: 900;
   line-height: 0.8;
   color: transparent;
@@ -163,7 +163,7 @@ const safeTags = computed<string[]>(() =>
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 900;
   line-height: 1.25;
   overflow-wrap: break-word;
@@ -183,7 +183,7 @@ const safeTags = computed<string[]>(() =>
 }
 
 .desc {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: 14px;
   line-height: 1.6;
   /* 彩底上的正文墨色（对比度 ≥ 4.5:1） */
@@ -195,7 +195,7 @@ const safeTags = computed<string[]>(() =>
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
 }
 
 .date {
@@ -215,8 +215,8 @@ const safeTags = computed<string[]>(() =>
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 14px 0 0;
+  gap: 12px;
+  margin: 16px 0 0;
 }
 
 /* —— 外链按钮：≥40px 触控目标，hover 反白 —— */
@@ -225,7 +225,7 @@ const safeTags = computed<string[]>(() =>
   align-items: center;
   gap: 4px;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 900;
@@ -267,11 +267,11 @@ const safeTags = computed<string[]>(() =>
 @media (max-width: 640px) {
   .card {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 12px;
   }
 
   .no {
-    font-size: 44px;
+    font-size: 48px;
     line-height: 1;
   }
 }

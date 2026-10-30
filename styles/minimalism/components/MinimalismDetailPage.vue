@@ -184,7 +184,7 @@ const projectLinks = computed(() => {
 /* 唯一强调色：下划线链接 */
 .link {
   display: inline-flex;
-  gap: 5px;
+  gap: 4px;
   align-items: center;
   min-height: 40px;
   font-size: var(--fs-small);
@@ -207,7 +207,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 2em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.2vw, 24px);
+  font-size: clamp(18px, 2.2vw, 24px);
   font-weight: 500;
   color: var(--c-text);
 }
@@ -215,7 +215,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.6em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(16px, 1.8vw, 19px);
+  font-size: clamp(16px, 1.8vw, 18px);
   font-weight: 500;
   color: var(--c-text);
 }
@@ -251,7 +251,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 2px 5px;
+  padding: 2px 4px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   background: var(--c-surface);
@@ -260,7 +260,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.4em;
   overflow-x: auto;
   background: var(--c-surface);
@@ -294,7 +294,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 9px 12px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom: 1px solid var(--c-border);
 }
@@ -316,7 +316,7 @@ const projectLinks = computed(() => {
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   padding: 4px 0;
   text-decoration: none;
   transition: opacity var(--transition);

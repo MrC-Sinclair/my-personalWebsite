@@ -84,7 +84,7 @@ const loading = computed(() => pending.value && !projectsData.value)
 /* 计数：黑色斜纹块（替代首页的「查看全部」按钮） */
 .count {
   margin: 0;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -95,7 +95,7 @@ const loading = computed(() => pending.value && !projectsData.value)
 /* 榜单：单列铺满（首页是 12 栏错落） */
 .work-list {
   display: grid;
-  gap: 22px;
+  gap: 24px;
   margin: 0;
   padding: 0;
   list-style: none;

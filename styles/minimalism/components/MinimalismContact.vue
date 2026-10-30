@@ -90,8 +90,8 @@ const { copied, copy } = useClipboardCopy()
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 18px;
-  padding: 16px 10px;
+  gap: 12px 20px;
+  padding: 16px 12px;
   border-top: var(--border-w) solid var(--c-border);
   transition: background var(--transition);
 }
@@ -151,7 +151,7 @@ const { copied, copy } = useClipboardCopy()
   align-items: center;
   gap: 4px;
   min-height: 40px;
-  padding: 6px 2px;
+  padding: 8px 2px;
   font-size: var(--fs-small);
   color: var(--c-text);
   text-decoration: underline;

@@ -117,7 +117,7 @@ function toggle(name: string): void {
   flex-wrap: wrap;
   align-items: center;
   gap: 12px 16px;
-  padding: 14px 18px;
+  padding: 16px 20px;
   background: var(--surface-sunken);
   border-radius: var(--radius-sm);
   box-shadow: inset 4px 4px 9px #a3b1c6, inset -4px -4px 9px #ffffff;
@@ -166,7 +166,7 @@ function toggle(name: string): void {
   min-width: 0;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
   margin-left: auto;
 }
 

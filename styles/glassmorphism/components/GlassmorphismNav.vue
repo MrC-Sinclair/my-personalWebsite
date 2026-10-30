@@ -73,11 +73,11 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   position: relative;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   max-width: 980px;
   min-height: 56px;
-  padding: 6px 10px 6px 18px;
+  padding: 8px 12px 8px 20px;
   pointer-events: auto;
   background: rgb(255 255 255 / 0.5);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -107,7 +107,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   padding: 4px 8px 4px 0;
   font-weight: 700;
@@ -149,7 +149,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   white-space: nowrap;
@@ -181,7 +181,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 600;
   white-space: nowrap;
@@ -217,7 +217,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   flex: none;
   align-items: center;
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-on-accent);
@@ -256,7 +256,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   }
 
   .lang {
-    padding: 6px 9px;
+    padding: 8px 8px;
   }
 
   /* 站名不参与收缩：压力交给锚点那条横向滚动带（它本来就是 overflow-x: auto）。

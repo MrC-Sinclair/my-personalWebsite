@@ -94,7 +94,7 @@ const { activeId } = useActiveSection()
 .side-id {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -167,7 +167,7 @@ const { activeId } = useActiveSection()
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   letter-spacing: 0.04em;
@@ -203,7 +203,7 @@ const { activeId } = useActiveSection()
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   padding: 8px 12px;
   font-size: var(--fs-small);

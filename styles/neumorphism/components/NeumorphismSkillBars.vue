@@ -65,7 +65,7 @@ function share(group: SkillGroup): number {
 .skill {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .skill-name {
@@ -99,7 +99,7 @@ function share(group: SkillGroup): number {
 .skill-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 2px 0 0;
   list-style: none;
@@ -108,7 +108,7 @@ function share(group: SkillGroup): number {
 .skill-tag {
   display: inline-flex;
   align-items: center;
-  padding: 5px 14px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-text);

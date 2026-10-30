@@ -44,7 +44,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: calc(var(--gap) * 1.5);
 }
 
@@ -52,8 +52,8 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .head-plate {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 5px 14px;
+  gap: 8px;
+  padding: 4px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -83,7 +83,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .head-title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(30px, 5vw, 52px);
+  font-size: clamp(32px, 5vw, 48px);
   font-weight: 700;
   line-height: 1.15;
   overflow-wrap: break-word;

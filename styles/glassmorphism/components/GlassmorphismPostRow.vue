@@ -50,7 +50,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
-  padding: 14px 20px;
+  padding: 16px 20px;
   text-decoration: none;
   background: rgb(255 255 255 / 0.38);
   border: var(--border-w) solid rgb(255 255 255 / 0.55);
@@ -108,7 +108,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
 .row-main {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -129,11 +129,11 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
 .row-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .row-tag {
-  padding: 2px 10px;
+  padding: 2px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-muted);

@@ -60,7 +60,7 @@ function postRoute(post: BlogPost): string {
 /* —— 数据流列表 —— */
 .stream {
   display: grid;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -77,7 +77,7 @@ function postRoute(post: BlogPost): string {
   align-items: center;
   gap: 12px;
   min-height: 44px;
-  padding: 10px 10px 10px 14px;
+  padding: 12px 12px 12px 16px;
   text-decoration: none;
   background: color-mix(in srgb, var(--c-bg) 55%, transparent);
   border: var(--border-w) solid transparent;
@@ -158,12 +158,12 @@ function postRoute(post: BlogPost): string {
 .row-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 /* 标签芯片：琥珀警示色描边 */
 .row-tag {
-  padding: 0 6px;
+  padding: 0 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   line-height: 1.8;

@@ -79,7 +79,7 @@ const { t } = useI18n()
   align-items: center;
   gap: 8px;
   margin: 0 0 var(--gap);
-  padding: 6px 18px;
+  padding: 8px 20px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -103,7 +103,7 @@ const { t } = useI18n()
 .hero-name {
   margin: 0 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(46px, 9.5vw, 122px);
+  font-size: clamp(48px, 9.5vw, 122px);
   font-weight: 900;
   line-height: 0.98;
   letter-spacing: 0.01em;
@@ -124,7 +124,7 @@ const { t } = useI18n()
 }
 
 .hero-tagline {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: var(--fs-title);
   font-weight: 700;
   color: var(--c-text);
@@ -140,7 +140,7 @@ const { t } = useI18n()
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 16px;
   align-items: center;
 }
 
@@ -242,7 +242,7 @@ const { t } = useI18n()
 .hero-spark--1 {
   top: 22%;
   left: 46%;
-  font-size: 26px;
+  font-size: 28px;
 }
 
 /* 星芒在桌面宽度落在正文列里（✧ 压在描述文字行上，看起来像一个多余的箭头），
@@ -258,7 +258,7 @@ const { t } = useI18n()
 .hero-spark--3 {
   top: 12%;
   right: 30%;
-  font-size: 15px;
+  font-size: 16px;
   animation-delay: 1.7s;
   color: rgb(190 235 255 / 0.9);
 }

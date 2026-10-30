@@ -359,8 +359,8 @@ function revealClass(index: number): string {
 
 .hero-eyebrow {
   display: inline-block;
-  margin: 0 0 14px;
-  padding: 5px 16px;
+  margin: 0 0 16px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   letter-spacing: 0.08em;
   color: var(--c-accent);
@@ -372,9 +372,9 @@ function revealClass(index: number): string {
 
 /* 名字：渐变文字（大到不合理的海报标题） */
 .hero-name {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-family: var(--font-head);
-  font-size: clamp(46px, 8.4vw, 92px);
+  font-size: clamp(48px, 8.4vw, 92px);
   font-weight: 800;
   line-height: 1.04;
   letter-spacing: 0.01em;
@@ -385,9 +385,9 @@ function revealClass(index: number): string {
 }
 
 .hero-tagline {
-  margin: 0 0 10px;
-  padding-left: 14px;
-  font-size: clamp(17px, 2.2vw, 21px);
+  margin: 0 0 12px;
+  padding-left: 16px;
+  font-size: clamp(18px, 2.2vw, 21px);
   font-weight: 600;
   color: var(--c-accent-2);
   border-left: 3px solid var(--c-accent-2);
@@ -411,7 +411,7 @@ function revealClass(index: number): string {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 10px 24px;
+  padding: 12px 24px;
   font-size: var(--fs-base);
   font-weight: 700;
   text-decoration: none;
@@ -585,7 +585,7 @@ function revealClass(index: number): string {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 46px;
-  padding: 10px 22px;
+  padding: 12px 24px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -637,7 +637,7 @@ function revealClass(index: number): string {
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  padding: 10px 26px;
+  padding: 12px 28px;
   font-size: var(--fs-base);
   font-weight: 600;
   color: var(--c-text);
@@ -721,7 +721,7 @@ function revealClass(index: number): string {
 }
 
 .top-orb-arrow {
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 700;
   color: var(--c-on-accent);
 }
@@ -741,7 +741,7 @@ function revealClass(index: number): string {
 
 @media (max-width: 640px) {
   .p3d-main {
-    padding: 0 14px calc(var(--space));
+    padding: 0 16px calc(var(--space));
     gap: calc(var(--space) * 1.4);
   }
 
@@ -749,11 +749,11 @@ function revealClass(index: number): string {
   .hero-scene {
     transform: scale(0.72);
     transform-origin: center;
-    margin: -30px 0;
+    margin: -32px 0;
   }
 
   .hero-name {
-    font-size: clamp(40px, 12vw, 56px);
+    font-size: clamp(40px, 12vw, 60px);
   }
 
   /* 透视倾斜收敛为普通上浮（性能与稳定性优先） */

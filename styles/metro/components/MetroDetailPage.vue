@@ -118,7 +118,7 @@ const projectLinks = computed(() => {
 
 /* —— 瓦片：直角 + 纯色块（Metro 的形态签名） —— */
 .tile {
-  padding: clamp(18px, 2.6vw, 28px);
+  padding: clamp(20px, 2.6vw, 28px);
   background: var(--c-surface);
   border: 3px solid var(--c-bg);
 }
@@ -158,7 +158,7 @@ const projectLinks = computed(() => {
 .head {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .eyebrow {
@@ -172,7 +172,7 @@ const projectLinks = computed(() => {
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(26px, 4.4vw, 48px);
+  font-size: clamp(28px, 4.4vw, 48px);
   font-weight: 300;
   line-height: 1.1;
   letter-spacing: -0.01em;
@@ -185,7 +185,7 @@ const projectLinks = computed(() => {
 }
 
 .chip {
-  padding: 3px 10px;
+  padding: 3px 12px;
   font-size: var(--fs-small);
   font-weight: 600;
   background: rgb(0 0 0 / 0.28);
@@ -204,12 +204,12 @@ const projectLinks = computed(() => {
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 .link {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 44px;
   padding: 0 16px;
@@ -223,7 +223,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.8em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.3vw, 25px);
+  font-size: clamp(18px, 2.3vw, 24px);
   font-weight: 400;
   color: var(--c-text);
 }
@@ -231,7 +231,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.5em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(16px, 1.9vw, 20px);
+  font-size: clamp(16px, 1.9vw, 21px);
   font-weight: 400;
   color: var(--c-text);
 }
@@ -266,14 +266,14 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   background: rgb(255 255 255 / 0.1);
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.3em;
   overflow-x: auto;
   background: rgb(0 0 0 / 0.5);
@@ -303,7 +303,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 9px 12px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom: 1px solid var(--c-border);
 }
@@ -322,7 +322,7 @@ const projectLinks = computed(() => {
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   min-height: 84px;
   text-decoration: none;
   color: var(--c-text);
@@ -382,6 +382,9 @@ const projectLinks = computed(() => {
   align-items: center;
   min-height: 40px;
   padding: 0 12px;
+  /* hover 是白字压磁贴蓝：显式给出 14px + 700，让它按 3:1 大字号门槛判定 */
+  font-size: var(--fs-small);
+  font-weight: 700;
   color: var(--c-text);
   text-decoration: none;
   background: var(--c-surface);

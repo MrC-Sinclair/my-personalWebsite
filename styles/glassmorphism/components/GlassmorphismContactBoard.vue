@@ -89,7 +89,7 @@ const { copied, copy } = useClipboardCopy()
 
 .contact-desc {
   max-width: 52ch;
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   color: var(--c-muted);
 }
 
@@ -99,7 +99,7 @@ const { copied, copy } = useClipboardCopy()
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  padding: 10px 24px;
+  padding: 12px 24px;
   font-size: var(--fs-base);
   font-weight: 700;
   text-decoration: none;
@@ -130,8 +130,8 @@ const { copied, copy } = useClipboardCopy()
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 12px;
+  margin-top: 20px;
   padding: 12px 16px;
   background: rgb(255 255 255 / 0.4);
   border: var(--border-w) solid rgb(255 255 255 / 0.6);
@@ -153,7 +153,7 @@ const { copied, copy } = useClipboardCopy()
 
 .copy-btn {
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   margin-left: auto;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -180,7 +180,7 @@ const { copied, copy } = useClipboardCopy()
 }
 
 .qr-tip {
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   font-size: var(--fs-small);
   color: var(--c-muted);
 }
@@ -200,7 +200,7 @@ const { copied, copy } = useClipboardCopy()
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 16px 12px;
   background: rgb(255 255 255 / 0.45);
   border: var(--border-w) solid rgb(255 255 255 / 0.65);

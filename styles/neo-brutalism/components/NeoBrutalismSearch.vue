@@ -66,7 +66,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 46px;
-  padding: 12px 18px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -110,11 +110,14 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 46px;
-  padding: 12px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 700;
-  color: #111111;
+  /* 蓝底（--c-accent-2）上的文字走白：黑 #111111 压 #4361ee 只有 3.76:1，
+     而本风格同一蓝底在别处（.btn.is-blue / .action:hover）已经是白字，
+     统一成白字既达标也一致 */
+  color: #ffffff;
   background: var(--c-accent-2);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);

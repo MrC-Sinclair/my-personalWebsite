@@ -45,7 +45,7 @@ const { t } = useI18n()
   width: min(100% - 2 * var(--space), var(--page-w));
   min-height: 76px;
   margin-inline: auto;
-  padding: var(--gap) 22px;
+  padding: var(--gap) 24px;
   border: 1px solid rgb(0 0 0 / 0.65);
   border-radius: var(--radius);
   /* 深铁拉丝：细拉丝线 + 冷灰金属渐变 */
@@ -90,9 +90,9 @@ const { t } = useI18n()
 .ft-top {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;

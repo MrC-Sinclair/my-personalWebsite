@@ -69,9 +69,9 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--c-text);
@@ -135,7 +135,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-text);
   text-decoration: none;
@@ -173,7 +173,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   letter-spacing: 0.04em;
   color: var(--c-muted);
@@ -211,7 +211,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   .hd-inner {
     grid-template-columns: 1fr auto;
     gap: 0 12px;
-    padding: 10px var(--space) 6px;
+    padding: 12px var(--space) 8px;
   }
 
   /* ★ 三个位置全部写死（与 MinimalismSubNav 同一条 SOP）：动作组在 DOM 里排最后，

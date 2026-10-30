@@ -111,7 +111,7 @@ function tagsText(tags: unknown): string {
 
 .proj-card {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   align-content: start;
   padding: var(--space) 0;
   border-top: var(--border-w) solid var(--c-border);
@@ -161,7 +161,7 @@ function tagsText(tags: unknown): string {
 /* 项目名：大号 + 强调色下划线生长 */
 .proj-title {
   margin: 0;
-  font-size: clamp(24px, 3vw, 38px);
+  font-size: clamp(24px, 3vw, 40px);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -216,13 +216,13 @@ function tagsText(tags: unknown): string {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 32px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .ext-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   font-size: 14px;
   font-weight: 700;

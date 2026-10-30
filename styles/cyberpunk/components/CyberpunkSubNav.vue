@@ -99,7 +99,7 @@ function isActive(path: string): boolean {
   gap: var(--gap);
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: 6px var(--gap);
+  padding: 8px var(--gap);
 }
 
 /* —— 站点标识：闪烁信号块 + 等宽发光站名 —— */
@@ -107,7 +107,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   text-decoration: none;
   transition:
@@ -190,7 +190,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-base);
   color: var(--c-muted);
@@ -299,7 +299,7 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-family: var(--font-head);
   font-size: var(--fs-base);
   color: var(--c-accent-2);

@@ -170,7 +170,7 @@ function tagsOf(project: Project): string[] {
 .work-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 18px;
+  gap: 8px 20px;
   margin: 2px 0 0;
 }
 

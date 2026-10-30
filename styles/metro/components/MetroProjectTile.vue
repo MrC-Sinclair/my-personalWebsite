@@ -56,7 +56,7 @@ const topTags = computed(() =>
 .proj__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
 }
 
@@ -74,7 +74,7 @@ const topTags = computed(() =>
   -webkit-line-clamp: 2;
   margin: 0;
   font-family: var(--font-head);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 700;
   line-height: 1.2;
 }

@@ -57,7 +57,7 @@ const localePath = useLocalePath()
   justify-content: space-between;
   gap: 8px var(--gap);
   min-height: 44px;
-  padding: 18px 2px;
+  padding: 20px 2px;
   color: var(--c-text);
   text-decoration: none;
   border-bottom: var(--border-w) solid var(--c-border);
@@ -83,7 +83,7 @@ const localePath = useLocalePath()
 .next-go {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-size: var(--fs-small);
   color: var(--c-muted);
   transition: color var(--transition);

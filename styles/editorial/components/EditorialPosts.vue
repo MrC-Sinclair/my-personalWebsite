@@ -116,9 +116,9 @@ function postRoute(post: BlogPost): string {
   display: grid;
   grid-template-columns: 52px minmax(0, 1fr) auto 30px;
   align-items: start;
-  gap: 6px 18px;
+  gap: 8px 20px;
   min-height: 48px;
-  padding: 18px 10px;
+  padding: 20px 12px;
   color: inherit;
   text-decoration: none;
   background: transparent;
@@ -139,7 +139,7 @@ function postRoute(post: BlogPost): string {
 }
 
 .row-no {
-  padding-top: 6px;
+  padding-top: 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   letter-spacing: 0.1em;
@@ -160,7 +160,7 @@ function postRoute(post: BlogPost): string {
   display: inline;
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(20px, 2.5vw, 29px);
+  font-size: clamp(21px, 2.5vw, 28px);
   font-weight: 700;
   line-height: 1.3;
   color: var(--c-text);
@@ -181,7 +181,7 @@ function postRoute(post: BlogPost): string {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: var(--fs-base);
   line-height: 1.7;
   color: var(--c-muted);
@@ -208,7 +208,7 @@ function postRoute(post: BlogPost): string {
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
-  padding-top: 6px;
+  padding-top: 8px;
   white-space: nowrap;
 }
 
@@ -226,7 +226,7 @@ function postRoute(post: BlogPost): string {
 }
 
 .row-arrow {
-  padding-top: 6px;
+  padding-top: 8px;
   font-family: var(--font-mono);
   color: var(--c-accent);
   opacity: 0;
@@ -243,15 +243,15 @@ function postRoute(post: BlogPost): string {
 
 /* 「查看博客」行：hairline 顶线 + 划线链接 */
 .more-row {
-  margin-top: clamp(22px, 3.4vw, 32px);
-  padding-top: 14px;
+  margin-top: clamp(24px, 3.4vw, 32px);
+  padding-top: 16px;
   border-top: var(--border-w) solid var(--c-border);
 }
 
 .more {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   font-size: var(--fs-base);
   letter-spacing: 0.14em;
@@ -287,7 +287,7 @@ function postRoute(post: BlogPost): string {
 @media (max-width: 760px) {
   .row {
     grid-template-columns: 40px minmax(0, 1fr);
-    padding-right: 6px;
+    padding-right: 8px;
   }
 
   .row-meta {
@@ -295,7 +295,7 @@ function postRoute(post: BlogPost): string {
     align-items: baseline;
     justify-content: flex-start;
     grid-column: 2;
-    gap: 14px;
+    gap: 16px;
     padding-top: 2px;
     white-space: normal;
   }

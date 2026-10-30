@@ -47,7 +47,7 @@ function pad(n: number): string {
 .tl-row {
   display: grid;
   grid-template-columns: 40px 1fr;
-  gap: 6px var(--gap);
+  gap: 8px var(--gap);
   align-items: baseline;
   padding: 20px 0;
   border-top: var(--border-w) solid var(--c-border);
@@ -72,7 +72,7 @@ function pad(n: number): string {
 .tl-main {
   grid-column: 2;
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .tl-title {
@@ -85,7 +85,7 @@ function pad(n: number): string {
 /* 机构名：常规字重回退，与前文形成字重对比 */
 .tl-org {
   margin-left: 8px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--c-muted);
 }

@@ -166,10 +166,10 @@ const { copied, copy } = useClipboardCopy()
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;

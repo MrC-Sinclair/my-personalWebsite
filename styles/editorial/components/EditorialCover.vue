@@ -66,7 +66,7 @@ const tocItems = computed(() => [
   flex-direction: column;
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: clamp(22px, 4vw, 44px) var(--space) clamp(26px, 4vw, 48px);
+  padding: clamp(24px, 4vw, 44px) var(--space) clamp(28px, 4vw, 48px);
 }
 
 /* 顶部：kicker + 期号装饰 */
@@ -95,7 +95,7 @@ const tocItems = computed(() => [
 
 /* 刊名：巨大衬线字，末尾缀刊头红句点 */
 .name {
-  margin: clamp(14px, 3vw, 34px) 0 clamp(18px, 3.4vw, 40px);
+  margin: clamp(16px, 3vw, 36px) 0 clamp(20px, 3.4vw, 40px);
   font-family: var(--font-head);
   font-size: clamp(48px, 11.5vw, 164px);
   font-weight: 700;
@@ -120,7 +120,7 @@ const tocItems = computed(() => [
 .tagline {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(22px, 3vw, 34px);
+  font-size: clamp(21px, 3vw, 32px);
   font-style: italic;
   line-height: 1.4;
   color: var(--c-text);
@@ -143,12 +143,12 @@ const tocItems = computed(() => [
    不吸掉余量的话 1280 宽下标题下方会留 270px 空白。 */
 .toc {
   margin-top: auto;
-  padding-top: clamp(30px, 6vh, 64px);
+  padding-top: clamp(32px, 6vh, 64px);
   border-top: var(--border-w) solid var(--ink-soft);
 }
 
 .toc-caption {
-  margin: 10px 0 4px;
+  margin: 12px 0 4px;
   font-size: var(--fs-small);
   letter-spacing: 0.32em;
   color: var(--c-accent);
@@ -168,7 +168,7 @@ const tocItems = computed(() => [
   align-items: flex-start;
   gap: 2px;
   min-height: 48px;
-  padding: 12px 10px 12px 0;
+  padding: 12px 12px 12px 0;
   color: var(--c-text);
   text-decoration: none;
   background: transparent;
@@ -198,7 +198,7 @@ const tocItems = computed(() => [
 
 .toc-label {
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.2vw, 25px);
+  font-size: clamp(18px, 2.2vw, 24px);
   font-weight: 700;
   line-height: 1.25;
 }
@@ -223,11 +223,11 @@ const tocItems = computed(() => [
 @media (max-width: 760px) {
   .spread {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 16px;
   }
 
   .desc {
-    padding-left: 14px;
+    padding-left: 16px;
   }
 }
 
@@ -247,7 +247,7 @@ const tocItems = computed(() => [
 
   .toc-item {
     flex-direction: row;
-    gap: 14px;
+    gap: 16px;
     align-items: baseline;
     border-bottom: var(--border-w) solid var(--ink-soft);
   }

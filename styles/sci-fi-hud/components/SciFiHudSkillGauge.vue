@@ -93,7 +93,7 @@ function safeSkills(group: SkillGroup): string[] {
 /* 刻度尺：向右渐隐的细密刻度（装饰） */
 .gauge-ruler {
   height: 4px;
-  margin: 8px 0 10px;
+  margin: 8px 0 12px;
   background: repeating-linear-gradient(
     90deg,
     color-mix(in srgb, var(--c-accent) 45%, transparent) 0 1px,
@@ -107,7 +107,7 @@ function safeSkills(group: SkillGroup): string[] {
 .gauge-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;

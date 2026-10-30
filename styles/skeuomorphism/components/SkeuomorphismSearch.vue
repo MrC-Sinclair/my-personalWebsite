@@ -67,7 +67,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 46px;
-  padding: 12px 18px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 500;
@@ -88,8 +88,10 @@ const { t } = useI18n()
   color: var(--c-muted);
 }
 
+/* hover：文字转成深金棕而不是金铜色——金铜 #b8893a 压在输入框的
+   米白纸面上只有 2.63:1，达不到 AA；#7a4a12 为 6.24:1，仍是金棕调 */
 .input:hover {
-  color: var(--c-accent);
+  color: #7a4a12;
   transform: translateY(-2px);
 }
 
@@ -110,10 +112,12 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 46px;
-  padding: 12px 10px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
-  color: var(--c-accent-2);
+  /* 原值 --c-accent-2（#a84632）压在深棕木桌底上只有 2.86:1；
+     提亮成浅砖红后 7.64:1，与标签栏的清除链保持一致 */
+  color: #e0a184;
   background: transparent;
   border: 0;
   text-decoration: underline;

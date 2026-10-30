@@ -145,7 +145,7 @@ const segments = computed(() => {
   left: 50%;
   margin: 0;
   font-family: var(--font-head);
-  font-size: 26px;
+  font-size: 28px;
   font-variant-numeric: tabular-nums;
   color: var(--c-text);
   transform: translate(-50%, -50%);
@@ -164,7 +164,7 @@ const segments = computed(() => {
   align-items: center;
   gap: 8px;
   min-height: 32px;
-  padding: 4px 6px;
+  padding: 4px 8px;
   border-radius: var(--radius-sm);
   transition: background var(--transition);
 }

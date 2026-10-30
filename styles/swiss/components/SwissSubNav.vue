@@ -98,7 +98,7 @@ function pad(n: number): string {
   align-items: center;
   gap: 8px;
   min-height: 48px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -184,7 +184,7 @@ function pad(n: number): string {
 }
 
 .brand-name {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.02em;
   text-transform: uppercase;

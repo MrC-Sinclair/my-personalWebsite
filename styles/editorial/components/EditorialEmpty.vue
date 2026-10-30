@@ -27,7 +27,7 @@ defineProps<{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: clamp(40px, 7vw, 80px) var(--space);
   border-top: var(--border-w) solid var(--c-border);
   border-bottom: var(--border-w) solid var(--c-border);
@@ -37,7 +37,7 @@ defineProps<{
 /* 节符：杂志补白的装饰性铅字 */
 .glyph {
   font-family: var(--font-head);
-  font-size: clamp(40px, 6vw, 64px);
+  font-size: clamp(40px, 6vw, 60px);
   line-height: 1;
   color: var(--c-accent);
 }
@@ -45,7 +45,7 @@ defineProps<{
 .msg {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.4vw, 24px);
+  font-size: clamp(18px, 2.4vw, 24px);
   line-height: 1.5;
   color: var(--c-text);
 }

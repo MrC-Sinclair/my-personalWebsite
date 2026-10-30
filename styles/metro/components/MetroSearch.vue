@@ -116,9 +116,11 @@ const { t } = useI18n()
 /* —— 清除：与标签栏同款（青色文字 tile） —— */
 .clear {
   min-height: 34px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
+  /* 白字压橙（--c-accent-2）：14px + 700 走 3:1 门槛 */
+  font-weight: 700;
   color: #ffffff;
   background: var(--c-accent-2);
   border: 0;

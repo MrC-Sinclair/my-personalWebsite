@@ -74,7 +74,7 @@ function isActive(path: string): boolean {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 14px;
+  gap: 8px 16px;
   padding: 8px var(--space);
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -88,7 +88,7 @@ function isActive(path: string): boolean {
   align-items: center;
   gap: 0.5em;
   min-height: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   color: var(--c-on-accent);
   background: var(--c-accent-2);
   border: var(--border-w) solid var(--c-accent-2);
@@ -112,7 +112,7 @@ function isActive(path: string): boolean {
 .subnav__list {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 10px;
+  gap: 4px 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -122,7 +122,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   color: var(--c-accent);
   text-decoration: none;
   border: var(--border-w) solid transparent;
@@ -160,7 +160,7 @@ function isActive(path: string): boolean {
   gap: 0.5em;
   min-height: 40px;
   margin-left: auto;
-  padding: 6px 10px;
+  padding: 8px 12px;
   color: var(--c-muted);
   text-decoration: none;
   border: var(--border-w) solid color-mix(in srgb, var(--c-muted) 35%, transparent);
@@ -178,7 +178,7 @@ function isActive(path: string): boolean {
   align-items: center;
   gap: 0.5em;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   color: var(--c-muted);
   text-decoration: none;
   border: var(--border-w) solid color-mix(in srgb, var(--c-muted) 35%, transparent);

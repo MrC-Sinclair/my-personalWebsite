@@ -108,7 +108,7 @@ const loading = computed(() => pending.value && !postsData.value)
 .posts-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 /* —— 空态 / 加载骨架 —— */
@@ -116,7 +116,7 @@ const loading = computed(() => pending.value && !postsData.value)
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: clamp(24px, 5vw, 48px) 0;
   color: var(--c-muted);

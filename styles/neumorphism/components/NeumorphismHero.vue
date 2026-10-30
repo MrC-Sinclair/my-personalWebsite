@@ -68,7 +68,7 @@ const initials = computed(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   min-height: clamp(520px, 62vh, 680px);
   padding: 32px 0 24px;
   text-align: center;
@@ -81,7 +81,7 @@ const initials = computed(() => {
   justify-content: center;
   width: 96px;
   height: 96px;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 800;
   letter-spacing: 0.04em;
   color: var(--c-accent);
@@ -91,7 +91,7 @@ const initials = computed(() => {
 }
 
 .hero-greeting {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: var(--fs-base);
   letter-spacing: 0.12em;
   color: var(--c-muted);
@@ -100,7 +100,7 @@ const initials = computed(() => {
 /* 大号浮雕姓名：文字本身也带凸起的光影 */
 .hero-name {
   margin: 0;
-  font-size: clamp(var(--fs-head), 8vw, 64px);
+  font-size: clamp(var(--fs-head), 8vw, 60px);
   font-weight: 800;
   line-height: 1.15;
   color: var(--c-text);
@@ -128,7 +128,7 @@ const initials = computed(() => {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 18px;
+  gap: 20px;
   margin-top: 12px;
 }
 
@@ -173,8 +173,8 @@ const initials = computed(() => {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 26px;
-  margin-top: 18px;
+  gap: 28px;
+  margin-top: 20px;
 }
 
 /* 表盘：外圈凸起圆台 + 内圈内凹盘面 + 强调色指针 */
@@ -237,7 +237,7 @@ const initials = computed(() => {
   left: 58%;
   width: 34px;
   height: 34px;
-  margin-top: -17px;
+  margin-top: -16px;
   background: var(--c-bg);
   border-radius: 50%;
   box-shadow: var(--shadow);

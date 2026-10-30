@@ -86,9 +86,9 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .brick {
   display: inline-flex;
   align-items: baseline;
-  gap: 7px;
+  gap: 8px;
   min-height: 46px;
-  padding: 12px 18px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -142,11 +142,12 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 46px;
-  padding: 12px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 700;
-  color: #111111;
+  /* 同 NeoBrutalismSearch.vue：蓝底统一用白字，黑字压蓝 3.76:1 不达标 */
+  color: #ffffff;
   background: var(--c-accent-2);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
@@ -182,11 +183,12 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 46px;
-  padding: 12px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 700;
-  color: #111111;
+  /* 同 NeoBrutalismSearch.vue：蓝底统一用白字，黑字压蓝 3.76:1 不达标 */
+  color: #ffffff;
   background: var(--c-accent-2);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);

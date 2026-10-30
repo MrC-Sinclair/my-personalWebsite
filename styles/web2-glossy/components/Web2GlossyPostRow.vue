@@ -94,7 +94,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   inset: 10px auto 10px 0;
   width: 5px;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: linear-gradient(180deg, #58a6f5 0%, #1d5fae 100%);
+  background: linear-gradient(180deg, #3f8fd8 0%, #1d5fae 100%);
   box-shadow: 1px 0 3px rgb(23 74 128 / 0.3);
   transform: scaleY(0);
   transition: transform var(--transition);
@@ -111,7 +111,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   flex: none;
   align-items: center;
   min-height: 34px;
-  padding: 5px 14px;
+  padding: 4px 16px;
   overflow: hidden;
   border: 1px solid #14417e;
   border-radius: var(--radius-sm);
@@ -141,7 +141,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -173,7 +173,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
 .prow__tag {
   display: inline-flex;
   align-items: center;
-  padding: 3px 11px;
+  padding: 3px 12px;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-sm);
   font-size: var(--fs-small);
@@ -187,7 +187,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
 @media (max-width: 560px) {
   .prow {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
   .prow__date {

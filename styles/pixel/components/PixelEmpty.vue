@@ -26,7 +26,7 @@ defineProps<{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 20px 16px;
   background: color-mix(in srgb, var(--c-bg) 55%, var(--c-surface));
   border: 2px solid color-mix(in srgb, var(--c-muted) 45%, transparent);

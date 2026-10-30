@@ -86,7 +86,7 @@ function isActive(path: string): boolean {
      溢出 32px。给一条退路，放不下就换行而不是撑出横向滚动。 */
   flex-wrap: wrap;
   align-items: center;
-  gap: clamp(14px, 3vw, 28px);
+  gap: clamp(16px, 3vw, 28px);
   max-width: var(--page-w);
   margin-inline: auto;
   padding: 12px clamp(16px, 4vw, 40px);
@@ -96,7 +96,7 @@ function isActive(path: string): boolean {
 .fd-subnav__brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: none;
   min-height: 40px;
   text-decoration: none;
@@ -120,7 +120,7 @@ function isActive(path: string): boolean {
 .fd-subnav__nav {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(10px, 2vw, 22px);
+  gap: clamp(12px, 2vw, 24px);
   margin-left: auto;
 }
 
@@ -165,7 +165,7 @@ function isActive(path: string): boolean {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: clamp(10px, 2vw, 22px);
+  gap: clamp(12px, 2vw, 24px);
   min-width: 0;
 }
 
@@ -177,7 +177,7 @@ function isActive(path: string): boolean {
   flex: none;
   min-height: 40px;
   min-width: 40px;
-  padding: 0 10px;
+  padding: 0 12px;
   font-size: var(--fs-small);
   font-weight: 600;
   letter-spacing: 0.06em;

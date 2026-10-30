@@ -79,7 +79,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   flex-wrap: wrap;
   align-items: stretch;
   gap: 8px;
-  padding: 10px 0;
+  padding: 12px 0;
   margin-bottom: var(--gap);
   border-top: var(--border-w) solid var(--c-border);
   border-bottom: var(--border-w) solid var(--c-border);
@@ -89,9 +89,9 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .slug {
   display: inline-flex;
   align-items: baseline;
-  gap: 7px;
+  gap: 8px;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -140,7 +140,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 44px;
-  padding: 10px 12px;
+  padding: 12px 12px;
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--c-accent);
@@ -177,7 +177,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 44px;
-  padding: 10px 12px;
+  padding: 12px 12px;
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--c-accent);

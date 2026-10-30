@@ -83,7 +83,7 @@ function tagsCell(post: BlogPost): string {
 }
 
 th {
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 600;
@@ -95,7 +95,7 @@ th {
 }
 
 td {
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: var(--fs-base);
   color: var(--c-text);
   border-bottom: var(--border-w) solid color-mix(in srgb, var(--c-border) 55%, transparent);

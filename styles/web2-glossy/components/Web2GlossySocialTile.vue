@@ -69,9 +69,9 @@ const host = computed(() => {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   min-height: 84px;
-  padding: 16px 18px;
+  padding: 16px 20px;
   overflow: hidden;
   border: 1px solid var(--c-border);
   border-radius: var(--radius);
@@ -139,7 +139,7 @@ const host = computed(() => {
   border-radius: 50%;
   color: var(--c-on-accent);
   font-family: var(--font-head);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 800;
   text-shadow: 0 1px 1px rgb(9 34 64 / 0.45);
   background: linear-gradient(180deg, #4f9cf0 0%, #2b72c6 52%, #1d5fae 100%);
@@ -176,7 +176,7 @@ const host = computed(() => {
 .stile__value {
   display: inline-flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
   color: var(--c-muted);
   font-size: var(--fs-small);
   font-weight: 600;

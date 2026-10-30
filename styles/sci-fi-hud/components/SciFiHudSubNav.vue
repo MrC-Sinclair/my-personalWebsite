@@ -125,7 +125,7 @@ function isActive(path: string): boolean {
 
 .ident-name {
   font-family: var(--font-head);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--c-text);
@@ -171,7 +171,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   padding: 8px 12px;
   font-family: var(--font-body);
@@ -226,7 +226,7 @@ function isActive(path: string): boolean {
   gap: 3px;
   min-height: 40px;
   min-width: 40px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   letter-spacing: 0.08em;

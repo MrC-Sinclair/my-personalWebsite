@@ -50,7 +50,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   position: sticky;
   top: 0;
   z-index: 20;
-  padding: 14px var(--gap) 6px;
+  padding: 16px var(--gap) 8px;
 }
 
 /* —— 玻璃胶囊配方 ——
@@ -65,7 +65,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   gap: var(--gap);
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: 6px 10px 6px 18px;
+  padding: 8px 12px 8px 20px;
   background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: 999px;
@@ -112,7 +112,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   color: var(--c-text);
   text-decoration: none;
@@ -176,7 +176,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-base);
   color: var(--c-muted);
   text-decoration: none;
@@ -278,9 +278,9 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   }
 
   .glass {
-    gap: 6px;
+    gap: 8px;
     padding-right: 8px;
-    padding-left: 14px;
+    padding-left: 16px;
     /* 锚点带改独占一行（见下方 .links-scroll 的 order） */
     flex-wrap: wrap;
   }
@@ -319,7 +319,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   }
 
   .lang {
-    padding: 8px 10px;
+    padding: 8px 12px;
   }
 
   .gallery {

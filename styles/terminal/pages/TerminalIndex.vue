@@ -209,7 +209,7 @@ const skipLinks = computed(() => [
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 8px var(--space);
   background: var(--c-bg);
   border-bottom: var(--border-w) solid var(--c-border);
@@ -232,7 +232,7 @@ const skipLinks = computed(() => [
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-on-accent);
   background: var(--c-accent-2);

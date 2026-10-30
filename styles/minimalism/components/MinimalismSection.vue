@@ -60,7 +60,7 @@ defineProps<{
 }
 
 .sec-title {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   font-family: var(--font-head);
   font-size: clamp(28px, 4vw, var(--fs-head));
   font-weight: 300;
@@ -71,12 +71,12 @@ defineProps<{
 
 .sec-desc {
   max-width: 36ch;
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   color: var(--c-muted);
 }
 
 .sec-aside {
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .sec-body {
@@ -106,7 +106,7 @@ defineProps<{
 }
 
 .sec--quiet .sec-grid {
-  gap: 14px;
+  gap: 16px;
 }
 
 .sec--quiet .sec-title {

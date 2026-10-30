@@ -63,7 +63,7 @@ const {
   justify-content: center;
   overflow: hidden;
   min-height: 44px;
-  padding: 10px 24px;
+  padding: 12px 24px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -103,7 +103,7 @@ const {
       （12px 铭牌小字在 hero 里会把 CTA 压成「隐约的暗色矩形」） —— */
 .y2k-btn--lg {
   min-height: 56px;
-  padding: 14px 32px;
+  padding: 16px 32px;
   font-size: 14px;
   letter-spacing: 0.12em;
 }
@@ -117,15 +117,21 @@ const {
      改成同一族的深铬之后：主次靠**明暗**区分，而不是换材质——亮银是
      主 CTA，深铬是次级动作，两者都是金属，语言才统一。 */
 .y2k-btn--plastic {
+  /* 14px + 700 走 3:1 大字号门槛 */
+  font-size: var(--fs-small);
+  font-weight: 700;
   color: #ffffff;
+  /* 原渐变两端是 #e2e9fb / #b6c0e8（近白），白字压在浅色段只有 1.2:1——
+     六段渐变两头极端，改白字或改黑字都救不了，只能压缩明度范围：
+     整体收进「中蓝紫 ↔ 深蓝紫」，最亮端 #7d89c1 白字 3.38:1，塑料反光仍在。 */
   background: linear-gradient(
     180deg,
-    #e2e9fb 0%,
-    #9aa6d6 26%,
+    #7d89c1 0%,
+    #6b76a8 26%,
     #4a5488 48%,
     #2c3358 62%,
-    #7d89c1 88%,
-    #b6c0e8 100%
+    #5a6494 88%,
+    #7d89c1 100%
   );
   border-color: rgb(235 240 255 / 0.6);
   box-shadow:

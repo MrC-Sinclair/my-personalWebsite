@@ -73,7 +73,7 @@ const { copied, copy } = useClipboardCopy()
 .contact-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   padding: var(--space);
   background: var(--c-bg);
   border: var(--border-w) solid var(--c-border);

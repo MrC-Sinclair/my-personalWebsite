@@ -48,7 +48,7 @@ withDefaults(
   justify-content: center;
   gap: 8px;
   min-height: 40px;
-  padding: 0 18px;
+  padding: 0 20px;
   background: var(--c-surface);
   border: var(--border-w) solid;
   border-color: #dfdfdf #0a0a0a #0a0a0a #dfdfdf;

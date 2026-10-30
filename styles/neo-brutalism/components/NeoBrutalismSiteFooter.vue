@@ -44,7 +44,7 @@ const localePath = useLocalePath()
 .giant {
   margin: 0 0 28px;
   font-family: var(--font-head);
-  font-size: clamp(44px, 9vw, 120px);
+  font-size: clamp(48px, 9vw, 120px);
   font-weight: 900;
   line-height: 0.9;
   letter-spacing: -0.02em;
@@ -86,7 +86,7 @@ const localePath = useLocalePath()
 .actions {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* —— 按钮：黄实心 / 黑描边两种 —— */
@@ -94,7 +94,7 @@ const localePath = useLocalePath()
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 900;

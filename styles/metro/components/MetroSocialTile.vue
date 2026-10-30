@@ -96,14 +96,14 @@ function toggleQr() {
 
 <style scoped>
 .social__glyph {
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 300;
   line-height: 1;
 }
 
 .social__name {
   font-family: var(--font-head);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 700;
   line-height: 1.2;
   overflow-wrap: break-word;
@@ -117,7 +117,7 @@ function toggleQr() {
 /* 二维码：白色衬底保证可扫描，图片为既有公共资源 */
 .social__qr {
   align-self: flex-start;
-  padding: 5px;
+  padding: 4px;
   background: #ffffff;
 }
 

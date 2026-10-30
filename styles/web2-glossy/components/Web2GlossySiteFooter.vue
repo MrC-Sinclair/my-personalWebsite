@@ -49,10 +49,10 @@ const logoInitial = computed(() => t('home.name').charAt(0))
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   max-width: var(--page-w);
   margin-inline: auto;
-  padding: 36px clamp(16px, 4vw, 32px) calc(30px + env(safe-area-inset-bottom));
+  padding: 36px clamp(16px, 4vw, 32px) calc(32px + env(safe-area-inset-bottom));
   text-align: center;
 }
 
@@ -60,7 +60,7 @@ const logoInitial = computed(() => t('home.name').charAt(0))
 .site-footer__brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .site-footer__logo {

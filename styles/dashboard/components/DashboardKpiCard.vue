@@ -63,9 +63,9 @@ defineProps<{
 }
 
 .kpi-value {
-  margin: 6px 0 4px;
+  margin: 8px 0 4px;
   font-family: var(--font-head);
-  font-size: clamp(30px, 4.5vw, 44px);
+  font-size: clamp(32px, 4.5vw, 48px);
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
   color: var(--c-text);

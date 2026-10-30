@@ -59,12 +59,12 @@ function hostOf(url: string): string {
 
 <style scoped>
 .rc-contact__intro {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
 }
 
 /* 小节标题：深蓝下划线（像菜单分组线） */
 .rc-sub {
-  margin: 18px 0 10px;
+  margin: 20px 0 12px;
   padding-bottom: 4px;
   border-bottom: 2px solid var(--c-accent);
   font-family: var(--font-head);
@@ -78,13 +78,13 @@ function hostOf(url: string): string {
 }
 
 .rc-contact__list li + li {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .rc-contact__row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 44px;
   padding: 8px 12px;
   border: var(--border-w) solid transparent;
@@ -123,7 +123,7 @@ function hostOf(url: string): string {
 }
 
 .rc-contact__value-label {
-  margin-right: 6px;
+  margin-right: 8px;
   color: var(--c-muted);
 }
 

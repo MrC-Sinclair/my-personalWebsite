@@ -65,7 +65,7 @@ const { t } = useI18n()
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--gap);
 
-  /* 各自收短：等高 + 页脚 margin-top: auto 会在内容少的展台中间留 131px 空洞 */
+  /* 各自收短：等高 + 页脚 margin-top: auto 会在内容少的展台中间留 132px 空洞 */
   align-items: start;
 }
 
@@ -75,7 +75,7 @@ const { t } = useI18n()
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 18px;
+  padding: 20px;
   overflow: hidden;
   text-decoration: none;
   /* 内嵌展台：与外层面板同材质，只是更透一级（无 backdrop-filter，

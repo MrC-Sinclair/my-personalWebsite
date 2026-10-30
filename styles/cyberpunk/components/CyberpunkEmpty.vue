@@ -27,7 +27,7 @@ defineProps<{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: calc(var(--space) * 1.5) var(--space);
   text-align: center;
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
@@ -36,7 +36,7 @@ defineProps<{
 
 /* 警示符：粉色闪烁 */
 .glyph {
-  font-size: 26px;
+  font-size: 28px;
   color: var(--c-accent-2);
   text-shadow: 0 0 12px rgb(255 45 149 / 0.6);
   animation: glyph-blink 1.6s steps(2, start) infinite;

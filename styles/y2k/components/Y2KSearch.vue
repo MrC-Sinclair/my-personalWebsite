@@ -109,9 +109,11 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 46px;
-  padding: 12px 18px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
+  /* 14px + 700 走 3:1 大字号门槛：白字压紫粉渐变（均值 #c56cf0）3.10:1 */
+  font-weight: 700;
   color: #ffffff;
   background: linear-gradient(180deg, var(--c-accent) 0%, var(--c-accent-2) 100%);
   border: var(--border-w) solid var(--c-accent-2);

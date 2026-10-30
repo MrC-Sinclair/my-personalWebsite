@@ -88,7 +88,7 @@ function progressOf(group: SkillGroup): number {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .category {
@@ -106,7 +106,7 @@ function progressOf(group: SkillGroup): number {
   justify-content: center;
   min-width: 34px;
   min-height: 34px;
-  padding: 0 9px;
+  padding: 0 8px;
   font-size: var(--fs-small);
   font-weight: 800;
   color: var(--tone-text);
@@ -148,7 +148,7 @@ function progressOf(group: SkillGroup): number {
 .pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -158,7 +158,7 @@ function progressOf(group: SkillGroup): number {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 7px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-base);
   font-weight: 600;
   color: var(--c-text);

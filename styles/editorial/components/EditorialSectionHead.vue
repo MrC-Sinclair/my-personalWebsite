@@ -62,8 +62,8 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 6px var(--gap);
-  padding-top: 14px;
+  gap: 8px var(--gap);
+  padding-top: 16px;
 }
 
 /* 编号：等宽小字 + 刊头红 */
@@ -78,7 +78,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(30px, 4.4vw, 52px);
+  font-size: clamp(32px, 4.4vw, 48px);
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.01em;

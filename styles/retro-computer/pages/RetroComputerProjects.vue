@@ -77,7 +77,7 @@ const statusText = computed(() => `${projects.value.length} ${t('projects.title'
 .rc-loading {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 16px;
   color: var(--c-muted);
 }
@@ -117,7 +117,7 @@ const statusText = computed(() => `${projects.value.length} ${t('projects.title'
 .rc-empty {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 16px;
   background: #ffffff;

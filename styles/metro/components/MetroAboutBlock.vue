@@ -47,13 +47,13 @@ const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.va
 .about__heading {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2vw, 26px);
+  font-size: clamp(18px, 2vw, 28px);
   font-weight: 400;
   line-height: 1.4;
 }
 
 .about__exp-label {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-size: var(--fs-small);
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -81,7 +81,7 @@ const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.va
 }
 
 .about__role {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.4;
 }

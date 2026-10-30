@@ -84,7 +84,7 @@ const items = computed<TimelineItem[]>(() => (Array.isArray(timeline.value) ? ti
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px 14px;
+  gap: 8px 16px;
 }
 
 .tl-title {

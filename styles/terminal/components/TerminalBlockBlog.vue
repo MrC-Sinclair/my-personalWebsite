@@ -75,7 +75,7 @@ function dateText(post: BlogPost): string {
   align-items: baseline;
   gap: 4px 12px;
   min-height: 40px;
-  padding: 6px 4px;
+  padding: 8px 4px;
 }
 
 .post:hover {

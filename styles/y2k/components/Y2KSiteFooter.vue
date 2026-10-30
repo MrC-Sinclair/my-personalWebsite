@@ -94,9 +94,9 @@ const { t } = useI18n()
 .ft-top {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   letter-spacing: 0.06em;

@@ -169,7 +169,7 @@ const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSear
 .filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .filter-chip {
@@ -178,7 +178,7 @@ const { query, results, resultCount, totalCount, setQuery, clear } = useBlogSear
   min-height: 40px;
   /* 同 DashboardIndex：两字标签在回退等宽字体下 39px，命中区下限写进样式 */
   min-width: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-muted);

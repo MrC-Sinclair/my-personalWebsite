@@ -271,7 +271,7 @@ function submitSearch(): void {
 .post-search {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: var(--gap);
 }
 
@@ -285,7 +285,7 @@ function submitSearch(): void {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-text);

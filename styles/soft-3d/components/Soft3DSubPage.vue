@@ -103,7 +103,7 @@ useScrollReveal()
 
 @media (max-width: 640px) {
   .p3d-main {
-    padding: 0 14px calc(var(--space));
+    padding: 0 16px calc(var(--space));
   }
 
   .sec {

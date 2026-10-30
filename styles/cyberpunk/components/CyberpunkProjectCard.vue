@@ -149,7 +149,7 @@ const projectRoute = computed(
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
   padding: var(--space);
   background: var(--c-surface);
@@ -198,7 +198,7 @@ const projectRoute = computed(
 /* 占位大字符：无图时的数字装饰 */
 .visual-glyph {
   font-family: var(--font-head);
-  font-size: 52px;
+  font-size: 48px;
   color: rgb(34 211 238 / 0.4);
   text-shadow: 0 0 18px rgb(34 211 238 / 0.5);
 }
@@ -237,7 +237,7 @@ const projectRoute = computed(
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px 10px;
+  gap: 8px 12px;
 }
 
 .name {
@@ -261,7 +261,7 @@ const projectRoute = computed(
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 10px;
+  padding: 3px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-accent-2);
@@ -294,7 +294,7 @@ const projectRoute = computed(
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
+  padding: 3px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   background: rgb(255 255 255 / 0.03);
@@ -321,7 +321,7 @@ const projectRoute = computed(
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-top: auto;
   padding-top: 4px;
 }
@@ -329,7 +329,7 @@ const projectRoute = computed(
 .action {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   padding: 8px 16px;
   font-family: var(--font-head);

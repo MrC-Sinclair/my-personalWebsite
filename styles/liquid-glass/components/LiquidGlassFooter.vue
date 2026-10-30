@@ -40,7 +40,7 @@ const localePath = useLocalePath()
   gap: var(--gap);
   max-width: calc(var(--page-w) + 2 * var(--space));
   margin: 0 auto;
-  padding: 18px var(--space);
+  padding: 20px var(--space);
   background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-bottom: none;
@@ -83,7 +83,7 @@ const localePath = useLocalePath()
 .item {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   font-size: var(--fs-small);
   color: var(--c-muted);

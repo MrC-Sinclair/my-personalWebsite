@@ -91,7 +91,7 @@ const statusText = computed(() => `${resultCount.value} ${t('blog.title')}`)
 .rc-loading {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 16px;
   color: var(--c-muted);
 }
@@ -131,7 +131,7 @@ const statusText = computed(() => `${resultCount.value} ${t('blog.title')}`)
 .rc-empty {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 16px;
   background: #ffffff;

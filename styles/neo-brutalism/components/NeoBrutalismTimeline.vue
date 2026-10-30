@@ -82,7 +82,7 @@ const safeItems = computed<TimelineItem[]>(() =>
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
-  padding: 18px 20px;
+  padding: 20px 20px;
   background: var(--c-surface);
   border: var(--border-w) solid var(--c-border);
   box-shadow: var(--shadow);
@@ -105,7 +105,7 @@ const safeItems = computed<TimelineItem[]>(() =>
 /* —— 时间段：黑底等宽字铅块 —— */
 .period {
   justify-self: start;
-  padding: 3px 10px;
+  padding: 3px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -117,7 +117,7 @@ const safeItems = computed<TimelineItem[]>(() =>
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 900;
   line-height: 1.3;
 }
@@ -130,8 +130,8 @@ const safeItems = computed<TimelineItem[]>(() =>
 }
 
 .desc {
-  margin: 6px 0 0;
-  font-size: 15px;
+  margin: 8px 0 0;
+  font-size: 16px;
   line-height: 1.7;
 }
 

@@ -32,7 +32,7 @@ const { t } = useI18n()
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 14px;
+  gap: 16px;
   padding: var(--space);
   background: var(--c-accent);
   color: var(--c-on-accent);
@@ -61,8 +61,8 @@ const { t } = useI18n()
 /* —— 海报家具：一排几何形状 —— */
 .shapes {
   display: inline-flex;
-  gap: 14px;
-  margin-top: 10px;
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .shape {

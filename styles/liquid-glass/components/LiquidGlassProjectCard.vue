@@ -102,7 +102,7 @@ const projectRoute = computed(
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  padding: clamp(20px, 2.6vw, 30px);
+  padding: clamp(20px, 2.6vw, 32px);
   background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
@@ -178,7 +178,7 @@ const projectRoute = computed(
 .lens::after {
   position: absolute;
   inset: 0;
-  padding: 5px;
+  padding: 4px;
   border-radius: inherit;
   content: '';
   /* 透镜环带 + 折射染色 */
@@ -217,8 +217,8 @@ const projectRoute = computed(
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .name {
@@ -233,7 +233,7 @@ const projectRoute = computed(
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
+  padding: 3px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-accent);
@@ -244,7 +244,7 @@ const projectRoute = computed(
 }
 
 .desc {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-size: var(--fs-base);
   line-height: var(--lh-body);
   color: var(--c-muted);
@@ -258,7 +258,7 @@ const projectRoute = computed(
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   padding: 0;
   list-style: none;
 }
@@ -279,14 +279,14 @@ const projectRoute = computed(
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-top: auto;
 }
 
 .action {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   padding: 8px 16px;
   font-size: var(--fs-small);

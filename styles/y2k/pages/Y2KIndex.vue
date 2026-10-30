@@ -266,10 +266,11 @@ function submitSearch(): void {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 46px;
-  padding: 10px 20px;
+  padding: 12px 20px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
-  color: var(--c-text);
+  /* 搜索框底是白/浅蓝渐变，文字要用深墨色（原 --c-text 是浅白，压白底 1.13:1） */
+  color: var(--c-on-accent);
   background: linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(226 232 255 / 0.78));
   border: var(--border-w) solid rgb(255 255 255 / 0.85);
   border-radius: 999px;
@@ -283,8 +284,9 @@ function submitSearch(): void {
     border-color var(--transition);
 }
 
+/* 占位符比正文浅一档，但仍需 ≥4.5:1：原 --c-muted（#a8b0e8）压白底只有 2.09:1 */
 .post-search input::placeholder {
-  color: var(--c-muted);
+  color: #6b6f9e;
 }
 
 .post-search input:focus-visible {
@@ -342,7 +344,7 @@ function submitSearch(): void {
   top: 50%;
   left: 50%;
   padding: 0 12px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1;
   color: rgb(240 244 255 / 0.95);
   background: var(--c-bg);
@@ -382,7 +384,7 @@ function submitSearch(): void {
 .empty {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   margin: 0;
   padding: var(--space);
   font-weight: 700;

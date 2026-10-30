@@ -82,7 +82,7 @@ const { t } = useI18n()
   align-items: stretch;
   gap: 4px;
   height: 48px;
-  padding: 0 6px;
+  padding: 0 8px;
 }
 
 /* —— 开始按钮 —— */
@@ -90,7 +90,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0 14px;
+  padding: 0 16px;
   background: var(--c-surface);
   border: var(--border-w) solid;
   border-color: #dfdfdf #0a0a0a #0a0a0a #dfdfdf;
@@ -141,7 +141,7 @@ const { t } = useI18n()
 .rc-taskbar__win {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 40px;
   padding: 0 12px;
   background: var(--c-surface);
@@ -185,7 +185,7 @@ const { t } = useI18n()
   align-items: center;
   align-self: center;
   margin-left: auto;
-  padding: 4px 10px;
+  padding: 4px 12px;
   background: #ffffff;
   border: var(--border-w) solid;
   border-color: var(--c-border) #ffffff #ffffff var(--c-border);

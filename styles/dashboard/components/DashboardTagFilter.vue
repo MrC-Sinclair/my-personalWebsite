@@ -82,7 +82,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .tags-label {
@@ -98,10 +98,10 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .chip {
   display: inline-flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   /* 触控命中：靠上下内边距长高，保住 13px 标签 / 11px 计数之间的基线对齐 */
-  padding: 10px 12px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -148,7 +148,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 40px;
-  padding: 9px 10px;
+  padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent-2);
@@ -180,7 +180,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 40px;
-  padding: 9px 10px;
+  padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent-2);

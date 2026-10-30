@@ -222,7 +222,7 @@ function submitSearch(): void {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -268,7 +268,7 @@ function submitSearch(): void {
 }
 
 .empty-hint {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: var(--fs-small);
   color: var(--c-muted);
 }

@@ -89,7 +89,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   align-items: baseline;
   gap: 8px;
   min-height: 48px;
-  padding: 13px 20px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 500;
@@ -145,7 +145,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 48px;
-  padding: 13px 10px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 500;
@@ -187,7 +187,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 48px;
-  padding: 13px 10px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 500;

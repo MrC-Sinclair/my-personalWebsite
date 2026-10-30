@@ -632,7 +632,7 @@ onUnmounted(() => {
 
 /* 命令回显：琥珀 Prompt + 薄荷命令文本 */
 .line--echo {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .line--echo .prompt {
@@ -649,10 +649,10 @@ onUnmounted(() => {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 14px;
+  gap: 4px 16px;
   width: 100%;
   min-height: 40px;
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-family: var(--font-body);
   font-size: var(--fs-base);
   text-align: left;
@@ -722,13 +722,13 @@ onUnmounted(() => {
       终端的下半屏原先只有一条输入行伏在底部，中间是一整块空黑；
       这条静态栏既把下部填上，也让「不用手敲命令」有一条直达路径 */
 .quick {
-  padding: 10px var(--space);
+  padding: 12px var(--space);
   border-top: var(--border-w) dashed var(--c-border);
   background: color-mix(in srgb, var(--c-accent) 4%, transparent);
 }
 
 .quick-label {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: var(--fs-small);
   color: var(--c-muted);
 }
@@ -736,16 +736,16 @@ onUnmounted(() => {
 .quick-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .quick-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   min-width: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-accent);

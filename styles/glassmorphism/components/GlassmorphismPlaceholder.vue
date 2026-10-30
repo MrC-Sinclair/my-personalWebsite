@@ -103,7 +103,7 @@ withDefaults(
 .ph-dot {
   width: 16px;
   height: 16px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   background: var(--deco);
   border-radius: 50%;
   box-shadow: 0 0 16px rgb(139 92 246 / 0.55);

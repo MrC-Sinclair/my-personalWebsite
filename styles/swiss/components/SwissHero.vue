@@ -78,7 +78,7 @@ const { t } = useI18n()
   margin: 0;
   margin-left: -0.05em; /* 光学对齐：抵消字形左侧留白 */
   font-family: var(--font-head);
-  font-size: clamp(44px, 11.5vw, 168px);
+  font-size: clamp(48px, 11.5vw, 168px);
   font-weight: 700;
   line-height: 0.95;
   letter-spacing: -0.03em;
@@ -101,9 +101,9 @@ const { t } = useI18n()
 .hero-link {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 44px;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--c-text);
   text-decoration: none;
@@ -137,12 +137,12 @@ const { t } = useI18n()
 /* 标语与简介：向右推进（移动端即全宽，桌面端偏置到 6-12 栏） */
 .hero-body {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .hero-tagline {
   margin: 0;
-  font-size: clamp(19px, 2.2vw, 26px);
+  font-size: clamp(18px, 2.2vw, 28px);
   font-weight: 500;
   line-height: 1.4;
   color: var(--c-text);

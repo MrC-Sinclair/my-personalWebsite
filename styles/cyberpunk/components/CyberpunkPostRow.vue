@@ -90,7 +90,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   align-items: center;
   gap: var(--gap);
   min-height: 72px;
-  padding: 14px 18px 14px 22px;
+  padding: 16px 20px 16px 24px;
   background: rgb(255 255 255 / 0.02);
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
   transition:
@@ -179,8 +179,8 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 6px 0 0;
+  gap: 8px;
+  margin: 8px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -188,7 +188,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 2px 9px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   background: rgb(255 255 255 / 0.03);
@@ -216,7 +216,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   flex: none;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   font-family: var(--font-head);
   font-size: var(--fs-small);

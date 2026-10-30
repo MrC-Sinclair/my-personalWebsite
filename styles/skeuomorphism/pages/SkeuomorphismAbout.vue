@@ -79,7 +79,7 @@ const safeTimeline = computed(() => (Array.isArray(timeline.value) ? timeline.va
 .side-label-plate {
   display: inline-flex;
   align-items: center;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;

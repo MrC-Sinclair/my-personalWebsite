@@ -44,7 +44,7 @@ const host = computed(() => `guest@${t('home.name')}`.toLowerCase())
   align-items: center;
   gap: 4px 16px;
   min-height: 44px;
-  padding: 6px var(--space);
+  padding: 8px var(--space);
   background: var(--c-surface);
   border-bottom: var(--border-w) solid var(--c-border);
 }
@@ -75,7 +75,7 @@ const host = computed(() => `guest@${t('home.name')}`.toLowerCase())
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   margin-left: auto;
   font-size: var(--fs-small);
   color: var(--c-accent-2);
@@ -112,7 +112,7 @@ const host = computed(() => `guest@${t('home.name')}`.toLowerCase())
   align-items: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-accent-2);
   text-decoration: none;

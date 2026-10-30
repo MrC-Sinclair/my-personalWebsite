@@ -65,14 +65,14 @@ const tagText = computed(() =>
   -webkit-line-clamp: 3;
   margin: 0;
   font-family: var(--font-head);
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.25;
 }
 
 /* 宽 Tile（2x1）：标题升级为大字 */
 .post__title--wide {
-  font-size: clamp(22px, 2.4vw, 30px);
+  font-size: clamp(21px, 2.4vw, 32px);
 }
 
 .post__tags {

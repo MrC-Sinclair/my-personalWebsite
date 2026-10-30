@@ -118,7 +118,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-muted);

@@ -63,10 +63,10 @@ const navLinks = computed(() => [
   /* 320px 窄屏下标识 + 语言块 + 画廊块可能超一行：允许换行防横向溢出 */
   flex-wrap: wrap;
   align-items: center;
-  gap: clamp(14px, 3vw, 28px);
+  gap: clamp(16px, 3vw, 28px);
   max-width: var(--page-w);
   margin-inline: auto;
-  padding: 10px clamp(16px, 4vw, 40px);
+  padding: 12px clamp(16px, 4vw, 40px);
 }
 
 /* 站点标识：全大写宽字距的强 Typography */
@@ -123,7 +123,7 @@ const navLinks = computed(() => [
   flex: none;
   min-height: 40px;
   min-width: 40px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -139,7 +139,9 @@ const navLinks = computed(() => [
 }
 
 .hdr__lang:hover {
-  color: var(--c-accent);
+  /* 蓝在这里是**前景**（压在深灰混色底上），不能跟着 --c-accent 一起变深
+     （变深会掉到 3.97:1）；用更亮一档的蓝，4.78:1 */
+  color: #2aa9e6;
   background: color-mix(in srgb, var(--c-accent) 12%, var(--c-surface));
 }
 
@@ -153,7 +155,7 @@ const navLinks = computed(() => [
   align-items: center;
   gap: 8px;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   white-space: nowrap;

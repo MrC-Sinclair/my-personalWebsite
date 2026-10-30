@@ -45,7 +45,7 @@ const safeGroups = computed(() =>
 .skills {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
   padding: var(--space);
   background: var(--c-text);
   color: var(--c-bg);
@@ -56,7 +56,7 @@ const safeGroups = computed(() =>
 .group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* 分类名：海报黄等宽字（黄/黑对比约 15:1） */
@@ -73,7 +73,7 @@ const safeGroups = computed(() =>
 .list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -84,7 +84,7 @@ const safeGroups = computed(() =>
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: 14px;
   font-weight: 700;
   color: var(--c-bg);

@@ -49,7 +49,7 @@ function skillsText(skills: unknown): string {
 .skill-row {
   display: grid;
   grid-template-columns: 40px 1fr;
-  gap: 6px var(--gap);
+  gap: 8px var(--gap);
   align-items: baseline;
   padding: 16px 0;
   border-top: var(--border-w) solid var(--c-border);
@@ -63,7 +63,7 @@ function skillsText(skills: unknown): string {
 }
 
 .row-cat {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--c-text);

@@ -124,7 +124,7 @@ const projectLinks = computed(() => {
 /* 切角描边面板：赛博朋克的容器签名 */
 .panel {
   position: relative;
-  padding: clamp(18px, 2.8vw, 30px);
+  padding: clamp(20px, 2.8vw, 32px);
   border: 1px solid var(--c-border);
   background: var(--c-surface);
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
@@ -174,7 +174,7 @@ const projectLinks = computed(() => {
   max-width: 46ch;
   margin: 0 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(26px, 4.2vw, 46px);
+  font-size: clamp(28px, 4.2vw, 48px);
   font-weight: 800;
   line-height: 1.14;
   color: var(--c-text);
@@ -197,7 +197,7 @@ const projectLinks = computed(() => {
 
 /* 等宽描边芯片 */
 .chip {
-  padding: 3px 10px;
+  padding: 3px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -218,12 +218,12 @@ const projectLinks = computed(() => {
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 .link {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 44px;
   padding: 0 16px;
@@ -243,7 +243,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.8em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.3vw, 25px);
+  font-size: clamp(18px, 2.3vw, 24px);
   font-weight: 800;
   color: var(--c-text);
 }
@@ -251,7 +251,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.5em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(16px, 1.9vw, 20px);
+  font-size: clamp(16px, 1.9vw, 21px);
   font-weight: 800;
   color: var(--c-accent);
 }
@@ -288,7 +288,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   color: var(--c-accent);
@@ -296,7 +296,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.3em;
   overflow-x: auto;
   border: 1px solid var(--c-border);
@@ -327,7 +327,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 9px 12px;
+  padding: 8px 12px;
   text-align: left;
   border: 1px solid var(--c-border);
 }
@@ -346,7 +346,7 @@ const projectLinks = computed(() => {
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   text-decoration: none;
   transition: border-color var(--transition);
 }
@@ -434,7 +434,7 @@ const projectLinks = computed(() => {
   aspect-ratio: 16 / 9;
   max-height: 300px;
   object-fit: cover;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-sm);
   background: var(--c-surface);

@@ -438,7 +438,7 @@ const sections = computed(() => [
 .hero-name {
   margin: 4px 0 8px;
   font-family: var(--font-head);
-  font-size: clamp(30px, 6vw, 56px);
+  font-size: clamp(32px, 6vw, 60px);
   font-weight: 700;
   line-height: 1.12;
   color: var(--c-text);
@@ -478,7 +478,7 @@ const sections = computed(() => [
 .filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .filter-chip {
@@ -487,7 +487,7 @@ const sections = computed(() => [
   min-height: 40px;
   /* 两个汉字在回退等宽字体下只有 39px 宽（CI 实测），命中区下限不该由字形决定 */
   min-width: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -563,7 +563,7 @@ const sections = computed(() => [
   flex: 1 1 auto;
   min-width: 0;
   min-height: 40px;
-  padding: 9px 12px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-text);

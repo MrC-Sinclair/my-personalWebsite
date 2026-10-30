@@ -162,8 +162,8 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .rc-proj__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 10px 0 0;
+  gap: 8px;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
 }

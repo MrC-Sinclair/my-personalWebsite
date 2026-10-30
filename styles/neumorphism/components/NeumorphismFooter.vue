@@ -36,7 +36,7 @@ const localePath = useLocalePath()
 
 <style scoped>
 .footer {
-  padding: 8px max(18px, env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom))
+  padding: 8px max(20px, env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom))
     max(18px, env(safe-area-inset-left));
 }
 
@@ -49,7 +49,7 @@ const localePath = useLocalePath()
   gap: 12px 24px;
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: 18px 26px;
+  padding: 20px 28px;
   background: var(--surface-sunken);
   border-radius: var(--radius);
   box-shadow: inset 4px 4px 10px #a3b1c6, inset -4px -4px 10px #ffffff;
@@ -58,7 +58,7 @@ const localePath = useLocalePath()
 .footer-line {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -96,7 +96,7 @@ const localePath = useLocalePath()
 .footer-actions {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 /* 画廊入口：文字凸起小件 */
@@ -104,7 +104,7 @@ const localePath = useLocalePath()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-accent);

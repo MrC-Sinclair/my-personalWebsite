@@ -67,7 +67,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: 14px;
   letter-spacing: 0.04em;

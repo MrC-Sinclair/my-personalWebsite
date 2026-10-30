@@ -69,8 +69,8 @@ const { t } = useI18n()
 /* 问候胶囊：小颗紫黏土 */
 .greeting-chip {
   display: inline-block;
-  margin: 0 0 18px;
-  padding: 8px 22px;
+  margin: 0 0 20px;
+  padding: 8px 24px;
   font-size: var(--fs-base);
   font-weight: 700;
   color: var(--c-on-accent);
@@ -99,7 +99,7 @@ const { t } = useI18n()
 
 .name-text {
   display: block;
-  font-size: clamp(44px, 9vw, 88px);
+  font-size: clamp(48px, 9vw, 88px);
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: 0.01em;
@@ -109,15 +109,15 @@ const { t } = useI18n()
 
 /* 职签：加粗正文色 + 黏土质感小胶囊两枚包夹 */
 .tagline {
-  margin: 0 0 10px;
-  font-size: clamp(17px, 2.4vw, 21px);
+  margin: 0 0 12px;
+  font-size: clamp(18px, 2.4vw, 21px);
   font-weight: 700;
   color: var(--c-text);
 }
 
 .desc {
   max-width: 56ch;
-  margin: 0 0 30px;
+  margin: 0 0 32px;
   color: var(--c-muted);
 }
 
@@ -133,7 +133,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   min-height: 48px;
-  padding: 12px 30px;
+  padding: 12px 32px;
   font-size: var(--fs-base);
   font-weight: 700;
   text-decoration: none;
@@ -169,7 +169,8 @@ const { t } = useI18n()
 
 /* 薄荷黏土胶囊 */
 .cta-mint {
-  color: #1d6a45;
+  /* 原 #1d6a45 压薄荷底 #8fddb7 只有 4.12:1，加深一档到 4.77:1 */
+  color: #14603c;
   background: #8fddb7;
   box-shadow:
     0 16px 28px rgb(90 175 135 / 0.35),

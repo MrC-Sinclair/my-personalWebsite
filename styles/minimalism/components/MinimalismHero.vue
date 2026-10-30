@@ -79,9 +79,9 @@ const { t } = useI18n()
 }
 
 .hero-name {
-  margin: 18px 0 0;
+  margin: 20px 0 0;
   font-family: var(--font-head);
-  font-size: clamp(56px, 11vw, 120px);
+  font-size: clamp(60px, 11vw, 120px);
   font-weight: 300;
   line-height: 1.04;
   letter-spacing: -0.02em;
@@ -90,15 +90,15 @@ const { t } = useI18n()
 }
 
 .hero-tagline {
-  margin: 26px 0 0;
-  font-size: clamp(17px, 2.2vw, 22px);
+  margin: 28px 0 0;
+  font-size: clamp(18px, 2.2vw, 21px);
   font-weight: 400;
   color: var(--c-text);
 }
 
 .hero-desc {
   max-width: 52ch;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   color: var(--c-muted);
 }
 
@@ -106,7 +106,7 @@ const { t } = useI18n()
 .hero-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 28px;
+  gap: 8px 28px;
   margin-top: clamp(28px, 4vw, 44px);
 }
 
@@ -114,7 +114,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 2px;
+  padding: 8px 2px;
   font-weight: 500;
   color: var(--c-text);
   text-decoration: underline;

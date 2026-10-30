@@ -65,7 +65,7 @@ const metaTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 18px;
+  gap: 20px;
   padding: 16px 20px;
   background: var(--surface-sunken);
   border-radius: var(--radius-sm);
@@ -210,7 +210,7 @@ const metaTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   aspect-ratio: 16 / 9;
   max-height: 180px;
   object-fit: cover;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   border-radius: var(--radius-sm);
   background: var(--c-surface);
 }

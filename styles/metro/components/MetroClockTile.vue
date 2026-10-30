@@ -74,7 +74,7 @@ onUnmounted(() => {
   align-items: baseline;
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(34px, 4vw, 46px);
+  font-size: clamp(32px, 4vw, 48px);
   font-weight: 300;
   line-height: 1;
   /* 等宽数字：走表时数字不抖动 */

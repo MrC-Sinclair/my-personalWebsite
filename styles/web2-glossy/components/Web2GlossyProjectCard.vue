@@ -89,8 +89,8 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 18px;
+  gap: 16px;
+  padding: 20px;
   border: 1px solid var(--c-border);
   border-radius: var(--radius);
   background: linear-gradient(180deg, #ffffff 0%, #f3f9ff 100%);
@@ -130,7 +130,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   display: inline-flex;
   align-items: center;
   min-height: 30px;
-  padding: 4px 14px;
+  padding: 4px 16px;
   overflow: hidden;
   border: 1px solid #8a3c08;
   border-radius: var(--radius-sm);
@@ -179,7 +179,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   display: flex;
   align-items: center;
   height: 22px;
-  padding-left: 10px;
+  padding-left: 12px;
   border-bottom: 1px solid rgb(169 200 232 / 0.8);
   background: linear-gradient(180deg, #f6fbff 0%, #dbeafb 100%);
 }
@@ -230,7 +230,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .pcard__body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .pcard__title {
@@ -299,7 +299,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .pcard__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-top: 4px;
 }
 

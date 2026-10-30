@@ -61,15 +61,15 @@ const { skillGroups, timeline } = useAppInfo()
 }
 
 .about-lead {
-  margin: 0 0 22px;
-  font-size: clamp(17px, 1.6vw, 19px);
+  margin: 0 0 24px;
+  font-size: clamp(18px, 1.6vw, 18px);
   line-height: var(--lh-body);
   color: var(--c-muted);
 }
 
 /* 小节标题：发光眉标式 */
 .sub-title {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 600;
@@ -84,7 +84,7 @@ const { skillGroups, timeline } = useAppInfo()
 /* —— 经历玻璃轨：时间线在玻璃主板内的呈现 —— */
 .rail {
   display: grid;
-  gap: 18px;
+  gap: 20px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -93,8 +93,8 @@ const { skillGroups, timeline } = useAppInfo()
 .rail-item {
   position: relative;
   display: flex;
-  gap: 14px;
-  padding-left: 6px;
+  gap: 16px;
+  padding-left: 8px;
 }
 
 /* 轨道连线：贯穿的渐变光轨 */
@@ -117,7 +117,7 @@ const { skillGroups, timeline } = useAppInfo()
   flex: none;
   width: 12px;
   height: 12px;
-  margin-top: 6px;
+  margin-top: 8px;
   background:
     radial-gradient(circle at 32% 28%, rgb(255 255 255 / 0.9), transparent 46%),
     linear-gradient(140deg, var(--c-accent), var(--c-accent-2));

@@ -296,7 +296,7 @@ const navSections = computed(() => [
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 18px;
+  padding: 12px 20px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -335,7 +335,7 @@ const navSections = computed(() => [
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  padding: 10px 26px;
+  padding: 12px 28px;
   font-size: var(--fs-base);
   font-weight: 700;
   text-decoration: none;

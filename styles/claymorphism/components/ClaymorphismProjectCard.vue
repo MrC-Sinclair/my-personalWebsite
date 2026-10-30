@@ -142,7 +142,7 @@ const projectRoute = computed(
 .card-head {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   margin-bottom: 12px;
 }
 
@@ -193,7 +193,7 @@ const projectRoute = computed(
 
 .desc {
   display: -webkit-box;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   overflow: hidden;
   font-size: var(--fs-base);
   line-height: var(--lh-body);
@@ -207,7 +207,7 @@ const projectRoute = computed(
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   padding: 0;
   list-style: none;
 }
@@ -231,16 +231,16 @@ const projectRoute = computed(
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-top: auto;
 }
 
 .action {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--tone-text);

@@ -37,9 +37,9 @@ withDefaults(
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   margin: 0;
-  padding: var(--space) var(--space) var(--space) 58px;
+  padding: var(--space) var(--space) var(--space) 60px;
   border: 1px solid rgb(0 0 0 / 0.4);
   border-radius: var(--radius-sm);
   /* 空白横线便签：淡横线 + 纸色渐变 */

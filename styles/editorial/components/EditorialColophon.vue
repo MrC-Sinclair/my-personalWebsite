@@ -61,7 +61,7 @@ const localePath = useLocalePath()
   align-items: center;
   justify-content: space-between;
   gap: 8px var(--gap);
-  padding-top: 18px;
+  padding-top: 20px;
 }
 
 .item {
@@ -79,14 +79,14 @@ const localePath = useLocalePath()
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px var(--gap);
+  gap: 8px var(--gap);
 }
 
 /* 页脚链接：下划线划入 + 墨色转红 */
 .link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   font-size: var(--fs-small);
   letter-spacing: 0.1em;

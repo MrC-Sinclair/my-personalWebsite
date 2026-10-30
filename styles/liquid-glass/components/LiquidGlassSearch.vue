@@ -59,7 +59,7 @@ const { t } = useI18n()
 .field {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* —— 玻璃输入框：半透底 + 高光边 + 背景模糊 —— */
@@ -67,7 +67,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 18px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -107,7 +107,7 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 44px;
-  padding: 10px 8px;
+  padding: 12px 8px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent);

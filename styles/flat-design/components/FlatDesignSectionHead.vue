@@ -42,7 +42,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   display: block;
   width: 48px;
   height: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   background: var(--c-accent);
   border-radius: var(--radius-sm);
 }
@@ -50,14 +50,14 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .head__title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(26px, 4vw, 38px);
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 800;
   line-height: 1.15;
   color: var(--c-text);
 }
 
 .head__subtitle {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   max-width: 640px;
   font-size: var(--fs-base);
   line-height: 1.7;

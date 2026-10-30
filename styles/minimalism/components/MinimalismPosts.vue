@@ -95,7 +95,7 @@ function postRoute(post: BlogPost): string {
 .more {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -144,7 +144,7 @@ function postRoute(post: BlogPost): string {
   display: grid;
   grid-template-columns: 128px minmax(0, 1fr);
   gap: 4px 20px;
-  padding: 18px 10px;
+  padding: 20px 12px;
   color: inherit;
   text-decoration: none;
   transition: background var(--transition);
@@ -175,7 +175,7 @@ function postRoute(post: BlogPost): string {
 /* —— 标题：悬停强调色 + 箭头右移 —— */
 .row-title {
   margin: 0;
-  font-size: clamp(17px, 2vw, 20px);
+  font-size: clamp(18px, 2vw, 21px);
   font-weight: 500;
   line-height: 1.45;
   color: var(--c-text);
@@ -209,7 +209,7 @@ function postRoute(post: BlogPost): string {
 /* —— 空状态：白色浮起面板 + 提示（全页少数使用软阴影的地方） —— */
 .empty {
   margin: 0;
-  padding: 26px var(--space);
+  padding: 28px var(--space);
   background: var(--c-surface);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -222,7 +222,7 @@ function postRoute(post: BlogPost): string {
 }
 
 .empty-hint {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   color: var(--c-muted);
 }
 

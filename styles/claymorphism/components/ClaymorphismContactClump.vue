@@ -63,7 +63,7 @@ const { copied, copy } = useClipboardCopy()
 <style scoped>
 /* 鹅卵石排布：自适应等宽。
    align-items: start 让每张卡只装自己的内容——等高时最高的那张（微信：二维码 + 号码 + 按钮）
-   会把其余几张撑开，页脚的 margin-top: auto 再把按钮顶到底边，中间裂开 194px 空洞。 */
+   会把其余几张撑开，页脚的 margin-top: auto 再把按钮顶到底边，中间裂开 196px 空洞。 */
 .clump {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -96,7 +96,7 @@ const { copied, copy } = useClipboardCopy()
 .head {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* 平台小黏土点（Pastel 轮换装饰） */
@@ -177,7 +177,7 @@ const { copied, copy } = useClipboardCopy()
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   min-height: 40px;
   padding: 8px 16px;

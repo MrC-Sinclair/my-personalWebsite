@@ -50,7 +50,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .eyebrow {
   display: inline-block;
   margin: 0 0 12px;
-  padding: 5px 16px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--tone-text);
@@ -66,12 +66,12 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .title {
   margin: 0;
-  font-size: clamp(26px, 4.4vw, 40px);
+  font-size: clamp(28px, 4.4vw, 40px);
   font-weight: 800;
   line-height: 1.2;
   color: var(--c-text);
@@ -85,7 +85,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   justify-content: center;
   min-width: 44px;
   min-height: 44px;
-  padding: 0 10px;
+  padding: 0 12px;
   font-size: var(--fs-base);
   font-weight: 800;
   color: var(--c-on-accent);

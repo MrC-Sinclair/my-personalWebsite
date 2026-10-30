@@ -74,7 +74,7 @@ function isActive(path: string): boolean {
   position: sticky;
   top: 0;
   z-index: 20;
-  padding: 14px var(--gap) 6px;
+  padding: 16px var(--gap) 8px;
 }
 
 /* —— 玻璃胶囊配方（与首页导航同源，改动脉络见 LiquidGlassNav） —— */
@@ -85,7 +85,7 @@ function isActive(path: string): boolean {
   gap: var(--gap);
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: 6px 10px 6px 18px;
+  padding: 8px 12px 8px 20px;
   background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: 999px;
@@ -131,7 +131,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   color: var(--c-text);
   text-decoration: none;
@@ -195,7 +195,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-base);
   color: var(--c-muted);
   text-decoration: none;
@@ -306,9 +306,9 @@ function isActive(path: string): boolean {
   }
 
   .glass {
-    gap: 6px;
+    gap: 8px;
     padding-right: 8px;
-    padding-left: 14px;
+    padding-left: 16px;
     /* 锚点带改独占一行（见下方 .links-scroll 的 order） */
     flex-wrap: wrap;
   }
@@ -347,7 +347,7 @@ function isActive(path: string): boolean {
   }
 
   .lang {
-    padding: 8px 10px;
+    padding: 8px 12px;
   }
 
   .gallery {

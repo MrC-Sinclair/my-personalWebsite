@@ -109,9 +109,9 @@ const localePath = useLocalePath()
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
-  gap: 10px;
-  margin: 0 0 22px;
-  padding: 8px 18px;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-accent);
@@ -134,9 +134,9 @@ const localePath = useLocalePath()
 
 /* 巨型姓名：极光渐变文字（大字号 ≥3:1 即满足 AA 大字对比） */
 .hero-name {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-family: var(--font-head);
-  font-size: clamp(44px, 8.4vw, 96px);
+  font-size: clamp(48px, 8.4vw, 96px);
   font-weight: 800;
   line-height: 1.06;
   letter-spacing: -0.02em;
@@ -148,7 +148,7 @@ const localePath = useLocalePath()
 }
 
 .hero-tagline {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: clamp(18px, 2.4vw, 24px);
   font-weight: 700;
   color: var(--c-text);
@@ -164,8 +164,8 @@ const localePath = useLocalePath()
 .hero-cta {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 30px;
+  gap: 16px;
+  margin-top: 32px;
 }
 
 .btn {
@@ -173,7 +173,7 @@ const localePath = useLocalePath()
   align-items: center;
   justify-content: center;
   min-height: 46px;
-  padding: 10px 26px;
+  padding: 12px 28px;
   font-size: var(--fs-base);
   font-weight: 700;
   text-decoration: none;
@@ -240,7 +240,7 @@ const localePath = useLocalePath()
 
 .chip-value {
   font-family: var(--font-mono);
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 800;
   color: var(--c-accent);
   font-variant-numeric: tabular-nums;

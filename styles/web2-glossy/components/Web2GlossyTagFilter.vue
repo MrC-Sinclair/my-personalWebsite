@@ -78,7 +78,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: var(--gap);
 }
 
@@ -88,7 +88,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   align-items: baseline;
   gap: 8px;
   min-height: 44px;
-  padding: 11px 20px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -146,10 +146,11 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 44px;
-  padding: 11px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
-  font-weight: 600;
+  /* 600 → 700：差这一档就走不了 3:1 大字号门槛，hover 的白字压橙渐变就不达标 */
+  font-weight: 700;
   color: var(--c-accent-2);
   background: linear-gradient(180deg, #ffffff 0%, #fdeee1 100%);
   border: var(--border-w) solid rgb(191 77 0 / 0.4);
@@ -186,10 +187,11 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 44px;
-  padding: 11px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
-  font-weight: 600;
+  /* 600 → 700：差这一档就走不了 3:1 大字号门槛，hover 的白字压橙渐变就不达标 */
+  font-weight: 700;
   color: var(--c-accent-2);
   background: linear-gradient(180deg, #ffffff 0%, #fdeee1 100%);
   border: var(--border-w) solid rgb(191 77 0 / 0.4);

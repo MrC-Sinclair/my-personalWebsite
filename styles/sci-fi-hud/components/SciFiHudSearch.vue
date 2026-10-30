@@ -60,7 +60,7 @@ const { t } = useI18n()
 .field {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* —— 通道括号：等宽青绿字，HUD 的标记声部 —— */
@@ -76,7 +76,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -109,7 +109,7 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.04em;

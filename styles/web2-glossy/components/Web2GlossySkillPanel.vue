@@ -47,7 +47,7 @@ const safeSkills = computed(() => (Array.isArray(props.group.skills) ? props.gro
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
-  padding: 18px 20px;
+  padding: 20px 20px;
   border: 1px solid var(--c-border);
   border-radius: var(--radius);
   background: linear-gradient(180deg, #ffffff 0%, #f3f9ff 100%);
@@ -99,7 +99,7 @@ const safeSkills = computed(() => (Array.isArray(props.group.skills) ? props.gro
 .skill__chip {
   display: inline-flex;
   align-items: center;
-  padding: 5px 13px;
+  padding: 4px 12px;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-sm);
   font-size: var(--fs-small);

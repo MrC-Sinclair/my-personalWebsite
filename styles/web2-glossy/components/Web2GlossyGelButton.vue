@@ -67,7 +67,7 @@ const sizeClass = computed(() => `gel-btn--${props.size}`)
   justify-content: center;
   gap: 8px;
   min-height: 44px;
-  padding: 10px 24px;
+  padding: 12px 24px;
   overflow: hidden;
   border: 1px solid #14417e;
   border-radius: var(--radius-sm);
@@ -199,7 +199,7 @@ const sizeClass = computed(() => `gel-btn--${props.size}`)
 /* —— 尺寸 —— */
 .gel-btn--lg {
   min-height: 52px;
-  padding: 13px 30px;
+  padding: 12px 32px;
   font-size: 1.0625rem;
 }
 </style>

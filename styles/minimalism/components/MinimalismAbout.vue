@@ -81,7 +81,7 @@ const timelineItems = computed(() => (Array.isArray(timeline.value) ? timeline.v
 <style scoped>
 /* —— 词条小标：安静的间隔标签 —— */
 .sub {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: var(--fs-small);
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -103,7 +103,7 @@ const timelineItems = computed(() => (Array.isArray(timeline.value) ? timeline.v
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
   gap: 4px 20px;
-  padding: 14px 10px;
+  padding: 16px 12px;
   border-top: var(--border-w) solid var(--c-border);
   transition: background var(--transition);
 }
@@ -136,7 +136,7 @@ const timelineItems = computed(() => (Array.isArray(timeline.value) ? timeline.v
 
 .def-item + .def-item::before {
   content: '·';
-  margin: 0 9px;
+  margin: 0 8px;
   color: var(--c-muted);
 }
 
@@ -145,7 +145,7 @@ const timelineItems = computed(() => (Array.isArray(timeline.value) ? timeline.v
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
   gap: 4px 20px;
-  padding: 16px 10px;
+  padding: 16px 12px;
   border-top: var(--border-w) solid var(--c-border);
   transition: background var(--transition);
 }

@@ -125,7 +125,7 @@ const projectLinks = computed(() => {
 /* 四角括号面板：用两层背景画四个角标（HUD 的锁框语法） */
 .panel {
   position: relative;
-  padding: clamp(18px, 2.8vw, 30px);
+  padding: clamp(20px, 2.8vw, 32px);
   border: 1px solid var(--c-border);
   background: var(--c-surface);
 }
@@ -156,7 +156,7 @@ const projectLinks = computed(() => {
 /* 等宽面板编号 */
 .sec {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -196,7 +196,7 @@ const projectLinks = computed(() => {
   max-width: 44ch;
   margin: 0 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(26px, 4.2vw, 46px);
+  font-size: clamp(28px, 4.2vw, 48px);
   font-weight: 700;
   line-height: 1.12;
   color: var(--c-text);
@@ -241,12 +241,12 @@ const projectLinks = computed(() => {
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 .link {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 44px;
   padding: 0 16px;
@@ -267,7 +267,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.8em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.3vw, 25px);
+  font-size: clamp(18px, 2.3vw, 24px);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -275,7 +275,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.5em 0 0.6em;
   font-family: var(--font-mono);
-  font-size: clamp(15px, 1.9vw, 19px);
+  font-size: clamp(16px, 1.9vw, 18px);
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--c-accent);
@@ -313,7 +313,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   color: var(--c-accent);
@@ -321,7 +321,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.3em;
   overflow-x: auto;
   border: 1px solid var(--c-border);
@@ -353,7 +353,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 9px 12px;
+  padding: 8px 12px;
   text-align: left;
   border: 1px solid var(--c-border);
 }
@@ -372,7 +372,7 @@ const projectLinks = computed(() => {
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   text-decoration: none;
   transition: border-color var(--transition);
 }

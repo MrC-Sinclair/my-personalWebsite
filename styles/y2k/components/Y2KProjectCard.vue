@@ -212,9 +212,9 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   min-height: 30px;
-  padding: 4px 14px;
+  padding: 4px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -232,7 +232,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .card-body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -270,7 +270,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 
 .card-desc {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: var(--lh-body);
   color: var(--c-muted);
   overflow-wrap: break-word;
@@ -303,7 +303,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .card-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-top: 4px;
 }
 

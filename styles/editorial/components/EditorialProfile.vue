@@ -108,14 +108,14 @@ function groupSkills(group: SkillGroup): string[] {
 .standfirst {
   margin: 0 0 calc(var(--space) * 1.1);
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.1vw, 23px);
+  font-size: clamp(18px, 2.1vw, 24px);
   line-height: 1.72;
   color: var(--c-text);
 }
 
 .standfirst::first-letter {
   float: left;
-  padding-right: 10px;
+  padding-right: 12px;
   font-size: 3.05em;
   font-weight: 700;
   line-height: 0.82;
@@ -125,7 +125,7 @@ function groupSkills(group: SkillGroup): string[] {
 /* 技能目录：分类 + 衬线斜体技能行（中圆点分隔） */
 .skill-groups {
   display: grid;
-  gap: 18px;
+  gap: 20px;
 }
 
 .skill-cat {
@@ -146,7 +146,7 @@ function groupSkills(group: SkillGroup): string[] {
 
 .skill {
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 18px;
   font-style: italic;
   line-height: 1.7;
   color: var(--c-text);
@@ -154,7 +154,7 @@ function groupSkills(group: SkillGroup): string[] {
 
 /* 目录行分隔点：印刷目录式中圆点 */
 .skill + .skill::before {
-  margin: 0 9px;
+  margin: 0 8px;
   content: '·';
   color: var(--c-accent);
 }
@@ -169,8 +169,8 @@ function groupSkills(group: SkillGroup): string[] {
 .entry {
   display: grid;
   grid-template-columns: 46px minmax(0, 1fr);
-  gap: 10px 16px;
-  padding: 18px 0;
+  gap: 12px 16px;
+  padding: 20px 0;
 }
 
 .entry + .entry {
@@ -234,13 +234,13 @@ function groupSkills(group: SkillGroup): string[] {
   }
 
   .col-exp {
-    padding-top: 22px;
+    padding-top: 24px;
     border-top: var(--border-w) solid var(--c-border);
   }
 
   .entry {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 8px;
   }
 }
 </style>

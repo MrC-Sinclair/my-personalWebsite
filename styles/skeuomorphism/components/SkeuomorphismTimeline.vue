@@ -45,7 +45,7 @@ const tilts = [-1.1, 0.9, -0.7, 1.2]
   display: grid;
   gap: var(--gap);
   margin: 0;
-  padding: 4px 0 4px 26px;
+  padding: 4px 0 4px 28px;
   list-style: none;
 }
 
@@ -82,8 +82,8 @@ const tilts = [-1.1, 0.9, -0.7, 1.2]
 .tl-card {
   position: relative;
   display: grid;
-  gap: 6px;
-  padding: 14px 18px 14px 20px;
+  gap: 8px;
+  padding: 16px 20px 16px 20px;
   border: 1px solid rgb(0 0 0 / 0.55);
   border-radius: var(--radius-sm);
   /* 皮革：深棕底 + 小噪点 */
@@ -128,7 +128,7 @@ const tilts = [-1.1, 0.9, -0.7, 1.2]
 .tl-tag {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
+  padding: 2px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -145,7 +145,7 @@ const tilts = [-1.1, 0.9, -0.7, 1.2]
 .tl-title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: #fbf2dd;
 }
@@ -157,7 +157,7 @@ const tilts = [-1.1, 0.9, -0.7, 1.2]
 
 .tl-desc {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: var(--lh-body);
   color: #e6d5b4;
   overflow-wrap: break-word;

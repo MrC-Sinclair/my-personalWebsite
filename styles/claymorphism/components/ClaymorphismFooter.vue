@@ -44,10 +44,10 @@ const localePath = useLocalePath()
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 14px var(--gap);
+  gap: 16px var(--gap);
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: 20px 26px;
+  padding: 20px 28px;
   background: var(--c-surface);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -81,7 +81,7 @@ const localePath = useLocalePath()
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px var(--gap);
+  gap: 12px var(--gap);
 }
 
 .built {
@@ -95,7 +95,7 @@ const localePath = useLocalePath()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: #8c2f60;
@@ -123,9 +123,9 @@ const localePath = useLocalePath()
 .top-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 6px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-on-accent);

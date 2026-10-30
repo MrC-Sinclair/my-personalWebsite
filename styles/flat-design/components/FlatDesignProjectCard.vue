@@ -122,7 +122,7 @@ const topTags = computed(() =>
   position: absolute;
   top: 12px;
   right: 12px;
-  padding: 3px 10px;
+  padding: 3px 12px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -227,7 +227,7 @@ const topTags = computed(() =>
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
-  padding: 18px 18px 14px;
+  padding: 20px 20px 16px;
 }
 
 .project-card__title {
@@ -276,8 +276,8 @@ const topTags = computed(() =>
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  margin: 14px 0 0;
+  gap: 8px;
+  margin: 16px 0 0;
 }
 
 .project-card__tag {
@@ -302,17 +302,17 @@ const topTags = computed(() =>
   z-index: 1;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 0 18px 18px;
+  gap: 12px;
+  padding: 0 20px 20px;
 }
 
 .project-card__ext {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 0 14px;
-  font-size: 13px;
+  padding: 0 16px;
+  font-size: 14px;
   font-weight: 700;
   text-decoration: none;
   border-radius: var(--radius);

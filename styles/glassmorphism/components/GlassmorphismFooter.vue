@@ -52,9 +52,9 @@ const { t } = useI18n()
 .back-top {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   text-decoration: none;

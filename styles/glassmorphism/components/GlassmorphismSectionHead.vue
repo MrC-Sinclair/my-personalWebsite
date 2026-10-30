@@ -48,8 +48,8 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  margin: 0 0 10px;
-  padding: 5px 14px;
+  margin: 0 0 12px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   letter-spacing: 0.08em;

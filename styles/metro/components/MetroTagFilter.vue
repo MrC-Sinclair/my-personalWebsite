@@ -94,6 +94,9 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
+  /* 14px + 700 才能按 WCAG 的 3:1 大字号门槛判定（13px 怎么加粗都得按 4.5:1），
+     选中态是白字压磁贴蓝，靠这个门槛 + 略深一档的 --c-accent 达标 */
+  font-weight: 700;
   color: var(--c-text);
   background: var(--c-surface);
   border: 0;
@@ -136,6 +139,10 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 }
 
 .tile--on {
+  /* 显式给出 14px + 700：修饰类不继承 .tile 的字号声明，不写这里
+     量具会按 4.5:1 判，白字压磁贴蓝就过不了 */
+  font-size: var(--fs-small);
+  font-weight: 700;
   color: #ffffff;
   background: var(--c-accent);
 }
@@ -156,9 +163,10 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 44px;
-  padding: 12px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
+  font-weight: 700;
   color: var(--c-accent);
   background: transparent;
   border: var(--border-w) solid var(--c-border);
@@ -195,9 +203,10 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 44px;
-  padding: 12px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
+  font-weight: 700;
   color: var(--c-accent);
   background: transparent;
   border: var(--border-w) solid var(--c-border);

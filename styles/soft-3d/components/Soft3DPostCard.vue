@@ -154,8 +154,8 @@ const monthLabel = computed(() => {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .post-time {
@@ -165,7 +165,7 @@ const monthLabel = computed(() => {
 }
 
 .post-cat {
-  padding: 2px 10px;
+  padding: 2px 12px;
   font-size: var(--fs-small);
   color: var(--c-accent);
   background: color-mix(in srgb, var(--c-accent) 14%, transparent);
@@ -185,7 +185,7 @@ const monthLabel = computed(() => {
 
 .post-desc {
   display: -webkit-box;
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: var(--fs-base);
   line-height: var(--lh-body);
   color: var(--c-muted);
@@ -198,13 +198,13 @@ const monthLabel = computed(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .post-tag {
-  padding: 3px 11px;
+  padding: 3px 12px;
   font-size: var(--fs-small);
   color: var(--c-text);
   background: color-mix(in srgb, var(--c-accent) 15%, var(--c-surface));
@@ -234,7 +234,7 @@ const monthLabel = computed(() => {
   aspect-ratio: 16 / 9;
   max-height: 180px;
   object-fit: cover;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   border-radius: var(--radius-sm);
   background: var(--c-surface);
 }

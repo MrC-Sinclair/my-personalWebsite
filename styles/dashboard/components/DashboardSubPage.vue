@@ -109,9 +109,9 @@ defineProps<{
 }
 
 .pagehead-title {
-  margin: 4px 0 6px;
+  margin: 4px 0 8px;
   font-family: var(--font-head);
-  font-size: clamp(26px, 4.4vw, 40px);
+  font-size: clamp(28px, 4.4vw, 40px);
   font-weight: 700;
   line-height: 1.16;
   color: var(--c-text);

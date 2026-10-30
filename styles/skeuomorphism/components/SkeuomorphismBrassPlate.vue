@@ -115,7 +115,7 @@ const { copied, copy } = useClipboardCopy()
 
 /* —— 蚀刻文字（深棕刻进黄铜） —— */
 .plate-intro {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   max-width: 58ch;
   color: var(--c-on-accent);
 }
@@ -130,7 +130,7 @@ const { copied, copy } = useClipboardCopy()
 }
 
 /* —— 槽位网格：蚀刻分隔（暗上亮下 = 凹槽） ——
-   start 让槽位各自收短：等高 + 页脚 margin-top: auto 会在内容少的槽位中间留 186px 空洞 */
+   start 让槽位各自收短：等高 + 页脚 margin-top: auto 会在内容少的槽位中间留 188px 空洞 */
 .plate-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -141,7 +141,7 @@ const { copied, copy } = useClipboardCopy()
 .cell {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
   padding: var(--gap) 16px;
   border-radius: var(--radius-sm);
@@ -221,7 +221,7 @@ const { copied, copy } = useClipboardCopy()
   justify-content: center;
   width: 100%;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;

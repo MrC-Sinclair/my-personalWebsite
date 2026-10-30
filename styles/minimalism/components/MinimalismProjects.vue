@@ -112,7 +112,7 @@ function projectRoute(project: Project): string {
   display: grid;
   grid-template-columns: 128px minmax(0, 1fr);
   gap: 4px 20px;
-  padding: 20px 10px;
+  padding: 20px 12px;
   transition: background var(--transition);
 }
 
@@ -121,7 +121,7 @@ function projectRoute(project: Project): string {
 }
 
 .idx-date {
-  padding-top: 5px;
+  padding-top: 4px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-variant-numeric: tabular-nums;
@@ -143,7 +143,7 @@ function projectRoute(project: Project): string {
 .idx-title {
   display: inline-block;
   margin: 0;
-  font-size: clamp(19px, 2.4vw, 24px);
+  font-size: clamp(18px, 2.4vw, 24px);
   font-weight: 500;
   line-height: 1.35;
   color: var(--c-text);
@@ -173,13 +173,13 @@ function projectRoute(project: Project): string {
 }
 
 .idx-desc {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   color: var(--c-muted);
 }
 
 /* —— 标签串：顿点连接的纯文本（与技能词条同一语法） —— */
 .idx-tags {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   line-height: 1.7;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -187,14 +187,14 @@ function projectRoute(project: Project): string {
 
 .idx-tag + .idx-tag::before {
   content: '·';
-  margin: 0 9px;
+  margin: 0 8px;
 }
 
 /* —— 外链操作行：安静的下划线文字链 —— */
 .idx-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 22px;
+  gap: 2px 24px;
   margin-top: 12px;
 }
 
@@ -228,7 +228,7 @@ function projectRoute(project: Project): string {
 /* —— 空状态：白色浮起面板（全页少数使用软阴影的地方） —— */
 .empty {
   margin: 0;
-  padding: 26px var(--space);
+  padding: 28px var(--space);
   color: var(--c-muted);
   background: var(--c-surface);
   border-radius: var(--radius);

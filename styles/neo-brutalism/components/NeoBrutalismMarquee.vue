@@ -44,7 +44,7 @@ const { t } = useI18n()
 }
 
 .tape-item {
-  padding: 10px 0;
+  padding: 12px 0;
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 700;

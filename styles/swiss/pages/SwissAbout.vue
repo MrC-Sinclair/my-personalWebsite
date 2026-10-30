@@ -61,7 +61,7 @@ const timelineList = computed(() => (Array.isArray(timeline.value) ? timeline.va
 .sub-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0 0 12px;
   font-size: var(--fs-small);
   font-weight: 700;

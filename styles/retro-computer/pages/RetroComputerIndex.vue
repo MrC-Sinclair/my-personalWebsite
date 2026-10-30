@@ -336,14 +336,14 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
 }
 
 .rc-hero__tagline {
-  margin: 14px 0 0;
-  padding-left: 10px;
+  margin: 16px 0 0;
+  padding-left: 12px;
   border-left: 4px solid var(--c-accent);
   font-weight: 700;
 }
 
 .rc-hero__desc {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   color: var(--c-muted);
 }
 
@@ -358,7 +358,7 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
 /* —— 文章窗口搜索入口：Win95 凹槽输入框（sunken 边框） —— */
 .rc-post-search {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   padding: 2px;
   background: var(--c-surface);
   box-shadow:
@@ -370,7 +370,7 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
   flex: 1 1 auto;
   min-width: 0;
   min-height: 40px;
-  padding: 6px 8px;
+  padding: 8px 8px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -390,7 +390,7 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
 .rc-loading {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 16px;
   color: var(--c-muted);
 }
@@ -436,7 +436,7 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
 .rc-empty {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 16px;
   background: #ffffff;

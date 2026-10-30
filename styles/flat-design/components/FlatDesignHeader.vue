@@ -67,20 +67,20 @@ const navLinks = computed(() => [
      给一条退路：放不下就换行而不是撑出横向滚动。 */
   flex-wrap: wrap;
   align-items: center;
-  gap: clamp(14px, 3vw, 28px);
+  gap: clamp(16px, 3vw, 28px);
   max-width: var(--page-w);
   margin-inline: auto;
-  padding: 10px clamp(16px, 4vw, 40px);
+  padding: 12px clamp(16px, 4vw, 40px);
 }
 
 /* 站点标识：黄色几何方块（本风格的「几何代替图标」签名） */
 .hdr__brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: #ffffff;
   text-decoration: none;
@@ -103,7 +103,7 @@ const navLinks = computed(() => [
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 0 10px;
+  padding: 0 12px;
   font-size: var(--fs-small);
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -125,7 +125,7 @@ const navLinks = computed(() => [
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: clamp(10px, 2vw, 20px);
+  gap: clamp(12px, 2vw, 20px);
   min-width: 0;
   margin-left: auto;
 }
@@ -137,7 +137,7 @@ const navLinks = computed(() => [
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 0 10px;
+  padding: 0 12px;
   font-size: var(--fs-small);
   font-weight: 600;
   letter-spacing: 0.06em;

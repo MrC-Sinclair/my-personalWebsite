@@ -369,6 +369,15 @@ textarea {
   transform: translate(0);
 }
 
+/* 兜底：无 JS / IntersectionObserver 不可用时直接落到终态。
+   .no-reveal 由 useScrollReveal 在不支持 IO 时挂到 <html>；
+   完全禁用 JS 的场景由 nuxt.config.ts 的 noscript 内联样式覆盖。
+   优先级（0,2,0）高于 .scroll-reveal（0,1,0），确保一定生效。 */
+.no-reveal .scroll-reveal {
+  opacity: 1;
+  transform: none;
+}
+
 .scroll-reveal.scroll-reveal-delay-1 {
   transition-delay: 80ms;
 }
@@ -494,7 +503,28 @@ main,
   min-width: 0;
 }
 
-/* ---------- 5. 减少动效偏好 ---------- */
+/* ---------- 5. 行高兜底（层级之外，行距是「像不像做过的」的分水岭） ---------- */
+/* 20 个风格里 line-height 的声明率只有 0.09~0.32，绝大多数文字在继承 1.5：
+   大标题（40~88px）用 1.5 会松垮发散，11~13px 的小字用 1.5 会挤成一团。
+   这里用 :where() 把自身优先级压到 0，任何风格自己的 line-height 声明都能
+   覆盖它——目的不是统一行高，而是让「没声明的」也拿到合适的行距。 */
+:where([data-style]) :is(h1, h2) {
+  line-height: 1.12;
+}
+
+:where([data-style]) :is(h3, h4, h5, h6) {
+  line-height: 1.25;
+}
+
+:where([data-style]) :is(p, li, dd, figcaption, blockquote) {
+  line-height: 1.65;
+}
+
+:where([data-style]) :is(small, time, label, caption) {
+  line-height: 1.5;
+}
+
+/* ---------- 6. 减少动效偏好 ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -147,9 +147,9 @@ function copyValue() {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   min-height: 64px;
-  padding: 14px 16px;
+  padding: 16px 16px;
   font: inherit;
   text-align: left;
   color: inherit;
@@ -266,7 +266,7 @@ function copyValue() {
 /* 二维码：白色衬底保证可扫描，图片为既有公共资源 */
 .social-card__qr {
   flex: 0 0 auto;
-  padding: 6px;
+  padding: 8px;
   background: #ffffff;
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);

@@ -44,7 +44,7 @@ defineProps<{
 /* 轨道线：垂直铬渐变 */
 .tl-item {
   position: relative;
-  padding-left: 34px;
+  padding-left: 36px;
 }
 
 .tl-item::before {
@@ -88,7 +88,7 @@ defineProps<{
 .tl-period {
   justify-self: start;
   margin: 0;
-  padding: 2px 10px;
+  padding: 2px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -102,14 +102,14 @@ defineProps<{
 .tl-title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--c-text);
 }
 
 .tl-desc {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: var(--lh-body);
   color: var(--c-muted);
 }

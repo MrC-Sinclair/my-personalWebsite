@@ -190,7 +190,7 @@ const projectRoute = computed(
 
 .visual-glyph {
   font-family: var(--font-mono);
-  font-size: 34px;
+  font-size: 32px;
   color: color-mix(in srgb, var(--c-accent) 60%, transparent);
 }
 
@@ -230,7 +230,7 @@ const projectRoute = computed(
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   padding: 1px 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -269,7 +269,7 @@ const projectRoute = computed(
 .pod-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -287,7 +287,7 @@ const projectRoute = computed(
   display: flex;
   gap: 8px;
   margin-top: auto;
-  padding-top: 6px;
+  padding-top: 8px;
 }
 
 /* 外链按钮：≥40px 触控目标 + hover 信号色填充 */

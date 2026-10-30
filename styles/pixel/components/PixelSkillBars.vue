@@ -54,7 +54,7 @@ function namesOf(group: SkillGroup): string {
 .stats {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -64,7 +64,7 @@ function namesOf(group: SkillGroup): string {
   display: grid;
   grid-template-columns: minmax(72px, auto) 1fr auto;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .stat-label {

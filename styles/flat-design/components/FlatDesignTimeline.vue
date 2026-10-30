@@ -37,7 +37,7 @@ function tone(index: number): FlatTone {
 <style scoped>
 .tl {
   display: grid;
-  gap: clamp(20px, 3vw, 26px);
+  gap: clamp(20px, 3vw, 28px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -45,7 +45,7 @@ function tone(index: number): FlatTone {
 
 .tl__item {
   position: relative;
-  padding-left: 30px;
+  padding-left: 32px;
 }
 
 /* 细竖线：浅灰纯色，末条不画（几何代替装饰线） */
@@ -84,7 +84,7 @@ function tone(index: number): FlatTone {
 .tl__title {
   margin: 4px 0 0;
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--c-text);
 }
@@ -97,7 +97,7 @@ function tone(index: number): FlatTone {
 }
 
 .tl__desc {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: var(--fs-small);
   line-height: 1.7;
   color: var(--c-muted);

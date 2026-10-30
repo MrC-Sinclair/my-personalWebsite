@@ -67,7 +67,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 11px 16px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: #ffffff;
@@ -102,7 +102,7 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 44px;
-  padding: 11px 10px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: #f1c40f;

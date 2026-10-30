@@ -52,7 +52,7 @@ const { t } = useI18n()
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   min-height: clamp(520px, 74vh, 780px);
   padding: calc(var(--space) * 2) var(--space);
   text-align: center;
@@ -169,9 +169,9 @@ const { t } = useI18n()
 }
 
 .hero-name {
-  margin: 6px 0 2px;
+  margin: 8px 0 2px;
   font-family: var(--font-head);
-  font-size: clamp(44px, 8vw, 88px);
+  font-size: clamp(48px, 8vw, 88px);
   font-weight: 700;
   line-height: 1.08;
   overflow-wrap: break-word;
@@ -213,7 +213,7 @@ const { t } = useI18n()
   align-items: center;
   justify-content: center;
   min-height: 46px;
-  padding: 12px 30px;
+  padding: 12px 32px;
   font-family: var(--font-head);
   font-size: var(--fs-base);
   font-weight: 700;
@@ -266,7 +266,7 @@ const { t } = useI18n()
 /* —— 窄屏：按钮撑满、留出触控余量 —— */
 @media (max-width: 480px) {
   .hero {
-    padding-inline: calc(var(--space) + 10px);
+    padding-inline: calc(var(--space) + 12px);
   }
 
   .hero-actions {

@@ -80,14 +80,14 @@ const safeSkills = computed(() => (Array.isArray(props.skills) ? props.skills : 
 .pod-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .pod-chip {
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-text);
   background: color-mix(in srgb, var(--c-accent) 17%, var(--c-surface));

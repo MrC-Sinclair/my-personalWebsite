@@ -155,7 +155,7 @@ const { t } = useI18n()
 .lens {
   position: absolute;
   inset: 0;
-  padding: 18px;
+  padding: 20px;
   border-radius: inherit;
   pointer-events: none;
   /* 透镜环带 + 折射染色 */
@@ -171,7 +171,7 @@ const { t } = useI18n()
 .lens::after {
   position: absolute;
   inset: 0;
-  padding: 7px;
+  padding: 8px;
   border-radius: inherit;
   content: '';
   /* 透镜环带 + 折射染色 */
@@ -230,7 +230,7 @@ const { t } = useI18n()
 
 /* 问候 eyebrow：强调色小字 + 发光字距 */
 .greeting {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   letter-spacing: 0.22em;
@@ -239,9 +239,9 @@ const { t } = useI18n()
 
 /* 巨型名字：玻璃后的折射染色文字（强调色 → 电光紫 → 霓虹粉签名渐变） */
 .name {
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   font-family: var(--font-head);
-  font-size: clamp(44px, 9vw, 108px);
+  font-size: clamp(48px, 9vw, 108px);
   font-weight: 800;
   line-height: 1.04;
   letter-spacing: -0.02em;
@@ -260,7 +260,7 @@ const { t } = useI18n()
 /* 职业标签：玻璃内胶囊（半透白 + 半透描边） */
 .tagline {
   display: inline-block;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   padding: 8px 16px;
   font-size: var(--fs-base);
   color: var(--c-text);
@@ -283,7 +283,7 @@ const { t } = useI18n()
   display: flex;
   flex-wrap: wrap;
   gap: var(--gap);
-  margin-top: 30px;
+  margin-top: 32px;
 }
 
 .cta {
@@ -291,7 +291,7 @@ const { t } = useI18n()
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 12px 26px;
+  padding: 12px 28px;
   font-size: var(--fs-base);
   font-weight: 600;
   text-decoration: none;

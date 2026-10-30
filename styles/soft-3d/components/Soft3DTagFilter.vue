@@ -121,9 +121,13 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 }
 
 /* 选中：紫底 + 青色描边光（离视点最近） */
+.tile--on,
 .pill--on {
+  /* 白字压 --c-accent(#a78bfa) 只有 2.72:1。这个紫被 8 处当**前景**用，
+     调深 token 会连累那些用法，所以只在「白字压紫」的选中态改用更深的紫。
+     #7c4ddb 是同色相加深一档，白字 5.33:1，不必再动字号。 */
   color: #ffffff;
-  background: var(--c-accent);
+  background: #7c4ddb;
   box-shadow:
     var(--shadow),
     0 0 0 2px rgb(34 211 238 / 0.5);

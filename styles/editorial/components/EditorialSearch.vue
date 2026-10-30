@@ -53,7 +53,7 @@ const { t } = useI18n()
 
 <style scoped>
 .search {
-  padding: 10px 0;
+  padding: 12px 0;
   margin-bottom: var(--gap);
   border-bottom: var(--border-w) solid var(--c-border);
 }
@@ -69,7 +69,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -101,7 +101,7 @@ const { t } = useI18n()
 .clear {
   flex: 0 0 auto;
   min-height: 44px;
-  padding: 10px 8px;
+  padding: 12px 8px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.04em;

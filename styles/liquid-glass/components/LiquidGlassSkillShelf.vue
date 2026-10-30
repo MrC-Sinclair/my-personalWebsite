@@ -36,7 +36,7 @@ defineProps<{
 
 /* 内嵌玻璃托盘：比外层面板更透一级（无 backdrop-filter，避免嵌套模糊） */
 .tray {
-  padding: 16px 18px;
+  padding: 16px 20px;
   background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
@@ -50,7 +50,7 @@ defineProps<{
 }
 
 .tray-name {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-size: var(--fs-base);
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -70,7 +70,7 @@ defineProps<{
 .chip {
   display: inline-flex;
   align-items: center;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-text);
   background: rgb(255 255 255 / 0.09);

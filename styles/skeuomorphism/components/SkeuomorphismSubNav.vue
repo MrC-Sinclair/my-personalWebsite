@@ -152,7 +152,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 12px;
+  padding: 8px 12px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -193,7 +193,7 @@ function isActive(path: string): boolean {
 .hd-nav {
   display: flex;
   flex: 1;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -208,7 +208,7 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -259,10 +259,10 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   min-height: 40px;
   min-width: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   letter-spacing: 0.06em;
@@ -358,7 +358,7 @@ function isActive(path: string): boolean {
 /* —— 窄屏：收紧间距，路由导航横向滚动 —— */
 @media (max-width: 767px) {
   .hd-inner {
-    gap: 8px 10px;
+    gap: 8px 12px;
     padding-inline: 16px;
   }
 
@@ -375,7 +375,7 @@ function isActive(path: string): boolean {
   .hd-lang {
     order: 4;
     flex: none;
-    padding: 6px 9px;
+    padding: 8px 8px;
   }
 
   .hd-gallery {

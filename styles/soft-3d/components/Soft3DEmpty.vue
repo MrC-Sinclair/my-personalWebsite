@@ -40,7 +40,7 @@ withDefaults(
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: calc(var(--space) * 1.4) var(--space);
   text-align: center;
   background: var(--c-surface);
@@ -53,8 +53,8 @@ withDefaults(
 .empty-orbs {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
-  margin-bottom: 6px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .empty-orb {

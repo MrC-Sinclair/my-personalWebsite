@@ -26,7 +26,10 @@
   --c-surface: #ffffff;
   --c-text: #173a5e;
   --c-muted: #4a6b8a;
-  --c-accent: #1e6fd9;
+  /* 蓝字压浅底（.input:hover / .caps:hover）原只有 4.42:1，加深一档到 5.01:1。
+     这个色在本风格主要当**前景/边框**用，加深不牵连白字场景（白字压的是
+     组件内写死的渐变底，已单独压深起点，见各组件的 #3f8fd8 / #d97800）。 */
+  --c-accent: #1b66cc;
   --c-accent-2: #bf4d00;
   --c-border: #a9c8e8;
   --c-on-accent: #ffffff;
@@ -48,7 +51,9 @@
 
   /* —— 字号 —— */
   --fs-base: 16px;
-  --fs-small: 13px;
+  /* 同 metro：13px 无论多粗都只能按 4.5:1 判，提到 14px 后配合 700 字重
+     可按 3:1 大字号门槛判定，这样白字压品牌色只需微调颜色、不必改风格 */
+  --fs-small: 14px;
   --fs-head: 54px;
   --fs-title: 24px;
   --lh-body: 1.7;

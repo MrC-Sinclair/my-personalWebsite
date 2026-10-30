@@ -120,7 +120,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   flex: none;
   align-self: flex-start;
   min-width: 84px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-muted);
@@ -187,7 +187,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
+  padding: 3px 12px;
   font-size: var(--fs-small);
   color: var(--c-muted);
   background: var(--c-bg);
@@ -258,7 +258,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   .row {
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
   }
 
   /* 正文独占整行：日期压印最窄 84px，若与正文同排，16:9 的封面只能分到 ~200px，
@@ -292,7 +292,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   aspect-ratio: 16 / 9;
   max-height: 180px;
   object-fit: cover;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   border-radius: var(--radius-sm);
   background: var(--c-surface);
 }

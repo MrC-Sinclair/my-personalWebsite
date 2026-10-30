@@ -78,7 +78,7 @@ function isActive(path: string): boolean {
   z-index: 40;
   display: flex;
   justify-content: center;
-  padding: 14px 12px 0;
+  padding: 16px 12px 0;
   pointer-events: none;
 }
 
@@ -102,7 +102,7 @@ function isActive(path: string): boolean {
 .float-nav-brand {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   padding: 4px 8px 4px 4px;
   border-radius: 999px;
   text-decoration: none;
@@ -146,7 +146,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-muted);
   text-decoration: none;
@@ -183,7 +183,7 @@ function isActive(path: string): boolean {
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-muted);
   text-decoration: none;
@@ -214,7 +214,7 @@ function isActive(path: string): boolean {
 .float-nav-gallery {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   padding: 8px 16px;
   font-size: var(--fs-small);

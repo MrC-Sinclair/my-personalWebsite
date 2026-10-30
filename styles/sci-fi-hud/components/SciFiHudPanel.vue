@@ -82,8 +82,8 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px var(--space) 10px;
+  gap: 12px;
+  padding: 12px var(--space) 12px;
   border-bottom: var(--border-w) solid var(--c-border);
 }
 
@@ -94,7 +94,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   letter-spacing: 0.14em;
   color: var(--c-accent);
   border: var(--border-w) solid color-mix(in srgb, var(--c-accent) 40%, transparent);
-  padding: 1px 6px;
+  padding: 1px 8px;
 }
 
 .panel-title {

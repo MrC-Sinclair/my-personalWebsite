@@ -37,7 +37,7 @@ const { timeline } = useAppInfo()
 .blk {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   padding: 4px 0;
 }
 
@@ -66,7 +66,7 @@ const { timeline } = useAppInfo()
 
 /* 区块内二级标题：琥珀色 + 左侧竖条 */
 .head {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   color: var(--c-accent-2);
   overflow-wrap: break-word;
 }
@@ -86,7 +86,7 @@ const { timeline } = useAppInfo()
 
 .tl-item {
   position: relative;
-  padding: 6px 0 6px var(--space);
+  padding: 8px 0 8px var(--space);
 }
 
 /* 每条的 ├─ 分叉符（伪元素装饰，读屏不朗读） */
@@ -106,7 +106,7 @@ const { timeline } = useAppInfo()
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 10px;
+  gap: 4px 12px;
   margin: 0;
 }
 

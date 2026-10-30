@@ -49,8 +49,8 @@ function safeSkills(group: SkillGroup): string[] {
 .bubble-cat {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 0 0 10px;
+  gap: 8px;
+  margin: 0 0 12px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -66,7 +66,7 @@ function safeSkills(group: SkillGroup): string[] {
 .bubble-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -77,7 +77,7 @@ function safeSkills(group: SkillGroup): string[] {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   letter-spacing: 0.04em;

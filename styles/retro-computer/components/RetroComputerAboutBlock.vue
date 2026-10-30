@@ -55,12 +55,12 @@ function safeSkillList(group: SkillGroup): string[] {
 
 <style scoped>
 .rc-about__intro {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
 }
 
 /* 小节标题：深蓝下划线（像菜单分组线） */
 .rc-sub {
-  margin: 18px 0 10px;
+  margin: 20px 0 12px;
   padding-bottom: 4px;
   border-bottom: 2px solid var(--c-accent);
   font-family: var(--font-head);
@@ -75,7 +75,7 @@ function safeSkillList(group: SkillGroup): string[] {
 }
 
 .rc-timeline__item {
-  padding: 10px 12px;
+  padding: 12px 12px;
   box-shadow: inset 3px 0 0 0 var(--c-accent);
 }
 
@@ -84,7 +84,7 @@ function safeSkillList(group: SkillGroup): string[] {
 }
 
 .rc-timeline__item + .rc-timeline__item {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .rc-timeline__head {
@@ -109,7 +109,7 @@ function safeSkillList(group: SkillGroup): string[] {
 }
 
 .rc-timeline__desc {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   color: var(--c-muted);
 }
 
@@ -120,7 +120,7 @@ function safeSkillList(group: SkillGroup): string[] {
 }
 
 .rc-skills__label {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-family: var(--font-head);
   font-size: var(--fs-base);
 }
@@ -128,9 +128,9 @@ function safeSkillList(group: SkillGroup): string[] {
 .rc-skills__well {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
-  padding: 8px 10px;
+  padding: 8px 12px;
   background: #ffffff;
   border: var(--border-w) solid;
   border-color: var(--c-border) #ffffff #ffffff var(--c-border);

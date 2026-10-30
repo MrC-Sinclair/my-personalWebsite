@@ -116,7 +116,7 @@ const emit = defineEmits<{ (e: 'activate'): void }>()
 .rc-win__titlebar {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   padding: 2px 3px 2px 8px;
   background: var(--c-surface);
@@ -200,7 +200,7 @@ const emit = defineEmits<{ (e: 'activate'): void }>()
 .rc-win__ctl-min {
   width: 8px;
   height: 2px;
-  margin-top: 7px;
+  margin-top: 8px;
   background: currentcolor;
 }
 
@@ -249,7 +249,7 @@ const emit = defineEmits<{ (e: 'activate'): void }>()
 
 /* —— 状态条：上边界为凹槽（深上 / 亮下）—— */
 .rc-win__status {
-  padding: 5px 10px;
+  padding: 4px 12px;
   border-top: var(--border-w) solid;
   border-color: var(--c-border);
   box-shadow: inset 0 1px 0 0 #ffffff;

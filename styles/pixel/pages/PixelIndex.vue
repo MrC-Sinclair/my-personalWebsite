@@ -423,7 +423,7 @@ function submitSearch(): void {
 .hero-id {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -440,7 +440,7 @@ function submitSearch(): void {
 .hero-name {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(30px, 7vw, 56px);
+  font-size: clamp(32px, 7vw, 60px);
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1.15;
@@ -517,7 +517,7 @@ function submitSearch(): void {
 .stack {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -555,7 +555,7 @@ function submitSearch(): void {
 .post-search input {
   width: 100%;
   min-height: 44px;
-  padding: 10px 12px;
+  padding: 12px 12px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);

@@ -112,7 +112,7 @@ const { t } = useI18n()
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-family: var(--font-head);
   font-size: clamp(14px, 1.6vw, 18px);
   letter-spacing: 0.32em;
@@ -140,9 +140,9 @@ const { t } = useI18n()
 /* —— glitch 巨标题：本体霓虹青光 + 伪元素错位色偏 —— */
 .glitch {
   position: relative;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-family: var(--font-head);
-  font-size: clamp(46px, 9vw, 124px);
+  font-size: clamp(48px, 9vw, 124px);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: 0.02em;
@@ -216,16 +216,16 @@ const { t } = useI18n()
 }
 
 .tagline {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-family: var(--font-head);
-  font-size: clamp(16px, 2vw, 22px);
+  font-size: clamp(16px, 2vw, 21px);
   color: color-mix(in srgb, var(--c-accent) 42%, var(--c-accent-2));
   text-shadow: 0 0 12px rgb(255 45 149 / 0.35);
 }
 
 .desc {
   max-width: 58ch;
-  margin: 0 0 30px;
+  margin: 0 0 32px;
   color: var(--c-muted);
 }
 
@@ -239,9 +239,9 @@ const { t } = useI18n()
 .cta {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 48px;
-  padding: 12px 26px;
+  padding: 12px 28px;
   font-family: var(--font-head);
   font-size: var(--fs-base);
   font-weight: 700;
@@ -338,7 +338,7 @@ const { t } = useI18n()
   right: var(--space);
   bottom: var(--space);
   display: flex;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

@@ -84,7 +84,7 @@ function skillIcon(index: number): GelIconVariant {
 /* 白面板（首页 .panel 同款凝胶高光） */
 .panel {
   position: relative;
-  padding: clamp(22px, 3.5vw, 30px);
+  padding: clamp(24px, 3.5vw, 32px);
   border: 1px solid var(--c-border);
   border-radius: var(--radius);
   background: linear-gradient(180deg, #ffffff 0%, #f3f9ff 100%);
@@ -110,7 +110,7 @@ function skillIcon(index: number): GelIconVariant {
 }
 
 .about-main__sub {
-  margin: 26px 0 14px;
+  margin: 28px 0 16px;
   font-family: var(--font-head);
   font-size: 1.1875rem;
   font-weight: 800;
@@ -131,7 +131,7 @@ function skillIcon(index: number): GelIconVariant {
   position: relative;
   display: flex;
   gap: 12px;
-  padding-left: 30px;
+  padding-left: 32px;
 }
 
 /* 渐变连线 */
@@ -143,7 +143,7 @@ function skillIcon(index: number): GelIconVariant {
   left: 8px;
   width: 4px;
   border-radius: 2px;
-  background: linear-gradient(180deg, #58a6f5 0%, #1d5fae 100%);
+  background: linear-gradient(180deg, #3f8fd8 0%, #1d5fae 100%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
 }
 
@@ -162,7 +162,7 @@ function skillIcon(index: number): GelIconVariant {
   height: 16px;
   border: 1px solid #14417e;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 28%, #ffffff 0 20%, #58a6f5 21%, #1d5fae 100%);
+  background: radial-gradient(circle at 50% 28%, #ffffff 0 20%, #3f8fd8 21%, #1d5fae 100%);
   box-shadow: 0 2px 4px rgb(23 74 128 / 0.35);
 }
 
@@ -174,7 +174,7 @@ function skillIcon(index: number): GelIconVariant {
   align-items: center;
   align-self: flex-start;
   min-height: 32px;
-  padding: 4px 14px;
+  padding: 4px 16px;
   overflow: hidden;
   border: 1px solid #8a3c08;
   border-radius: var(--radius-sm);
@@ -226,7 +226,7 @@ function skillIcon(index: number): GelIconVariant {
 .about-side__heading {
   position: relative;
   margin: 0;
-  padding-bottom: 10px;
+  padding-bottom: 12px;
   font-family: var(--font-head);
   font-size: 1.375rem;
   font-weight: 800;
@@ -248,7 +248,7 @@ function skillIcon(index: number): GelIconVariant {
   width: 72px;
   height: 8px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(180deg, #58a6f5 0%, #1d5fae 100%);
+  background: linear-gradient(180deg, #3f8fd8 0%, #1d5fae 100%);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.6),
     0 2px 5px rgb(23 74 128 / 0.3);

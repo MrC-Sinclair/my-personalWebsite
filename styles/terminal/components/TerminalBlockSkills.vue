@@ -44,7 +44,7 @@ const groups = computed(() => {
 .groups {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -65,7 +65,7 @@ const groups = computed(() => {
 }
 
 .group-count {
-  margin-left: 6px;
+  margin-left: 8px;
   font-size: var(--fs-small);
   color: var(--c-muted);
 }

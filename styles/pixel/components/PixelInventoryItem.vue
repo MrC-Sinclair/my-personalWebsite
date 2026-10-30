@@ -168,7 +168,7 @@ const metaText = computed(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 /* 道具按钮：抬升层级，保持在拉伸链接之上可点 */
@@ -178,7 +178,7 @@ const metaText = computed(() => {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 700;
   letter-spacing: 0.08em;

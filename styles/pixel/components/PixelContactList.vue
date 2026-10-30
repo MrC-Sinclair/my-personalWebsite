@@ -68,7 +68,7 @@ function linkText(url: string): string {
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -104,7 +104,7 @@ function linkText(url: string): string {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 10px;
+  gap: 8px 12px;
   min-width: 0;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -131,7 +131,7 @@ function linkText(url: string): string {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   font-weight: 700;

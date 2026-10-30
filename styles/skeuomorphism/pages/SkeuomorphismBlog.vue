@@ -109,7 +109,7 @@ const loading = computed(() => pending.value && !postsData.value)
   /* 不给轨道：单列会按内容的 max-content 撑开（长标题整行不换行时实测 1451px），
      把整页顶出横向滚动。minmax(0,1fr) 把它钉回容器宽度 */
   grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
+  gap: 16px;
 }
 
 /* —— 加载骨架：索引卡纸条（脉冲） —— */

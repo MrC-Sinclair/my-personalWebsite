@@ -92,7 +92,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   align-items: baseline;
   gap: 8px;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: inherit;
   font-size: 12px;
   letter-spacing: 0.06em;

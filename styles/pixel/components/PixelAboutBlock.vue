@@ -67,7 +67,7 @@ const items = computed<TimelineItem[]>(() => (Array.isArray(timeline.value) ? ti
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -78,7 +78,7 @@ const items = computed<TimelineItem[]>(() => (Array.isArray(timeline.value) ? ti
   grid-template-columns: minmax(96px, auto) 1fr;
   align-items: start;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 12px 12px;
   background: color-mix(in srgb, var(--c-bg) 55%, var(--c-surface));
   border: 2px solid color-mix(in srgb, var(--c-muted) 40%, transparent);
 }
@@ -129,7 +129,7 @@ const items = computed<TimelineItem[]>(() => (Array.isArray(timeline.value) ? ti
 @media (max-width: 559px) {
   .tl-row {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 8px;
   }
 }
 </style>

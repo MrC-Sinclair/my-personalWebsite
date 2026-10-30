@@ -111,7 +111,7 @@ const loading = computed(() => pending.value && !postsData.value)
 }
 
 .empty-hint {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: var(--fs-small);
   color: var(--c-muted);
 }

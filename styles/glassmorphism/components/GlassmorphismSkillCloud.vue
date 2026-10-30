@@ -81,7 +81,7 @@ const safeGroups = computed(() =>
 .skill-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -92,7 +92,7 @@ const safeGroups = computed(() =>
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-text);

@@ -48,7 +48,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .panel-head {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .panel-title {

@@ -37,7 +37,7 @@ defineProps<{
   display: grid;
   gap: var(--gap);
   margin: 0;
-  padding: 0 0 0 22px;
+  padding: 0 0 0 24px;
   list-style: none;
 }
 
@@ -73,7 +73,7 @@ defineProps<{
 
 /* 经历玻璃片：hover 微亮（只动底色，避免玻璃叠玻璃 blur） */
 .tl-card {
-  padding: 14px 18px;
+  padding: 16px 20px;
   background: rgb(255 255 255 / 0.4);
   border: var(--border-w) solid rgb(255 255 255 / 0.55);
   border-radius: var(--radius-sm);
@@ -121,7 +121,7 @@ defineProps<{
 }
 
 .tl-desc {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: var(--fs-small);
   line-height: var(--lh-body);
   color: var(--c-muted);

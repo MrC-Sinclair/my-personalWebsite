@@ -59,8 +59,8 @@ const { t } = useI18n()
 .field {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px;
+  gap: 8px;
+  padding: 8px;
 }
 
 /* —— 立体输入框：灰面 + 斜面内阴影（凹陷，与按钮的凸起相反） —— */
@@ -68,7 +68,7 @@ const { t } = useI18n()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -120,7 +120,7 @@ const { t } = useI18n()
 
 /* 按下：斜面翻转 + 内容右移 1px（与标签按钮同款按压） */
 .clear:active {
-  padding: 9px 11px 7px 13px;
+  padding: 8px 12px 8px 12px;
   box-shadow:
     inset 1px 1px 0 #4a4a4a,
     inset -1px -1px 0 #ffffff;
@@ -128,7 +128,7 @@ const { t } = useI18n()
 
 /* —— 计数：等宽小字，老系统的状态栏读数 —— */
 .count {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-family: var(--font-mono);
   font-size: 11px;
   font-variant-numeric: tabular-nums;

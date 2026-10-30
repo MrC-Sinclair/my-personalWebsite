@@ -29,7 +29,7 @@ const { socialLinks } = useAppInfo()
 
 <style scoped>
 .contact-desc {
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   color: var(--c-muted);
 }
 </style>

@@ -108,7 +108,7 @@ function tagsText(project: Project): string {
 }
 
 th {
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 600;
@@ -121,7 +121,7 @@ th {
 }
 
 td {
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: var(--fs-base);
   color: var(--c-text);
   border-bottom: var(--border-w) solid color-mix(in srgb, var(--c-border) 55%, transparent);
@@ -207,7 +207,7 @@ tbody tr:last-child td {
   align-items: center;
   gap: 4px;
   min-height: 40px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-accent);
   text-decoration: none;

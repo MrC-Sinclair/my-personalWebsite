@@ -63,7 +63,7 @@ const { t } = useI18n()
 
 .hero__greeting {
   margin: 0;
-  font-size: clamp(15px, 2vw, 18px);
+  font-size: clamp(16px, 2vw, 18px);
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -72,9 +72,9 @@ const { t } = useI18n()
 
 /* 名字：标题大到不合理，扁平粗字重（与 metro 细字重区分） */
 .hero__name {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-family: var(--font-head);
-  font-size: clamp(44px, 8.5vw, 92px);
+  font-size: clamp(48px, 8.5vw, 92px);
   font-weight: 800;
   line-height: 1.04;
   letter-spacing: -0.015em;
@@ -82,14 +82,14 @@ const { t } = useI18n()
 }
 
 .hero__tagline {
-  margin: clamp(12px, 2vw, 18px) 0 0;
-  font-size: clamp(17px, 2.4vw, 22px);
+  margin: clamp(12px, 2vw, 20px) 0 0;
+  font-size: clamp(18px, 2.4vw, 21px);
   font-weight: 600;
   color: #ffffff;
 }
 
 .hero__desc {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   max-width: 560px;
   font-size: var(--fs-base);
   line-height: 1.8;
@@ -100,7 +100,7 @@ const { t } = useI18n()
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: clamp(20px, 3vw, 30px);
+  margin-top: clamp(20px, 3vw, 32px);
 }
 
 /* 扁平按钮：反馈只有颜色变化（变深 / 变透），无位移无阴影 */
@@ -109,8 +109,8 @@ const { t } = useI18n()
   align-items: center;
   justify-content: center;
   min-height: 46px;
-  padding: 0 26px;
-  font-size: 15px;
+  padding: 0 28px;
+  font-size: 16px;
   font-weight: 700;
   text-decoration: none;
   border-radius: var(--radius);

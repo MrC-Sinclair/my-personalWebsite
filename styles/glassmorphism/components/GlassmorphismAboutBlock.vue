@@ -54,7 +54,7 @@ const { skillGroups, timeline } = useAppInfo()
 }
 
 .sub-title {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-size: var(--fs-title);
   font-weight: 800;
   color: var(--c-text);

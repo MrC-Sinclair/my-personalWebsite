@@ -62,7 +62,7 @@ const { t } = useI18n()
 .field {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .input {

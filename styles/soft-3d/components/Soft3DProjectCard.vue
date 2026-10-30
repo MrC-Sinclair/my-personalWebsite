@@ -188,7 +188,7 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
 /* 首字母浮雕字形：下深上亮的错位阴影挤出立体感 */
 .project-card-glyph {
   font-family: var(--font-head);
-  font-size: 54px;
+  font-size: 60px;
   font-weight: 800;
   color: rgb(255 255 255 / 0.94);
   text-shadow:
@@ -202,7 +202,7 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 10px;
+  gap: 12px;
   padding: var(--space);
 }
 
@@ -229,8 +229,10 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   transition: color var(--transition);
 }
 
+/* 原用 --c-accent 的紫字压紫粉渐变，2.01:1；改白字后 5.47:1,
+   与同文件另一处 .project-card-link 的 on-accent 用法一致 */
 .project-card-link:hover {
-  color: var(--c-accent);
+  color: #ffffff;
 }
 
 .project-card-date {
@@ -275,15 +277,15 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
 .project-card-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-top: auto;
-  padding-top: 6px;
+  padding-top: 8px;
 }
 
 .project-card-link {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   min-height: 40px;
   padding: 8px 16px;
   font-size: var(--fs-small);

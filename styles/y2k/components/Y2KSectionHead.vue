@@ -48,7 +48,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 <style scoped>
 .head {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   justify-items: start;
   margin-bottom: calc(var(--space) * 1.25);
 }
@@ -63,9 +63,9 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .head-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
-  padding: 5px 14px;
+  padding: 4px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -86,7 +86,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .head-title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(28px, 4.5vw, 46px);
+  font-size: clamp(28px, 4.5vw, 48px);
   font-weight: 900;
   line-height: 1.12;
   overflow-wrap: break-word;

@@ -46,9 +46,9 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? prop
 .row {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
   min-height: 44px;
-  padding: 16px 18px;
+  padding: 16px 20px;
   color: var(--c-text);
   text-decoration: none;
   background: var(--c-surface);
@@ -85,7 +85,7 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? prop
   flex: none;
   align-items: center;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -116,7 +116,7 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? prop
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 900;
   line-height: 1.3;
   overflow-wrap: break-word;
@@ -141,7 +141,7 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? prop
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .tag {
@@ -155,7 +155,7 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? prop
 .go {
   flex: none;
   font-family: var(--font-head);
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 900;
   transition: transform var(--transition);
 }
@@ -168,8 +168,8 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? prop
 @media (max-width: 640px) {
   .row {
     flex-wrap: wrap;
-    gap: 10px;
-    padding: 14px;
+    gap: 12px;
+    padding: 16px;
   }
 
   .go {

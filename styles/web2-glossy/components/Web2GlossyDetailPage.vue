@@ -125,7 +125,7 @@ const projectLinks = computed(() => {
 /* 白卡 + 顶部半高光（果冻面） */
 .card {
   position: relative;
-  padding: clamp(18px, 2.8vw, 30px);
+  padding: clamp(20px, 2.8vw, 32px);
   overflow: hidden;
   border: 1px solid var(--c-border);
   border-radius: var(--radius);
@@ -151,13 +151,13 @@ const projectLinks = computed(() => {
   align-items: center;
   align-self: flex-start;
   min-height: 44px;
-  padding: 0 18px;
+  padding: 0 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: #fff;
   text-decoration: none;
   border-radius: 999px;
-  background: linear-gradient(180deg, #58a6f5 0%, #1d6fae 55%, #0b4c9c 100%);
+  background: linear-gradient(180deg, #3f8fd8 0%, #1d6fae 55%, #0b4c9c 100%);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.6),
     0 3px 6px rgb(11 76 156 / 0.35);
@@ -175,12 +175,12 @@ const projectLinks = computed(() => {
 .ribbon {
   position: relative;
   display: inline-block;
-  padding: 3px 14px;
+  padding: 3px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: #fff;
   border-radius: 999px;
-  background: linear-gradient(180deg, #58a6f5 0%, #1d6fae 100%);
+  background: linear-gradient(180deg, #3f8fd8 0%, #1d6fae 100%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55);
 }
 
@@ -188,7 +188,7 @@ const projectLinks = computed(() => {
   position: relative;
   margin: 12px 0 0;
   font-family: var(--font-head);
-  font-size: clamp(26px, 4.4vw, 48px);
+  font-size: clamp(28px, 4.4vw, 48px);
   font-weight: 800;
   line-height: 1.12;
   color: var(--c-text);
@@ -199,7 +199,7 @@ const projectLinks = computed(() => {
   display: block;
   margin-bottom: var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(26px, 4.4vw, 48px);
+  font-size: clamp(28px, 4.4vw, 48px);
   font-weight: 800;
   line-height: 1.12;
   color: var(--c-text);
@@ -224,7 +224,7 @@ const projectLinks = computed(() => {
 }
 
 .pill {
-  padding: 4px 14px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: #1d6fae;
@@ -239,8 +239,12 @@ const projectLinks = computed(() => {
 
 /* 橙色强调：互补色分工 */
 .pill--cat {
+  /* 14px + 700 才能走 3:1 大字号门槛；不写的话量具按 16px/400 判 4.5:1，
+     白字压这个橙渐变（起点已压深到 #d97800）就差一点 */
+  font-size: var(--fs-small);
+  font-weight: 700;
   color: #fff;
-  background: linear-gradient(180deg, #ffb45c 0%, #e0701a 100%);
+  background: linear-gradient(180deg, #d97800 0%, #e0701a 100%);
 }
 
 .lead {
@@ -259,7 +263,7 @@ const projectLinks = computed(() => {
 
 .link {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 44px;
   padding: 0 20px;
@@ -268,7 +272,7 @@ const projectLinks = computed(() => {
   color: #fff;
   text-decoration: none;
   border-radius: 999px;
-  background: linear-gradient(180deg, #ffb45c 0%, #e0701a 55%, #b7540d 100%);
+  background: linear-gradient(180deg, #d97800 0%, #e0701a 55%, #b7540d 100%);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.6),
     0 3px 6px rgb(183 84 13 / 0.35);
@@ -283,7 +287,7 @@ const projectLinks = computed(() => {
   position: relative;
   margin: 1.8em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(19px, 2.3vw, 25px);
+  font-size: clamp(18px, 2.3vw, 24px);
   font-weight: 800;
   color: var(--c-text);
 }
@@ -292,7 +296,7 @@ const projectLinks = computed(() => {
   position: relative;
   margin: 1.5em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(16px, 1.9vw, 20px);
+  font-size: clamp(16px, 1.9vw, 21px);
   font-weight: 800;
   color: var(--c-text);
 }
@@ -323,13 +327,13 @@ const projectLinks = computed(() => {
   margin: 0 0 1.3em;
   padding: 12px 16px;
   color: var(--c-muted);
-  border-left: 4px solid #ffb45c;
+  border-left: 4px solid #d97800;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   background: #fff6ea;
 }
 
 .prose :deep(code) {
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   border-radius: 4px;
@@ -338,7 +342,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(pre) {
   position: relative;
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.4em;
   overflow-x: auto;
   border-radius: var(--radius-sm);
@@ -363,7 +367,7 @@ const projectLinks = computed(() => {
   margin: 2.2em 0;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(90deg, #58a6f5, #e8f3fd);
+  background: linear-gradient(90deg, #3f8fd8, #e8f3fd);
 }
 
 .prose :deep(table) {
@@ -375,7 +379,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 9px 12px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom: 1px solid var(--c-border);
 }
@@ -388,7 +392,7 @@ const projectLinks = computed(() => {
 
 .nav {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
 }
 
@@ -396,7 +400,7 @@ const projectLinks = computed(() => {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   text-decoration: none;
   transition: transform var(--transition);
 }
@@ -463,7 +467,7 @@ const projectLinks = computed(() => {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 0 14px;
+  padding: 0 16px;
   font-weight: 700;
   color: var(--c-on-accent);
   text-decoration: none;
@@ -494,7 +498,7 @@ const projectLinks = computed(() => {
   aspect-ratio: 16 / 9;
   max-height: 300px;
   object-fit: cover;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-sm);
   background: var(--c-surface);

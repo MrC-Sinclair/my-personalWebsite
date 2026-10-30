@@ -99,7 +99,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   align-items: center;
   gap: 2px;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -133,7 +133,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 }
 
 .arg--on::after {
-  margin-left: 6px;
+  margin-left: 8px;
   content: '▊';
 }
 
@@ -147,7 +147,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 }
 
 .arg-count {
-  margin-left: 6px;
+  margin-left: 8px;
   font-size: 11px;
   color: var(--c-muted);
 }

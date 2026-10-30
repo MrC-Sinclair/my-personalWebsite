@@ -112,7 +112,7 @@ function tone(index: number): FlatTone {
 }
 
 .skill-bars__chip {
-  padding: 4px 10px;
+  padding: 4px 12px;
   font-size: 12px;
   font-weight: 600;
   color: var(--c-text);

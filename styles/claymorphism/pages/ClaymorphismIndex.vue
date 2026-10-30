@@ -316,7 +316,7 @@ function submitSearch(): void {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 48px;
-  padding: 12px 22px;
+  padding: 12px 24px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);

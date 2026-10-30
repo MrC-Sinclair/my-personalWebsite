@@ -82,8 +82,8 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  padding: 6px;
+  gap: 8px;
+  padding: 8px;
   margin-bottom: var(--gap);
 }
 
@@ -91,9 +91,9 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -127,7 +127,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
     inset -1px -1px 0 #ffffff,
     inset 2px 2px 0 #808080,
     inset -2px -2px 0 #dfdfdf;
-  padding: 9px 13px 7px 15px;
+  padding: 8px 12px 8px 16px;
 }
 
 .btn-count {

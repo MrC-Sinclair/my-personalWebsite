@@ -88,7 +88,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   align-items: baseline;
   gap: 8px;
   min-height: 46px;
-  padding: 12px 18px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   font-weight: 500;
@@ -107,8 +107,12 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
     background var(--transition);
 }
 
+/* hover：纸片被手指搓暖（浅金底 + 深棕字）。
+   原写法是「文字变金铜色」，但金铜 #b8893a 压在米白纸面上只有 2.63:1，
+   远达不到 AA；改成换底色后对比 10.5:1，材质反馈反而更明确。 */
 .plate:hover {
-  color: var(--c-accent);
+  color: #2b1a0f;
+  background: linear-gradient(180deg, #efe0c0 0%, #e0cba4 100%);
   transform: translateY(-2px);
 }
 
@@ -144,10 +148,12 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 46px;
-  padding: 12px 10px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
-  color: var(--c-accent-2);
+  /* 原值 --c-accent-2（#a84632）压在深棕木桌底上只有 2.86:1；
+     提亮成浅砖红后 7.64:1，语义色不变 */
+  color: #e0a184;
   background: transparent;
   border: 0;
   text-decoration: underline;
@@ -175,7 +181,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 46px;
-  padding: 12px 10px;
+  padding: 12px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent-2);

@@ -152,9 +152,9 @@ const projectLinks = computed(() => {
 /* 栏目小注：红色编号 + 小型大写栏目名 */
 .kicker {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: baseline;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 
 .kicker-num {
@@ -177,7 +177,7 @@ const projectLinks = computed(() => {
   max-width: 30ch;
   margin: 0 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(30px, 5vw, 58px);
+  font-size: clamp(32px, 5vw, 60px);
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.01em;
@@ -222,13 +222,13 @@ const projectLinks = computed(() => {
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 20px;
   margin: 0;
 }
 
 .link {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 40px;
   font-size: var(--fs-small);
@@ -256,7 +256,7 @@ const projectLinks = computed(() => {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -301,7 +301,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.6em 0 0.5em;
   font-family: var(--font-head);
-  font-size: clamp(17px, 2vw, 21px);
+  font-size: clamp(18px, 2vw, 21px);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -341,7 +341,7 @@ const projectLinks = computed(() => {
 .prose :deep(blockquote) {
   max-width: 60ch;
   margin: 0 0 1.4em;
-  padding: 4px 0 4px 18px;
+  padding: 4px 0 4px 20px;
   font-family: var(--font-head);
   font-style: italic;
   color: var(--c-muted);
@@ -349,14 +349,14 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 2px 5px;
+  padding: 2px 4px;
   font-family: var(--font-mono);
   font-size: 0.88em;
   background: var(--c-surface);
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.4em;
   overflow-x: auto;
   /* 原为 var(--c-surface)（米色纸面 #ECE4D3）：语法高亮的注释灰 #66707B
@@ -390,7 +390,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 9px 12px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom: 1px solid var(--c-border);
 }
@@ -402,7 +402,7 @@ const projectLinks = computed(() => {
 
 .nav {
   display: grid;
-  gap: 18px;
+  gap: 20px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   padding-top: var(--gap);
   border-top: 1px solid var(--c-border);
@@ -411,7 +411,7 @@ const projectLinks = computed(() => {
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   text-decoration: none;
 }
 
@@ -468,7 +468,7 @@ const projectLinks = computed(() => {
   aspect-ratio: 16 / 9;
   max-height: 300px;
   object-fit: cover;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   background: var(--c-surface);
 }
 </style>

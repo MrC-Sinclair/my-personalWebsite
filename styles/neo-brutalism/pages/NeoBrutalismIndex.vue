@@ -260,7 +260,7 @@ function submitSearch(): void {
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 900;
@@ -301,7 +301,7 @@ function submitSearch(): void {
 .work-list {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 22px 20px;
+  gap: 24px 20px;
   align-items: start;
   margin: 0;
   padding: 0;
@@ -336,7 +336,7 @@ function submitSearch(): void {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 48px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   font-weight: 600;
@@ -446,7 +446,7 @@ function submitSearch(): void {
   .work-list {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 20px;
   }
 
   .work-item:nth-child(2) {

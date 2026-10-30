@@ -81,7 +81,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 2px;
 }
 
@@ -89,9 +89,9 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .tag {
   display: inline-flex;
   align-items: baseline;
-  gap: 7px;
+  gap: 8px;
   min-height: 44px;
-  padding: 10px 18px;
+  padding: 12px 20px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -143,7 +143,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clear {
   min-height: 44px;
-  padding: 10px 6px;
+  padding: 12px 8px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -180,7 +180,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
   min-height: 44px;
-  padding: 10px 6px;
+  padding: 12px 8px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-muted);

@@ -79,11 +79,11 @@ const { activeId } = useActiveSection()
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px var(--gap);
+  gap: 12px var(--gap);
   width: 100%;
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: 10px 14px;
+  padding: 12px 16px;
   background: var(--c-surface);
   border-radius: 999px;
   box-shadow: var(--shadow);
@@ -94,9 +94,9 @@ const { activeId } = useActiveSection()
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
-  padding: 4px 10px 4px 4px;
+  padding: 4px 12px 4px 4px;
   text-decoration: none;
   border-radius: 999px;
   transition: transform var(--transition);
@@ -138,7 +138,7 @@ const { activeId } = useActiveSection()
 
 .anchor-list {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   padding: 0 4px;
   overflow-x: auto;
@@ -150,7 +150,7 @@ const { activeId } = useActiveSection()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-base);
   color: var(--c-muted);
   text-decoration: none;
@@ -193,7 +193,7 @@ const { activeId } = useActiveSection()
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-muted);
@@ -232,7 +232,7 @@ const { activeId } = useActiveSection()
   align-items: center;
   gap: 8px;
   min-height: 40px;
-  padding: 6px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-base);
   font-weight: 700;
   color: #8c2f60;
@@ -276,7 +276,7 @@ const { activeId } = useActiveSection()
 /* 窄屏：画廊入口文字收紧（触控目标仍 ≥ 40px） */
 @media (max-width: 480px) {
   .gallery-pill {
-    padding: 6px 14px;
+    padding: 8px 16px;
   }
 }
 

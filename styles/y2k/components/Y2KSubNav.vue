@@ -114,7 +114,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   text-decoration: none;
 }
@@ -164,7 +164,7 @@ function isActive(path: string): boolean {
 .hd-nav {
   display: flex;
   flex: 1;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -179,7 +179,7 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -231,7 +231,7 @@ function isActive(path: string): boolean {
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -267,7 +267,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
   padding: 8px 16px;
   font-size: var(--fs-small);
@@ -305,7 +305,7 @@ function isActive(path: string): boolean {
 /* —— 窄屏：画廊与语言胶囊收窄留白 —— */
 @media (max-width: 767px) {
   .hd-inner {
-    gap: 10px;
+    gap: 12px;
   }
 
   .hd-gallery {
@@ -313,7 +313,7 @@ function isActive(path: string): boolean {
   }
 
   .hd-lang {
-    padding: 6px 12px;
+    padding: 8px 12px;
   }
 }
 

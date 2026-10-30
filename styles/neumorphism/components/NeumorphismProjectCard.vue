@@ -87,7 +87,7 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   padding: calc(var(--space) + 4px);
   background: var(--surface-raised);
   border-radius: calc(var(--radius) + 8px);
@@ -110,7 +110,7 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   position: absolute;
   top: 20px;
   right: 26px;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 800;
   color: #c5cedd;
   text-shadow: 1px 1px 1px rgb(255 255 255 / 0.9);
@@ -164,7 +164,7 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
 .card-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -173,7 +173,7 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
 .card-tag {
   display: inline-flex;
   align-items: center;
-  padding: 5px 14px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-accent);
@@ -188,16 +188,16 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 /* —— 凸起外链小按钮：hover 加深、active 凹进 —— */
 .mini-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-accent);

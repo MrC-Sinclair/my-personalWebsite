@@ -332,7 +332,7 @@ function submitSearch(): void {
 .side-label-plate {
   display: inline-flex;
   align-items: center;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -381,7 +381,7 @@ function submitSearch(): void {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 46px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -411,7 +411,7 @@ function submitSearch(): void {
   /* 不给轨道：单列会按内容的 max-content 撑开（长标题整行不换行时实测 1451px），
      把整页顶出横向滚动。minmax(0,1fr) 把它钉回容器宽度 */
   grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
+  gap: 16px;
 }
 
 /* 查看全部：皮革长条按钮 */

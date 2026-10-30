@@ -25,7 +25,7 @@ defineProps<{
 .empty {
   display: grid;
   justify-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: clamp(28px, 5vw, 48px) var(--space);
   text-align: center;
 }
@@ -37,7 +37,7 @@ defineProps<{
   justify-content: center;
   width: 72px;
   height: 72px;
-  font-size: 26px;
+  font-size: 28px;
   color: var(--c-accent);
   background: linear-gradient(160deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02));
   border: var(--border-w) solid var(--c-border);

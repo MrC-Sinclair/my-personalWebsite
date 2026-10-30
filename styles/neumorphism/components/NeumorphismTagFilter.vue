@@ -79,7 +79,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   margin-bottom: var(--gap);
 }
 

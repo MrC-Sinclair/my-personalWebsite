@@ -73,9 +73,9 @@ function metaOf(post: BlogPost): string {
 .post-row {
   display: grid;
   grid-template-columns: 40px 1fr;
-  gap: 6px var(--gap);
+  gap: 8px var(--gap);
   align-items: baseline;
-  padding: 22px 0;
+  padding: 24px 0;
   color: inherit;
   text-decoration: none;
   border-top: var(--border-w) solid var(--c-border);
@@ -101,12 +101,12 @@ function metaOf(post: BlogPost): string {
 .row-main {
   grid-column: 1 / -1;
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 /* 标题行：大号 + hover 强调色下划线生长 + 箭头右移 */
 .row-title {
-  font-size: clamp(19px, 2.4vw, 26px);
+  font-size: clamp(18px, 2.4vw, 28px);
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.01em;

@@ -187,7 +187,7 @@ const projectLinks = computed(() => {
 
 .head-line {
   display: flex;
-  gap: 18px;
+  gap: 20px;
   align-items: baseline;
 }
 
@@ -204,7 +204,7 @@ const projectLinks = computed(() => {
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(28px, 4.6vw, 52px);
+  font-size: clamp(28px, 4.6vw, 48px);
   font-weight: 800;
   line-height: 1.04;
   letter-spacing: -0.02em;
@@ -213,7 +213,7 @@ const projectLinks = computed(() => {
 
 .rule {
   height: 1px;
-  margin-top: 14px;
+  margin-top: 16px;
   background: var(--c-border);
 }
 
@@ -228,7 +228,7 @@ const projectLinks = computed(() => {
   display: grid;
   grid-template-columns: 120px 1fr;
   gap: 16px;
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid var(--c-border);
 }
 
@@ -266,7 +266,7 @@ const projectLinks = computed(() => {
 .link {
   position: relative;
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 40px;
   font-weight: 700;
@@ -294,7 +294,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 2em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(20px, 2.4vw, 26px);
+  font-size: clamp(21px, 2.4vw, 28px);
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--c-text);
@@ -303,7 +303,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.6em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(17px, 2vw, 21px);
+  font-size: clamp(18px, 2vw, 21px);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -339,7 +339,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 2px 5px;
+  padding: 2px 4px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   background: var(--c-surface);
@@ -347,7 +347,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.4em;
   overflow-x: auto;
   background: var(--c-surface);
@@ -379,7 +379,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 9px 12px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom: 1px solid var(--c-border);
 }
@@ -400,7 +400,7 @@ const projectLinks = computed(() => {
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   text-decoration: none;
 }
 
@@ -478,7 +478,7 @@ const projectLinks = computed(() => {
   aspect-ratio: 16 / 9;
   max-height: 300px;
   object-fit: cover;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   background: var(--c-surface);
 }
 </style>

@@ -100,20 +100,20 @@ const tagText = computed(() =>
   flex-direction: column;
   flex: 1 1 auto;
   min-width: 0;
-  padding: 18px 20px 16px;
+  padding: 20px 20px 16px;
 }
 
 .post-card__meta-top {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
 }
 
 /* 分类章：纯色底白字（色板均校验 ≥ 4.5:1） */
 .post-card__chip {
-  padding: 2px 9px;
+  padding: 2px 8px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -129,9 +129,9 @@ const tagText = computed(() =>
 }
 
 .post-card__title {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   font-family: var(--font-head);
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
   line-height: 1.35;
 }
@@ -171,7 +171,7 @@ const tagText = computed(() =>
 }
 
 .post-card__tags {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   font-size: 12px;
   letter-spacing: 0.04em;
   color: var(--c-muted);
@@ -181,10 +181,10 @@ const tagText = computed(() =>
 .post-card__more {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 14px 0 0;
+  gap: 8px;
+  margin: 16px 0 0;
   padding-top: 12px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--c-muted);
   border-top: var(--border-w) solid #edf1f6;
@@ -210,7 +210,7 @@ const tagText = computed(() =>
   aspect-ratio: 16 / 9;
   max-height: 180px;
   object-fit: cover;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   border-radius: var(--radius-sm);
   background: var(--c-surface);
 }

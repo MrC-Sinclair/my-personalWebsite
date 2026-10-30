@@ -53,7 +53,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: var(--space);
 }
 
@@ -115,7 +115,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   width: 96px;
   height: 10px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(180deg, #58a6f5 0%, #1d5fae 100%);
+  background: linear-gradient(180deg, #3f8fd8 0%, #1d5fae 100%);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.6),
     0 3px 6px rgb(23 74 128 / 0.35);

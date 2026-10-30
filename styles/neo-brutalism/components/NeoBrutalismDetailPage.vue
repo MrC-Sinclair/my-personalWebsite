@@ -122,7 +122,7 @@ const projectLinks = computed(() => {
 
 /* 硬边卡片：粗黑描边 + 零模糊硬投影 */
 .card {
-  padding: clamp(18px, 2.8vw, 30px);
+  padding: clamp(20px, 2.8vw, 32px);
   border: 3px solid var(--c-text);
   background: var(--c-surface);
   box-shadow: var(--shadow);
@@ -168,7 +168,10 @@ const projectLinks = computed(() => {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--c-on-accent, #fff);
+  /* ★ 原写法是 var(--c-on-accent, #fff) 配 background: var(--c-text)，
+     而本风格这两个变量都是 #101010 —— 黑字压黑底 1.00:1，等于完全看不见。
+     标签底是墨黑，字就走纸白。 */
+  color: var(--c-bg);
   background: var(--c-text);
   transform: rotate(-1.5deg);
 }
@@ -176,7 +179,7 @@ const projectLinks = computed(() => {
 .title {
   margin: 0 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(28px, 4.8vw, 54px);
+  font-size: clamp(28px, 4.8vw, 60px);
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: -0.02em;
@@ -194,7 +197,7 @@ const projectLinks = computed(() => {
 }
 
 .chip {
-  padding: 4px 10px;
+  padding: 4px 12px;
   font-size: var(--fs-small);
   font-weight: 800;
   color: var(--c-text);
@@ -226,15 +229,17 @@ const projectLinks = computed(() => {
 /* 撞色按钮 + 按压位移（硬投影缩短） */
 .link {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   min-height: 48px;
-  padding: 0 18px;
+  padding: 0 20px;
   font-size: var(--fs-small);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--c-text);
+  /* 蓝底（--c-accent-2）上的文字走白：墨黑压 #4361ee 只有 3.79:1。
+     保留原有的黑色粗描边与硬投影，蓝底白字黑边仍是本风格的撞色语言。 */
+  color: #ffffff;
   text-decoration: none;
   border: 3px solid var(--c-text);
   background: var(--c-accent-2, #ffd60a);
@@ -252,7 +257,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.8em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(20px, 2.5vw, 27px);
+  font-size: clamp(21px, 2.5vw, 28px);
   font-weight: 900;
   color: var(--c-text);
 }
@@ -260,7 +265,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.5em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(17px, 2vw, 21px);
+  font-size: clamp(18px, 2vw, 21px);
   font-weight: 900;
   color: var(--c-text);
 }
@@ -288,7 +293,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(blockquote) {
   margin: 0 0 1.3em;
-  padding: 14px 18px;
+  padding: 16px 20px;
   font-weight: 600;
   border: 3px solid var(--c-text);
   background: var(--c-accent);
@@ -296,7 +301,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   font-weight: 700;
@@ -305,7 +310,7 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(pre) {
-  padding: 16px 18px;
+  padding: 16px 20px;
   margin: 0 0 1.4em;
   overflow-x: auto;
   border: 3px solid var(--c-text);
@@ -338,7 +343,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 10px 12px;
+  padding: 12px 12px;
   text-align: left;
   border: 2px solid var(--c-text);
 }
@@ -350,14 +355,14 @@ const projectLinks = computed(() => {
 
 .nav {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
 }
 
 .nav-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   text-decoration: none;
   transition:
     box-shadow var(--transition),
@@ -455,7 +460,7 @@ const projectLinks = computed(() => {
   aspect-ratio: 16 / 9;
   max-height: 300px;
   object-fit: cover;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   border: var(--border-w) solid var(--c-border);
   border-radius: 0;
   background: var(--c-surface);

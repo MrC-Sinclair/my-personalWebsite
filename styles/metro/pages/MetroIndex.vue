@@ -291,7 +291,7 @@ function submitSearch(): void {
   align-items: center;
   min-height: min(86vh, 880px);
   min-height: min(86svh, 880px);
-  padding-block: clamp(40px, 7vh, 90px) clamp(24px, 4vw, 48px);
+  padding-block: clamp(40px, 7vh, 92px) clamp(24px, 4vw, 48px);
 }
 
 .start > .wrap {
@@ -330,14 +330,14 @@ function submitSearch(): void {
 
 .start__tagline {
   max-width: 32em;
-  margin: clamp(14px, 2vw, 22px) 0 0;
-  font-size: clamp(18px, 2.4vw, 30px);
+  margin: clamp(16px, 2vw, 24px) 0 0;
+  font-size: clamp(18px, 2.4vw, 32px);
   color: var(--c-text);
 }
 
 .start__desc {
   max-width: 42em;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   color: var(--c-muted);
 }
 
@@ -355,13 +355,13 @@ function submitSearch(): void {
 
 .start__tile-big {
   font-family: var(--font-head);
-  font-size: clamp(20px, 2vw, 27px);
+  font-size: clamp(21px, 2vw, 28px);
   font-weight: 700;
   line-height: 1.15;
 }
 
 .start__tile-glyph {
-  font-size: clamp(22px, 2.2vw, 30px);
+  font-size: clamp(21px, 2.2vw, 32px);
   font-weight: 300;
   line-height: 1;
 }
@@ -373,7 +373,7 @@ function submitSearch(): void {
   display: flex;
   align-items: center;
   margin: 20px 0 4px;
-  padding: 0 14px;
+  padding: 0 16px;
   min-height: 52px;
   background: var(--c-surface);
   border: 2px solid var(--c-border);

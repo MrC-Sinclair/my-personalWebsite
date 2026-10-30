@@ -271,7 +271,7 @@ function submitSearch(): void {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 46px;
-  padding: 10px 18px;
+  padding: 12px 20px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -300,7 +300,7 @@ function submitSearch(): void {
 
 /* —— 联系展台 —— */
 .contact-desc {
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   color: var(--c-muted);
 }
 

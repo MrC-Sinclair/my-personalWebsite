@@ -103,9 +103,9 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .hud-item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 700;
   letter-spacing: 0.06em;

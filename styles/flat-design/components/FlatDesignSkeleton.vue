@@ -21,7 +21,7 @@ const widths = ['38%', '82%', '64%', '90%', '46%'] as const
 .sk {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   padding: 8px 0;
 }
 

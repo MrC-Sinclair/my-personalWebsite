@@ -92,9 +92,9 @@ function isActive(path: string): boolean {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--c-text);
@@ -163,7 +163,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-text);
   text-decoration: none;
@@ -201,7 +201,7 @@ function isActive(path: string): boolean {
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   letter-spacing: 0.04em;
   color: var(--c-muted);
@@ -239,7 +239,7 @@ function isActive(path: string): boolean {
   .hd-inner {
     grid-template-columns: 1fr auto;
     gap: 0 12px;
-    padding: 10px var(--space) 6px;
+    padding: 12px var(--space) 8px;
   }
 
   /* ★ 三个位置全部写死。画廊胶囊在 DOM 里排最后，而导航显式占了 1/-1，

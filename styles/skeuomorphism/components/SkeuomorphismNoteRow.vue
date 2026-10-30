@@ -72,7 +72,7 @@ function slugOf(path: string): string {
   align-items: center;
   gap: 16px;
   min-height: 40px;
-  padding: 16px 20px 16px 58px;
+  padding: 16px 20px 16px 60px;
   text-decoration: none;
   border: 1px solid rgb(0 0 0 / 0.4);
   border-radius: var(--radius-sm);
@@ -123,7 +123,7 @@ function slugOf(path: string): string {
   left: 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   transform: translateY(-50%);
 }
 
@@ -148,7 +148,7 @@ function slugOf(path: string): string {
 
 .note-title {
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--c-text);
   transition: color var(--transition);
@@ -173,13 +173,13 @@ function slugOf(path: string): string {
   display: none;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .note-cat {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
+  padding: 2px 12px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-muted);
@@ -200,7 +200,7 @@ function slugOf(path: string): string {
 .note-arrow {
   flex: none;
   font-family: var(--font-head);
-  font-size: 20px;
+  font-size: 21px;
   color: var(--c-accent-2);
   transition: transform var(--transition);
 }

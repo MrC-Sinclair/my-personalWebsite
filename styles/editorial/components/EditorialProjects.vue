@@ -156,7 +156,7 @@ function projectRoute(project: Project): string {
 .link {
   display: grid;
   flex: 1 1 auto;
-  gap: 14px;
+  gap: 16px;
   color: inherit;
   text-decoration: none;
 }
@@ -202,7 +202,7 @@ function projectRoute(project: Project): string {
   width: 100%;
   height: 100%;
   font-family: var(--font-head);
-  font-size: clamp(64px, 9vw, 128px);
+  font-size: clamp(60px, 9vw, 128px);
   font-style: italic;
   line-height: 1;
   color: color-mix(in srgb, var(--c-accent) 30%, transparent);
@@ -226,7 +226,7 @@ function projectRoute(project: Project): string {
   display: inline;
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(22px, 2.6vw, 32px);
+  font-size: clamp(21px, 2.6vw, 32px);
   font-weight: 700;
   line-height: 1.25;
   color: var(--c-text);
@@ -239,7 +239,7 @@ function projectRoute(project: Project): string {
 }
 
 .project.is-lead .cap-title {
-  font-size: clamp(26px, 3.6vw, 44px);
+  font-size: clamp(28px, 3.6vw, 48px);
 }
 
 .link:hover .cap-title {
@@ -261,7 +261,7 @@ function projectRoute(project: Project): string {
 .cap-tags {
   display: flex;
   flex-wrap: wrap;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   font-size: var(--fs-small);
   letter-spacing: 0.08em;
   color: var(--c-muted);
@@ -277,14 +277,14 @@ function projectRoute(project: Project): string {
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 22px;
+  gap: 8px 24px;
   padding-top: 12px;
 }
 
 .action {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   min-height: 40px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -320,15 +320,15 @@ function projectRoute(project: Project): string {
 
 /* 「查看项目」行：hairline 顶线 + 划线链接 */
 .more-row {
-  margin-top: clamp(26px, 4vw, 40px);
-  padding-top: 14px;
+  margin-top: clamp(28px, 4vw, 40px);
+  padding-top: 16px;
   border-top: var(--border-w) solid var(--c-border);
 }
 
 .more {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   font-size: var(--fs-base);
   letter-spacing: 0.14em;

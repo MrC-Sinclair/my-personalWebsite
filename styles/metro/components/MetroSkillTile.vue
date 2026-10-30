@@ -57,7 +57,7 @@ const listText = computed(() => safeSkills.value.join(' · '))
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: var(--fs-small);
   line-height: 1.55;
 }

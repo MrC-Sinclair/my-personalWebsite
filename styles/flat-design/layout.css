@@ -63,9 +63,9 @@
 [data-style='flat-design'] .band__more {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 40px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -112,10 +112,10 @@
 [data-style='flat-design'] .minor-head {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0 0 clamp(16px, 2.5vw, 24px);
   font-family: var(--font-head);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -151,7 +151,7 @@
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   /* 深色带上局部 color 是白色，输入框自带白底，文字必须写死深色 */
@@ -163,8 +163,9 @@
   transition: border-color var(--transition);
 }
 
+/* 占位符：原 #9ca3af 压白底只有 2.54:1，加深到石板灰后 4.76:1 */
 [data-style='flat-design'] .post-search input::placeholder {
-  color: #9ca3af;
+  color: #64748b;
 }
 
 [data-style='flat-design'] .post-search input:focus-visible {

@@ -45,7 +45,7 @@ function pad(n: number): string {
   grid-template-columns: auto 1fr;
   align-items: end;
   gap: 12px var(--gap);
-  padding-top: 14px;
+  padding-top: 16px;
   /* 区块以加粗规则线开场：线的粗细本身构成层级 */
   border-top: calc(var(--border-w) * 3) solid var(--c-border);
 }
@@ -64,7 +64,7 @@ function pad(n: number): string {
   margin: 0;
   grid-column: 2;
   font-family: var(--font-head);
-  font-size: clamp(30px, 4.5vw, 52px);
+  font-size: clamp(32px, 4.5vw, 48px);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.02em;

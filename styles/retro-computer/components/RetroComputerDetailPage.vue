@@ -135,7 +135,7 @@ const projectLinks = computed(() => {
   align-self: flex-start;
   /* 命中区地板：32px 的 Win95 按钮高度在窄屏不够，统一抬到 40 */
   min-height: 40px;
-  padding: 0 14px;
+  padding: 0 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -162,7 +162,7 @@ const projectLinks = computed(() => {
 
 /* 下凹输入框：把元信息塞进表单控件 */
 .field {
-  padding: 8px 10px;
+  padding: 8px 12px;
   border-top: 2px solid #404040;
   border-right: 2px solid #fff;
   border-bottom: 2px solid #fff;
@@ -200,7 +200,7 @@ const projectLinks = computed(() => {
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 /* 分组线：窗口内的分隔 */
@@ -213,7 +213,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.6em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(18px, 2.2vw, 23px);
+  font-size: clamp(18px, 2.2vw, 24px);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -221,7 +221,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.4em 0 0.5em;
   font-family: var(--font-head);
-  font-size: clamp(15px, 1.9vw, 19px);
+  font-size: clamp(16px, 1.9vw, 18px);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -247,7 +247,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(blockquote) {
   margin: 0 0 1.2em;
-  padding: 10px 14px;
+  padding: 12px 16px;
   color: #404040;
   border-top: 2px solid #404040;
   border-right: 2px solid #fff;
@@ -257,14 +257,14 @@ const projectLinks = computed(() => {
 }
 
 .prose :deep(code) {
-  padding: 1px 5px;
+  padding: 1px 4px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   background: #e4e4e4;
 }
 
 .prose :deep(pre) {
-  padding: 14px 16px;
+  padding: 16px 16px;
   margin: 0 0 1.3em;
   overflow-x: auto;
   border-top: 2px solid #404040;
@@ -300,7 +300,7 @@ const projectLinks = computed(() => {
 
 .prose :deep(th),
 .prose :deep(td) {
-  padding: 6px 10px;
+  padding: 8px 12px;
   text-align: left;
   border: 1px solid #808080;
 }
@@ -312,9 +312,9 @@ const projectLinks = computed(() => {
 
 .nav {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-  padding-top: 10px;
+  padding-top: 12px;
   border-top: 1px solid #808080;
 }
 
@@ -322,7 +322,7 @@ const projectLinks = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   text-decoration: none;
 }
 
@@ -360,9 +360,9 @@ const projectLinks = computed(() => {
 .crumbs {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   border: 2px solid var(--c-border);

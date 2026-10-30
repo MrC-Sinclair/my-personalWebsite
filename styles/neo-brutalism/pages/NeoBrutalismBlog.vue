@@ -106,7 +106,7 @@ const loading = computed(() => pending.value && !postsData.value)
 /* 计数：黑色斜纹块 */
 .count {
   margin: 0;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;

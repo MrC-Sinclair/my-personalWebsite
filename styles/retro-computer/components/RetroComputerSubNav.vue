@@ -126,7 +126,7 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0 14px;
+  padding: 0 16px;
   color: var(--c-text);
   font-family: var(--font-body);
   font-size: var(--fs-base);
@@ -192,7 +192,7 @@ onUnmounted(() => {
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 0 10px;
+  padding: 0 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -228,7 +228,7 @@ onUnmounted(() => {
   align-items: center;
   align-self: center;
   margin-left: 8px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   background: #ffffff;
   border: var(--border-w) solid;
   border-color: var(--c-border) #ffffff #ffffff var(--c-border);
@@ -241,7 +241,7 @@ onUnmounted(() => {
 @media (max-width: 479px) {
   .rc-menubar__brand,
   .rc-menubar__item {
-    padding: 0 10px;
+    padding: 0 12px;
   }
 
   /* 极窄屏先把时钟收掉，再截短站名：给路由菜单和语言芯片腾出横向空间

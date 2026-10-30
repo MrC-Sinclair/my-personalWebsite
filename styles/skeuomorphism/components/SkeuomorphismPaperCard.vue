@@ -116,7 +116,7 @@ function slugOf(path: string): string {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 30px 24px 24px 58px;
+  padding: 32px 24px 24px 60px;
   border: 1px solid rgb(0 0 0 / 0.4);
   border-radius: var(--radius-sm);
   /* 米白纸：纸色渐变 + 细横线（28px 节距） */
@@ -210,7 +210,7 @@ function slugOf(path: string): string {
   position: absolute;
   top: 58px;
   right: 10px;
-  padding: 2px 9px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   font-weight: 700;
@@ -281,7 +281,7 @@ function slugOf(path: string): string {
 
 .paper-desc {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: var(--lh-body);
   color: var(--c-muted);
   overflow-wrap: break-word;
@@ -331,9 +331,9 @@ function slugOf(path: string): string {
 .paper-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin-top: auto;
-  padding-top: 6px;
+  padding-top: 8px;
 }
 
 .paper-btn {
@@ -386,7 +386,7 @@ function slugOf(path: string): string {
 /* —— wide 大卡：桌面端横向舒展、标题加大 —— */
 @media (min-width: 768px) {
   .paper--wide {
-    padding: 34px 32px 28px 66px;
+    padding: 36px 32px 28px 68px;
   }
 
   .paper--wide .paper-title {

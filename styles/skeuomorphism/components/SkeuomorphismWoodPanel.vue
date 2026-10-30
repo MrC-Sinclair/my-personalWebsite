@@ -80,7 +80,7 @@ defineProps<{
 /* —— 烙印标题 + 下方黄铜刻度线 —— */
 .panel-title {
   margin: 0 0 var(--gap);
-  padding-bottom: 10px;
+  padding-bottom: 12px;
   font-family: var(--font-head);
   font-size: var(--fs-title);
   font-weight: 700;

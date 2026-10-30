@@ -56,7 +56,7 @@ function safeSkills(group: SkillGroup): string[] {
 /* —— 皮革工具卡 —— */
 .skill-card {
   position: relative;
-  padding: 26px 18px 18px;
+  padding: 28px 20px 20px;
   border: 1px solid rgb(0 0 0 / 0.55);
   border-radius: var(--radius-sm);
   /* 皮革：深棕底 + 小噪点 */
@@ -136,7 +136,7 @@ function safeSkills(group: SkillGroup): string[] {
 .skill-chip {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
+  padding: 4px 12px;
   font-size: var(--fs-small);
   color: var(--c-text);
   border: 1px solid rgb(0 0 0 / 0.35);

@@ -77,7 +77,7 @@ const anchorItems = computed(() => [
   gap: 4px var(--gap);
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: 10px var(--space);
+  padding: 12px var(--space);
 }
 
 /* 站点标识：№ 记号 + 衬线站名 */
@@ -102,7 +102,7 @@ const anchorItems = computed(() => [
 
 .brand-mark {
   font-family: var(--font-head);
-  font-size: 19px;
+  font-size: 18px;
   font-style: italic;
   line-height: 1;
   color: var(--c-accent);
@@ -110,7 +110,7 @@ const anchorItems = computed(() => [
 
 .brand-name {
   font-family: var(--font-head);
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.02em;
   white-space: nowrap;
@@ -142,9 +142,9 @@ const anchorItems = computed(() => [
 .anchor {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   min-height: 40px;
-  padding: 8px 13px;
+  padding: 8px 12px;
   font-size: var(--fs-small);
   letter-spacing: 0.1em;
   color: var(--c-muted);
@@ -267,8 +267,8 @@ const anchorItems = computed(() => [
 /* 窄屏：锚点行折到第三行横滑，动作组（语言切换 + 画廊）贴右成行 */
 @media (max-width: 820px) {
   .inner {
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
   .anchors {

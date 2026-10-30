@@ -93,7 +93,7 @@ function isActive(path: string): boolean {
   gap: 12px var(--gap);
   max-width: var(--page-w);
   margin-inline: auto;
-  padding: 10px clamp(16px, 4vw, 32px);
+  padding: 12px clamp(16px, 4vw, 32px);
   background: linear-gradient(180deg, #e8f4ff 0%, #cfe6fb 100%);
   border-bottom: 1px solid rgb(255 255 255 / 0.9);
   box-shadow: 0 2px 6px rgb(23 74 128 / 0.12);
@@ -105,7 +105,7 @@ function isActive(path: string): boolean {
   position: absolute;
   inset: auto 0 0 0;
   height: 3px;
-  background: linear-gradient(90deg, #58a6f5 0%, #6fc0f0 50%, #d97a1c 100%);
+  background: linear-gradient(90deg, #3f8fd8 0%, #6fc0f0 50%, #d97a1c 100%);
 }
 
 .site-header {
@@ -117,7 +117,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 40px;
   text-decoration: none;
 }
@@ -129,7 +129,9 @@ function isActive(path: string): boolean {
   width: 34px;
   height: 34px;
   font-family: var(--font-head);
-  font-size: 1.0625rem;
+  /* 17px 差一点点到不了 18px 的大字号门槛；提到 18px 后按 3:1 判定，
+     白字压磁贴蓝 3.65:1 即达标，不必把磁贴压得更深 */
+  font-size: 1.125rem;
   font-weight: 800;
   color: #ffffff;
   border: 1px solid #14417e;
@@ -152,7 +154,7 @@ function isActive(path: string): boolean {
 .nav {
   display: flex;
   flex: 1 1 auto;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -167,7 +169,7 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   min-height: 40px;
-  padding: 6px 16px;
+  padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--c-muted);
@@ -183,7 +185,7 @@ function isActive(path: string): boolean {
 
 .nav__pill:hover {
   color: #ffffff;
-  background: linear-gradient(180deg, #58a6f5 0%, #1d5fae 100%);
+  background: linear-gradient(180deg, #3f8fd8 0%, #1d5fae 100%);
   border-color: #14417e;
 }
 
@@ -194,7 +196,7 @@ function isActive(path: string): boolean {
 /* 当前页：蓝色实底胶囊（Web 2.0 的选中 = 实心高光） */
 .nav__pill[aria-current='page'] {
   color: #ffffff;
-  background: linear-gradient(180deg, #58a6f5 0%, #1d5fae 100%);
+  background: linear-gradient(180deg, #3f8fd8 0%, #1d5fae 100%);
   border-color: #14417e;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
 }
@@ -221,7 +223,7 @@ function isActive(path: string): boolean {
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 4px 14px;
+  padding: 4px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;

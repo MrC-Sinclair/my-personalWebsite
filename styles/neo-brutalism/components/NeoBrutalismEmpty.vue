@@ -26,7 +26,7 @@ defineProps<{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 40px var(--space);
   text-align: center;
   border: var(--border-w) dashed var(--c-border);

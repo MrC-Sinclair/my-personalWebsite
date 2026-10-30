@@ -40,7 +40,7 @@ defineProps<{
   display: grid;
   gap: var(--space);
   margin: 0;
-  padding: 0 0 0 18px;
+  padding: 0 0 0 20px;
   list-style: none;
 }
 
@@ -113,14 +113,14 @@ defineProps<{
 .entry-title {
   margin: 4px 0 2px;
   font-family: var(--font-head);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--c-text);
   overflow-wrap: break-word;
 }
 
 .org {
-  margin-left: 6px;
+  margin-left: 8px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   font-weight: 400;

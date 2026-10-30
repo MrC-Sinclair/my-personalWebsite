@@ -82,7 +82,7 @@ const { copied, copy } = useClipboardCopy()
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 14px;
+  gap: 16px;
   max-width: var(--page-w);
   margin: 0 auto;
   padding: 56px var(--space) 64px;
@@ -91,7 +91,7 @@ const { copied, copy } = useClipboardCopy()
 .lede {
   margin: 0;
   max-width: 52ch;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   /* 黑幕上的正文提亮（对比度 ≥ 4.5:1） */
   color: color-mix(in srgb, var(--c-bg) 82%, var(--c-text));
@@ -113,16 +113,16 @@ const { copied, copy } = useClipboardCopy()
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: var(--gap);
   width: 100%;
-  margin-top: 10px;
+  margin-top: 12px;
 
-  /* 各自收短：等高 + 页脚 margin-top: auto 会在内容少的卡中间留 174px 空洞 */
+  /* 各自收短：等高 + 页脚 margin-top: auto 会在内容少的卡中间留 176px 空洞 */
   align-items: start;
 }
 
 .cell {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   padding: 20px;
   color: var(--c-text);
   background: var(--c-surface);
@@ -141,7 +141,7 @@ const { copied, copy } = useClipboardCopy()
 .name {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -170,7 +170,7 @@ const { copied, copy } = useClipboardCopy()
 
 .value-mono {
   font-family: var(--font-mono);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   overflow-wrap: anywhere;
 }
@@ -184,10 +184,10 @@ const { copied, copy } = useClipboardCopy()
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 900;

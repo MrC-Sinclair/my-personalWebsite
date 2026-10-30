@@ -54,7 +54,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 
 /* 小球略上浮，制造「悬停在标题上方」的空间感 */
 .section-head-orb {
-  margin-top: -10px;
+  margin-top: -12px;
 }
 
 .section-head-text {
@@ -64,8 +64,8 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 /* —— 眉题：小胶囊 —— */
 .section-head-eyebrow {
   display: inline-block;
-  margin: 0 0 10px;
-  padding: 4px 14px;
+  margin: 0 0 12px;
+  padding: 4px 16px;
   font-size: var(--fs-small);
   letter-spacing: 0.08em;
   color: var(--c-accent);
@@ -78,7 +78,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .section-head-title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(28px, 4.2vw, 42px);
+  font-size: clamp(28px, 4.2vw, 40px);
   font-weight: 800;
   line-height: 1.18;
   color: var(--c-text);

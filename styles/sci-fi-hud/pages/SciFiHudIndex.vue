@@ -341,7 +341,7 @@ useScrollReveal()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-base);
   letter-spacing: 0.12em;
@@ -377,7 +377,7 @@ useScrollReveal()
   --corner-c: rgb(74 240 198 / 0.9);
   position: relative;
   display: inline-block;
-  padding: 14px 22px 18px;
+  padding: 16px 24px 20px;
   background: color-mix(in srgb, var(--c-accent) 4%, transparent);
 }
 
@@ -414,7 +414,7 @@ useScrollReveal()
 .tf-name {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(32px, 7vw, 64px);
+  font-size: clamp(32px, 7vw, 60px);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: 0.04em;
@@ -440,7 +440,7 @@ useScrollReveal()
 /* —— 简介文案 —— */
 .tagline {
   margin: 20px 0 4px;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--c-text);
 }
@@ -464,7 +464,7 @@ useScrollReveal()
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  padding: 10px 22px;
+  padding: 12px 24px;
   font-family: var(--font-head);
   font-size: 14px;
   letter-spacing: 0.08em;
@@ -507,7 +507,7 @@ useScrollReveal()
 /* —— 右舷雷达模块 —— */
 .radar-module {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   max-width: 420px;
   padding: 12px;
   background: color-mix(in srgb, var(--c-surface) 78%, transparent);
@@ -639,7 +639,7 @@ useScrollReveal()
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   letter-spacing: 0.06em;

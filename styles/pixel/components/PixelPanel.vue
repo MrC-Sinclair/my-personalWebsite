@@ -56,7 +56,7 @@ const headingTag = computed(() => (level === 1 ? 'h1' : 'h2'))
   flex-wrap: wrap;
   align-items: baseline;
   gap: 4px 12px;
-  padding-bottom: 10px;
+  padding-bottom: 12px;
   border-bottom: 2px solid color-mix(in srgb, var(--c-muted) 45%, transparent);
 }
 

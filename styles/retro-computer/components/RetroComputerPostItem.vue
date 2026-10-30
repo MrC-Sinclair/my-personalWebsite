@@ -60,7 +60,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
 /* —— 条目：图标 + 内容两栏，悬停底色变化 + 图标微动 —— */
 .rc-post {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   padding: 12px;
   /* 整条是链接：去掉 a 的默认下划线与链接色 */
   color: inherit;
@@ -114,7 +114,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: 8px 0 0;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -127,7 +127,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
 .rc-post__tags {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .rc-post__tag {

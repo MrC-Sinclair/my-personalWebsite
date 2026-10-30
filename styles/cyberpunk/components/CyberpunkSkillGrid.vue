@@ -58,7 +58,7 @@ const safeGroups = computed(() =>
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-family: var(--font-head);
   font-size: var(--fs-base);
   letter-spacing: 0.14em;
@@ -78,7 +78,7 @@ const safeGroups = computed(() =>
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -88,7 +88,7 @@ const safeGroups = computed(() =>
   display: inline-flex;
   align-items: center;
   min-height: 32px;
-  padding: 5px 14px;
+  padding: 4px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   letter-spacing: 0.04em;

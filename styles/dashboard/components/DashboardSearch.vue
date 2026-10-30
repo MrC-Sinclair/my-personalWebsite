@@ -58,14 +58,14 @@ const { t } = useI18n()
 <style scoped>
 .search {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .field {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 /* —— 维度标签：与标签栏同款（等宽大写小字） —— */
@@ -83,7 +83,7 @@ const { t } = useI18n()
   flex: 1 1 220px;
   min-width: 0;
   min-height: 40px;
-  padding: 9px 12px;
+  padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -113,7 +113,7 @@ const { t } = useI18n()
 /* —— 清除：与标签栏同款（琥珀描边，hover 实心） —— */
 .clear {
   min-height: 40px;
-  padding: 9px 10px;
+  padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
   color: var(--c-accent-2);

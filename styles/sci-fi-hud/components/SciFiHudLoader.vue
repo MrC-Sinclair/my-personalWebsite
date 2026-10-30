@@ -20,7 +20,7 @@ const { t } = useI18n()
 /* —— 加载占位 —— */
 .loader {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   padding: 8px 0;
 }
 

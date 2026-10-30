@@ -82,8 +82,8 @@ function isActive(path: string): boolean {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 18px;
-  padding: 12px max(18px, env(safe-area-inset-right)) 12px max(18px, env(safe-area-inset-left));
+  gap: 12px 20px;
+  padding: 12px max(20px, env(safe-area-inset-right)) 12px max(20px, env(safe-area-inset-left));
   padding-top: max(12px, env(safe-area-inset-top));
   background: var(--c-bg);
   box-shadow: 0 8px 18px rgb(163 177 198 / 0.55);
@@ -93,7 +93,7 @@ function isActive(path: string): boolean {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
   /* 站名整块可点，圆点+文字原本只有 28px 高：兜到项目约定的 40px */
   min-height: 40px;
@@ -131,7 +131,7 @@ function isActive(path: string): boolean {
   display: flex;
   gap: 12px;
   margin: 0;
-  padding: 4px 4px 10px;
+  padding: 4px 4px 12px;
   overflow-x: auto;
   list-style: none;
   /* 预留空间让凸起胶囊的阴影不被滚动容器裁切 */
@@ -142,7 +142,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 600;
   color: var(--c-muted);
@@ -182,7 +182,7 @@ function isActive(path: string): boolean {
   display: flex;
   flex: none;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-left: auto;
 }
 

@@ -79,7 +79,7 @@ function statusText(status: StyleMeta['status']): string {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 14px;
+  gap: 4px 16px;
   min-height: 36px;
   padding: 4px 0;
 }

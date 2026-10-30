@@ -32,8 +32,8 @@ const { t } = useI18n()
   align-items: center;
   gap: 4px 16px;
   min-height: 44px;
-  padding: 6px var(--space);
-  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  padding: 8px var(--space);
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   background: var(--c-surface);
   border-top: var(--border-w) solid var(--c-border);
   font-size: var(--fs-small);
@@ -58,7 +58,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   margin-left: auto;
   color: var(--c-muted);
   text-decoration: none;

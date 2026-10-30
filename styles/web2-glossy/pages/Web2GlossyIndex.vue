@@ -304,7 +304,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
 /* ================= 通用白色光泽面板 ================= */
 .panel {
   position: relative;
-  padding: clamp(22px, 3.5vw, 30px);
+  padding: clamp(24px, 3.5vw, 32px);
   border: 1px solid var(--c-border);
   border-radius: var(--radius);
   background: linear-gradient(180deg, #ffffff 0%, #f3f9ff 100%);
@@ -365,7 +365,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
   text-align: center;
 }
 
@@ -374,7 +374,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
   display: inline-flex;
   align-items: center;
   margin: 0;
-  padding: 8px 22px;
+  padding: 8px 24px;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-sm);
   color: #1a5fc0;
@@ -390,7 +390,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
 /* 巨型渐变光泽标题 */
 .hero__name {
   position: relative;
-  margin: 0 0 46px;
+  margin: 0 0 48px;
   font-family: var(--font-head);
   font-size: clamp(2.625rem, 8vw, 5.25rem);
   font-weight: 800;
@@ -454,7 +454,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
 .hero__desc {
   max-width: 560px;
   margin: 0;
-  padding: 10px 24px;
+  padding: 12px 24px;
   border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: 14px;
   color: var(--c-text);
@@ -466,7 +466,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 16px;
   justify-content: center;
   margin-top: 8px;
 }
@@ -551,7 +551,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
 .posts-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 /* ================= 联系方式 ================= */
@@ -613,7 +613,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
 .empty {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   margin: 0;
   padding: 20px 24px;
   border: 1px dashed var(--c-border);
@@ -665,7 +665,7 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
 .post-search {
   display: flex;
   margin: 20px 0 4px;
-  padding: 0 8px 0 18px;
+  padding: 0 8px 0 20px;
   min-height: 52px;
   background: linear-gradient(180deg, #fff, #e8eef7);
   border: 1px solid var(--c-border);

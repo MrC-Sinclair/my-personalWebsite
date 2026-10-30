@@ -59,7 +59,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(26px, 4vw, 40px);
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 700;
   letter-spacing: 0.01em;
   color: var(--c-text);
@@ -72,8 +72,8 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .meta {
   display: inline-flex;
   align-items: center;
-  margin-bottom: 6px;
-  padding: 6px 14px;
+  margin-bottom: 8px;
+  padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-text);

@@ -83,7 +83,7 @@ const anchors = computed(() => [
   content: '';
   display: block;
   height: 3px;
-  background: linear-gradient(90deg, #2b72c6 0%, #58a6f5 38%, #9cc7ef 62%, #f0a24a 85%, #bf4d00 100%);
+  background: linear-gradient(90deg, #2b72c6 0%, #3f8fd8 38%, #9cc7ef 62%, #f0a24a 85%, #bf4d00 100%);
 }
 
 .site-header__bar {
@@ -93,14 +93,14 @@ const anchors = computed(() => [
   gap: 12px var(--gap);
   max-width: var(--page-w);
   margin-inline: auto;
-  padding: 10px clamp(16px, 4vw, 32px);
+  padding: 12px clamp(16px, 4vw, 32px);
 }
 
 /* —— 站点标识 —— */
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   /* 字母牌是 38×38，会把整条链接的命中区定在 38px；补到 40 与 Web2GlossySubNav 的 .brand 一致 */
   min-height: 40px;
   color: var(--c-text);
@@ -135,7 +135,7 @@ const anchors = computed(() => [
   border-radius: 12px;
   color: var(--c-on-accent);
   font-family: var(--font-head);
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
   text-shadow: 0 1px 1px rgb(9 34 64 / 0.45);
   background: linear-gradient(180deg, #4f9cf0 0%, #2b72c6 52%, #1d5fae 100%);
@@ -165,7 +165,7 @@ const anchors = computed(() => [
 .nav {
   display: flex;
   flex: 1;
-  gap: 6px;
+  gap: 8px;
   justify-content: flex-end;
   order: 2;
   min-width: 0;
@@ -237,7 +237,7 @@ const anchors = computed(() => [
   justify-content: center;
   min-height: 40px;
   min-width: 40px;
-  padding: 4px 14px;
+  padding: 4px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 700;

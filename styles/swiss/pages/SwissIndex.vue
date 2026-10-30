@@ -280,7 +280,7 @@ const loading = computed(
   flex: 1 1 auto;
   min-width: 0;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -310,7 +310,7 @@ const loading = computed(
 .sub-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0 0 12px;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -347,7 +347,7 @@ const loading = computed(
 }
 
 .empty-hint {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: 14px;
 }
 

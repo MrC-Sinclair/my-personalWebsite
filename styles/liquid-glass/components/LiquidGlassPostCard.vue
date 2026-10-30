@@ -81,7 +81,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   gap: var(--gap);
   overflow: hidden;
   min-height: 96px;
-  padding: 18px 22px;
+  padding: 20px 24px;
   background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius-sm);
@@ -139,7 +139,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
 .lens {
   position: absolute;
   inset: 0;
-  padding: 9px;
+  padding: 8px;
   border-radius: inherit;
   pointer-events: none;
   /* 透镜环带 + 折射染色 */
@@ -232,7 +232,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   margin: 8px 0 0;
   padding: 0;
   list-style: none;
@@ -241,7 +241,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
+  padding: 2px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -320,7 +320,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   aspect-ratio: 16 / 9;
   max-height: 180px;
   object-fit: cover;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   border-radius: var(--radius-sm);
   background: var(--c-surface);
 }

@@ -63,7 +63,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .glass {
   position: relative;
   overflow: hidden;
-  padding: clamp(22px, 3.4vw, 36px);
+  padding: clamp(24px, 3.4vw, 36px);
   background: var(--lg-depth), var(--lg-fill);
   border: var(--border-w) solid var(--c-border);
   border-radius: var(--radius);
@@ -139,7 +139,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .lens::after {
   position: absolute;
   inset: 0;
-  padding: 6px;
+  padding: 8px;
   border-radius: inherit;
   content: '';
   background: var(--lg-refract);
@@ -194,7 +194,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(24px, 3.4vw, 34px);
+  font-size: clamp(24px, 3.4vw, 32px);
   font-weight: 700;
   letter-spacing: 0.01em;
   color: var(--c-text);

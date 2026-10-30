@@ -83,7 +83,7 @@ function isActive(path: string): boolean {
   gap: var(--gap);
   max-width: var(--page-w);
   margin: 0 auto;
-  padding: 10px var(--space);
+  padding: 12px var(--space);
 }
 
 /* —— 站点标识：黑底反白块，hover 抬起（点击回风格首页） —— */
@@ -93,9 +93,9 @@ function isActive(path: string): boolean {
   align-items: center;
   gap: 8px;
   min-height: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-family: var(--font-head);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 900;
   color: var(--c-bg);
   text-decoration: none;
@@ -126,7 +126,7 @@ function isActive(path: string): boolean {
 .anchors {
   display: flex;
   flex: 1;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -212,7 +212,7 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   min-height: 40px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
   font-weight: 900;
