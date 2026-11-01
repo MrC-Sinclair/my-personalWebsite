@@ -9,16 +9,16 @@ import { styleOgSvg } from './utils/og'
 
 /**
  * 站点对外 URL（canonical / og:url / sitemap 用）。
- * 默认就是正式站点（腾讯云 CVM），可用 NUXT_PUBLIC_SITE_URL 覆盖（如启用域名）。
+ * 默认就是正式站点（腾讯云轻量应用服务器），可用 NUXT_PUBLIC_SITE_URL 覆盖（如启用域名）。
  * 历史：早期部署在 GitHub Pages 用户域子路径下，2026-10 已停用，
- * 现在只有 CVM 一个发布目标，所以默认值直接给正式地址，不再留 github.io。
+ * 现在部署目标是腾讯云轻量应用服务器，默认值直接给正式地址，不再留 github.io。
  */
-const SITE_URL = (process.env.NUXT_PUBLIC_SITE_URL || 'https://122.51.97.106:8444').replace(
+const SITE_URL = (process.env.NUXT_PUBLIC_SITE_URL || 'http://43.139.238.226').replace(
   /\/+$/,
   '',
 )
 /**
- * 站点部署子路径，首尾都带斜杠。正式站（CVM）按根路径发布，所以默认是空 → '/';
+ * 站点部署子路径，首尾都带斜杠。正式站（轻量云）按根路径发布，所以默认是空 → '/';
  * 需要挂在子目录下时用 NUXT_APP_BASE_URL=/xxx/ 覆盖。
  * app.baseURL、PWA start_url、sitemap/feed/og 全部从这里派生。
  * ⚠️ 改了它必须重新 generate —— 子路径是烘进每个 HTML 的资源链接里的。
@@ -402,7 +402,7 @@ export default defineNuxtConfig({
   // 字体方案（2026-10-18 起）：不再「一律系统字体栈」——西文字体改为自托管
   // woff2（assets/fonts/，@font-face 声明在 styles/_base/base.css），Vite 打包
   // 后 URL 自带 baseURL 前缀；中文仍回落苹方 / 微软雅黑。不注册 @nuxt/fonts、
-  // 不外链 Google Fonts（国内 CVM 取不到，取不到就静默退回系统字体）。
+  // 不外链 Google Fonts（国内轻量云取不到，取不到就静默退回系统字体）。
 
   pwa: {
     registerType: 'autoUpdate',

@@ -11,7 +11,7 @@
 import { HIT_BOX_SRC } from './hit-box.mjs'
 
 const STYLES = (process.argv[2] || 'terminal,liquid-glass').split(',')
-const BASE = process.argv[3] || 'https://122.51.97.106:8444'
+const BASE = process.argv[3] || 'http://43.139.238.226'
 const PORT = process.env.CDP_PORT || '9235'
 const WAIT = Number(process.env.PROBE_WAIT || 4000)
 const VIEW = (process.env.PROBE_VIEW || '390,844').split(',').map(Number)

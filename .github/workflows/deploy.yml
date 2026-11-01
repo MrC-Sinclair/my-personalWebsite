@@ -1,17 +1,17 @@
 # ============================================================
-# GitHub Actions 工作流：构建静态产物（发布到腾讯云 CVM）
+# GitHub Actions 工作流：构建静态产物（发布到腾讯云轻量应用服务器）
 # ============================================================
 # 触发时机：当推送到 main 分支时自动执行
 # 执行流程：质量门禁（lint / test / spellcheck）+ 真实浏览器审计 → 生成产物 → 上传 artifact
 #
 # 为什么构建留在这里而不在服务器或本机：
-#   - 服务器是 2C2G，跑 `nuxt generate`（802 页预渲染）会 OOM；
+#   - 服务器是 2C2G，跑 `nuxt generate`（802 页预渲染）会 OOM（需临时 swap 才行）；
 #   - 本机 Windows 跑 generate 是「CPU 空转十几分钟零产物」，只有 Linux 上正常（约 48 秒）；
-#   - 所以这里产出的 artifact 是唯一可信的发布物，下载后由
-#     `node scripts/publish-cvm.mjs <解压目录>` 上传到 CVM。
+#   - 所以这里产出的 artifact 是唯一可信的发布物，下载后覆盖到 Caddy 的 web 根（默认
+#     /usr/share/caddy）即可上线。
 # ============================================================
 
-name: Build site for Tencent CVM
+name: Build static site
 
 # ==================== 触发条件 ====================
 # 定义何时运行此工作流
@@ -23,9 +23,8 @@ on:
   workflow_dispatch:
 
 # ==================== 权限配置 ====================
-# 只读检出 + 写 artifact：不再需要 pages / id-token，
-# 因为发布动作改成本机 `scripts/publish-cvm.mjs` 用 SSH 私钥推送到 CVM，
-# 私钥只存在于本机 ~/.ssh/，不进 CI 密钥库。
+# 只读检出 + 写 artifact：CI 只负责产出可信的静态产物，发布由人工在服务器上拉取并覆盖
+# Caddy web 根完成，不需要把任何私钥放进 CI 密钥库。
 permissions:
   contents: read # 读取仓库内容的权限（用于 checkout）
 
@@ -36,15 +35,15 @@ permissions:
 # cancel-in-progress: true —— 连续推送时只跑最新一个，不让队列积压
 #    （802 页 × 2 语言预渲染一次要 5~10 分钟，积压 5 个就是近一小时）
 concurrency:
-  group: build-cvm-nuxt
+  group: build-nuxt
   cancel-in-progress: true
 
 # ==================== 任务定义 ====================
 # 四个任务：quality（质量门禁）、build（生成产物 + 传 artifact）、
 # audit（对发布物跑真实浏览器审计，needs: build，中英两个 matrix）、
-# release（把产物发成免鉴权可下载的 cvm-latest 资产）。
+# release（把产物发成免鉴权可下载的 site-latest 资产）。
 # quality 与 build 并行；audit 必须等 build，因为它量的就是 build 的那份产物。
-# 发布动作在人这一侧，所以「先看这个 run 全绿，再跑 publish-cvm.mjs」是必须遵守的顺序。
+# 发布动作在人这一侧，所以「先看这个 run 全绿，再上服务器覆盖 Caddy web 根」是必须遵守的顺序。
 jobs:
   # -------------------- 质量门禁任务 --------------------
   # 2026-10-07 补：此前 CI 只做 build + deploy，lint / test / spellcheck 全靠
@@ -102,7 +101,7 @@ jobs:
   #   —— 真实例子：flat-design 的非 scoped layout.css 曾把 neo-brutalism 的
   #      色带从 321px 撑到 417px，还随样式注入顺序时有时无。
   #
-  # ★ 量的是 build job 的**发布物本身**：下载 site-cvm artifact（.output/public），
+  # ★ 量的是 build job 的**发布物本身**：下载 site artifact（.output/public），
   #   用 scripts/serve-static.mjs 复刻生产 Caddy 的行为起来量。
   #   此前这里起的是 `pnpm dev`，而 dev 的 HMR 会在 DOM 里留幽灵节点
   #   （空的重复 <a>、0×0 / 420×0 的链接），拿它量触控目标会出假阳性；
@@ -126,9 +125,9 @@ jobs:
   # 560 页，而 metro（正文被 overflow:clip 剪掉半截）与 dashboard（整篇压进 19px
   # 一格）两个缺陷正是藏在从没被量过的详情页里——列表页判据当时全绿。
   #
-  # 暂不放进 release 的 needs：release 发的是固定 tag cvm-latest，一旦审计被
-  # headless Chrome 的抖动带红，publish-cvm.mjs --latest 会**静默拉到上一个 commit
-  # 的产物**并部署上去 —— 比 CI 报红更危险。人工闸保留：发布前确认本 run 全绿。
+  # 暂不放进 release 的 needs：release 发的是固定 tag site-latest，一旦审计被
+  # headless Chrome 的抖动带红，手动部署可能拉到上一个 commit 的产物并部署上去 ——
+  # 比 CI 报红更危险。人工闸保留：发布前确认本 run 全绿。
   audit:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -156,7 +155,7 @@ jobs:
       - name: Download 发布物
         uses: actions/download-artifact@v4
         with:
-          name: site-cvm
+          name: site
           path: dist
 
       # 产物必须是 build job 的那一份，空目录会让审计对着 404 全体报警
@@ -243,54 +242,51 @@ jobs:
 
       # 步骤 6：生成静态站点（发布用的唯一可信产物）
       # 这里显式给两个构建期变量，它们会烘进 HTML 里的每一条资源链接：
-      #   NUXT_APP_BASE_URL=/            CVM 按根路径发布，不再是 GitHub Pages 的子路径
+      #   NUXT_APP_BASE_URL=/            轻量云按根路径发布，不再是 GitHub Pages 的子路径
       #   NUXT_PUBLIC_SITE_URL           canonical / og:url / sitemap / feed 的绝对前缀
       # 想换成域名时在仓库 Settings → Secrets and variables → Actions 里加
       # SITE_URL / SITE_BASE_URL 两个 variable，不用改这份工作流。
       - name: Generate static site
         env:
           NUXT_APP_BASE_URL: ${{ vars.SITE_BASE_URL || '/' }}
-          NUXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || 'https://122.51.97.106:8444' }}
+          NUXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || 'http://43.139.238.226' }}
         run: pnpm generate
 
       # 步骤 7：上传为可下载的 artifact
-      # 用标准 upload-artifact（不是 upload-pages-artifact，那个只服务 Pages）：
-      # 在这个 run 的 Summary 页面底部下载 site-cvm.zip，解压后交给
-      #   node scripts/publish-cvm.mjs <解压目录>
+      # 在这个 run 的 Summary 页面底部下载 site.zip，解压后是 .output/public，
+      # 覆盖到 Caddy 的 web 根（默认 /usr/share/caddy）即可上线。
       # ⚠️ 下载前先确认本 run 的 quality 与 audit 是绿的——audit 排在 build 之后
       #（它要拿这份产物），所以「build 绿了」不等于「可以发了」。
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site-cvm
+          name: site
           path: .output/public # Nuxt SSG 的输出目录
           retention-days: 14
           if-no-files-found: error
 
-      # 步骤 8：把下载地址写进 run 摘要，省得回去翻 URL
-      - name: Write publish hint
+      # 步骤 8：把部署提示写进 run 摘要
+      - name: Write deploy hint
         shell: bash
         run: |
           {
-            echo "### 发布到 CVM"
+            echo "### 发布到腾讯云轻量应用服务器"
             echo ""
+            echo "产物为本 run 的 \`site\` artifact（.output/public）。"
+            echo "在实例上下载解压后，覆盖 Caddy 的 web 根即可上线："
             echo '```bash'
-            echo "node scripts/publish-cvm.mjs --latest   # 自己取本 run 的产物并上传"
-            echo "node scripts/publish-cvm.mjs <目录>      # 或用手头已解压的产物"
+            echo "cp -r .output/public/. /usr/share/caddy/"
             echo '```'
             echo ""
-            echo "产物有两个来源：本 run 的 \`site-cvm\` artifact（下载要登录），"
-            echo "以及下面 release job 发布的免鉴权资产 \`cvm-latest\`（--latest 走这条）。"
+            echo "也可拉取下方 release job 发布的免鉴权资产 \`site-latest\`。"
             echo ""
             echo "发布前确认 quality / audit 两个 job 为绿。"
           } >> "$GITHUB_STEP_SUMMARY"
 
   # -------------------- 发布成免鉴权可下载的 Release 资产 --------------------
   # 为什么需要它：Actions 的 artifact 即使仓库是公开的，下载接口仍然要求鉴权
-  # （实测匿名请求返回 401 Requires authentication），而发布机（本机 Windows）
-  # 上没有 GitHub API 凭据 —— 于是每次上线都要人打开浏览器点一次下载，
-  # 这是整条链路上唯一的人工卡点。公开仓库的 Release 资产可以匿名下载，
-  # 所以把它固定发到 cvm-latest 这个 tag 上，`publish-cvm.mjs --latest` 就能一路自动。
+  # （实测匿名请求返回 401 Requires authentication），而发布机（服务器）上没有
+  # GitHub API 凭据 —— 把它固定发到 site-latest 这个 tag 上，手动部署时能匿名下载。
   #
   # 需要 contents: write（建仓级 Release），所以单独一个 job，不给 build 扩权限。
   # artifact 那一份继续保留：Release 出问题时还能手工下载兜底。
@@ -305,7 +301,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: site-cvm
+          name: site
           path: site
 
       # 打成 tar.gz：两端都免依赖（Windows 自带 bsdtar 也能解 tar.gz），
@@ -314,7 +310,7 @@ jobs:
         shell: bash
         run: |
           test -f site/index.html || { echo "产物根目录没有 index.html，拒绝发布空包"; exit 1; }
-          tar -czf site-cvm.tar.gz -C site .
+          tar -czf site.tar.gz -C site .
           echo "打包大小: $(du -h site-cvm.tar.gz | cut -f1)"
 
       - name: Publish to release cvm-latest
@@ -333,11 +329,11 @@ jobs:
           # 下面那句 ::error:: 根本没来得及执行（annotations 里只剩通用的 exit 1）。
           set +e
           gh --version >/dev/null 2>&1 || echo "::warning title=缺工具::runner 上没有 gh CLI"
-          gh release delete cvm-latest --cleanup-tag --yes 2>/dev/null
+          gh release delete site-latest --cleanup-tag --yes 2>/dev/null
           out=$(gh release create cvm-latest site-cvm.tar.gz \
             --target "$GITHUB_SHA" \
-            --title "CVM 产物（最近一次构建）" \
-            --notes "供 scripts/publish-cvm.mjs --latest 拉取。来自 run $GITHUB_RUN_ID。" 2>&1)
+            --title "站点静态产物（最近一次构建）" \
+            --notes "供手动部署拉取。来自 run $GITHUB_RUN_ID。" 2>&1)
           code=$?
           # 工作流命令里 % 必须写成 %25，否则命令解析失败、annotation 静默丢失
           msg=$(printf '%s' "$out" | tr '\n\r' '  ' | cut -c1-500 | sed 's/%/%25/g')
@@ -346,4 +342,4 @@ jobs:
             exit "$code"
           fi
           echo "Release 资产：$out"
-          echo "下载地址：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/cvm-latest/site-cvm.tar.gz"
+          echo "下载地址：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/site-latest/site.tar.gz"

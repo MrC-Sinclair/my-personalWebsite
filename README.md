@@ -1,6 +1,6 @@
 # my-personalWebsite
 
-**一站多风格的个人网站**：同一套内容与业务逻辑，20 种完全不同的 UI 风格。采用 Nuxt 3 SSG 静态生成 + 腾讯云 CVM 静态托管（Caddy），内容通过 Markdown + @nuxt/content v3 管理，中英双语，支持 PWA 离线访问。
+**一站多风格的个人网站**：同一套内容与业务逻辑，20 种完全不同的 UI 风格。采用 Nuxt 3 SSG 静态生成部署（腾讯云轻量应用服务器，Caddy 静态托管），内容通过 Markdown + @nuxt/content v3 管理，中英双语，支持 PWA 离线访问。
 
 ## 站点形态
 
@@ -44,7 +44,7 @@
 | PWA    | @vite-pwa/nuxt ^1.1.1                           | 离线访问、添加到主屏幕      |
 | 测试   | Vitest (^3.1.4)                                 | 单元测试                    |
 | 规范   | ESLint + Prettier + Commitlint + husky + cspell | 代码质量                    |
-| 部署   | GitHub Actions 构建 → 腾讯云 CVM（Caddy） | CI 只出产物，发布由本机脚本推 |
+| 部署   | GitHub Actions 构建 → 腾讯云轻量应用服务器（Caddy 静态托管） | 产物 `.output/public` 直接静态托管 |
 
 > Nuxt UI 与 Tailwind 已随过渡层整体移除（阶段 3），风格层与它们零耦合。
 
@@ -114,8 +114,8 @@ pnpm preview
 
 | 变量                   | 说明     | 默认值                           |
 | ---------------------- | -------- | -------------------------------- |
-| `NUXT_PUBLIC_SITE_URL` | 站点 URL（canonical / og / sitemap / feed 的绝对前缀） | `https://122.51.97.106:8444` |
-| `NUXT_APP_BASE_URL`    | 部署子路径（改它必须重新 generate）                    | `/`（CVM 按根路径发布）      |
+| `NUXT_PUBLIC_SITE_URL` | 站点 URL（canonical / og / sitemap / feed 的绝对前缀） | `http://43.139.238.226`      |
+| `NUXT_APP_BASE_URL`    | 部署子路径（改它必须重新 generate）                    | `/`（轻量云按根路径发布）    |
 
 ## 规范检查
 
@@ -131,48 +131,39 @@ pnpm test:watch    # 运行测试（监听模式）
 
 ## 部署
 
-站点发布在**腾讯云 CVM**（`122.51.97.106`，与 mychat、jintian-1851 同一台机器），
-线上地址 <https://122.51.97.106:8444/>。GitHub Pages 已停用，CI 不再往它推产物。
+站点部署在**腾讯云轻量应用服务器（Lighthouse）**，公网 IP `43.139.238.226`（实例 `lhins-1o4ky9pr`，广州七区，2 核 2G / 50G SSD / 4Mbps）。
+线上地址 <http://43.139.238.226/>（纯 IP 访问，未绑域名、未配 HTTPS）。
 
-链路固定为「CI 构建 → 本机一条命令发布」：
+静态产物由 **Caddy 在 :80 直接托管**，web 根 `/usr/share/caddy`；发布就是把 `nuxt generate` 产出的 `.output/public` 覆盖到该目录（无需改 Caddyfile、无需重启服务，防火墙已放开 HTTP 80）。
 
-1. 推到 `main`，Actions 并行跑**质量门禁**（`pnpm lint` / `pnpm test` / `pnpm spellcheck`）、
-   **移动端 + 无障碍审计**、以及 `pnpm generate`
-2. 全绿后 `release` job 把产物打成 `site-cvm.tar.gz` 发到固定 tag `cvm-latest`
-3. 发布：
+两种构建方式都可行：
+
+1. **CI 构建（推荐）**：推到 `main`，GitHub Actions 并行跑质量门禁（`pnpm lint` / `pnpm test` / `pnpm spellcheck`）、移动端 + 无障碍审计、`pnpm generate`，产物为 `.output/public`。
+2. **实例上直接构建**：实例内存仅 2G，`nuxt generate` 预渲染 802 路由会 OOM，需先建 2G swap（`dd if=/dev/zero of=/swapfile bs=1M count=2048 && mkswap /swapfile && swapon /swapfile`）并以 `NODE_OPTIONS=--max-old-space-size=2560 pnpm generate` 跑；依赖安装走国内 npmmirror 镜像加速。
+
+实例上构建并发布的示例：
 
 ```bash
-node scripts/publish-cvm.mjs --latest        # 拉最新产物并上线
-node scripts/publish-cvm.mjs <产物目录>       # 或用手头已解压的产物
+git clone --depth 1 <仓库地址> /root/site_gh
+cd /root/site_gh && pnpm install && NODE_OPTIONS=--max-old-space-size=2560 pnpm generate
+# 把产物覆盖到 Caddy web 根
+cp -r .output/public/. /usr/share/caddy/
 ```
 
-脚本会拉 Release 资产、打 tar.gz、scp 到 `/root/personal-web/deploy/dist/`、**原地解包覆盖**、
-`docker compose up -d --force-recreate caddy`，最后用 curl 校验关键路由状态码。
-凭据走本机 `~/.ssh/cvm_deploy_rsa`（可用 `CVM_KEY` / `CVM_HOST` 覆盖），仓库里不留任何密钥。
+> **没有域名的代价**：站点只有公网 IP、没有 HTTPS。Service Worker 要求安全上下文，
+> 所以 `http://IP` 下 PWA 离线访问与 `navigator.clipboard` 一类 API 不会生效；
+> sitemap / canonical 里写的是 `IP` 而非域名，公开搜索引擎基本收不到。
+> 现阶段它是「自己和朋友访问」的站点，不是公开门面。若以后要 PWA / SEO，
+> 再绑域名 + 证书即可（届时 `NUXT_PUBLIC_SITE_URL` 改为 `https://域名`）。
 
-> 产物为什么走 Release 而不是 Actions artifact：artifact 的下载接口即使仓库是公开的
-> 也要求鉴权（实测匿名返回 401 `Requires authentication`），那样每次上线都要人打开浏览器点一次；
-> 公开仓库的 Release 资产免鉴权，`--latest` 才能把最后这一步也自动化。
-> artifact 仍保留一份，作为 Release 出问题时的人工兜底。
-
-> **为什么不在服务器上构建**：机器是 2C2G，802 页预渲染会 OOM。
-> **为什么不在本机构建**：Windows 跑 `nuxt generate` 是 CPU 空转十几分钟零产物（Linux 约 48 秒），
-> 所以 CI 的 artifact 是唯一可信发布物。
-> **为什么用自签证书**：这台机器只有公网 IP、没有域名，ACME 不给裸 IP 签证书。
-> 但仍必须走 HTTPS —— Service Worker 要求安全上下文，`http://IP:PORT` 下 PWA 离线
-> 和 `navigator.clipboard` 一类 API 会直接失效。浏览器首次访问提示证书不受信任，点「继续访问」。
-> **没有域名的代价**：sitemap / canonical 里是 `IP:8444`，且证书不受信任，
-> 公开搜索引擎基本收不到，现阶段它是「自己和朋友访问」的站点，不是公开门面。
-
-服务器上的目录是 `/root/personal-web/deploy/`，含 `Caddyfile`、`docker-compose.deploy.yml`、
-`certs/`（脚本首跑自动生成，不入库）、`dist/site/`（产物）。仓库内的配置副本在 `deploy/`。
+> 实例默认 2G 内存，swap 在重启后失效，需重新创建；实例到期时间请关注续费。
 
 > CI 里 **Setup Node 必须排在 Setup pnpm 之前**，且 Node 版本 ≥ 22.13，否则 `Setup pnpm` 会直接失败（2026-09-18 ~ 09-23 期间 CI 因此全红，线上版本停滞）。
 
 ### 关键配置
 
 - 部署子路径由构建期变量 `NUXT_APP_BASE_URL` 决定（默认 `/`，即根路径；需要挂子目录时才传 `/xxx/`）：`app.baseURL`、PWA `start_url`、sitemap / feed / og 全部从它派生，改它必须重新 generate
-- 站点对外 URL 取 `NUXT_PUBLIC_SITE_URL`（CI 默认 `https://122.51.97.106:8444`，可用仓库 variable `SITE_URL` 覆盖），sitemap / canonical / og:url 均由它拼接
+- 站点对外 URL 取 `NUXT_PUBLIC_SITE_URL`（CI 默认 `http://43.139.238.226`，可用仓库变量 `SITE_URL` 覆盖），sitemap / canonical / og:url 均由它拼接
 - `sitemap.xml` / `robots.txt` 由 nitro 的 `prerender:done` 钩子在构建时依据「真实预渲染成功的路由」自动生成，无需手工维护
 - i18n 使用 `prefix_except_default` 策略（中文无前缀，英文 URL 带 `/en/`）
 - 图片优化使用 `@nuxt/image` 的 `ipx` provider，卡片组件配置 `sizes` 属性

@@ -13,7 +13,7 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 const PORT = Number(process.env.CDP_PORT || 9222)
 // 验收截图默认打线上：dev server 长跑后 HMR 会脏，表现为截图一片空白而 innerText 是满的。
 // 指向本地 prod 预览（node .output/server/index.mjs）时 SITE_BASE 必须带 /my-personalWebsite 前缀。
-const BASE = process.env.SITE_BASE || 'https://122.51.97.106:8444'
+const BASE = process.env.SITE_BASE || 'http://43.139.238.226'
 // 输出目录按仓库相对路径，.gitignore 的 .shots-new 规则已排除
 const OUT = process.env.SHOT_OUT || '.shots-new'
 const WAIT_MS = Number(process.argv[2] || 6000)

@@ -19,7 +19,7 @@
  */
 import { HIT_BOX_SRC } from './hit-box.mjs'
 
-const BASE = process.argv[2] || 'https://122.51.97.106:8444'
+const BASE = process.argv[2] || 'http://43.139.238.226'
 const PREFIX = process.env.LOCALE === 'en' ? '/en' : ''
 const PORT = process.env.CDP_PORT || '9256'
 const WAIT = Number(process.env.KB_WAIT || 5000)

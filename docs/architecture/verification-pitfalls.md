@@ -115,7 +115,7 @@ PROBE_VIEW=390,844 PROBE_PAGES=blog,projects node scripts/probe-touch-targets.mj
 
 ### 另一个维度：CI 的字体度量会量出本机「刚好没爆」的位置
 
-同一份发布物（从公开 Release 取的 `site-cvm.tar.gz`）本机 Chrome 上 zh + en 各 100 页
+同一份发布物（CI 构建的 `.output/public`）本机 Chrome 上 zh + en 各 100 页
 = **0 问题**，CI 的 Linux runner 上却报出 12 页：
 
 | 判据       | 本机 | CI（Linux 回退字体）                                       |

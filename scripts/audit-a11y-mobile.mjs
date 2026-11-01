@@ -28,7 +28,7 @@ let liveWs = null
 
 // 默认打线上：这是真实发布物（Caddy 服务 generate 产物），量到的就是用户拿到的。
 // 子路径部署时 BASE 必须带上 baseURL 前缀，否则资源链接与路由全错。
-const BASE = process.argv[2] || 'https://122.51.97.106:8444'
+const BASE = process.argv[2] || 'http://43.139.238.226'
 // AUDIT_LOCALE=en 时审英文站（i18n 用 prefix_except_default：英文路径带 /en 前缀）。
 // 802 页里英文占一半，只审中文等于漏掉一半。
 const LOCALE_PREFIX = process.env.AUDIT_LOCALE === 'en' ? '/en' : ''
