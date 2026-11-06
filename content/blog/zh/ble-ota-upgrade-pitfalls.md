@@ -30,7 +30,7 @@ draft: false
 
 而 iOS、鸿蒙、Android 对 BLE 的缓存策略、GATT 句柄、写模式又各有一套脾气。同样是“连接成功”，在 iOS 上可能只是拿到了连接句柄，通知通道根本没通；同样是“写入成功”，在无响应写模式下也只代表数据交给了协议栈，不代表设备收到了。
 
-这篇文章不复述完整协议，而是把这次踩到的坑按主题拆开：身份、UUID、句柄、写模式、时序、MTU、无响应、性能。每个坑都写清楚我们最后是怎么判断、怎么落地的，方便后面做 BLE OTA 的人少走几天弯路。
+这篇文章不复述完整协议，而是把这次踩到的坑按主题拆开：协议共存、身份与 UUID、句柄、写模式、鸿蒙差异、时序、MTU、无响应、性能与成功判定。每个坑都写清楚我们最后是怎么判断、怎么落地的，方便后面做 BLE OTA 的人少走几天弯路。
 
 ## 一、先把整体时序串起来
 
@@ -102,7 +102,7 @@ if (_otaRawSink) {
 
 ### 2.2 帧长和校验：别按“数据长度”理解
 
-山景这套帧格式有几个容易写错的地方：
+设备这套帧格式有几个容易写错的地方：
 
 ```text
 A5 5A 12 <cmd> <帧长 LE 2B> <data...> <checksum>
@@ -127,7 +127,7 @@ checksum = (0x100 - sum(除校验位外的所有字节)) & 0xFF
 
 我们保留了一个“加密查询帧”探针，用来验证设备侧到底是先解密再识别 OTA 帧，还是直接识别明文。写这个探针时踩了一个很隐蔽的坑：
 
-`crypto-js` 的 `AES.encrypt(plainText, key)` 会把字符串按 UTF-8 解析。OTA 帧里的 `0xA5`、`0x5A` 这类大于 `0x7F` 的字节，如果先转成字符串再加密，会被编码成两个字节，原始帧结构直接坏掉。
+`crypto-js` 的 `AES.encrypt(plainText, key)` 会把字符串按 UTF-8 解析。OTA 帧里的 `0xA5` 这类大于 `0x7F` 的字节，如果先转成字符串再加密，会被编码成两个字节，原始帧结构直接坏掉；`0x5A` 这类 ASCII 字节虽然不会被编成两个字节，但同样不该用字符串 API 去处理。
 
 正确做法是走 `WordArray` / hex 中转，按字节加密：
 
@@ -205,11 +205,13 @@ UUID 相同，不代表 handle 相同。主固件切到 FlashBoot 后，如果�
 
 ### 4.1 connected = true，不代表收得到数据
 
-`createBLEConnection` 成功只说明链路建立了。iOS 的服务发现是异步的，在 `getBLEDeviceServices` / `getBLEDeviceCharacteristics` 完成之前，`notifyBLECharacteristicValueChange` 可能一直报：
+`createBLEConnection` 成功只说明链路建立了。iOS 的服务发现是异步的，在 `getBLEDeviceServices` / `getBLEDeviceCharacteristics` 完成之前，`notifyBLECharacteristicValueChange` 可能报 `10004` / `10005`（没找到服务或特征），也可能报系统透传的异常：
 
 ```text
-The handle is invalid（10008）
+The handle is invalid（errCode 10008 / system error）
 ```
+
+要留意：`10008` 是微信对「其余所有系统上报的异常」的兜底码，不是句柄失效专用；官方也注明安卓部分机型在 notify 成功后立刻写同样会报 10008。所以判断 GATT 缓存问题，必须同时看 `errMsg` 里的 `The handle is invalid`。
 
 我们最初就是看到 `connected` 为 true 就开始发查询帧。结果写回调成功了，设备却没有任何回包，最后 30 秒判死。看起来像“设备无响应”，实际上是**手机根本没订阅上通知，设备的应答全落在听不见的窗口里**。
 
@@ -227,10 +229,10 @@ The handle is invalid（10008）
 
 我们最后做了两层兜底：
 
-1. **短重试**：3 次 × 600ms。观测证明重试基本不会成功，窗口保持短，尽快升级手段；
+1. **短重试**：3 次 × 600ms。观测证明重试基本不会成功，窗口保持短，尽快升级到下一层兜底；
 2. **适配器级重建**：`closeBluetoothAdapter → 300ms → openBluetoothAdapter → 重连 → 重新发现服务 → 重新订阅`，最多 2 次，逼微信丢弃会话级 GATT 缓存。
 
-需要诚实地说：适配器级重建也不是万能药。iOS 系统层 `bluetoothd` 的缓存不保证随微信重启清除。如果两次重建后仍报 10008，小程序侧已经没有更多手段，只能从固件侧解决：
+需要诚实地说：适配器级重建也不是万能药。iOS 系统层 `bluetoothd` 的缓存不保证随微信重启清除。如果两次重建后仍报 `The handle is invalid`（errCode 10008），小程序侧已经没有更多手段，只能从固件侧解决：
 
 - 让主固件和 FlashBoot 的 GATT 属性表对齐（声明顺序、特征值/CCCD 句柄一致）；
 - 或者实现 GATT 的 Database Hash（`0x2B2A`）/ Service Changed（`0x2A05`），让 iOS 主动重新发现服务。
@@ -254,7 +256,7 @@ const notifyChar =
   writeChar
 ```
 
-优先级是：UUID 命中且属性支持 → 任意支持 notify 的特征 → UUID 命中但属性不支持（记录警告）→ 写特征自身（兼容单特征双向）。
+优先级是：UUID 命中且属性支持 → 任意支持 notify 的特征 → UUID 命中但属性不支持（记录警告）→ 写特征自身（兼容单特征双向）。最后两级只是兼容兜底：选中不支持 notify 的特征时订阅仍可能失败，日志里必须留下这条警告，别把「选到了」当成「订阅成了」。
 
 这一步在写读分离机型上尤其重要。写特征和通知特征不是同一个，取错一个，表现就是“能写但不能收”。
 
@@ -338,14 +340,24 @@ if (writeType && /10007|not support/i.test(err.message)) {
 ```ts
 const RAW_WRITE_TIMEOUT = 3000
 
-// 单片哨兵：超时后迟到的 success 不能再推进 offset，
+// 单片哨兵：成功与超时共用同一个出口，
+// 超时后迟到的 success 不能再推进 offset，
 // 否则会话结束后仍在往 boot 写数据。
 let pieceSettled = false
-const timer = setTimeout(() => {
+let timer
+
+const settle = (ok, msg) => {
   if (pieceSettled) return
   pieceSettled = true
-  callback({ success: false, errMsg: `写入超时（${RAW_WRITE_TIMEOUT}ms 无回调）` })
-}, RAW_WRITE_TIMEOUT)
+  clearTimeout(timer)
+  callback({ success: ok, errMsg: msg })
+}
+
+timer = setTimeout(
+  () => settle(false, `写入超时（${RAW_WRITE_TIMEOUT}ms 无回调）`),
+  RAW_WRITE_TIMEOUT,
+)
+// 写回调里调用 settle(true, ...)，迟到的 success 会被哨兵挡掉
 ```
 
 ### 5.5 超长写入可能永远不回调
@@ -363,7 +375,7 @@ iOS 上还有一个官方文档提过、但很容易忽略的行为：超过协�
 
 鸿蒙是这次最“薛定谔”的平台。
 
-微信官方文档里，`getSystemInfoSync().platform` 的枚举包含 `ohos`。但实测在部分鸿蒙设备上，拿到的值和文档对不上：有时不是 `ohos`，有时干脆拿不到预期值。
+微信官方文档里，`getSystemInfoSync().platform` 的枚举包含 `ohos`（还有鸿蒙 PC 的 `ohos_pc`）。但实测在部分鸿蒙设备上，拿到的值和文档对不上：有时不是 `ohos`，有时干脆拿不到预期值。另外 `getSystemInfoSync` 自基础库 2.20.1 起已停止维护，官方建议改用 `wx.getDeviceInfo` / `wx.getSystemSetting`。
 
 如果代码写成：
 
@@ -500,24 +512,31 @@ OTA 的传输总耗时大致是：
 修复方式是“先顶到目标，设置失败就等一拍，再读”：
 
 ```ts
-Taro.setBLEMTU({ deviceId, mtu: target })
-
+// 先把 MTU 顶到目标值；设置失败（含 iOS 不支持）时等一拍再读，
+// 避开重连流程里正在进行的协商。
+let mtuSetOk = false
+try {
+  await Taro.setBLEMTU({ deviceId, mtu: target })
+  mtuSetOk = true
+} catch {
+  // 这里吞掉的是「平台/连接不支持设置」的预期失败，属于兜底分支，不是写入错误
+}
 if (!mtuSetOk) await sleep(200)
 
 const mtu = await Taro.getBLEMTU({ deviceId, writeType: 'write' })
 const chunk = Math.min(509, mtu - 3)
 ```
 
-- `509` 是 ATT 有效载荷的硬上限，再大也装不下；
+- `509` 不是 ATT 协议的硬上限，而是微信小程序可协商到的最大 MTU（512）减去 3 后的数据长度；BLE 规范里 ATT_MTU 上限 517、载荷可到 514，只是小程序拿不到；
 - `setBLEMTU` 失败时等 200ms，是因为可能撞上重连流程正在进行的协商；设置成功就直接读；
-- `setBLEMTU` 仅 Android 有效，iOS 由系统协商；
+- `setBLEMTU` 仅 Android 5.1+ 有效，iOS 上 MTU 是系统固定值，小程序无法设置；
 - 正常固件和 FlashBoot 的 MTU 可能不同，所以要在**连到 boot 之后**再取，不能在升级前取一次用到底。
 
 ### 8.2 setBLEMTU 成功，是一个比 platform 更硬的能力证据
 
 因为 `setBLEMTU` 只在 Android 上有效，我们把它当成“不是 iOS”的判定依据。调用成功，说明当前平台支持 MTU 协商；调用失败，也不一定是 iOS，可能只是当前连接不允许设置。
 
-这比 `platform === 'ios'` 可靠得多，因为它验证的是“能力”，不是“字符串”。
+这比 `platform === 'ios'` 可靠得多，因为它验证的是“能力”，不是“字符串”。但这条判据只能排除 iOS——官方文档标注微信鸿蒙 OS 版同样支持 `setBLEMTU`，所以调用成功并不能用来区分 Android 与鸿蒙。
 
 ### 8.3 Android 扫描还需要系统定位
 
@@ -542,7 +561,7 @@ OTA 流程里有一个 30 秒的最终判死：只要 30 秒内没有收到任�
 
 | 表象                   | 实际原因                                        | 怎么区分                               |
 | ---------------------- | ----------------------------------------------- | -------------------------------------- |
-| 写入成功，设备不回包   | notify 没订阅上 / 10008 句柄失效                | 看“通知订阅成功”日志；没有这行就是没通 |
+| 写入成功，设备不回包   | notify 没订阅上 / errMsg 报 handle is invalid   | 看“通知订阅成功”日志；没有这行就是没通 |
 | 写入一直没有回调       | iOS 超长写入 / 协议栈挂起                       | 看 3 秒单片看门狗的错误                |
 | 设备反复推 0x10        | 查询帧发得太早，boot 丢了；或去重挡住了后续应答 | 看 raw 日志里 0x10 的重复次数          |
 | 设备请求 offset 0 反复 | 重复查询帧导致 boot 重启读取序列                | 看 0x50 的 offset 序列                 |
@@ -553,7 +572,7 @@ OTA 流程里有一个 30 秒的最终判死：只要 30 秒内没有收到任�
 
 ### 9.1 一定要打 build 号
 
-2026 年 11 月 5 日我们遇到过一次混包：弹窗显示的 build tag 是新的，但 OTA 会话里打印的 notify 等待超时还是旧值。也就是说，实际跑的不是最新代码。
+这次联调里我们遇到过一次混包：弹窗显示的 build tag 是新的，但 OTA 会话里打印的 notify 等待超时还是旧值。也就是说，实际跑的不是最新代码。
 
 后来在 OTA 会话开始的第一行就打印：
 
@@ -576,7 +595,7 @@ OTA 会话开始（build 20261106-1615，notify等待20s/适配器重建）
 
 ### 10.1 每包两条日志，吃掉 3%～13% 的升级时间
 
-OTA 传输一个几 MB 的固件，要往返几千次。我们最初把每条收发日志都写进页面状态，结果每次 `setState` 都要跨桥渲染，实测单次 2～8ms，7000+ 次下来吃掉了升级总时长的 3%～13%。
+OTA 传输一个几 MB 的固件，要往返几千次。我们最初把每条收发日志都写进页面状态，结果每次 `setState` 都要跨桥渲染，实测单次 2～8ms；约 3500 个分包对应 7000+ 次 `setState`，累计吃掉了升级总时长的 3%～13%。
 
 后来的做法：
 
@@ -644,18 +663,18 @@ FlashBoot 用 `0x20` 报状态，APP 每次都要回 `0x21` 确认：
 
 把这次踩的坑压缩成一张表：
 
-| 类别     | 最后落地的结论                                                                                                                              |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 身份     | iOS 的 `deviceId` 是临时 UUID，不能持久化；持久身份用广播里的 SN；boot 重连用升级前保存的 `deviceId`                                        |
-| UUID     | service / characteristic UUID 只用于 GATT 寻址；服务 UUID 匹配不到时遍历服务反查写特征；通知特征必须看 properties，不只看 UUID              |
-| 句柄     | `connected=true` ≠ 通知就绪；等 `notifyReady` 再发数据；10008 重试 + 适配器级重建；根因要靠固件对齐属性表或 Database Hash / Service Changed |
-| 写模式   | 按 `properties.writeNoResponse` 选，不按 platform；iOS 10007 安全回退一次；无响应写的 success 不是设备回执                                  |
-| 时序     | ACK 前保持 AES/JSON；断开事件里立刻挂原始通道；等 0x10 再握手；800ms 去重；3 秒重试直到第一帧                                               |
-| MTU      | set → 等 200ms → get；信任协商值，不反向兜底 240；连到 boot 后再取                                                                          |
-| 鸿蒙     | platform 字段不可信，用 GATT 能力和 API 结果判断；联调用「预览」，别用「真机调试」                                                          |
-| 无响应   | 30 秒判死只是最后一层；先看订阅日志、raw 日志、offset 序列、build 号                                                                        |
-| 性能     | 过程日志只进 console；进度最多 6 次 setState；用 A/B/C 三段耗时定位瓶颈                                                                     |
-| 成功判定 | 重连正常固件读 `firmwareVer`，一致才算成功                                                                                                  |
+| 类别     | 最后落地的结论                                                                                                                                                        |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 身份     | iOS 的 `deviceId` 是临时 UUID，不能持久化；持久身份用广播里的 SN；boot 重连用升级前保存的 `deviceId`                                                                  |
+| UUID     | service / characteristic UUID 只用于 GATT 寻址；服务 UUID 匹配不到时遍历服务反查写特征；通知特征必须看 properties，不只看 UUID                                        |
+| 句柄     | `connected=true` ≠ 通知就绪；等 `notifyReady` 再发数据；errMsg 含 handle is invalid 时短重试 + 适配器级重建；根因要靠固件对齐属性表或 Database Hash / Service Changed |
+| 写模式   | 按 `properties.writeNoResponse` 选，不按 platform；iOS 10007 安全回退一次；无响应写的 success 不是设备回执                                                            |
+| 时序     | ACK 前保持 AES/JSON；断开事件里立刻挂原始通道；等 0x10 再握手；800ms 去重；3 秒重试直到第一帧                                                                         |
+| MTU      | set → 等 200ms → get；信任协商值，不反向兜底 240；连到 boot 后再取                                                                                                    |
+| 鸿蒙     | platform 字段不可信，用 GATT 能力和 API 结果判断；联调用「预览」，别用「真机调试」                                                                                    |
+| 无响应   | 30 秒判死只是最后一层；先看订阅日志、raw 日志、offset 序列、build 号                                                                                                  |
+| 性能     | 过程日志只进 console；进度最多 6 次 setState；用 A/B/C 三段耗时定位瓶颈                                                                                               |
+| 成功判定 | 重连正常固件读 `firmwareVer`，一致才算成功                                                                                                                            |
 
 还有几个没有完全解决的问题，也一并记下来：
 

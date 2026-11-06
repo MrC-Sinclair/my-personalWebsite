@@ -155,7 +155,12 @@
     "Mbps",
     "swapfile",
     "swapon",
-    "npmmirror"
+    "npmmirror",
+    "CCCD",
+    "bluetoothd",
+    "ohos",
+    "BLEMTU",
+    "OPPO"
   ],
   "ignorePaths": [
     "node_modules",

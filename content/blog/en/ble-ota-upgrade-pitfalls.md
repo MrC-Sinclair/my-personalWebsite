@@ -30,7 +30,7 @@ And the upgrade is not as simple as "push the file over":
 
 On top of that, iOS, HarmonyOS and Android each have their own temperament about BLE caching, GATT handles and write modes. The same "connection succeeded" on iOS may only mean a connection handle was obtained while the notification path was never established. The same "write succeeded" under write-without-response only means the data was handed to the protocol stack, not that the device received it.
 
-This article does not restate the full protocol. It takes the pitfalls we hit and splits them by topic: identity, UUIDs, handles, write modes, timing, MTU, the "no response" case, and performance. For each one I write down how we finally diagnosed it and what we landed on, so the next person doing BLE OTA loses a few fewer days.
+This article does not restate the full protocol. It takes the pitfalls we hit and splits them by topic: protocol coexistence, identity and UUIDs, handles, write modes, HarmonyOS differences, timing, MTU, the "no response" case, and performance / success checks. For each one I write down how we finally diagnosed it and what we landed on, so the next person doing BLE OTA saves a few days of debugging.
 
 ## 1. Get the overall sequence straight first
 
@@ -103,7 +103,7 @@ This bypass has to be session-scoped: install it only while an OTA runs, and rel
 
 ### 2.2 Frame length and checksum: do not read it as "data length"
 
-There are a few places in the Actions frame format that are easy to get wrong:
+There are a few places in the device's frame format that are easy to get wrong:
 
 ```text
 A5 5A 12 <cmd> <frame length, LE 2 bytes> <data...> <checksum>
@@ -128,7 +128,7 @@ If those two frames do not match the demo, do not suspect the device first — c
 
 We kept a "encrypted query frame" probe around to verify whether the device decrypts first and then recognizes the OTA frame, or recognizes the plaintext directly. Writing that probe led us into a very subtle trap:
 
-`crypto-js`'s `AES.encrypt(plainText, key)` parses a string as UTF-8. OTA frames contain bytes above `0x7F` such as `0xA5` and `0x5A`; if you convert them into a string before encrypting, each one gets encoded as two bytes and the original frame structure is destroyed.
+`crypto-js`'s `AES.encrypt(plainText, key)` parses a string as UTF-8. OTA frames contain bytes above `0x7F` such as `0xA5`; converting them into a string before encrypting encodes each one as two bytes and destroys the original frame structure. ASCII bytes such as `0x5A` are not expanded, but they should not go through string APIs either.
 
 The correct approach is to go through `WordArray` / hex and encrypt by byte:
 
@@ -206,11 +206,13 @@ One more thing: when a service UUID does not match, do not give up. Our fallback
 
 ### 4.1 connected = true does not mean you can receive data
 
-`createBLEConnection` succeeding only proves the link is up. iOS discovers services asynchronously, and until `getBLEDeviceServices` / `getBLEDeviceCharacteristics` complete, `notifyBLECharacteristicValueChange` may keep returning:
+`createBLEConnection` succeeding only proves the link is up. iOS discovers services asynchronously, and until `getBLEDeviceServices` / `getBLEDeviceCharacteristics` complete, `notifyBLECharacteristicValueChange` may return `10004` / `10005` (service or characteristic not found), or a system-level exception such as:
 
 ```text
-The handle is invalid (10008)
+The handle is invalid (errCode 10008 / system error)
 ```
+
+Note that 10008 is WeChat's catch-all code for "all other exceptions reported by the system", not a dedicated stale-handle code; the docs also mention that some Android models return 10008 when a write follows a successful notify immediately. To diagnose a GATT-cache problem you have to look at the `The handle is invalid` text in `errMsg` as well.
 
 Our first version started sending query frames as soon as it saw `connected` === true. The write callback succeeded, yet the device never replied, and after 30 seconds the session was declared dead. It looked like "the device is not responding", but in reality **the phone had never subscribed to notifications, so every answer from the device landed in a window nobody was listening to**.
 
@@ -231,7 +233,7 @@ We landed on two layers of fallback:
 1. **Short retries**: 3 × 600 ms. Observation shows retries basically never succeed, so the window stays short in order to escalate quickly.
 2. **Adapter-level rebuild**: `closeBluetoothAdapter → 300ms → openBluetoothAdapter → reconnect → rediscover services → resubscribe`, at most twice, forcing WeChat to discard its session-level GATT cache.
 
-To be honest, the adapter rebuild is not a silver bullet either. The iOS system-level `bluetoothd` cache is not guaranteed to be cleared by restarting WeChat. If error 10008 still appears after two rebuilds, there is nothing left to do from the Mini Program side and the fix has to come from the firmware:
+To be honest, the adapter rebuild is not a silver bullet either. The iOS system-level `bluetoothd` cache is not guaranteed to be cleared by restarting WeChat. If `The handle is invalid` (errCode 10008) still appears after two rebuilds, there is nothing left to do from the Mini Program side and the fix has to come from the firmware:
 
 - Align the GATT attribute tables of the main firmware and FlashBoot (same declaration order, matching value/CCCD handles).
 - Or implement the GATT Database Hash (`0x2B2A`) / Service Changed (`0x2A05`) so iOS re-discovers services on its own.
@@ -255,7 +257,7 @@ const notifyChar =
   writeChar
 ```
 
-The priority is: UUID matches and supports notify → any characteristic that supports notify → UUID matches but properties do not (log a warning) → the write characteristic itself (to support the single-characteristic bidirectional shape).
+The priority is: UUID matches and supports notify → any characteristic that supports notify → UUID matches but properties do not (log a warning) → the write characteristic itself (to support the single-characteristic bidirectional shape). The last two levels are compatibility fallbacks only: selecting a characteristic without notify support can still fail the subscription, so the warning must be logged — "we picked one" is not "we subscribed".
 
 This matters most on devices where write and notify are split. Write characteristic and notify characteristic are not the same object; pick the wrong one and the symptom is "I can write but I can never receive".
 
@@ -339,18 +341,24 @@ Precisely because of that, **we do not auto-retransmit after a write timeout**. 
 ```ts
 const RAW_WRITE_TIMEOUT = 3000
 
-// Per-piece sentinel: a success that arrives after the timeout must not
-// advance the offset any more, otherwise we keep writing to the boot
-// after the session has already ended.
+// Per-piece sentinel: success and timeout share the same exit, so a
+// success arriving after the timeout cannot advance the offset any more,
+// otherwise we keep writing to the boot after the session has ended.
 let pieceSettled = false
-const timer = setTimeout(() => {
+let timer
+
+const settle = (ok, msg) => {
   if (pieceSettled) return
   pieceSettled = true
-  callback({
-    success: false,
-    errMsg: `write timed out (no callback within ${RAW_WRITE_TIMEOUT}ms)`,
-  })
-}, RAW_WRITE_TIMEOUT)
+  clearTimeout(timer)
+  callback({ success: ok, errMsg: msg })
+}
+
+timer = setTimeout(
+  () => settle(false, `write timed out (no callback within ${RAW_WRITE_TIMEOUT}ms)`),
+  RAW_WRITE_TIMEOUT,
+)
+// the write callback calls settle(true, ...); a late success is rejected by the sentinel
 ```
 
 ### 5.5 An oversized write may never call back at all
@@ -368,7 +376,7 @@ An earlier version had `chunk > 20 ? chunk : 240`, meant to guard against a bad 
 
 HarmonyOS was the most unpredictable platform of this whole exercise.
 
-WeChat's official documentation lists `ohos` among the possible values of `getSystemInfoSync().platform`. In practice, on some HarmonyOS devices what you get does not match the docs: sometimes it is not `ohos`, sometimes you simply do not get the expected value at all.
+WeChat's official documentation lists `ohos` among the possible values of `getSystemInfoSync().platform` (plus `ohos_pc` for HarmonyOS PCs). In practice, on some HarmonyOS devices what you get does not match the docs: sometimes it is not `ohos`, sometimes you simply do not get the expected value at all. Also, `getSystemInfoSync` has been deprecated since base library 2.20.1; the docs recommend `wx.getDeviceInfo` / `wx.getSystemSetting` instead.
 
 If your code reads:
 
@@ -505,24 +513,33 @@ The consequence: OTA ran at half bandwidth the whole time, doubling the number o
 The fix is "push to the target first; if setting fails, wait a beat, then read":
 
 ```ts
-Taro.setBLEMTU({ deviceId, mtu: target })
-
+// Push the MTU to the target first; if setting fails (including on iOS,
+// where it is unsupported), wait a beat before reading so any negotiation
+// started by the reconnect flow can settle.
+let mtuSetOk = false
+try {
+  await Taro.setBLEMTU({ deviceId, mtu: target })
+  mtuSetOk = true
+} catch {
+  // Expected failure: this platform or connection does not support setting the MTU.
+  // It is a fallback branch, not a write error.
+}
 if (!mtuSetOk) await sleep(200)
 
 const mtu = await Taro.getBLEMTU({ deviceId, writeType: 'write' })
 const chunk = Math.min(509, mtu - 3)
 ```
 
-- `509` is the hard ceiling of the ATT payload; anything larger does not fit.
+- `509` is not a hard ATT ceiling; it is the largest MTU WeChat can negotiate (512) minus 3. The BLE spec allows ATT_MTU up to 517, i.e. a 514-byte payload — the Mini Program just cannot reach it.
 - The 200 ms wait after a failed `setBLEMTU` covers the case where the reconnect flow is mid-negotiation; if the set succeeded, read immediately.
-- `setBLEMTU` is Android-only; on iOS the system negotiates.
+- `setBLEMTU` works only on Android 5.1+; on iOS the MTU is a fixed system value that the Mini Program cannot set.
 - The MTU of normal firmware and FlashBoot may differ, so read it **after connecting to the boot** instead of once before the upgrade and reuse it forever.
 
 ### 8.2 A successful setBLEMTU is harder evidence of capability than `platform`
 
 Because `setBLEMTU` only works on Android, we adopted it as the "this is not iOS" test. Success means the current platform supports MTU negotiation; failure does not necessarily mean iOS, it may just mean the current connection does not allow setting.
 
-That is far more reliable than `platform === 'ios'`, because it tests a **capability** rather than a **string**.
+That is far more reliable than `platform === 'ios'`, because it tests a **capability** rather than a **string**. But it only rules out iOS: the docs mark `setBLEMTU` as supported on the HarmonyOS build of WeChat too, so success cannot distinguish Android from HarmonyOS.
 
 ### 8.3 Android scanning additionally needs system location
 
@@ -547,7 +564,7 @@ Behind the surface of "30 seconds of silence" there are at least six completely 
 
 | Symptom                            | Actual cause                                                            | How to tell                                                                     |
 | ---------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| write succeeds, device silent      | notify never subscribed / 10008 stale handle                            | look for the "subscription succeeded" line; none means the channel never opened |
+| write succeeds, device silent      | notify never subscribed / errMsg says handle is invalid                 | look for the "subscription succeeded" line; none means the channel never opened |
 | write never calls back             | iOS oversized write / protocol stack wedged                             | check the 3-second per-piece watchdog error                                     |
 | device keeps pushing 0x10          | query sent too early and dropped, or de-duplication blocked the answer  | count the 0x10 repeats in the raw log                                           |
 | device keeps requesting offset 0   | duplicate query frames restarted the boot's read sequence               | look at the offset series in 0x50                                               |
@@ -558,7 +575,7 @@ This table is one of the most useful outputs of the whole debugging effort. With
 
 ### 9.1 Always print the build number
 
-On November 5, 2026 we hit a mixed-build incident: the dialog showed a new build tag, but the notify-wait timeout printed inside the OTA session was still the old value. In other words, the code actually running was not the latest.
+During this integration we hit a mixed-build incident: the dialog showed a new build tag, but the notify-wait timeout printed inside the OTA session was still the old value. In other words, the code actually running was not the latest.
 
 After that we print it on the very first line of every OTA session:
 
@@ -581,7 +598,7 @@ A write-without-response success only means the data reached the protocol stack.
 
 ### 10.1 Two log lines per packet cost 3%–13% of the upgrade
 
-Transferring a several-MB firmware takes thousands of round trips. We initially wrote every send and receive log into page state, so each one triggered a `setState` across the bridge — measured at 2–8 ms each, and across 7000+ packets that consumed 3%–13% of total upgrade time.
+Transferring a several-MB firmware takes thousands of round trips. We initially wrote every send and receive log into page state, so each one triggered a `setState` across the bridge — measured at 2–8 ms each; roughly 3500 packets produced 7000+ `setState` calls, consuming 3%–13% of total upgrade time.
 
 What we changed:
 
@@ -643,24 +660,24 @@ FlashBoot reports status with `0x20`, and the APP must answer every one with `0x
 
 Note that `0x06` only means the boot finished writing — it is not the final success. You must reconnect to the normal firmware, say `hi` again, read the target module's `firmwareVer`, and only show "upgrade successful" when it matches the target version.
 
-The start ACK, having sent the whole file, and the BLE disconnect are none of them evidence of success.
+None of these is evidence of success: the start ACK, having sent the whole file, or the BLE disconnect.
 
 ## 11. Retrospective checklist
 
 The whole set of pitfalls compressed into one table:
 
-| Topic         | Conclusion that finally landed                                                                                                                                                                                                        |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Identity      | iOS's `deviceId` is a temporary UUID and must not be persisted; use the SN from the advertisement as the persistent identity; reconnect to the boot with the `deviceId` saved before the upgrade                                      |
-| UUIDs         | service / characteristic UUIDs are only GATT addressing; when a service UUID misses, iterate the services and reverse-look-up the write characteristic; the notify characteristic must be chosen by properties, not just UUID         |
-| Handles       | `connected=true` ≠ notifications ready; wait for `notifyReady` before sending; 10008 → short retries plus adapter rebuild; the real fix is the firmware aligning the attribute tables or implementing Database Hash / Service Changed |
-| Write mode    | choose by `properties.writeNoResponse`, not by platform; fall back once on iOS 10007; a write-without-response success is not a device acknowledgement                                                                                |
-| Timing        | keep AES/JSON until the ACK; install the raw channel inside the disconnect event; wait for `0x10` before handshaking; 800 ms de-duplication; retry every 3 seconds until the first frame                                              |
-| MTU           | set → wait 200 ms → get; trust the negotiated value, never fall back upward to 240; read it after connecting to the boot                                                                                                              |
-| HarmonyOS     | the platform field is unreliable; judge by GATT capabilities and API results; integrate via "Preview", not "Real Device Debugging"                                                                                                    |
-| "No response" | the 30-second kill switch is only the last layer; check the subscription logs, raw logs, offset series and build number first                                                                                                         |
-| Performance   | process logs to console only; at most 6 setState calls for progress; locate the bottleneck with the A/B/C timings                                                                                                                     |
-| Success check | reconnect to the normal firmware and read `firmwareVer`; only a match counts                                                                                                                                                          |
+| Topic         | Conclusion that finally landed                                                                                                                                                                                                                                    |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identity      | iOS's `deviceId` is a temporary UUID and must not be persisted; use the SN from the advertisement as the persistent identity; reconnect to the boot with the `deviceId` saved before the upgrade                                                                  |
+| UUIDs         | service / characteristic UUIDs are only GATT addressing; when a service UUID misses, iterate the services and reverse-look-up the write characteristic; the notify characteristic must be chosen by properties, not just UUID                                     |
+| Handles       | `connected=true` ≠ notifications ready; wait for `notifyReady` before sending; errMsg contains handle is invalid → short retries plus adapter rebuild; the real fix is the firmware aligning the attribute tables or implementing Database Hash / Service Changed |
+| Write mode    | choose by `properties.writeNoResponse`, not by platform; fall back once on iOS 10007; a write-without-response success is not a device acknowledgement                                                                                                            |
+| Timing        | keep AES/JSON until the ACK; install the raw channel inside the disconnect event; wait for `0x10` before handshaking; 800 ms de-duplication; retry every 3 seconds until the first frame                                                                          |
+| MTU           | set → wait 200 ms → get; trust the negotiated value, never fall back upward to 240; read it after connecting to the boot                                                                                                                                          |
+| HarmonyOS     | the platform field is unreliable; judge by GATT capabilities and API results; integrate via "Preview", not "Real Device Debugging"                                                                                                                                |
+| "No response" | the 30-second kill switch is only the last layer; check the subscription logs, raw logs, offset series and build number first                                                                                                                                     |
+| Performance   | process logs to console only; at most 6 setState calls for progress; locate the bottleneck with the A/B/C timings                                                                                                                                                 |
+| Success check | reconnect to the normal firmware and read `firmwareVer`; only a match counts                                                                                                                                                                                      |
 
 A few problems remain unsolved, and they are recorded here too:
 
