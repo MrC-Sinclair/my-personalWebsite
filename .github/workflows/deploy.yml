@@ -310,7 +310,7 @@ jobs:
         shell: bash
         run: |
           test -f site/index.html || { echo "产物根目录没有 index.html，拒绝发布空包"; exit 1; }
-          tar -czf site.tar.gz -C site .
+          tar -czf site-cvm.tar.gz -C site .
           echo "打包大小: $(du -h site-cvm.tar.gz | cut -f1)"
 
       - name: Publish to release cvm-latest
@@ -329,7 +329,7 @@ jobs:
           # 下面那句 ::error:: 根本没来得及执行（annotations 里只剩通用的 exit 1）。
           set +e
           gh --version >/dev/null 2>&1 || echo "::warning title=缺工具::runner 上没有 gh CLI"
-          gh release delete site-latest --cleanup-tag --yes 2>/dev/null
+          gh release delete cvm-latest --cleanup-tag --yes 2>/dev/null
           out=$(gh release create cvm-latest site-cvm.tar.gz \
             --target "$GITHUB_SHA" \
             --title "站点静态产物（最近一次构建）" \
@@ -342,4 +342,4 @@ jobs:
             exit "$code"
           fi
           echo "Release 资产：$out"
-          echo "下载地址：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/site-latest/site.tar.gz"
+          echo "下载地址：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/cvm-latest/site-cvm.tar.gz"
