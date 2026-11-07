@@ -198,7 +198,7 @@ Three concepts also need to stay separate:
 - **service / characteristic UUID**: a type identifier used for GATT addressing, not a device identity.
 - **handle**: the 16-bit handle the protocol stack assigns to each GATT attribute internally; iOS caches the UUID → handle mapping.
 
-Matching UUIDs do not imply matching handles. After the main firmware switches to FlashBoot, if the attribute table's declaration order or the CCCD positions change, the same batch of UUIDs may already point at stale handles as far as iOS is concerned. That is the invalidation the next section is about.
+Matching UUIDs do not imply matching handles. After the main firmware switches to FlashBoot, if the attribute table's declaration order or the CCCD positions change, the same batch of UUIDs may already point at stale handles as far as iOS is concerned. That is the handle invalidation covered in section 4.2.
 
 One more thing: when a service UUID does not match, do not give up. Our fallback is "iterate every service and reverse-lookup by write-characteristic UUID", which still connects when the firmware's UUIDs and the config table disagree, and saves a lot of effort on the first integration with a new model.
 
@@ -318,7 +318,9 @@ The first time we passed `writeNoResponse` on iOS we ran into:
 The key point is that this failure happens before the data is actually transmitted, so resending the same frame with the platform default write is safe — it cannot produce a duplicate frame. Our handling:
 
 ```ts
-if (writeType && /10007|not support/i.test(err.message)) {
+// WeChat / Taro rejects with BluetoothError: errMsg / errCode, no message field
+const errText = String(err.errMsg ?? err.message ?? '')
+if (writeType && /10007|not support/i.test(errText)) {
   writeType = undefined
   writeModeLabel = 'platform default (write-without-response unsupported, fell back automatically)'
   // everything later in this session uses the default write; resend the current frame
@@ -393,7 +395,7 @@ The conclusion: **the platform field is for display and logs only; never use it 
 1. whether the write characteristic declares `writeNoResponse` (a protocol-layer fact);
 2. whether the `setBLEMTU` call succeeds (this API is Android-only, so success proves you are not on iOS).
 
-HarmonyOS has another symptom: the subscription succeeds but no data arrives. From the business layer that is indistinguishable from a failed subscription — in both cases the device looks silent. Which is why the previous section insisted that a successful subscription must be logged.
+HarmonyOS has another symptom: the subscription succeeds but no data arrives. From the business layer that is indistinguishable from a failed subscription — in both cases the device looks silent. Which is why section 4.4 insisted that a successful subscription must be logged.
 
 HarmonyOS also has a trap in the integration channel itself, unrelated to the OTA code:
 

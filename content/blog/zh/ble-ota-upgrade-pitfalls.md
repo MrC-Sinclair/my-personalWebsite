@@ -197,7 +197,7 @@ const encrypted = AES.encrypt(encHex.parse(plainHex), encUtf8.parse(KEY), {
 - **service / characteristic UUID**：GATT 寻址用的类型标识，不是设备身份；
 - **handle**：协议栈内部给每个 GATT 属性分配的 16 位句柄，iOS 会缓存 UUID 到 handle 的映射。
 
-UUID 相同，不代表 handle 相同。主固件切到 FlashBoot 后，如果属性表的声明顺序或 CCCD 位置变了，同一批 UUID 在 iOS 眼里可能已经指向了旧的 handle。这就是下一节要讲的句柄失效。
+UUID 相同，不代表 handle 相同。主固件切到 FlashBoot 后，如果属性表的声明顺序或 CCCD 位置变了，同一批 UUID 在 iOS 眼里可能已经指向了旧的 handle。这就是 4.2 节要讲的句柄失效。
 
 另外，服务 UUID 匹配不到时不要直接放弃。我们的做法是退化为“遍历全部服务，用写特征 UUID 反查”，这样固件 UUID 和配置表不完全一致时也能连上，新机型首次联调会省很多事。
 
@@ -317,7 +317,9 @@ iOS 上第一次传 `writeNoResponse`，我们遇到过：
 关键是这个失败发生在数据真正下发之前，所以同一帧改用平台默认写重发是安全的，不会产生重复帧。我们的处理是：
 
 ```ts
-if (writeType && /10007|not support/i.test(err.message)) {
+// 微信 / Taro 的失败对象是 BluetoothError：只有 errMsg / errCode，没有 message
+const errText = String(err.errMsg ?? err.message ?? '')
+if (writeType && /10007|not support/i.test(errText)) {
   writeType = undefined
   writeModeLabel = '平台默认(无响应写不支持，已自动回退)'
   // 本会话后续统一走默认写，并重发当前帧
@@ -392,7 +394,7 @@ if (platform === 'ohos') {
 1. 写特征是否声明 `writeNoResponse`（协议层事实）；
 2. `setBLEMTU` 调用是否成功（该 API 仅 Android 有效，调用成功即可断定不是 iOS）。
 
-鸿蒙上还有一个表现：订阅成功但收不到数据。它和订阅失败在业务层看起来一模一样，都是设备无响应。这也是为什么上一节强调“订阅成功必须打日志”。
+鸿蒙上还有一个表现：订阅成功但收不到数据。它和订阅失败在业务层看起来一模一样，都是设备无响应。这也是为什么 4.4 节强调“订阅成功必须打日志”。
 
 另外，鸿蒙的联调通道也有坑，而且和 OTA 代码无关：
 
