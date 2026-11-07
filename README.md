@@ -143,17 +143,20 @@ pnpm test:watch    # 运行测试（监听模式）
 
 ```bash
 # 首次安装（实例上执行）
-curl -sSL -o /tmp/repo.tgz \
-  https://codeload.github.com/MrC-Sinclair/my-personalWebsite/tar.gz/refs/heads/main \
-&& tar -xzf /tmp/repo.tgz -C /tmp \
-&& install -m 755 /tmp/my-personalWebsite-main/scripts/deploy-site.sh /usr/local/bin/deploy-site
+wget -q -O /usr/local/bin/deploy-site \
+  --header='Accept: application/vnd.github.raw' \
+  https://api.github.com/repos/MrC-Sinclair/my-personalWebsite/contents/scripts/deploy-site.sh
+chmod 755 /usr/local/bin/deploy-site
 
 # 之后每次发布（确认对应 CI run 的 quality / audit 全绿后）
 bash /usr/local/bin/deploy-site --dry-run   # 预检
 bash /usr/local/bin/deploy-site            # 拉资产 → 校验 → 备份 → 覆盖 /srv/site → 验证
+
+# CDN 变慢或本地已有产物时，跳过下载直接部署
+bash /usr/local/bin/deploy-site --from /tmp/site-release-7283fb8
 ```
 
-脚本会校验资产字节数与压缩包完整性、覆盖前自动备份 `/srv/site`、并探测首页、博客列表、sitemap、feed 以及**新构建的 `_nuxt` 资源**（只测 HTML 会漏检静态资源 404）。源码见 `scripts/deploy-site.sh`，契约测试见 `tests/deploy-site.test.ts`。
+脚本会校验资产字节数与压缩包完整性、覆盖前自动备份 `/srv/site`、并探测首页、博客列表、sitemap、feed 以及**新构建的 `_nuxt` 资源**（只测 HTML 会漏检静态资源 404）；CDN 变慢时可用 `--from <已解压产物目录>` 跳过下载，校验与验证步骤不变。源码见 `scripts/deploy-site.sh`，契约测试见 `tests/deploy-site.test.ts`。
 
 > **没有域名的代价**：站点只有公网 IP、没有 HTTPS。Service Worker 要求安全上下文，
 > 所以 `http://IP` 下 PWA 离线访问与 `navigator.clipboard` 一类 API 不会生效；

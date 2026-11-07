@@ -42,8 +42,10 @@ describe('一键部署脚本契约', () => {
     expect(script).toContain("probe '/sitemap.xml'")
   })
 
-  it('支持 dry-run 与额外探测路径', () => {
+  it('支持 dry-run、本地产物复用与额外探测路径', () => {
     expect(script).toContain('--dry-run')
+    expect(script).toContain('--from')
+    expect(script).toContain('LOCAL_DIR')
     expect(script).toContain('EXTRA_PATHS')
   })
 })
