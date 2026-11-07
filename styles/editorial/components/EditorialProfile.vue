@@ -108,7 +108,7 @@ function groupSkills(group: SkillGroup): string[] {
 .standfirst {
   margin: 0 0 calc(var(--space) * 1.1);
   font-family: var(--font-head);
-  font-size: clamp(18px, 2.1vw, 24px);
+  font-size: var(--scale-lead-fluid);
   line-height: 1.72;
   color: var(--c-text);
 }

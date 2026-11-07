@@ -107,7 +107,7 @@ function padNo(n: number): string {
   margin: 0 0 calc(var(--space) * 0.9);
   max-width: 24ch;
   font-family: var(--font-head);
-  font-size: clamp(21px, 2.6vw, 32px);
+  font-size: var(--scale-heading-fluid);
   line-height: 1.6;
   color: var(--c-text);
 }
@@ -219,7 +219,7 @@ function padNo(n: number): string {
 /* 复制按钮：印刷下划线样式（≥40px 触控目标） */
 .copy {
   align-self: flex-start;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 0;
   font-size: var(--fs-small);
   letter-spacing: 0.1em;

@@ -97,6 +97,8 @@ const tocItems = computed(() => [
 .name {
   margin: clamp(16px, 3vw, 36px) 0 clamp(20px, 3.4vw, 40px);
   font-family: var(--font-head);
+  /* 题材签名例外：刊名字就是封面本身，不套共享刻度的 Display 96，
+     否则 editorial 会失去它唯一真正成立的版式语言。 */
   font-size: clamp(48px, 11.5vw, 164px);
   font-weight: 700;
   line-height: 0.98;
@@ -120,7 +122,7 @@ const tocItems = computed(() => [
 .tagline {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(21px, 3vw, 32px);
+  font-size: var(--scale-heading-fluid);
   font-style: italic;
   line-height: 1.4;
   color: var(--c-text);
@@ -198,7 +200,7 @@ const tocItems = computed(() => [
 
 .toc-label {
   font-family: var(--font-head);
-  font-size: clamp(18px, 2.2vw, 24px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 700;
   line-height: 1.25;
 }

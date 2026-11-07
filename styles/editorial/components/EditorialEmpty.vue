@@ -37,7 +37,7 @@ defineProps<{
 /* 节符：杂志补白的装饰性铅字 */
 .glyph {
   font-family: var(--font-head);
-  font-size: clamp(40px, 6vw, 60px);
+  font-size: var(--scale-title-fluid);
   line-height: 1;
   color: var(--c-accent);
 }
@@ -45,7 +45,7 @@ defineProps<{
 .msg {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(18px, 2.4vw, 24px);
+  font-size: var(--scale-lead-fluid);
   line-height: 1.5;
   color: var(--c-text);
 }

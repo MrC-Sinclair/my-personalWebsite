@@ -86,7 +86,7 @@ const anchorItems = computed(() => [
   flex: none;
   align-items: baseline;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   color: var(--c-text);
   text-decoration: none;
   transition: color var(--transition);
@@ -143,7 +143,7 @@ const anchorItems = computed(() => [
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   letter-spacing: 0.1em;
@@ -188,8 +188,8 @@ const anchorItems = computed(() => [
 .lang {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
@@ -221,7 +221,7 @@ const anchorItems = computed(() => [
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   letter-spacing: 0.12em;

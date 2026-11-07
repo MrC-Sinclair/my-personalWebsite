@@ -87,7 +87,7 @@ const localePath = useLocalePath()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-size: var(--fs-small);
   letter-spacing: 0.1em;
   color: var(--c-text);

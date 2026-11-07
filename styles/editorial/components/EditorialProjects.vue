@@ -202,6 +202,7 @@ function projectRoute(project: Project): string {
   width: 100%;
   height: 100%;
   font-family: var(--font-head);
+  /* 题材签名例外：无封面图时的巨型编号装饰，不是排印层级，不套刻度 */
   font-size: clamp(60px, 9vw, 128px);
   font-style: italic;
   line-height: 1;
@@ -226,7 +227,7 @@ function projectRoute(project: Project): string {
   display: inline;
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(21px, 2.6vw, 32px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 700;
   line-height: 1.25;
   color: var(--c-text);
@@ -239,7 +240,7 @@ function projectRoute(project: Project): string {
 }
 
 .project.is-lead .cap-title {
-  font-size: clamp(28px, 3.6vw, 48px);
+  font-size: var(--scale-subtitle-fluid);
 }
 
 .link:hover .cap-title {
@@ -285,7 +286,7 @@ function projectRoute(project: Project): string {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-size: var(--fs-small);
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -329,7 +330,7 @@ function projectRoute(project: Project): string {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-size: var(--fs-base);
   letter-spacing: 0.14em;
   color: var(--c-accent);

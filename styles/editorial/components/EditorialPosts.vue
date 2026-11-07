@@ -160,7 +160,7 @@ function postRoute(post: BlogPost): string {
   display: inline;
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(21px, 2.5vw, 28px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 700;
   line-height: 1.3;
   color: var(--c-text);
@@ -252,7 +252,7 @@ function postRoute(post: BlogPost): string {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-size: var(--fs-base);
   letter-spacing: 0.14em;
   color: var(--c-accent);

@@ -16,13 +16,21 @@
       这个性质，所有形体都是直角裁切
    3. --shadow / --shadow-press 填 none：纸面没有投影，
       层级只靠细线、字重与疏密表达
-   4. --fs-small 降到 12px：注释式小字（kicker / 图注 /
-      页边注）本身就是版式的组成部分，而非缩小的正文
+   4. --fs-small 走共享刻度的 Meta 13px：注释式小字（kicker /
+      图注 / 页边注）是版式的组成部分，但不能小到丢掉可读性；
+      原先 12px 在对比度核算里只能按 4.5:1 判，收到 13px 门槛
    5. --lh-body 升到 1.85：杂志正文的疏排行距
    6. --page-w 放宽到 1240px：杂志对开页的横向幅面
    7. --space / --gap 放大：纸面留白是版式张力的一部分
    8. --deco 用作「荧光笔淡染」：悬停时标题/行底泛起的
       12% 刊头红淡染，模拟在杂志页面上用荧光笔划重点
+   9. 2026-11-07 接入共享排印刻度：--fs-* 不再写散值，改为指向
+      --scale-*；组件里决定层级的大标题 clamp() 换成
+      --scale-*-fluid。唯二保留的手写字面量是封面刊名字与项目
+      巨型编号——它们是题材签名，不是排印层级。
+  10. 交互元素的 min-height / min-width 从 40px 收到 --scale-hit
+      （44px，任何断点都不缩）。项目旧审计阈值是 40px，这里按
+      Apple HIG 的 44pt 提一档，作为首个接入风格的示范。
    ============================================================ */
 
 [data-style='editorial'] {
@@ -57,11 +65,13 @@
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 
-  /* —— 字号（注释式小字 + 疏排正文） —— */
-  --fs-base: 16px;
-  --fs-small: 12px;
-  --fs-head: 52px;
-  --fs-title: 24px;
+  /* —— 字号：统一指向共享排印刻度，风格层不再自造散值 ——
+     Meta 从 12px 收到 13px（可读性与对比度红线）；
+     移动端由 [data-style] 的 @media 自动换到 16 / 13 / 20。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32；当前全站无引用，保留契约位 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.85;
 
   /* —— 间距（纸面留白） —— */

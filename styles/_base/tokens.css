@@ -67,3 +67,109 @@
   /* —— 装饰开关（各风格自行定义用途）—— */
   --deco: none;
 }
+
+/* ============================================================
+   共享排印刻度（Type Scale）—— 建立 2026-11-06 / 校正 11-07
+   ------------------------------------------------------------
+   为什么单独加一组 --scale-*，而不是直接改上面的 --fs-*：
+   上面四个 --fs-* 是 20 个风格各自填写的「现状值」，彼此没有层级
+   关系（实测 --fs-head 在 30–72px 之间浮动，都是散值）。直接改
+   回落值会同时改变所有未覆盖的风格，而字号一变，行高、栅格、
+   对比度门槛与触控命中区会连锁变化，20 个风格一起返工。
+
+   【11-07 校正：原先的接入层选错了】
+   全量扫描 20 个风格共 1285 条 font-size 声明，真实分布是：
+     var(--fs-small)  698   var(--fs-base)  172   var(--fs-title)  44
+     var(--fs-head)     0   ← 全站从未被引用，是死变量
+     clamp() 字面量   133   ← 76 种互不相同的表达式
+     px 字面量        193   其他 45
+   结论：--fs-* 只管「注释小字与正文」，真正决定排印层级的大标题
+   全部散落在组件里手写的 clamp() 里。所以「把 --fs-head 指向
+   --scale-title」不会有任何可见效果，刻度必须接到 clamp 那一层。
+
+   本契约因此提供同一套刻度的两种表达：
+     --scale-*        固定端点，对应设计稿 Desktop / Mobile 两个 mode
+     --scale-*-fluid  相同端点的连续插值（390px 取移动值，
+                      1440px 取桌面值），用来替换组件里的 clamp(),
+                      保留站点原有的流体手感，不引入断点跳变
+   两者端点完全一致，只有一套事实来源。
+
+   七级字阶（设计稿原为 5 级；补 Subtitle / Lead 两级中间档，
+   才能承接真实站点的区块刊头、卡片标题与引言。相邻比值
+   稳定在 1.3–1.5）：
+     Desktop  Display 96 / Title 64 / Subtitle 48 / Heading 32
+              / Lead 24 / Body 17 / Meta 13
+     Mobile   48 / 32 / 28 / 24 / 20 / 16 / 13
+   两条不缩的红线：Meta 13px 不再缩小；--scale-hit 44px 不缩。
+
+   纪律：--scale-* 由共享层独占。风格层只覆盖字体家族（--font-*）
+   与色彩（--c-*），不要在自己的 tokens.css 里重写 --scale-*。
+   每个风格允许保留一处「首屏展示级例外」——例如 editorial 的
+   刊名字、projects 的巨型编号，那是题材签名，不要用克制去削平。
+
+   接入顺序（一次只动一个风格，动完用真实产物核对）：
+     1. 风格 tokens.css：把 --fs-* 指向 var(--scale-*)
+     2. 风格组件：把 clamp() 换成语义对应的 var(--scale-*-fluid)
+     3. 核对溢出、行高与对比度（scripts/contrast.mjs）
+     4. 核对 390px 视口横向溢出与 44px 命中区
+     5. 通过后再推下一个风格，不要一次性全改 20 个
+   ============================================================ */
+
+[data-style] {
+  /* —— 七级字阶（固定端点）—— */
+  --scale-display: 96px;
+  --scale-title: 64px;
+  --scale-subtitle: 48px;
+  --scale-heading: 32px;
+  --scale-lead: 24px;
+  --scale-body: 17px;
+  --scale-meta: 13px;
+
+  /* —— 同一组端点的流体版本 ——
+     390px → 移动值，1440px → 桌面值；组件里的 clamp() 都换成它们，
+     层级关系就只剩一套，风格之间不再各自发明字号。 */
+  --scale-display-fluid: clamp(48px, 4.57vw + 30.2px, 96px);
+  --scale-title-fluid: clamp(32px, 3.05vw + 20.1px, 64px);
+  --scale-subtitle-fluid: clamp(28px, 1.9vw + 20.6px, 48px);
+  --scale-heading-fluid: clamp(24px, 0.76vw + 21px, 32px);
+  --scale-lead-fluid: clamp(20px, 0.38vw + 18.5px, 24px);
+
+  /* —— 8px 间距模数 —— */
+  --scale-space-1: 8px;
+  --scale-space-2: 16px;
+  --scale-space-3: 24px;
+  --scale-space-5: 40px;
+  --scale-space-8: 64px;
+  --scale-space-12: 96px;
+
+  /* —— 页面边距 / 阅读行宽 / 最小命中区 —— */
+  --scale-page-x: 96px;
+  --scale-measure: 680px;
+  --scale-hit: 44px;
+}
+
+/* 断点只换固定端点的数值，不换层级关系；流体版本本身连续，无需在此重写。
+   选择器用 [data-style] 而非 :root：与现有变量契约的挂载点保持一致，
+   确保刻度仍然只作用于风格路由，不影响画廊页。 */
+@media (max-width: 640px) {
+  [data-style] {
+    --scale-display: 48px;
+    --scale-title: 32px;
+    --scale-subtitle: 28px;
+    --scale-heading: 24px;
+    --scale-lead: 20px;
+    --scale-body: 16px;
+    --scale-meta: 13px; /* 不缩：可读性与对比度红线 */
+
+    --scale-space-1: 8px;
+    --scale-space-2: 12px;
+    --scale-space-3: 16px;
+    --scale-space-5: 24px;
+    --scale-space-8: 40px;
+    --scale-space-12: 24px;
+
+    --scale-page-x: 24px;
+    --scale-measure: 100%;
+    --scale-hit: 44px; /* 不缩：触控红线 */
+  }
+}
