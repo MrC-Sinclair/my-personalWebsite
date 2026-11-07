@@ -7,8 +7,8 @@
 # 为什么构建留在这里而不在服务器或本机：
 #   - 服务器是 2C2G，跑 `nuxt generate`（802 页预渲染）会 OOM（需临时 swap 才行）；
 #   - 本机 Windows 跑 generate 是「CPU 空转十几分钟零产物」，只有 Linux 上正常（约 48 秒）；
-#   - 所以这里产出的 artifact 是唯一可信的发布物，下载后覆盖到 Caddy 的 web 根（默认
-#     /usr/share/caddy）即可上线。
+#   - 所以这里产出的 artifact 是唯一可信的发布物；由实例执行 scripts/deploy-site.sh
+#     拉取 Release 资产并覆盖 /srv/site（/etc/caddy/Caddyfile 的 root * /srv/site）。
 # ============================================================
 
 name: Build static site
@@ -23,8 +23,8 @@ on:
   workflow_dispatch:
 
 # ==================== 权限配置 ====================
-# 只读检出 + 写 artifact：CI 只负责产出可信的静态产物，发布由人工在服务器上拉取并覆盖
-# Caddy web 根完成，不需要把任何私钥放进 CI 密钥库。
+# 只读检出 + 写 artifact：CI 只负责产出可信的静态产物，发布由实例执行
+# scripts/deploy-site.sh 完成，不需要把任何私钥放进 CI 密钥库。
 permissions:
   contents: read # 读取仓库内容的权限（用于 checkout）
 
@@ -41,7 +41,7 @@ concurrency:
 # ==================== 任务定义 ====================
 # 四个任务：quality（质量门禁）、build（生成产物 + 传 artifact）、
 # audit（对发布物跑真实浏览器审计，needs: build，中英两个 matrix）、
-# release（把产物发成免鉴权可下载的 site-latest 资产）。
+# release（把产物发成免鉴权可下载的 cvm-latest 资产）。
 # quality 与 build 并行；audit 必须等 build，因为它量的就是 build 的那份产物。
 # 发布动作在人这一侧，所以「先看这个 run 全绿，再上服务器覆盖 Caddy web 根」是必须遵守的顺序。
 jobs:
@@ -125,7 +125,7 @@ jobs:
   # 560 页，而 metro（正文被 overflow:clip 剪掉半截）与 dashboard（整篇压进 19px
   # 一格）两个缺陷正是藏在从没被量过的详情页里——列表页判据当时全绿。
   #
-  # 暂不放进 release 的 needs：release 发的是固定 tag site-latest，一旦审计被
+  # 暂不放进 release 的 needs：release 发的是固定 tag cvm-latest，一旦审计被
   # headless Chrome 的抖动带红，手动部署可能拉到上一个 commit 的产物并部署上去 ——
   # 比 CI 报红更危险。人工闸保留：发布前确认本 run 全绿。
   audit:
@@ -254,7 +254,7 @@ jobs:
 
       # 步骤 7：上传为可下载的 artifact
       # 在这个 run 的 Summary 页面底部下载 site.zip，解压后是 .output/public，
-      # 覆盖到 Caddy 的 web 根（默认 /usr/share/caddy）即可上线。
+      # 在实例上执行 scripts/deploy-site.sh，覆盖 Caddy 的 web 根 /srv/site 即可上线。
       # ⚠️ 下载前先确认本 run 的 quality 与 audit 是绿的——audit 排在 build 之后
       #（它要拿这份产物），所以「build 绿了」不等于「可以发了」。
       - name: Upload artifact
@@ -272,13 +272,13 @@ jobs:
           {
             echo "### 发布到腾讯云轻量应用服务器"
             echo ""
-            echo "产物为本 run 的 \`site\` artifact（.output/public）。"
-            echo "在实例上下载解压后，覆盖 Caddy 的 web 根即可上线："
+            echo "CI 会把产物发成免鉴权的 \`cvm-latest\` Release 资产。"
+            echo "在轻量云实例上执行一键部署脚本（拉资产 → 校验 → 备份 → 覆盖 /srv/site → 验证）："
             echo '```bash'
-            echo "cp -r .output/public/. /usr/share/caddy/"
+            echo "bash /usr/local/bin/deploy-site"
             echo '```'
             echo ""
-            echo "也可拉取下方 release job 发布的免鉴权资产 \`site-latest\`。"
+            echo "脚本源码在仓库 \`scripts/deploy-site.sh\`，首次安装命令见脚本头部注释。"
             echo ""
             echo "发布前确认 quality / audit 两个 job 为绿。"
           } >> "$GITHUB_STEP_SUMMARY"
@@ -286,7 +286,7 @@ jobs:
   # -------------------- 发布成免鉴权可下载的 Release 资产 --------------------
   # 为什么需要它：Actions 的 artifact 即使仓库是公开的，下载接口仍然要求鉴权
   # （实测匿名请求返回 401 Requires authentication），而发布机（服务器）上没有
-  # GitHub API 凭据 —— 把它固定发到 site-latest 这个 tag 上，手动部署时能匿名下载。
+  # GitHub API 凭据 —— 把它固定发到 cvm-latest 这个 tag 上，手动部署时能匿名下载。
   #
   # 需要 contents: write（建仓级 Release），所以单独一个 job，不给 build 扩权限。
   # artifact 那一份继续保留：Release 出问题时还能手工下载兜底。

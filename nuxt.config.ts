@@ -362,7 +362,7 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'theme-color', content: '#6366f1' },
       ],
-      // 图标路径必须带 baseURL：站点部署在 /my-personalWebsite/ 子路径下，
+      // 图标路径必须带 baseURL：站点可能部署在子路径下，
       // 裸 '/favicon.ico' 会解析到域名根，线上 404
       link: [
         { rel: 'icon', type: 'image/x-icon', href: `${SITE_BASE_URL}favicon.ico` },

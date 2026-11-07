@@ -56,7 +56,7 @@ styles/
                      页面键只允许 registry.ts 的 STYLE_SUB_PATHS：/about /projects /blog /contact
 tests/            → Vitest（styles-structure.test.ts 守结构契约）
 scripts/          → 仓库级脚本：
-                     构建发布 —— gen-brand-assets.mjs、gen-style-previews.mjs
+                     构建发布 —— gen-brand-assets.mjs、gen-style-previews.mjs、deploy-site.sh（实例本机一键部署）
                      验证工具 —— audit-a11y-mobile.mjs（CI 审计入口，40px 命中区）、
                                  hit-box.mjs（命中区还原模型，三个探针共用）、
                                  squeeze-check.mjs（滚动条带被挤没的判据，审计与已知答案测试共用）、
@@ -67,7 +67,7 @@ scripts/          → 仓库级脚本：
                                  audit-all-styles.mjs / contrast.mjs / eval-url.mjs /
                                  shot.mjs / dead-keys.mjs
                      教训与量具口径见 docs/architecture/verification-pitfalls.md
-deploy/           → 【已废弃】原部署配置目录（Caddyfile / docker-compose 已删除），现部署直接覆盖 Caddy 的 web 根 /usr/share/caddy
+deploy/           → 【已废弃】原部署配置目录；现由 scripts/deploy-site.sh 在实例上覆盖 Caddy 的 web 根 /srv/site（Caddyfile: root * /srv/site）
 docs/architecture/ → 架构文档（multi-style-ui.md 总纲 + style-authoring-guide.md 风格 SOP
                      + verification-pitfalls.md 验证量具与踩坑口径）
 .workbuddy/       → 本地 AI 工作区，不入库（.gitignore）：逐日记忆 + 一次性脚本。
@@ -216,13 +216,13 @@ Nuxt 3 使用 SSR，服务端和客户端必须渲染出相同的 HTML，否则�
 
 ## 关键配置
 
-- 部署子路径由构建期变量 `NUXT_APP_BASE_URL` 决定（默认 `/my-personalWebsite/`，CI 发布时传 `/`）：`app.baseURL`、PWA `start_url`、sitemap / feed / og 都从 `nuxt.config.ts` 的 `SITE_BASE_URL` 一处派生，改它必须重新 generate
+- 部署子路径由构建期变量 `NUXT_APP_BASE_URL` 决定（默认 `/` 根路径，CI 发布时显式传 `/`）：`app.baseURL`、PWA `start_url`、sitemap / feed / og 都从 `nuxt.config.ts` 的 `SITE_BASE_URL` 一处派生，改它必须重新 generate
 - @nuxt/content v3 的 `defineCollection` + Zod schema 在 `content.config.ts` 定义
 - i18n 使用 `prefix_except_default` 策略（默认中文无前缀，英文 URL 带 `/en/` 前缀）
 - 图片 `@nuxt/image` 配置 `provider: ipx`，卡片组件配置 `sizes="sm:100vw md:50vw lg:33vw"`
 - 多风格架构：风格预渲染清单**从 `styles/registry.ts` 自动派生**（`nuxt.config.ts` 的 `stylePrerenderRoutes()`，不再手工维护数组）；路由壳 `pages/style/[style]/[...slug].vue`（未知风格/缺失页面抛 404）+ 裸布局 `layouts/style.vue`
 - 画廊页 `pages/index.vue`（`/`）列出注册表条目；旧入口 `/styles` 与 `/en/styles` 的 301 **由服务器（Caddy）配置补**，不要指望 `nuxt.config.ts` 的 `routeRules`——SSG 产物里没有服务端，实测它在 Pages 上直接 404
-- **部署**：`.github/workflows/deploy.yml` 跑 `pnpm generate` 产出 `.output/public` 静态产物，由 Caddy 静态托管（腾讯云轻量应用服务器）。**Node 必须 ≥ 22.13**（`packageManager: pnpm@11.25.0` 的 engines 要求），且 **Setup Node 必须排在 Setup pnpm 之前**——顺序反了会让 Setup pnpm 直接失败（2026-09-18 起 CI 因此全红）。构建只能在这条链上跑：服务器内存不足会 OOM，本机 Windows 跑 generate 零产物
+- **部署**：`.github/workflows/deploy.yml` 跑 `pnpm generate` 产出 `.output/public` 静态产物，由 Caddy 静态托管（腾讯云轻量应用服务器）。**Node 必须 ≥ 22.13**（`packageManager: pnpm@11.25.0` 的 engines 要求），且 **Setup Node 必须排在 Setup pnpm 之前**——顺序反了会让 Setup pnpm 直接失败（2026-09-18 起 CI 因此全红）。构建只能在这条链上跑：服务器内存不足会 OOM，本机 Windows 跑 generate 零产物。发布由实例执行 `scripts/deploy-site.sh`，覆盖真实 web 根 `/srv/site`（不是 /usr/share/caddy）
 - 网络受限环境下，Google Fonts 和 Google Icons 已在 `nuxt.config.ts` 中禁用（`fonts.providers.google: false, fonts.providers.googleicons: false`）
 - 依赖客户端状态的组件（各风格的滚动进度、canvas 装饰等）使用 `<ClientOnly>` 包裹，避免 hydration mismatch
 - PWA 配置在 `nuxt.config.ts` 的 `pwa` 字段，manifest 含 name/short_name/theme_color/icons

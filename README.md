@@ -134,21 +134,26 @@ pnpm test:watch    # 运行测试（监听模式）
 站点部署在**腾讯云轻量应用服务器（Lighthouse）**，公网 IP `43.139.238.226`（实例 `lhins-1o4ky9pr`，广州七区，2 核 2G / 50G SSD / 4Mbps）。
 线上地址 <http://43.139.238.226/>（纯 IP 访问，未绑域名、未配 HTTPS）。
 
-静态产物由 **Caddy 在 :80 直接托管**，web 根 `/usr/share/caddy`；发布就是把 `nuxt generate` 产出的 `.output/public` 覆盖到该目录（无需改 Caddyfile、无需重启服务，防火墙已放开 HTTP 80）。
+静态产物由 **Caddy 在 :80 直接托管**，真实 web 根是 `/srv/site`（`/etc/caddy/Caddyfile` 里的 `root * /srv/site`；`/usr/share/caddy` 只是另一份残留产物，覆盖它不会上线）。Caddy 是静态 file_server，覆盖即生效，无需改配置、无需重启，防火墙已放开 HTTP 80。
 
-两种构建方式都可行：
+**构建与发布是分开的两段**：
 
-1. **CI 构建（推荐）**：推到 `main`，GitHub Actions 并行跑质量门禁（`pnpm lint` / `pnpm test` / `pnpm spellcheck`）、移动端 + 无障碍审计、`pnpm generate`，产物为 `.output/public`。
-2. **实例上直接构建**：实例内存仅 2G，`nuxt generate` 预渲染 802 路由会 OOM，需先建 2G swap（`dd if=/dev/zero of=/swapfile bs=1M count=2048 && mkswap /swapfile && swapon /swapfile`）并以 `NODE_OPTIONS=--max-old-space-size=2560 pnpm generate` 跑；依赖安装走国内 npmmirror 镜像加速。
-
-实例上构建并发布的示例：
+1. **构建只能在 CI**：推到 `main`，GitHub Actions 跑质量门禁（`pnpm lint` / `pnpm test` / `pnpm spellcheck`）、移动端 + 无障碍审计、`pnpm generate`，并把产物发成免鉴权的 `cvm-latest` Release 资产（`site-cvm.tar.gz`）。实例只有 2G 内存，预渲染 1048 路由要 30+ 分钟且会 OOM；本机 Windows 跑 generate 是 CPU 空转零产物。
+2. **发布在实例上执行一键脚本**：实例 `github.com:443` 不通（`git pull` 必失败），但 `api.github.com` / `codeload.github.com` 可达；实例也没有部署用 SSH 私钥，所以由实例自己拉产物。
 
 ```bash
-git clone --depth 1 <仓库地址> /root/site_gh
-cd /root/site_gh && pnpm install && NODE_OPTIONS=--max-old-space-size=2560 pnpm generate
-# 把产物覆盖到 Caddy web 根
-cp -r .output/public/. /usr/share/caddy/
+# 首次安装（实例上执行）
+curl -sSL -o /tmp/repo.tgz \
+  https://codeload.github.com/MrC-Sinclair/my-personalWebsite/tar.gz/refs/heads/main \
+&& tar -xzf /tmp/repo.tgz -C /tmp \
+&& install -m 755 /tmp/my-personalWebsite-main/scripts/deploy-site.sh /usr/local/bin/deploy-site
+
+# 之后每次发布（确认对应 CI run 的 quality / audit 全绿后）
+bash /usr/local/bin/deploy-site --dry-run   # 预检
+bash /usr/local/bin/deploy-site            # 拉资产 → 校验 → 备份 → 覆盖 /srv/site → 验证
 ```
+
+脚本会校验资产字节数与压缩包完整性、覆盖前自动备份 `/srv/site`、并探测首页、博客列表、sitemap、feed 以及**新构建的 `_nuxt` 资源**（只测 HTML 会漏检静态资源 404）。源码见 `scripts/deploy-site.sh`，契约测试见 `tests/deploy-site.test.ts`。
 
 > **没有域名的代价**：站点只有公网 IP、没有 HTTPS。Service Worker 要求安全上下文，
 > 所以 `http://IP` 下 PWA 离线访问与 `navigator.clipboard` 一类 API 不会生效；
