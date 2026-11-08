@@ -22,11 +22,11 @@ draft: false
 
 更麻烦的是，升级不是“把文件推过去”这么简单：
 
-- 设备要先在正常固件里收到 `ota_start`，处理完保存、静音、TWS 复查等前置动作，才回 `ota_start_ack`；
+- 设备要先在正常固件里收到 `<start_cmd>`，处理完保存、静音、TWS 复查等前置动作，才回 `<start_ack>`；
 - 收到 `ok` 后设备会主动断开，再以 FlashBoot 的身份重新上线；
 - FlashBoot 不保证携带正常模式的广播标识，重连只能靠升级前保存的 `deviceId`；
 - 连上之后还不能马上发数据，要等通知订阅真正就绪，等 boot 的 `0x10` 广播，再按它发起的 `0x50` 数据请求一段一段回填；
-- 传完之后还要重连回正常固件，读 `firmwareVer` 核对版本，才算真的成功。
+- 传完之后还要重连回正常固件，读 `<firmware_version>` 核对版本，才算真的成功。
 
 而 iOS、鸿蒙、Android 对 BLE 的缓存策略、GATT 句柄、写模式又各有一套脾气。同样是“连接成功”，在 iOS 上可能只是拿到了连接句柄，通知通道根本没通；同样是“写入成功”，在无响应写模式下也只代表数据交给了协议栈，不代表设备收到了。
 
@@ -39,9 +39,9 @@ draft: false
 ```text
 正常固件（JSON + AES）
   │
-  ├─ ota_start(moduleId)
-  │    ├─ ota_start_ack: fail → 展示 error_code / msg，结束
-  │    ├─ ota_start_ack: ok   → 等设备主动断开
+  ├─ <start_cmd>(<module_id>)
+  │    ├─ <start_ack>: fail → 展示 error_code / msg，结束
+  │    ├─ <start_ack>: ok   → 等设备主动断开
   │    └─ 没回 ACK 就先断开   → 按已进入 FlashBoot 处理
   │
   ▼
@@ -54,7 +54,7 @@ FlashBoot（A5 5A 明文二进制）
   └─ 设备 0x20 报状态 → APP 0x21 确认
   │
   ▼
-重连正常固件 → 重新 hi → 读目标模块 firmwareVer → 与目标版本一致才算成功
+重连正常固件 → 重新 <hello_cmd> → 读目标模块 <firmware_version> → 与目标版本一致才算成功
 ```
 
 这里有一个关键认知：**OTA 是设备拉取模式，不是 APP 推送模式**。
@@ -66,7 +66,7 @@ APP 不能自己决定先发哪一段、发多长。设备通过 `0x50` 告诉 A
 - “写回调成功”不等于“设备收到”，真正的回执是设备的下一个 `0x50` 请求；
 - 传输速度的瓶颈通常在设备写 flash，而不是手机侧。
 
-另外，OTA 的 `moduleId` 来自设备 `device_config` 上报的 `modules` 清单。设备没上报模块，或者模块号取错，后面的流程根本发不起来。这一步看起来不起眼，但联调时经常是“按钮点了没反应”的第一现场。
+另外，OTA 的 `<module_id>` 来自设备 `<device_info>` 上报的 `<module_list>` 清单。设备没上报模块，或者模块号取错，后面的流程根本发不起来。这一步看起来不起眼，但联调时经常是“按钮点了没反应”的第一现场。
 
 ## 二、坑 1：同一根特征，两套协议
 
@@ -87,13 +87,13 @@ A5 5A 12 <cmd> <帧长 LE 2B> <data> <checksum>
 
 两者共用同一个 GATT 特征，设备不会主动告诉你“现在切换到 OTA 协议了”。APP 只能靠帧头判断：第一个字节是 `0xA5`、第二个是 `0x5A`，就按 OTA 原始帧处理；否则继续走 AES 解密和 JSON 拼包。
 
-我们在 `ble_manager` 里加了一个 `_otaRawSink` 旁路：
+我们在 `bleManager` 里加了一个 `rawFrameSink` 旁路：
 
 ```ts
 // OTA 会话期间，notify 原始字节直接交给 OTA 模块，
 // 跳过 AES 解密和 JSON 拼包；OTA 帧是明文，走解密必然失败。
-if (_otaRawSink) {
-  _otaRawSink(chunk)
+if (rawFrameSink) {
+  rawFrameSink(chunk)
   return
 }
 ```
@@ -114,14 +114,14 @@ checksum = (0x100 - sum(除校验位外的所有字节)) & 0xFF
 
 “帧长”不是 data 的长度，而是整帧长度。第一次实现时如果按 data 长度填，设备会直接判帧非法。
 
-联调时最好拿 demo 常量做锚点，逐字节对：
+联调时最好拿一组已知可用的帧做锚点，逐字节核对：
 
 ```text
-查询  A5 5A 12 11 10 00 01 00 00 00 00 00 00 00 00 CD
-确认  A5 5A 12 21 10 00 00 00 00 00 00 00 00 00 00 BE
+查询  <magic> <cmd_query> <len_low> <len_high> <payload...> <checksum>
+确认  <magic> <cmd_ack>   <len_low> <len_high> <payload...> <checksum>
 ```
 
-只要这两帧和 demo 对不上，先别怀疑设备，先查帧长和 checksum。
+只要组出来的帧和设备对不上，先别怀疑设备，先查帧长和 checksum。
 
 ### 2.3 字节不是字符串：AES 的 UTF-8 陷阱
 
@@ -161,20 +161,20 @@ const encrypted = AES.encrypt(encHex.parse(plainHex), encUtf8.parse(KEY), {
 真正可持久化的身份是广播数据里的 SN。设备的广播格式是：
 
 ```text
-字节 0~1：公司标识 'FC'
-字节 2~3：通道码 '10' / '20'
-字节 4~N：SN 的 ASCII
+字节 0~1：<company_tag>
+字节 2~3：<channel_code>
+字节 4~N：<serial_no>（ASCII）
 ```
 
 扫描时解析出 SN，写入业务字段 `device_id`，列表匹配、自动重连、云端绑定都用它。`deviceId` 只用于“这一次连接”，不进入任何持久化存储。
 
 ### 3.2 FlashBoot 不广播身份，重连只能靠保存的 deviceId
 
-正常固件会带 `FC` 广播，FlashBoot 不保证带。协议里写得很清楚：FlashBoot 可能没有正常模式的 `FC20` / SN 广播，名称也可能变。
+正常固件会带约定的公司标识广播，FlashBoot 不保证带。协议里写得很清楚：FlashBoot 可能没有正常模式的公司标识 / SN 广播，名称也可能变。
 
 所以升级途中设备断开后，**不能重新扫描等广播**，只能用断开前保存的 `deviceId` 直接重连。这也是为什么 `deviceId` 虽然不能持久化，但在一次 OTA 会话里必须被可靠保存。
 
-同理，`ota_start_ack` 返回的 `bootName` 只能用于日志核对，不能拿来当连接条件。同名设备可能有好几台，名称也可以被改。
+同理，`<start_ack>` 返回的 `<boot_name>` 只能用于日志核对，不能拿来当连接条件。同名设备可能有好几台，名称也可以被改。
 
 ### 3.3 蓝牙名不是身份，UUID 也不是身份
 
@@ -186,10 +186,10 @@ const encrypted = AES.encrypt(encHex.parse(plainHex), encUtf8.parse(KEY), {
 
 最终改成按广播里的通道码选 GATT 表：
 
-| 通道码 | 服务 UUID      | 写特征         | 通知特征       | 形态       |
-| ------ | -------------- | -------------- | -------------- | ---------- |
-| `10`   | `0000ffe0-...` | `0000ffe1-...` | `0000ffe1-...` | 单特征双向 |
-| `20`   | `0000ab00-...` | `0000ab01-...` | `0000ab03-...` | 写读分离   |
+| 通道码        | 服务 UUID     | 写特征      | 通知特征     | 形态       |
+| ------------- | ------------- | ----------- | ------------ | ---------- |
+| `<channel_a>` | `<service_a>` | `<char_a>`  | `<char_a>`   | 单特征双向 |
+| `<channel_b>` | `<service_b>` | `<write_b>` | `<notify_b>` | 写读分离   |
 
 还要区分三个概念：
 
@@ -215,7 +215,7 @@ The handle is invalid（errCode 10008 / system error）
 
 我们最初就是看到 `connected` 为 true 就开始发查询帧。结果写回调成功了，设备却没有任何回包，最后 30 秒判死。看起来像“设备无响应”，实际上是**手机根本没订阅上通知，设备的应答全落在听不见的窗口里**。
 
-后来加了一个明确的就绪信号 `_notifyReady`：只有 `notifyBLECharacteristicValueChange` 成功，才认为通道可用。OTA 流程不等待 `connected`，而是等待 `waitNotifyReady()`。
+后来加了一个明确的就绪信号 `notifyReady`：只有 `notifyBLECharacteristicValueChange` 成功，才认为通道可用。OTA 流程不等待 `connected`，而是等待 `waitNotifyReady()`。
 
 ### 4.2 句柄失效不会自愈，连接级重连也没用
 
@@ -267,7 +267,7 @@ const notifyChar =
 如果日志里只有“连接成功”，根本无法区分是设备没发、还是手机没听见。所以订阅成功时必须留一行：
 
 ```text
-[BleManager] 通知订阅成功（第 1 次） service=... char=...
+[BleClient] 通知订阅成功（第 1 次） service=... char=...
 ```
 
 这一行在后面的排障里救了很多次。
@@ -401,37 +401,37 @@ if (platform === 'ohos') {
 2026 年 10 月 17 日实测，同一份包：
 
 - 「预览」二维码在 Android / 鸿蒙 / iOS 全部正常；
-- 「真机调试」下，鸿蒙所有 `/app-api` 请求 pending 到超时（后端其实已经处理了）；
+- 「真机调试」下，鸿蒙所有后端业务接口请求 pending 到超时（后端其实已经处理了）；
 - iOS 在「真机调试」下启动即 `Maximum call stack size exceeded`。
 
 所以蓝牙联调一律用「预览」，别用「真机调试」。定位口诀也很简单：
 
 ```text
-[静默登录] 开始 有、请求返回 无
+[登录流程] 开始 有、请求返回 无
 → 登录响应没回来
 → 后续绑定全部卡住
-→ 表现为一直游客模式且没有 /device/bind 请求
+→ 表现为一直未登录，且没有发出设备绑定请求
 ```
 
 这是调试通道的问题，不是业务代码的问题。联调时如果一开始就撞上，会白白浪费半天。
 
 ## 七、坑 6：时序，早一步晚一步都错
 
-### 7.1 过早接管原始通道，会丢 ota_start_ack
+### 7.1 过早接管原始通道，会丢启动应答
 
-第一版实现里，我们在发 `ota_start` 之前就把 notify 原始通道接管了。当时的想法是：“boot 一上线就会推 `0x10`，必须提前接住。”
+第一版实现里，我们在发 `<start_cmd>` 之前就把 notify 原始通道接管了。当时的想法是：“boot 一上线就会推 `0x10`，必须提前接住。”
 
-这个想法只对了一半。`ota_start` 的应答 `ota_start_ack` 是**正常固件的 JSON 回包**，不是 `A5 5A` 帧。原始通道一接管，JSON 就被跳过了解密和分发，ACK 永远收不到。更糟的是，设备返回 `fail`（比如 TWS 还连着）时，我们也看不到错误，只能按“设备断开了”继续往下走。
+这个想法只对了一半。`<start_cmd>` 的应答 `<start_ack>` 是**正常固件的 JSON 回包**，不是 `A5 5A` 帧。原始通道一接管，JSON 就被跳过了解密和分发，ACK 永远收不到。更糟的是，设备返回 `fail`（比如 TWS 还连着）时，我们也看不到错误，只能按“设备断开了”继续往下走。
 
 协议里写得很清楚：**收到 ACK 之前，APP 保持正常 AES/JSON 解析；收到 `ok` 后再等设备断开；重连 FlashBoot 时才启用原始二进制解析。**
 
 最终时序改成：
 
 ```text
-ota_start（正常通道，AES/JSON）
-  → 等 ota_start_ack
+<start_cmd>（正常通道，AES/JSON）
+  → 等 <start_ack>
   → 收到 ok，继续用正常解析等断开
-  → 在 ble_disconnected 事件里立刻挂上原始通道
+  → 在 disconnected 事件里立刻挂上原始通道
   → 自动重连到 FlashBoot
 ```
 
@@ -439,22 +439,22 @@ ota_start（正常通道，AES/JSON）
 
 反过来也不行。如果等“重连成功”之后再挂原始通道，boot 的第一帧 `0x10` 可能已经到了。boot 等不到应答，会自己断开。
 
-这里还有一个事件顺序的细节：`BleManager` 在收到断开事件时，是**先通知监听器，再启动 2 秒自动重连**。所以原始通道必须在 `ble_disconnected` 的监听器里挂上，不能等重连成功后再挂。
+这里还有一个事件顺序的细节：`BleClient` 在收到断开事件时，是**先通知监听器，再启动 2 秒自动重连**。所以原始通道必须在 `disconnected` 的监听器里挂上，不能等重连成功后再挂。
 
 ```ts
-if (msg.cmd === 'ble_disconnected') {
+if (msg.cmd === 'disconnected') {
   disconnected = true
   installRawSink() // 先挂通道，再唤醒等待方
   settleGate({ type: 'disconnected' })
 }
 ```
 
-### 7.3 ota_start 要三路等待，不能只等 ACK
+### 7.3 启动命令要三路等待，不能只等 ACK
 
 设备的行为有三种可能：
 
-1. 回 `ota_start_ack`，`status=ok`；
-2. 回 `ota_start_ack`，`status=fail`，带 `error_code` 和 `msg`；
+1. 回 `<start_ack>`，`status=ok`；
+2. 回 `<start_ack>`，`status=fail`，带 `error_code` 和 `msg`；
 3. 不回 ACK，直接断开。
 
 所以等待逻辑要同时处理 ACK、断开、超时三路：
@@ -470,9 +470,9 @@ type OtaStartGate =
 - `fail`：立即结束，展示设备给的原因，不要继续重试；
 - `ok`：等设备断开，15 秒内没断开就报错；
 - 先断开：按已进入 boot 处理；
-- 超时：结束，并明确提示“不要连续重发 ota_start”。
+- 超时：结束，并明确提示“不要连续重发 `<start_cmd>`”。
 
-连续重发 `ota_start` 是一件很危险的事。设备可能已经在切换过程中，第二条请求会把它推进到未知状态。
+连续重发 `<start_cmd>` 是一件很危险的事。设备可能已经在切换过程中，第二条请求会把它推进到未知状态。
 
 ### 7.4 boot 的 0x10 广播：不能不等，也不能乱答
 
@@ -568,7 +568,7 @@ OTA 流程里有一个 30 秒的最终判死：只要 30 秒内没有收到任�
 | 设备反复推 0x10        | 查询帧发得太早，boot 丢了；或去重挡住了后续应答 | 看 raw 日志里 0x10 的重复次数          |
 | 设备请求 offset 0 反复 | 重复查询帧导致 boot 重启读取序列                | 看 0x50 的 offset 序列                 |
 | 设备报 0x0303 读取超时 | 前面已经解析错位，APP 还回了空帧                | 看越界 offset 和错误码                 |
-| 完全没有任何帧         | 还停留在正常固件；ota_start 失败或超时          | 看 ota_start_ack / 断开事件            |
+| 完全没有任何帧         | 还停留在正常固件；`<start_cmd>` 失败或超时      | 看 `<start_ack>` / 断开事件            |
 
 这张表是这次调试最有用的产出之一。没有 raw 日志，所有问题看起来都像“设备无响应”；有了双向十六进制日志，才能把问题定位到具体一层。
 
@@ -579,7 +579,7 @@ OTA 流程里有一个 30 秒的最终判死：只要 30 秒内没有收到任�
 后来在 OTA 会话开始的第一行就打印：
 
 ```text
-OTA 会话开始（build 20261106-1615，notify等待20s/适配器重建）
+OTA 会话开始（build <build_tag>，notify 等待 <timeout> / 适配器重建）
 ```
 
 调试面板上也直接显示 build 号，不用开 console 就能确认跑的是不是最新包。这个习惯在真机联调里非常值钱，尤其是多台手机、多个体验版并存的时候。
@@ -657,7 +657,7 @@ FlashBoot 用 `0x20` 报状态，APP 每次都要回 `0x21` 确认：
 | `0x06` | boot 报告成功 | 回确认，等待重启，重连核对版本 |
 | `0x07` | 升级失败      | 回确认，读错误码并提示         |
 
-注意：`0x06` 只是 boot 说“我写完了”，不是最终成功。必须重连回正常固件，重新 `hi`，读目标模块的 `firmwareVer`，和目标版本一致后才显示“升级成功”。
+注意：`0x06` 只是 boot 说“我写完了”，不是最终成功。必须重连回正常固件，重新 `<hello_cmd>`，读目标模块的 `<firmware_version>`，和目标版本一致后才显示“升级成功”。
 
 启动 ACK、发完文件、BLE 断开，都不能作为成功依据。
 
@@ -676,7 +676,7 @@ FlashBoot 用 `0x20` 报状态，APP 每次都要回 `0x21` 确认：
 | 鸿蒙     | platform 字段不可信，用 GATT 能力和 API 结果判断；联调用「预览」，别用「真机调试」                                                                                    |
 | 无响应   | 30 秒判死只是最后一层；先看订阅日志、raw 日志、offset 序列、build 号                                                                                                  |
 | 性能     | 过程日志只进 console；进度最多 6 次 setState；用 A/B/C 三段耗时定位瓶颈                                                                                               |
-| 成功判定 | 重连正常固件读 `firmwareVer`，一致才算成功                                                                                                                            |
+| 成功判定 | 重连正常固件读 `<firmware_version>`，一致才算成功                                                                                                                     |
 
 还有几个没有完全解决的问题，也一并记下来：
 

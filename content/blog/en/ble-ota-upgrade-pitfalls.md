@@ -22,11 +22,11 @@ Up to that point the device's business channel had been completely stable: the M
 
 And the upgrade is not as simple as "push the file over":
 
-- The device must first receive `ota_start` while still running the normal firmware, finish its pre-work (persisting state, muting audio, the TWS re-check), and only then reply `ota_start_ack`.
+- The device must first receive `<start_cmd>` while still running the normal firmware, finish its pre-work (persisting state, muting audio, the TWS re-check), and only then reply `<start_ack>`.
 - After replying `ok` the device disconnects on purpose, then comes back online as FlashBoot.
 - FlashBoot does not guarantee the advertising identifiers of normal mode, so the reconnect can only rely on the `deviceId` saved before the upgrade started.
 - Even after connecting you cannot send data immediately: the notification subscription has to be genuinely ready, then you wait for the boot's `0x10` advertisement, then you fill in the data segment by segment as its `0x50` requests ask for it.
-- After the transfer you must reconnect to the normal firmware, read `firmwareVer` and compare the version — only then has the upgrade really succeeded.
+- After the transfer you must reconnect to the normal firmware, read `<firmware_version>` and compare the version — only then has the upgrade really succeeded.
 
 On top of that, iOS, HarmonyOS and Android each have their own temperament about BLE caching, GATT handles and write modes. The same "connection succeeded" on iOS may only mean a connection handle was obtained while the notification path was never established. The same "write succeeded" under write-without-response only means the data was handed to the protocol stack, not that the device received it.
 
@@ -39,9 +39,9 @@ The whole flow compresses into this chain:
 ```text
 Normal firmware (JSON + AES)
   │
-  ├─ ota_start(moduleId)
-  │    ├─ ota_start_ack: fail → show error_code / msg, stop
-  │    ├─ ota_start_ack: ok   → wait for the device to disconnect
+  ├─ <start_cmd>(<module_id>)
+  │    ├─ <start_ack>: fail → show error_code / msg, stop
+  │    ├─ <start_ack>: ok   → wait for the device to disconnect
   │    └─ disconnected before any ACK → treat as already in FlashBoot
   │
   ▼
@@ -54,7 +54,7 @@ FlashBoot (A5 5A plaintext binary)
   └─ device reports status 0x20 → APP acknowledges with 0x21
   │
   ▼
-Reconnect normal firmware → say hi again → read the target module's firmwareVer → only a match counts as success
+Reconnect normal firmware → re-send <hello_cmd> → read the target module's <firmware_version> → only a match counts as success
 ```
 
 There is one key mental model here: **OTA is a device-pull model, not an APP-push model**.
@@ -66,7 +66,7 @@ The APP does not decide which segment goes first or how long it is. The device t
 - "Write callback succeeded" is not "the device received it". The real acknowledgement is the device's next `0x50` request.
 - The throughput bottleneck is usually the device writing to flash, not the phone.
 
-Also, the OTA `moduleId` comes from the `modules` list the device reports in `device_config`. If the device reports no modules, or the module number is taken wrongly, the flow cannot even start. This step looks trivial, but during integration testing it is very often the first scene of the crime behind "I pressed the button and nothing happened".
+Also, the OTA `<module_id>` comes from the `<module_list>` field the device reports in `<device_info>`. If the device reports no modules, or the module number is taken wrongly, the flow cannot even start. This step looks trivial, but during integration testing it is very often the first scene of the crime behind "I pressed the button and nothing happened".
 
 ## 2. Pitfall 1: one characteristic, two protocols
 
@@ -87,14 +87,14 @@ A5 5A 12 <cmd> <frame length, LE 2 bytes> <data> <checksum>
 
 Both share the same GATT characteristic and the device will never tell you "the OTA protocol is active now". The APP has to infer it from the frame header: first byte `0xA5`, second byte `0x5A` means handle it as a raw OTA frame, otherwise keep doing AES decryption and JSON reassembly.
 
-We added a `_otaRawSink` bypass inside `ble_manager`:
+We added a `rawFrameSink` bypass inside `bleManager`:
 
 ```ts
 // During an OTA session, hand the raw notify bytes straight to the OTA
 // module and skip AES decryption and JSON reassembly; OTA frames are
 // plaintext and going through decryption is guaranteed to fail.
-if (_otaRawSink) {
-  _otaRawSink(chunk)
+if (rawFrameSink) {
+  rawFrameSink(chunk)
   return
 }
 ```
@@ -115,14 +115,14 @@ checksum     = (0x100 - sum of every byte except the checksum itself) & 0xFF
 
 "Frame length" is not the length of `data`, it is the length of the whole frame. In a first implementation, filling it with the data length makes the device reject the frame outright.
 
-During integration, anchor on the demo constants and compare byte by byte:
+During integration, anchor on a frame known to work and compare byte by byte:
 
 ```text
-query  A5 5A 12 11 10 00 01 00 00 00 00 00 00 00 00 CD
-ack    A5 5A 12 21 10 00 00 00 00 00 00 00 00 00 00 BE
+query  <magic> <cmd_query> <len_low> <len_high> <payload...> <checksum>
+ack    <magic> <cmd_ack>   <len_low> <len_high> <payload...> <checksum>
 ```
 
-If those two frames do not match the demo, do not suspect the device first — check the frame length and the checksum.
+If the frame you build does not match what the device expects, do not suspect the device first — check the frame length and the checksum.
 
 ### 2.3 Bytes are not strings: the AES UTF-8 trap
 
@@ -162,20 +162,20 @@ We too started out thinking "save the `deviceId` and connect straight to it next
 The identity that can genuinely be persisted is the SN inside the advertising data. The device advertises as:
 
 ```text
-bytes 0-1: company identifier 'FC'
-bytes 2-3: channel code '10' / '20'
-bytes 4-N: the SN in ASCII
+bytes 0-1: <company_tag>
+bytes 2-3: <channel_code>
+bytes 4-N: <serial_no> in ASCII
 ```
 
 Parse the SN while scanning, write it into the business field `device_id`, and use it for list matching, auto-reconnect and cloud binding. `deviceId` is only good for "this particular connection" and never enters any persistent storage.
 
 ### 3.2 FlashBoot does not advertise an identity, so reconnection depends on the saved deviceId
 
-Normal firmware carries the `FC` advertisement; FlashBoot does not guarantee it. The protocol says it plainly: FlashBoot may lack the normal-mode `FC20` / SN advertisement, and its name may change too.
+Normal firmware carries the agreed company tag; FlashBoot does not guarantee it. The protocol says it plainly: FlashBoot may lack the normal-mode company-tag / SN advertisement, and its name may change too.
 
 So when the device disconnects mid-upgrade, **you must not re-scan and wait for an advertisement** — you can only reconnect directly with the `deviceId` saved before the disconnect. That is exactly why `deviceId`, while unfit for persistence, has to be reliably held for the duration of one OTA session.
 
-For the same reason, the `bootName` returned in `ota_start_ack` is for log cross-checking only, never a connection condition. Several devices may share a name, and names can be changed.
+For the same reason, the `<boot_name>` returned in `<start_ack>` is for log cross-checking only, never a connection condition. Several devices may share a name, and names can be changed.
 
 ### 3.3 The Bluetooth name is not an identity, and neither is a UUID
 
@@ -187,10 +187,10 @@ Early on we also routed GATT channels by Bluetooth name. We threw all of it away
 
 We ended up selecting the GATT table by the channel code in the advertisement:
 
-| Channel | Service UUID   | Write characteristic | Notify characteristic | Shape               |
-| ------- | -------------- | -------------------- | --------------------- | ------------------- |
-| `10`    | `0000ffe0-...` | `0000ffe1-...`       | `0000ffe1-...`        | one char, both ways |
-| `20`    | `0000ab00-...` | `0000ab01-...`       | `0000ab03-...`        | write/read split    |
+| Channel       | Service UUID  | Write characteristic | Notify characteristic | Shape               |
+| ------------- | ------------- | -------------------- | --------------------- | ------------------- |
+| `<channel_a>` | `<service_a>` | `<char_a>`           | `<char_a>`            | one char, both ways |
+| `<channel_b>` | `<service_b>` | `<write_b>`          | `<notify_b>`          | write/read split    |
 
 Three concepts also need to stay separate:
 
@@ -216,7 +216,7 @@ Note that 10008 is WeChat's catch-all code for "all other exceptions reported by
 
 Our first version started sending query frames as soon as it saw `connected` === true. The write callback succeeded, yet the device never replied, and after 30 seconds the session was declared dead. It looked like "the device is not responding", but in reality **the phone had never subscribed to notifications, so every answer from the device landed in a window nobody was listening to**.
 
-We later added an explicit readiness signal, `_notifyReady`: the channel counts as usable only once `notifyBLECharacteristicValueChange` succeeds. The OTA flow no longer waits for `connected`, it waits for `waitNotifyReady()`.
+We later added an explicit readiness signal, `notifyReady`: the channel counts as usable only once `notifyBLECharacteristicValueChange` succeeds. The OTA flow no longer waits for `connected`, it waits for `waitNotifyReady()`.
 
 ### 4.2 Handle invalidation does not heal itself, and a connection-level reconnect does not help either
 
@@ -268,7 +268,7 @@ On Android and HarmonyOS, "subscribed but no data arrives" and "subscription fai
 If the log only says "connected", there is no way to tell whether the device never sent or the phone never listened. So a successful subscription must leave one line behind:
 
 ```text
-[BleManager] notification subscription succeeded (attempt 1) service=... char=...
+[BleClient] notification subscription succeeded (attempt 1) service=... char=...
 ```
 
 That single line saved us many times later on.
@@ -402,37 +402,37 @@ HarmonyOS also has a trap in the integration channel itself, unrelated to the OT
 Measured on October 17, 2026, with one and the same build:
 
 - The "Preview" QR code works on Android, HarmonyOS and iOS alike.
-- Under "Real Device Debugging", every HarmonyOS `/app-api` request hangs pending until timeout (the backend had in fact already handled it).
+- Under "Real Device Debugging", every HarmonyOS backend API request hangs pending until timeout (the backend had in fact already handled it).
 - iOS under "Real Device Debugging" dies at startup with `Maximum call stack size exceeded`.
 
 So do BLE integration with "Preview", never "Real Device Debugging". The diagnostic rule of thumb is simple too:
 
 ```text
-"[silent login] start" logged but no "request returned"
+"[login flow] start" logged but no "request returned"
 → the login response never came back
 → every later step stays blocked
-→ symptom: stuck in guest mode, with no /device/bind request at all
+→ symptom: still logged out, with no device-binding request at all
 ```
 
 That is a defect of the debugging channel, not of the business code. If you hit it blind at the start of an integration session, you lose half a day for nothing.
 
 ## 7. Pitfall 6: timing — one step early or late is wrong
 
-### 7.1 Taking over the raw channel too early loses ota_start_ack
+### 7.1 Taking over the raw channel too early loses the start acknowledgement
 
-In the first implementation we took over the raw notify channel before sending `ota_start`. The reasoning was: "the boot pushes `0x10` the moment it comes online, so I must already be listening."
+In the first implementation we took over the raw notify channel before sending `<start_cmd>`. The reasoning was: "the boot pushes `0x10` the moment it comes online, so I must already be listening."
 
-Half right. `ota_start`'s answer, `ota_start_ack`, is a **normal-firmware JSON reply**, not an `A5 5A` frame. Once the raw channel is taken over, JSON bypasses decryption and dispatch and the ACK never arrives. Worse, when the device replies `fail` (say TWS is still connected), we cannot see the error either and just carry on as if "the device disconnected".
+Half right. `<start_cmd>`'s answer, `<start_ack>`, is a **normal-firmware JSON reply**, not an `A5 5A` frame. Once the raw channel is taken over, JSON bypasses decryption and dispatch and the ACK never arrives. Worse, when the device replies `fail` (say TWS is still connected), we cannot see the error either and just carry on as if "the device disconnected".
 
 The protocol states it plainly: **before the ACK arrives, the APP keeps normal AES/JSON parsing; after `ok`, it waits for the device to disconnect; raw binary parsing is enabled only when reconnecting to FlashBoot.**
 
 The final sequence became:
 
 ```text
-ota_start (normal channel, AES/JSON)
-  → wait for ota_start_ack
+<start_cmd> (normal channel, AES/JSON)
+  → wait for <start_ack>
   → on ok, keep normal parsing and wait for the disconnect
-  → install the raw channel immediately inside the ble_disconnected event
+  → install the raw channel immediately inside the disconnected event
   → auto-reconnect to FlashBoot
 ```
 
@@ -440,22 +440,22 @@ ota_start (normal channel, AES/JSON)
 
 The opposite fails as well. If you install the raw channel only after "reconnect succeeded", the boot's first `0x10` frame may already have arrived. Getting no answer, the boot disconnects by itself.
 
-There is an event-ordering detail here too: when `BleManager` receives the disconnect event, it **notifies its listeners first and only then starts the 2-second auto-reconnect**. So the raw channel has to be installed inside the `ble_disconnected` listener, not after a successful reconnect.
+There is an event-ordering detail here too: when `BleClient` receives the disconnect event, it **notifies its listeners first and only then starts the 2-second auto-reconnect**. So the raw channel has to be installed inside the `disconnected` listener, not after a successful reconnect.
 
 ```ts
-if (msg.cmd === 'ble_disconnected') {
+if (msg.cmd === 'disconnected') {
   disconnected = true
   installRawSink() // install the channel first, then wake whoever is waiting
   settleGate({ type: 'disconnected' })
 }
 ```
 
-### 7.3 ota_start needs three-way waiting, not ACK-only
+### 7.3 The start command needs three-way waiting, not ACK-only
 
 The device can behave in three ways:
 
-1. reply `ota_start_ack` with `status=ok`;
-2. reply `ota_start_ack` with `status=fail`, carrying `error_code` and `msg`;
+1. reply `<start_ack>` with `status=ok`;
+2. reply `<start_ack>` with `status=fail`, carrying `error_code` and `msg`;
 3. send no ACK and disconnect immediately.
 
 So the wait has to handle ACK, disconnect and timeout all at once:
@@ -471,9 +471,9 @@ type OtaStartGate =
 - `fail`: end immediately, show the reason the device gave, do not keep retrying.
 - `ok`: wait for the disconnect; if nothing disconnects within 15 seconds, error out.
 - Disconnect first: treat as already in boot.
-- Timeout: end, and say explicitly "do not retransmit ota_start in a row".
+- Timeout: end, and say explicitly "do not retransmit `<start_cmd>` in a row".
 
-Re-sending `ota_start` repeatedly is genuinely dangerous. The device may already be mid-transition, and a second request pushes it into an unknown state.
+Re-sending `<start_cmd>` repeatedly is genuinely dangerous. The device may already be mid-transition, and a second request pushes it into an unknown state.
 
 ### 7.4 The boot's 0x10 advertisement: you cannot skip it, and you cannot answer it carelessly
 
@@ -571,7 +571,7 @@ Behind the surface of "30 seconds of silence" there are at least six completely 
 | device keeps pushing 0x10          | query sent too early and dropped, or de-duplication blocked the answer  | count the 0x10 repeats in the raw log                                           |
 | device keeps requesting offset 0   | duplicate query frames restarted the boot's read sequence               | look at the offset series in 0x50                                               |
 | device reports 0x0303 read timeout | parsing misaligned earlier and the APP kept answering with empty frames | check the out-of-range offset and the error code                                |
-| not a single frame                 | still on the normal firmware; ota_start failed or timed out             | check ota_start_ack and the disconnect events                                   |
+| not a single frame                 | still on the normal firmware; `<start_cmd>` failed or timed out         | check `<start_ack>` and the disconnect events                                   |
 
 This table is one of the most useful outputs of the whole debugging effort. Without raw logs everything looks like "the device is not responding"; with bidirectional hex logging you can finally pin a problem to a specific layer.
 
@@ -582,7 +582,7 @@ During this integration we hit a mixed-build incident: the dialog showed a new b
 After that we print it on the very first line of every OTA session:
 
 ```text
-OTA session started (build 20261106-1615, notify wait 20s / adapter rebuild)
+OTA session started (build <build_tag>, notify wait <timeout> / adapter rebuild)
 ```
 
 The debug panel also shows the build number directly, so you can confirm you are running the newest package without opening the console. In real-device integration this habit is worth a lot, especially with several phones and several trial builds in play.
@@ -660,7 +660,7 @@ FlashBoot reports status with `0x20`, and the APP must answer every one with `0x
 | `0x06` | boot reports success | acknowledge, wait for reboot, verify version  |
 | `0x07` | upgrade failed       | acknowledge, read the error code and report   |
 
-Note that `0x06` only means the boot finished writing — it is not the final success. You must reconnect to the normal firmware, say `hi` again, read the target module's `firmwareVer`, and only show "upgrade successful" when it matches the target version.
+Note that `0x06` only means the boot finished writing — it is not the final success. You must reconnect to the normal firmware, re-send `<hello_cmd>`, read the target module's `<firmware_version>`, and only show "upgrade successful" when it matches the target version.
 
 None of these is evidence of success: the start ACK, having sent the whole file, or the BLE disconnect.
 
@@ -679,7 +679,7 @@ The whole set of pitfalls compressed into one table:
 | HarmonyOS     | the platform field is unreliable; judge by GATT capabilities and API results; integrate via "Preview", not "Real Device Debugging"                                                                                                                                |
 | "No response" | the 30-second kill switch is only the last layer; check the subscription logs, raw logs, offset series and build number first                                                                                                                                     |
 | Performance   | process logs to console only; at most 6 setState calls for progress; locate the bottleneck with the A/B/C timings                                                                                                                                                 |
-| Success check | reconnect to the normal firmware and read `firmwareVer`; only a match counts                                                                                                                                                                                      |
+| Success check | reconnect to the normal firmware and read `<firmware_version>`; only a match counts                                                                                                                                                                               |
 
 A few problems remain unsolved, and they are recorded here too:
 
