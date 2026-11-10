@@ -70,7 +70,7 @@
      移动端由 [data-style] 的 @media 自动换到 16 / 13 / 20。 */
   --fs-base: var(--scale-body); /* 17 / 16 */
   --fs-small: var(--scale-meta); /* 13，不缩 */
-  --fs-head: var(--scale-title); /* 64 / 32；当前全站无引用，保留契约位 */
+  --fs-head: var(--scale-title); /* 64 / 32；本风格无直接引用，保留契约位 */
   --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.85;
 

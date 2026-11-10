@@ -62,7 +62,7 @@ const { skillGroups, timeline } = useAppInfo()
 
 .about-lead {
   margin: 0 0 24px;
-  font-size: clamp(18px, 1.6vw, 18px);
+  font-size: var(--scale-lead-fluid);
   line-height: var(--lh-body);
   color: var(--c-muted);
 }

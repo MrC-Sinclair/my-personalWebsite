@@ -78,6 +78,8 @@ const { t } = useI18n()
   margin: 0;
   margin-left: -0.05em; /* 光学对齐：抵消字形左侧留白 */
   font-family: var(--font-head);
+  /* 首屏展示级例外：瑞士海报传统里「大到不合理」的巨型刊名，
+     不套共享刻度的 Display 96，否则 12 栏网格会失去视觉支点。 */
   font-size: clamp(48px, 11.5vw, 168px);
   font-weight: 700;
   line-height: 0.95;
@@ -103,7 +105,7 @@ const { t } = useI18n()
   align-items: center;
   gap: 12px;
   min-height: 44px;
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
   text-decoration: none;
@@ -142,7 +144,7 @@ const { t } = useI18n()
 
 .hero-tagline {
   margin: 0;
-  font-size: clamp(18px, 2.2vw, 28px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 500;
   line-height: 1.4;
   color: var(--c-text);

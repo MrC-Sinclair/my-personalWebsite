@@ -37,6 +37,7 @@ defineProps<{
   justify-content: center;
   width: 72px;
   height: 72px;
+  /* 空状态装饰圆盘字形，不进排印刻度。 */
   font-size: 28px;
   color: var(--c-accent);
   background: linear-gradient(160deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02));

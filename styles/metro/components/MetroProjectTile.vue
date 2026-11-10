@@ -62,7 +62,7 @@ const topTags = computed(() =>
 
 .proj__tag {
   padding: 3px 8px;
-  font-size: 12px;
+  font-size: var(--scale-meta);
   letter-spacing: 0.06em;
   border: 1px solid color-mix(in srgb, currentColor 55%, transparent);
 }
@@ -74,14 +74,14 @@ const topTags = computed(() =>
   -webkit-line-clamp: 2;
   margin: 0;
   font-family: var(--font-head);
-  font-size: 21px;
+  font-size: var(--scale-lead);
   font-weight: 700;
   line-height: 1.2;
 }
 
 /* 宽 Tile（2x1）：标题升级为大字 */
 .proj__title--wide {
-  font-size: clamp(24px, 2.6vw, 32px);
+  font-size: var(--scale-heading-fluid);
 }
 
 .proj__desc {

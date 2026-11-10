@@ -328,7 +328,9 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
   overflow-wrap: break-word;
   color: var(--c-text);
   font-family: var(--font-head);
-  font-size: clamp(32px, 7vw, var(--fs-head));
+  /* 首屏展示级例外：原第三参数隐式依赖 --fs-head，已固定回原值 44px。
+     本风格按题材签名判定不接入共享字阶，避免后续改 token 时被连带放大。 */
+  font-size: clamp(32px, 7vw, 44px);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -369,7 +371,7 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
 .rc-post-search input {
   flex: 1 1 auto;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 8px;
   font-family: var(--font-body);
   font-size: var(--fs-small);

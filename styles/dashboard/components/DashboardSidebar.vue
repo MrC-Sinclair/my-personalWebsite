@@ -127,7 +127,7 @@ const { activeId } = useActiveSection()
   display: inline-flex;
   align-items: center;
   /* 站名是这一带唯一可点的元素：行高只有 22px，撑到项目约定的 40px 命中高度 */
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 2px 0;
   font-family: var(--font-head);
   font-size: var(--fs-base);
@@ -165,8 +165,8 @@ const { activeId } = useActiveSection()
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -204,7 +204,7 @@ const { activeId } = useActiveSection()
   flex: none;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -248,7 +248,7 @@ const { activeId } = useActiveSection()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-base);
   color: var(--c-muted);

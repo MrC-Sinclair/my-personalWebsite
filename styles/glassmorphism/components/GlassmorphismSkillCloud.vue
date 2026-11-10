@@ -91,7 +91,7 @@ const safeGroups = computed(() =>
 .skill-pill {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;

@@ -341,14 +341,14 @@ const loading = computed(
 
 .empty-main {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
 }
 
 .empty-hint {
   margin: 8px 0 0;
-  font-size: 14px;
+  font-size: var(--scale-meta);
 }
 
 /* 查看全部：右对齐的文字链接，下划线生长反馈 */
@@ -361,7 +361,7 @@ const loading = computed(
   min-height: 44px;
   margin-top: 12px;
   margin-left: auto;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   color: var(--c-text);
   text-decoration: none;

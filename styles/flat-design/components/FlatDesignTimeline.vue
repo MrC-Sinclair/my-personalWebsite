@@ -84,7 +84,7 @@ function tone(index: number): FlatTone {
 .tl__title {
   margin: 4px 0 0;
   font-family: var(--font-head);
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
 }

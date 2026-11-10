@@ -44,12 +44,16 @@
   --shadow-press: inset 0 2px 8px rgb(9 34 64 / 0.4);
 
   /* —— 字体 —— */
-  --font-body: 'Segoe UI', 'Trebuchet MS', 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body:
+    'Segoe UI', 'Trebuchet MS', 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei',
+    sans-serif;
   --font-head: 'Trebuchet MS', 'Segoe UI', Verdana, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 
   /* —— 字号 —— */
+  /* —— 按题材签名判定：本风格不接入共享字阶，--fs-* 保留原值；
+     仅共享 --scale-hit 触控红线（2026-11-10）—— */
   --fs-base: 16px;
   /* 同 metro：13px 无论多粗都只能按 4.5:1 判，提到 14px 后配合 700 字重
      可按 3:1 大字号门槛判定，这样白字压品牌色只需微调颜色、不必改风格 */

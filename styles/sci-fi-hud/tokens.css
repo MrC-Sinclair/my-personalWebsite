@@ -50,17 +50,22 @@
 
   /* —— 字体（标题/读数走等宽科技栈，禁止引入外部字体文件） —— */
   --font-body: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --font-head: 'Consolas', 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo,
-    'PingFang SC', 'Microsoft YaHei', monospace;
-  --font-mono: 'Consolas', 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo,
-    'PingFang SC', 'Microsoft YaHei', monospace;
+  --font-head:
+    'Consolas', 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo, 'PingFang SC',
+    'Microsoft YaHei', monospace;
+  --font-mono:
+    'Consolas', 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo, 'PingFang SC',
+    'Microsoft YaHei', monospace;
   --font-smooth: auto;
 
   /* —— 字号 —— */
-  --fs-base: 15px;
-  --fs-small: 12px;
-  --fs-head: 48px;
-  --fs-title: 19px;
+  /* —— 字号统一指向共享排印刻度（2026-11-10 接入）——
+     刻度由 _base/tokens.css 独占；图标、装饰字形、数据读数与首屏巨型姓名
+     属于题材签名，保留原有字面量，不进排印刻度。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.7;
 
   /* —— 间距（仪表密度：紧凑版面） —— */

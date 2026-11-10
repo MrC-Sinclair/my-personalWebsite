@@ -173,6 +173,7 @@ function skillIcon(index: number): GelIconVariant {
   flex: none;
   align-items: center;
   align-self: flex-start;
+  /* 时间线时期徽章，非可点控件；保留。 */
   min-height: 32px;
   padding: 4px 16px;
   overflow: hidden;

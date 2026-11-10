@@ -96,7 +96,7 @@ function postRoute(post: BlogPost): string {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-size: var(--fs-small);
   color: var(--c-text);
   text-decoration: underline;
@@ -175,7 +175,7 @@ function postRoute(post: BlogPost): string {
 /* —— 标题：悬停强调色 + 箭头右移 —— */
 .row-title {
   margin: 0;
-  font-size: clamp(18px, 2vw, 21px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 500;
   line-height: 1.45;
   color: var(--c-text);

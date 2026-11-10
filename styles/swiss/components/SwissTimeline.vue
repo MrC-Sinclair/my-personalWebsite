@@ -77,7 +77,7 @@ function pad(n: number): string {
 
 .tl-title {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -85,7 +85,7 @@ function pad(n: number): string {
 /* 机构名：常规字重回退，与前文形成字重对比 */
 .tl-org {
   margin-left: 8px;
-  font-size: 16px;
+  font-size: var(--scale-body);
   font-weight: 400;
   color: var(--c-muted);
 }
@@ -93,7 +93,7 @@ function pad(n: number): string {
 .tl-desc {
   margin: 0;
   max-width: 64ch;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
 }
 

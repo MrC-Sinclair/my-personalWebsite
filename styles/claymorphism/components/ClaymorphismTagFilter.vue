@@ -135,7 +135,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .clay-count {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
 }
 

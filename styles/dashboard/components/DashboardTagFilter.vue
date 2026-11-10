@@ -88,7 +88,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .tags-label {
   margin-right: 2px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -99,7 +99,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   display: inline-flex;
   align-items: baseline;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 触控命中：靠上下内边距长高，保住 13px 标签 / 11px 计数之间的基线对齐 */
   padding: 12px 12px;
   font-family: inherit;
@@ -138,7 +138,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .chip-count {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
 }
 
@@ -147,7 +147,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 }
 
 .clear {
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
@@ -179,7 +179,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 /* 展开/收起：沿用本风格 clear 的控件语言 */
 .more {
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);

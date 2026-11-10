@@ -81,6 +81,7 @@ const groups = computed(() => {
   position: relative;
   display: flex;
   align-items: center;
+  /* 终端技能行标签，非可点控件；保留紧凑高度。 */
   min-height: 32px;
   padding: 2px 0 2px 28px;
   color: var(--c-text);

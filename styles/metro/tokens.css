@@ -57,12 +57,15 @@
   --font-smooth: auto;
 
   /* —— 字号 —— */
-  --fs-base: 16px;
+  /* —— 字号统一指向共享排印刻度（2026-11-10 接入）——
+     刻度由 _base/tokens.css 独占；图标、装饰字形、数据读数与首屏巨型姓名
+     属于题材签名，保留原有字面量，不进排印刻度。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
   /* 13px 的次要文字在磁贴底色上偏吃力；统一到 14px 也让「14px + 700 走 3:1 门槛」
      这条 WCAG 规则在本风格可用（13px 无论多粗都只能按 4.5:1 判） */
-  --fs-small: 14px;
-  --fs-head: 52px;
-  --fs-title: 24px;
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.6;
 
   /* —— 间距 —— */

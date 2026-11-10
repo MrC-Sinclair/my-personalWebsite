@@ -103,7 +103,7 @@ const localePath = useLocalePath()
 .footer-gallery {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -139,7 +139,7 @@ const localePath = useLocalePath()
   justify-content: center;
   width: 44px;
   height: 44px;
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-accent);
   text-decoration: none;

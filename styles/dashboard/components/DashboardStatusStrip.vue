@@ -92,7 +92,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .strip-link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -116,8 +116,8 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

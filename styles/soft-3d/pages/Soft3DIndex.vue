@@ -374,6 +374,7 @@ function revealClass(index: number): string {
 .hero-name {
   margin: 0 0 16px;
   font-family: var(--font-head);
+  /* 首屏展示级例外：空间里的大标题；窄屏覆盖见下方 @media，须一并保留。 */
   font-size: clamp(48px, 8.4vw, 92px);
   font-weight: 800;
   line-height: 1.04;
@@ -387,7 +388,7 @@ function revealClass(index: number): string {
 .hero-tagline {
   margin: 0 0 12px;
   padding-left: 16px;
-  font-size: clamp(18px, 2.2vw, 21px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 600;
   color: var(--c-accent-2);
   border-left: 3px solid var(--c-accent-2);
@@ -721,6 +722,7 @@ function revealClass(index: number): string {
 }
 
 .top-orb-arrow {
+  /* 箭头图标：图标尺寸是独立体系，不走排印刻度。 */
   font-size: 21px;
   font-weight: 700;
   color: var(--c-on-accent);
@@ -753,6 +755,7 @@ function revealClass(index: number): string {
   }
 
   .hero-name {
+    /* 同上：这是巨型姓名的窄屏覆盖，与桌面例外是一组，不要单独接入刻度。 */
     font-size: clamp(40px, 12vw, 60px);
   }
 

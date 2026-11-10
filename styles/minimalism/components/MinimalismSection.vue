@@ -62,7 +62,7 @@ defineProps<{
 .sec-title {
   margin: 12px 0 0;
   font-family: var(--font-head);
-  font-size: clamp(28px, 4vw, var(--fs-head));
+  font-size: var(--scale-subtitle-fluid);
   font-weight: 300;
   line-height: 1.2;
   letter-spacing: -0.01em;

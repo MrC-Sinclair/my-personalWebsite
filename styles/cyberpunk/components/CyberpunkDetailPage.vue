@@ -404,9 +404,9 @@ const projectLinks = computed(() => {
 .crumb {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 命中区地板：与字形宽度解耦，「首页」两个汉字的链接实测只有 24px 宽 */
-  min-width: 40px;
+  min-width: var(--scale-hit);
   color: var(--c-accent);
   text-decoration: none;
   transition: text-shadow var(--transition);

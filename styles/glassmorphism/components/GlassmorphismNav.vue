@@ -108,7 +108,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   flex: none;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 4px 8px 4px 0;
   font-weight: 700;
   color: var(--c-text);
@@ -148,7 +148,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .anchor {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -179,8 +179,8 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   flex: none;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -216,7 +216,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -264,7 +264,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
      命中区塌到 23px 那个红线问题用 min-width 兜住就够，不必牺牲站名 */
   .brand {
     flex: none;
-    min-width: 40px;
+    min-width: var(--scale-hit);
   }
 
   .brand-dot {

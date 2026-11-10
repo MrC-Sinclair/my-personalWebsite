@@ -70,8 +70,8 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
-  font-size: 16px;
+  min-height: var(--scale-hit);
+  font-size: var(--scale-body);
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--c-text);
@@ -107,7 +107,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .hd-link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -134,7 +134,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .hd-gallery {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -171,8 +171,8 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   letter-spacing: 0.04em;

@@ -44,12 +44,15 @@
 
   /* —— 字体（标题/数据走等宽科技栈，禁止引入外部字体文件） —— */
   --font-body: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --font-head: 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas,
-    'PingFang SC', 'Microsoft YaHei', monospace;
+  --font-head:
+    'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'PingFang SC',
+    'Microsoft YaHei', monospace;
   --font-mono: 'Cascadia Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 
   /* —— 字号 —— */
+  /* —— 按题材签名判定：本风格不接入共享字阶，--fs-* 保留原值；
+     仅共享 --scale-hit 触控红线（2026-11-10）—— */
   --fs-base: 15px;
   --fs-small: 12px;
   --fs-head: 44px;

@@ -80,6 +80,7 @@ function statusText(status: StyleMeta['status']): string {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 4px 16px;
+  /* 终端主题行标签，非可点控件；保留紧凑高度。 */
   min-height: 36px;
   padding: 4px 0;
 }
@@ -118,7 +119,7 @@ function statusText(status: StyleMeta['status']): string {
 .go-link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 4px 8px;
   color: var(--c-accent);
   text-decoration: none;

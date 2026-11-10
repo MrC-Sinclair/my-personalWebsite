@@ -64,7 +64,7 @@ function pad(n: number): string {
   margin: 0;
   grid-column: 2;
   font-family: var(--font-head);
-  font-size: clamp(32px, 4.5vw, 48px);
+  font-size: var(--scale-subtitle-fluid);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.02em;

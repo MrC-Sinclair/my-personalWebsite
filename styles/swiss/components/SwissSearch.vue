@@ -69,7 +69,7 @@ const { t } = useI18n()
   min-height: 44px;
   padding: 12px 16px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   letter-spacing: 0.04em;
   color: var(--c-text);
   background: var(--c-surface);
@@ -102,7 +102,7 @@ const { t } = useI18n()
   min-height: 44px;
   padding: 0 8px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: var(--scale-meta);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--c-accent);
@@ -133,7 +133,7 @@ const { t } = useI18n()
 .count {
   margin: 8px 0 0;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   font-variant-numeric: tabular-nums;
   color: var(--c-muted);
 }

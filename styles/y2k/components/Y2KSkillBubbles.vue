@@ -76,7 +76,7 @@ function safeSkills(group: SkillGroup): string[] {
 .bubble-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;

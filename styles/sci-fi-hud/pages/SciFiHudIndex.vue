@@ -440,7 +440,7 @@ useScrollReveal()
 /* —— 简介文案 —— */
 .tagline {
   margin: 20px 0 4px;
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 600;
   color: var(--c-text);
 }
@@ -466,7 +466,7 @@ useScrollReveal()
   min-height: 44px;
   padding: 12px 24px;
   font-family: var(--font-head);
-  font-size: 14px;
+  font-size: var(--scale-body);
   letter-spacing: 0.08em;
   color: var(--c-accent);
   text-decoration: none;

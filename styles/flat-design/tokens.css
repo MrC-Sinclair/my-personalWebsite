@@ -48,16 +48,24 @@
   --shadow-press: none;
 
   /* —— 字体 —— */
-  --font-body: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-head: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body:
+    system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei',
+    sans-serif;
+  --font-head:
+    'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei',
+    sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 
-  /* —— 字号 —— */
-  --fs-base: 16px;
-  --fs-small: 13px;
-  --fs-head: 48px;
-  --fs-title: 21px;
+  /* —— 字号：统一指向共享排印刻度（2026-11-08 接入）——
+     本风格原有 10/11/12/14/16/18px 共 25 条低区字面量，是同一
+     注释/控件角色被写成六种数值，已收敛成 Meta 13 与 Body 17
+     两级；标题级 clamp() 换成 --scale-*-fluid；命中区收到 44px。
+     图标、箭头、徽章数字与首屏巨型姓名不走排印刻度。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.7;
 
   /* —— 间距 —— */

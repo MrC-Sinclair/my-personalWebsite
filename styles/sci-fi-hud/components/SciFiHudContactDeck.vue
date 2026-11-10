@@ -116,7 +116,7 @@ const { copied, copy } = useClipboardCopy()
   margin: 0;
   overflow: hidden;
   font-family: var(--font-head);
-  font-size: 14px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
   text-overflow: ellipsis;
@@ -165,7 +165,7 @@ const { copied, copy } = useClipboardCopy()
   justify-content: center;
   gap: 4px;
   width: 100%;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

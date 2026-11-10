@@ -63,7 +63,7 @@ const { t } = useI18n()
 
 .hero__greeting {
   margin: 0;
-  font-size: clamp(16px, 2vw, 18px);
+  font-size: var(--scale-meta);
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -74,6 +74,7 @@ const { t } = useI18n()
 .hero__name {
   margin: 8px 0 0;
   font-family: var(--font-head);
+  /* 首屏展示级例外：色带上的大幅刊名，不套共享刻度。 */
   font-size: clamp(48px, 8.5vw, 92px);
   font-weight: 800;
   line-height: 1.04;
@@ -83,7 +84,7 @@ const { t } = useI18n()
 
 .hero__tagline {
   margin: clamp(12px, 2vw, 20px) 0 0;
-  font-size: clamp(18px, 2.4vw, 21px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 600;
   color: #ffffff;
 }
@@ -110,7 +111,7 @@ const { t } = useI18n()
   justify-content: center;
   min-height: 46px;
   padding: 0 28px;
-  font-size: 16px;
+  font-size: var(--scale-body);
   font-weight: 700;
   text-decoration: none;
   border-radius: var(--radius);

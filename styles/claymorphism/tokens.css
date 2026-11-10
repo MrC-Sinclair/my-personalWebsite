@@ -67,10 +67,13 @@
   --font-smooth: auto;
 
   /* —— 字号（厚重：标题大而粗） —— */
-  --fs-base: 16px;
-  --fs-small: 13px;
-  --fs-head: 48px;
-  --fs-title: 22px;
+  /* —— 字号统一指向共享排印刻度（2026-11-10 接入）——
+     刻度由 _base/tokens.css 独占；图标、装饰字形、数据读数与首屏巨型姓名
+     属于题材签名，保留原有字面量，不进排印刻度。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.8;
 
   /* —— 间距（宽松：投影需要呼吸空间） —— */

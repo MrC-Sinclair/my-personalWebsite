@@ -116,7 +116,7 @@ function linkText(url: string): string {
      同一行的复制按钮本来就是 40px，抬到 40 之后行高反而统一，不会忽高忽低 */
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 2px 0;
   color: var(--c-text);
   text-decoration: none;
@@ -130,7 +130,7 @@ function linkText(url: string): string {
 .crow-copy {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-body);
   font-size: var(--fs-small);

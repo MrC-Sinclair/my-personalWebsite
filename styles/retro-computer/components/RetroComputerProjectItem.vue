@@ -205,7 +205,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 .rc-proj__link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   border: var(--border-w) solid transparent;
   color: var(--c-accent);

@@ -64,24 +64,30 @@
   /* —— 阴影（悬浮景深：大扩散 + 靛蓝色调） —— */
   /* 三层：一层贴地的接触影负责「压在背景上」，中层与远层负责浮起。
      旧值只有一层 32px 的扩散，卡片因此像贴纸而不是悬浮的玻璃板。 */
-  --shadow: 0 1px 2px rgb(31 38 135 / 0.07), 0 6px 16px rgb(31 38 135 / 0.1),
+  --shadow:
+    0 1px 2px rgb(31 38 135 / 0.07), 0 6px 16px rgb(31 38 135 / 0.1),
     0 18px 40px rgb(31 38 135 / 0.14);
   --shadow-press: 0 1px 2px rgb(31 38 135 / 0.08), 0 4px 12px rgb(31 38 135 / 0.12);
 
   /* —— 字体（系统栈，不引入外部字体文件） —— */
   /* 同 liquid-glass：Apple 设备上取 SF（本风格对标的就是苹果式毛
      玻璃），其余平台回落到已自托管的 Inter，比 Segoe UI 精到一档 */
-  --font-body: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'PingFang SC', 'Noto Sans SC',
+  --font-body:
+    -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'PingFang SC', 'Noto Sans SC',
     'Microsoft YaHei', system-ui, sans-serif;
   --font-head: var(--font-body);
   --font-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 
-  /* —— 字号（海报感的大标题 + 舒适正文） —— */
-  --fs-base: 16px;
-  --fs-small: 13px;
-  --fs-head: 46px;
-  --fs-title: 24px;
+  /* —— 字号：统一指向共享排印刻度（2026-11-08 接入）——
+     标题级 clamp() 换成 --scale-*-fluid，命中区收到 44px。
+     原 GlassmorphismSectionHead 的 clamp() 第三参数隐式依赖
+     --fs-head，已换成显式的 subtitle-fluid，避免改 --fs-head
+     时被连带放大。首屏巨型姓名、数值与箭头不走排印刻度。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.75;
 
   /* —— 间距（呼吸感 + 居中玻璃板流） —— */
@@ -115,8 +121,7 @@
     180deg,
     rgb(255 255 255 / 0.95) 0%,
     rgb(255 255 255 / 0.5) 14%,
-    /* 中部掠射：几乎无反射，用极淡的靛蓝表示「透过去看见背景」 */
-    rgb(31 38 135 / 0.05) 48%,
+    /* 中部掠射：几乎无反射，用极淡的靛蓝表示「透过去看见背景」 */ rgb(31 38 135 / 0.05) 48%,
     /* ★ 底部必须是暗的，不是「更淡的白」：亮底上的玻璃，背光面看到的
        是玻璃自身的边缘厚度与阴影，所以那里是暗边。上一版底部写 0.25
        白，整圈就全是白、没有明暗差，在浅色卡片上等于看不见——这也是

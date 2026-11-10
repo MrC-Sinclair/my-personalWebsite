@@ -651,7 +651,7 @@ onUnmounted(() => {
   align-items: baseline;
   gap: 4px 16px;
   width: 100%;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 2px 8px;
   font-family: var(--font-body);
   font-size: var(--fs-base);
@@ -743,8 +743,8 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
@@ -809,7 +809,7 @@ onUnmounted(() => {
 .input {
   flex: 1 1 auto;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-family: var(--font-body);
   font-size: var(--fs-base);
   color: var(--c-text);

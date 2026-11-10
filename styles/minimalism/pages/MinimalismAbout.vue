@@ -75,7 +75,7 @@ const localePath = useLocalePath()
 }
 
 .next-label {
-  font-size: clamp(18px, 2.4vw, 24px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 300;
   letter-spacing: -0.01em;
 }

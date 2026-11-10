@@ -339,7 +339,7 @@ function slugOf(path: string): string {
 .paper-btn {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);

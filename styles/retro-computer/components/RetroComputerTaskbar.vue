@@ -142,7 +142,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-width: 40px;
+  min-width: var(--scale-hit);
   padding: 0 12px;
   background: var(--c-surface);
   border: var(--border-w) solid;

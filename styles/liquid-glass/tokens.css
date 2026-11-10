@@ -74,11 +74,13 @@
      iOS 的玻璃投影恰恰相反：一层几乎不可见的接触影负责「贴住」，
      中层负责厚度，远层只给一点点悬浮暗示，三层透明度都压得很低。
      层次变多、总重量变轻，玻璃才像浮着而不是压着。 */
-  --shadow: 0 0.5px 1px rgb(0 0 0 / 0.12), 0 4px 12px rgb(4 2 18 / 0.22), 0 16px 38px rgb(4 2 18 / 0.2);
+  --shadow:
+    0 0.5px 1px rgb(0 0 0 / 0.12), 0 4px 12px rgb(4 2 18 / 0.22), 0 16px 38px rgb(4 2 18 / 0.2);
   /* 卡片静置态：比悬浮态更贴（玻璃片平放在场景里） */
   --shadow-press: 0 0.5px 1px rgb(0 0 0 / 0.1), 0 2px 8px rgb(4 2 18 / 0.18);
   /* hero 级超大玻璃板：扩散放大但透明度不涨（大板子靠范围而不是靠黑） */
-  --shadow-lg: 0 0.5px 1px rgb(0 0 0 / 0.14), 0 8px 20px rgb(4 2 18 / 0.24), 0 28px 64px rgb(4 2 18 / 0.24);
+  --shadow-lg:
+    0 0.5px 1px rgb(0 0 0 / 0.14), 0 8px 20px rgb(4 2 18 / 0.24), 0 28px 64px rgb(4 2 18 / 0.24);
 
   /* —— 字体 ——
      三次迭代：旧栈以 Segoe UI 打头，在 Windows 上就是 Segoe UI——它的
@@ -86,17 +88,21 @@
      的一环（每个字都是它渲染的）。iOS 的观感有一半来自 SF 的字形与
      字距，所以在 Apple 设备上直接用 -apple-system 拿到 SF；其余平台
      回落到已自托管的 Inter（比 Segoe UI 精到一档），中文仍走苹方/雅黑。 */
-  --font-body: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'PingFang SC', 'Noto Sans SC',
+  --font-body:
+    -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'PingFang SC', 'Noto Sans SC',
     'Microsoft YaHei', system-ui, sans-serif;
   --font-head: var(--font-body);
   --font-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 
   /* —— 字号 —— */
-  --fs-base: 16px;
-  --fs-small: 13px;
-  --fs-head: 44px;
-  --fs-title: 22px;
+  /* —— 字号统一指向共享排印刻度（2026-11-10 接入）——
+     刻度由 _base/tokens.css 独占；图标、装饰字形、数据读数与首屏巨型姓名
+     属于题材签名，保留原有字面量，不进排印刻度。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.7;
 
   /* —— 间距 —— */
@@ -112,7 +118,12 @@
   --img-rendering: auto;
 
   /* —— 装饰开关（本风格用作：玻璃上缘高光弧，1px 中亮两端渐隐） —— */
-  --deco: linear-gradient(90deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.85) 50%, rgb(255 255 255 / 0));
+  --deco: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0),
+    rgb(255 255 255 / 0.85) 50%,
+    rgb(255 255 255 / 0)
+  );
 
   /* ============================================================
      液态玻璃材质配方（三次迭代：从「加装饰」转向「做光学」）
@@ -159,7 +170,8 @@
         几乎无反射）→ 底部 0.32（地面/环境的回光）。
         底部这一档实测过：0.26 在深底上几乎看不见，提到 0.32 才有
         「玻璃下缘也转折了」的立体感。 */
-  --lg-spec: radial-gradient(42% 70% at 4% 0%, rgb(255 255 255 / 0.55), transparent 58%),
+  --lg-spec:
+    radial-gradient(42% 70% at 4% 0%, rgb(255 255 255 / 0.55), transparent 58%),
     linear-gradient(
       180deg,
       rgb(255 255 255 / 0.78) 0%,
@@ -192,8 +204,8 @@
   /* 光晕的位置与背景折射球体对齐（约 30%/26% 与 62%/58%），
      这样「板上看到的亮区」与「板外真实存在的球」是同一件事的两种
      表现，视觉上才读得通；错位的彩色渐变只会像印上去的花纹。 */
-  --lg-depth: var(--lg-noise),
-    radial-gradient(52% 68% at 24% 20%, rgb(124 92 255 / 0.22), transparent 62%),
+  --lg-depth:
+    var(--lg-noise), radial-gradient(52% 68% at 24% 20%, rgb(124 92 255 / 0.22), transparent 62%),
     radial-gradient(46% 58% at 76% 84%, rgb(94 227 255 / 0.16), transparent 64%),
     radial-gradient(140% 90% at 18% 6%, rgb(255 255 255 / 0.04), transparent 56%);
   /* 折射环宽度：比镜面环宽一个数量级，它的边缘要化开才像光学 */

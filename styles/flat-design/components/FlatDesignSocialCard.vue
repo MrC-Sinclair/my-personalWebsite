@@ -234,7 +234,7 @@ function copyValue() {
 
 .social-card__name {
   font-family: var(--font-head);
-  font-size: 16px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
   transition: color var(--transition);
@@ -253,7 +253,7 @@ function copyValue() {
 /* 尾部符号：随卡片 hover 变色（无位移） */
 .social-card__arrow {
   margin-left: auto;
-  font-size: 16px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--tone);
   transition: color var(--transition);

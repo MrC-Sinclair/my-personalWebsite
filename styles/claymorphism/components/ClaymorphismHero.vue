@@ -110,7 +110,7 @@ const { t } = useI18n()
 /* 职签：加粗正文色 + 黏土质感小胶囊两枚包夹 */
 .tagline {
   margin: 0 0 12px;
-  font-size: clamp(18px, 2.4vw, 21px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 700;
   color: var(--c-text);
 }

@@ -124,7 +124,7 @@ function tagsOf(project: Project): string[] {
 .work-link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   color: var(--c-accent);
   text-decoration: none;
   overflow-wrap: break-word;
@@ -178,7 +178,7 @@ function tagsOf(project: Project): string[] {
 .work-ext {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   color: var(--c-accent-2);
   text-decoration: none;
   overflow-wrap: anywhere;

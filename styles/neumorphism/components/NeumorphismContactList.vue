@@ -175,7 +175,7 @@ function toggle(name: string): void {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);

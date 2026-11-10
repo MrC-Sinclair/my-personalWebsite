@@ -136,6 +136,7 @@ const localePath = useLocalePath()
 .hero-name {
   margin: 0 0 16px;
   font-family: var(--font-head);
+  /* 首屏展示级例外：玻璃板上的大标题，不套共享刻度。 */
   font-size: clamp(48px, 8.4vw, 96px);
   font-weight: 800;
   line-height: 1.06;
@@ -149,7 +150,7 @@ const localePath = useLocalePath()
 
 .hero-tagline {
   margin: 0 0 8px;
-  font-size: clamp(18px, 2.4vw, 24px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -240,6 +241,7 @@ const localePath = useLocalePath()
 
 .chip-value {
   font-family: var(--font-mono);
+  /* 数据条数值属控件读数，不是文本层级。 */
   font-size: 21px;
   font-weight: 800;
   color: var(--c-accent);

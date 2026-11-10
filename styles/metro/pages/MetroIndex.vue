@@ -331,7 +331,7 @@ function submitSearch(): void {
 .start__tagline {
   max-width: 32em;
   margin: clamp(16px, 2vw, 24px) 0 0;
-  font-size: clamp(18px, 2.4vw, 32px);
+  font-size: var(--scale-lead-fluid);
   color: var(--c-text);
 }
 

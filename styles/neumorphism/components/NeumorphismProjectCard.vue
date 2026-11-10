@@ -110,6 +110,7 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   position: absolute;
   top: 20px;
   right: 26px;
+  /* 卡片装饰编号，不进排印刻度。 */
   font-size: 32px;
   font-weight: 800;
   color: #c5cedd;
@@ -196,7 +197,7 @@ const tags = computed(() => (Array.isArray(props.project.tags) ? props.project.t
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;

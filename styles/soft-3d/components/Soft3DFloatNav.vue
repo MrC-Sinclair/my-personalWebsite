@@ -84,6 +84,8 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  /* 34px 光球 + 4px×2 padding 只有 42px，补到共享刻度的 44px 命中区 */
+  min-height: var(--scale-hit);
   padding: 4px 8px 4px 4px;
   border-radius: 999px;
   text-decoration: none;
@@ -126,7 +128,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .float-nav-link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -153,8 +155,8 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -187,7 +189,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;

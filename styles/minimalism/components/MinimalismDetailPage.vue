@@ -128,9 +128,9 @@ const projectLinks = computed(() => {
 .crumb {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 命中区地板：与字形宽度解耦，「首页」两个汉字的链接实测只有 26px 宽 */
-  min-width: 40px;
+  min-width: var(--scale-hit);
   color: var(--c-muted);
   text-decoration: none;
   transition: color var(--transition);
@@ -186,7 +186,7 @@ const projectLinks = computed(() => {
   display: inline-flex;
   gap: 4px;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-size: var(--fs-small);
   color: var(--c-accent);
   text-decoration: none;
@@ -207,7 +207,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 2em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(18px, 2.2vw, 24px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 500;
   color: var(--c-text);
 }
@@ -215,7 +215,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.6em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(16px, 1.8vw, 18px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 500;
   color: var(--c-text);
 }

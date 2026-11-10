@@ -78,9 +78,9 @@ const navLinks = computed(() => [
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-family: var(--font-head);
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: #ffffff;
   text-decoration: none;
@@ -102,7 +102,7 @@ const navLinks = computed(() => [
 .hdr__link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 12px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -135,8 +135,8 @@ const navLinks = computed(() => [
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 0 12px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -168,7 +168,7 @@ const navLinks = computed(() => [
 .hdr__gallery {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 16px;
   font-size: var(--fs-small);
   font-weight: 700;

@@ -423,10 +423,10 @@ const projectLinks = computed(() => {
 .crumb {  /* 地板写死在链接自己身上：标签是「首页 / 项目」这种两字中文时，字形宽度随字体
      度量浮动——同一页在 CI 的 Linux 回退字体下实测 38px，本机与英文侧却过线。
      命中区不能交给字形决定。 */
-  min-width: 40px;
+  min-width: var(--scale-hit);
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 12px;
   font-weight: 700;
   color: var(--c-text);

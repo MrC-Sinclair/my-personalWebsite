@@ -150,7 +150,7 @@ const { copied, copy } = useClipboardCopy()
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 2px;
   font-size: var(--fs-small);
   color: var(--c-text);

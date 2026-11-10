@@ -64,9 +64,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   margin-bottom: 8px;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--c-accent);
@@ -115,7 +115,7 @@
   gap: 12px;
   margin: 0 0 clamp(16px, 2.5vw, 24px);
   font-family: var(--font-head);
-  font-size: 16px;
+  font-size: var(--scale-body);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;

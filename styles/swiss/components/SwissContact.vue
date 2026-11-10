@@ -88,7 +88,7 @@ const { copied, copy } = useClipboardCopy()
 .contact-lead {
   margin: 0 0 var(--space);
   max-width: 46ch;
-  font-size: clamp(18px, 2.2vw, 28px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 500;
   line-height: 1.5;
   color: var(--c-text);
@@ -133,7 +133,7 @@ const { copied, copy } = useClipboardCopy()
 
 /* 平台名：大号、大写、紧凑字距 */
 .contact-name {
-  font-size: clamp(21px, 2.4vw, 32px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 700;
   letter-spacing: -0.01em;
   text-transform: uppercase;
@@ -157,7 +157,7 @@ const { copied, copy } = useClipboardCopy()
 }
 
 .value-text {
-  font-size: 16px;
+  font-size: var(--scale-body);
   color: var(--c-text);
   overflow-wrap: anywhere;
 }
@@ -174,9 +174,9 @@ const { copied, copy } = useClipboardCopy()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 4px 0;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   color: var(--c-text);
   text-decoration: none;

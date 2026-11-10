@@ -90,7 +90,7 @@ const { t } = useI18n()
 .input {
   flex: 1 1 200px;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -119,7 +119,7 @@ const { t } = useI18n()
 .clear {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

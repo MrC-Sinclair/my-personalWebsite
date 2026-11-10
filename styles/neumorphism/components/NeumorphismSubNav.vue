@@ -96,7 +96,7 @@ function isActive(path: string): boolean {
   gap: 12px;
   min-width: 0;
   /* 站名整块可点，圆点+文字原本只有 28px 高：兜到项目约定的 40px */
-  min-height: 40px;
+  min-height: var(--scale-hit);
   text-decoration: none;
 }
 
@@ -141,7 +141,7 @@ function isActive(path: string): boolean {
 .anchor-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -192,8 +192,8 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -228,7 +228,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;

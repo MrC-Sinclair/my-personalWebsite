@@ -150,8 +150,8 @@ onUnmounted(() => {
   align-self: center;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 0 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

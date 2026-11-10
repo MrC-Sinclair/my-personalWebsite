@@ -41,7 +41,7 @@ const { t } = useI18n()
 .foot-copy,
 .foot-built {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   letter-spacing: 0.06em;
 }
 
@@ -56,7 +56,7 @@ const { t } = useI18n()
   gap: 8px;
   justify-self: start;
   min-height: 44px;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   color: var(--c-bg);
   text-decoration: none;

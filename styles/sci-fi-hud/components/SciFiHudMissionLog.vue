@@ -113,7 +113,7 @@ defineProps<{
 .entry-title {
   margin: 4px 0 2px;
   font-family: var(--font-head);
-  font-size: 16px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
   overflow-wrap: break-word;

@@ -111,14 +111,14 @@ const loading = computed(() => pending.value && !postsData.value)
 
 .empty-main {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
 }
 
 .empty-hint {
   margin: 8px 0 0;
-  font-size: 14px;
+  font-size: var(--scale-meta);
 }
 
 /* —— 加载骨架：细则线行 + 脉冲 —— */

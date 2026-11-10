@@ -65,25 +65,28 @@
 
   /* —— 阴影（受光体配方：环境暗影 + 主色辉光 + 接触影 + 内高光 + 内底影） —— */
   --shadow:
-    0 24px 48px rgb(6 3 26 / 0.6), 0 10px 22px rgb(139 92 246 / 0.26),
-    0 3px 7px rgb(6 3 26 / 0.45), inset 0 2px 5px rgb(255 255 255 / 0.2),
-    inset 0 -8px 16px rgb(9 5 40 / 0.5);
+    0 24px 48px rgb(6 3 26 / 0.6), 0 10px 22px rgb(139 92 246 / 0.26), 0 3px 7px rgb(6 3 26 / 0.45),
+    inset 0 2px 5px rgb(255 255 255 / 0.2), inset 0 -8px 16px rgb(9 5 40 / 0.5);
   --shadow-press:
     0 10px 18px rgb(6 3 26 / 0.55), 0 4px 9px rgb(139 92 246 / 0.18),
     inset 0 3px 7px rgb(255 255 255 / 0.14), inset 0 -12px 20px rgb(9 5 40 / 0.58);
 
   /* —— 字体（标题走圆润几何栈，正文保持可读系统栈） —— */
-  --font-body: 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui,
-    sans-serif;
+  --font-body:
+    'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
   --font-head: 'Trebuchet MS', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 
-  /* —— 字号（海报感：标题大而松弛） —— */
-  --fs-base: 16px;
-  --fs-small: 13px;
-  --fs-head: 46px;
-  --fs-title: 22px;
+  /* —— 字号：统一指向共享排印刻度（2026-11-08 接入）——
+     标题级 clamp() 换成 --scale-*-fluid，命中区收到 44px。
+     本风格自带的 ≤640px 断点只收敛阴影，不涉及字号，保持不变；
+     共享刻度的移动端数值由 [data-style] 的 @media 提供。
+     首屏巨型姓名（含其窄屏覆盖）、装饰字形与箭头不走排印刻度。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.75;
 
   /* —— 间距（宽松：柔影需要呼吸空间） —— */

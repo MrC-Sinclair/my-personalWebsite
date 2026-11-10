@@ -59,7 +59,7 @@ defineProps<{
 .empty__msg {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 16px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
 }

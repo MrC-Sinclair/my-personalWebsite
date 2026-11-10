@@ -87,6 +87,7 @@ const safeGroups = computed(() =>
 .chip {
   display: inline-flex;
   align-items: center;
+  /* 技能芯片是内容标签，非可点控件；保留紧凑高度。 */
   min-height: 32px;
   padding: 4px 16px;
   font-family: var(--font-mono);

@@ -123,7 +123,7 @@ const topTags = computed(() =>
   top: 12px;
   right: 12px;
   padding: 3px 12px;
-  font-size: 12px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--tone);
@@ -282,7 +282,7 @@ const topTags = computed(() =>
 
 .project-card__tag {
   padding: 3px 8px;
-  font-size: 12px;
+  font-size: var(--scale-meta);
   font-weight: 600;
   color: var(--c-text);
   background: #edf1f6;
@@ -292,7 +292,7 @@ const topTags = computed(() =>
 .project-card__date {
   margin-left: auto;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
 }
 
@@ -310,9 +310,9 @@ const topTags = computed(() =>
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 16px;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   text-decoration: none;
   border-radius: var(--radius);

@@ -484,9 +484,9 @@ const sections = computed(() => [
 .filter-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 两个汉字在回退等宽字体下只有 39px 宽（CI 实测），命中区下限不该由字形决定 */
-  min-width: 40px;
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -562,7 +562,7 @@ const sections = computed(() => [
 .post-search input {
   flex: 1 1 auto;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

@@ -68,7 +68,7 @@ const { t } = useI18n()
 .input {
   flex: 1 1 auto;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
@@ -97,7 +97,7 @@ const { t } = useI18n()
 /* —— 清除：只在搜索态出现，弱化到只剩文字 —— */
 .clear {
   flex: 0 0 auto;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 4px;
   font-family: inherit;
   font-size: var(--fs-small);

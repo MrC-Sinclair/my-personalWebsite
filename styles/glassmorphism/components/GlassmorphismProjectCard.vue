@@ -8,10 +8,16 @@
   contentSlug。
 -->
 <template>
-  <NuxtLink
-    class="project-card"
-    :to="localePath(`/style/${styleId}/projects/${contentSlug(project.path)}`)"
-  >
+  <div class="project-card">
+    <!-- 整卡点击层：原先整卡是 <NuxtLink>（<a>），内部外链又是 <a>，
+         嵌套 anchor 会被浏览器拆出一个 42×42 的空链接：键盘会聚焦到
+         空白焦点、44px 命中区永远不达标，SSR/CSR 的 DOM 也不一致。
+         改成绝对定位的覆盖链接，外链靠 z-index 盖在它上面。 -->
+    <NuxtLink
+      class="card-overlay"
+      :to="localePath(`/style/${styleId}/projects/${contentSlug(project.path)}`)"
+      :aria-label="project.title"
+    />
     <!-- 封面必须放在 .card-top 之外：.card-top 是「标题 + 精选徽标」两端对齐的横向 flex，
          width:100% 的图进去会把标题挤成窄条 —— 实测标题竖排并被裁切 -->
     <NuxtImg
@@ -55,7 +61,7 @@
         {{ t('projects.github') }}<span class="link-arrow" aria-hidden="true">↗</span>
       </a>
     </div>
-  </NuxtLink>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -125,6 +131,15 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   transform: var(--press-transform);
 }
 
+/* 整卡点击层：覆盖整块玻璃板，替代原先包裹整卡的 <a>。
+   与 .card-links 里的外链是兄弟关系，不再产生嵌套 anchor。 */
+.card-overlay {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+}
+
 .card-top {
   display: flex;
   align-items: flex-start;
@@ -190,6 +205,8 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
 
 /* 外链按钮行：推到卡片底部 */
 .card-links {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -201,7 +218,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 700;

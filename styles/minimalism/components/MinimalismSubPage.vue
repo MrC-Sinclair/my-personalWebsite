@@ -77,7 +77,7 @@ defineProps<{
 
 .title {
   margin: 0;
-  font-size: clamp(32px, 4.6vw, 48px);
+  font-size: var(--scale-subtitle-fluid);
   font-weight: 300;
   line-height: 1.1;
   letter-spacing: -0.02em;

@@ -94,7 +94,7 @@ const metaText = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   background: var(--c-bg);
   border: 2px solid color-mix(in srgb, var(--c-muted) 55%, transparent);
   color: var(--c-accent);
@@ -177,7 +177,7 @@ const metaText = computed(() => {
   z-index: 1;
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 700;

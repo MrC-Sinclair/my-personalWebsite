@@ -217,7 +217,7 @@ const postRoute = computed(() => `/style/${styleId.value}/blog/${contentSlug(pro
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-family: var(--font-head);
   font-size: var(--fs-small);
   color: var(--c-accent);

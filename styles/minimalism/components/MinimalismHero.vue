@@ -81,6 +81,8 @@ const { t } = useI18n()
 .hero-name {
   margin: 20px 0 0;
   font-family: var(--font-head);
+  /* 首屏展示级例外：「大而轻」是极简的版式签名，保留 120px 轻字重姓名；
+     共享刻度管的是内容层级，不是首屏签名。 */
   font-size: clamp(60px, 11vw, 120px);
   font-weight: 300;
   line-height: 1.04;
@@ -91,7 +93,7 @@ const { t } = useI18n()
 
 .hero-tagline {
   margin: 28px 0 0;
-  font-size: clamp(18px, 2.2vw, 21px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 400;
   color: var(--c-text);
 }
@@ -113,7 +115,7 @@ const { t } = useI18n()
 .hero-link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 2px;
   font-weight: 500;
   color: var(--c-text);

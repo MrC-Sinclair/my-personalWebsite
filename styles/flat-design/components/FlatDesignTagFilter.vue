@@ -123,7 +123,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .chip-count {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   opacity: 0.75;
 }
 

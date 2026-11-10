@@ -164,9 +164,9 @@ const projectLinks = computed(() => {
 .crumb {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 命中区地板：与字形宽度解耦，「首页」两个汉字的链接实测只有 24px 宽 */
-  min-width: 40px;
+  min-width: var(--scale-hit);
   color: var(--c-text);
   text-decoration: none;
   transition: color var(--transition);
@@ -204,7 +204,7 @@ const projectLinks = computed(() => {
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(28px, 4.6vw, 48px);
+  font-size: var(--scale-title-fluid);
   font-weight: 800;
   line-height: 1.04;
   letter-spacing: -0.02em;
@@ -268,7 +268,7 @@ const projectLinks = computed(() => {
   display: inline-flex;
   gap: 8px;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-weight: 700;
   color: var(--c-text);
   text-decoration: none;
@@ -294,7 +294,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 2em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(21px, 2.4vw, 28px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--c-text);
@@ -303,7 +303,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.6em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(18px, 2vw, 21px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -436,7 +436,7 @@ const projectLinks = computed(() => {
   display: inline-flex;
   gap: 8px;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-size: var(--fs-small);
   font-weight: 700;
   letter-spacing: 0.08em;

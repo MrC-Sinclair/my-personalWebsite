@@ -81,6 +81,7 @@ const initials = computed(() => {
   justify-content: center;
   width: 96px;
   height: 96px;
+  /* 头像占位字形，图标尺寸是独立体系。 */
   font-size: 32px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -100,7 +101,9 @@ const initials = computed(() => {
 /* 大号浮雕姓名：文字本身也带凸起的光影 */
 .hero-name {
   margin: 0;
-  font-size: clamp(var(--fs-head), 8vw, 60px);
+  /* 首屏展示级例外：原第一参数隐式依赖 --fs-head，已固定为原值 44px，
+     避免改 --fs-head 时出现 min > max 的非法 clamp。 */
+  font-size: clamp(44px, 8vw, 60px);
   font-weight: 800;
   line-height: 1.15;
   color: var(--c-text);
