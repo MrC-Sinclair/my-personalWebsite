@@ -20,7 +20,8 @@
         <!-- 极淡的 12 栏背景网格线：版面骨架的可见提示 -->
         <div class="grid-lines" aria-hidden="true" />
 
-        <SwissHero />
+        <!-- 右半屏项目索引用首页已取好的精选项目，不新增取数 -->
+        <SwissHero :projects="featuredProjects" :pending="loading" />
 
         <!-- 加载骨架（防御分支：正常情况下 await 后数据已就绪） -->
         <div v-if="loading" class="skeleton-zone" role="status" aria-live="polite">

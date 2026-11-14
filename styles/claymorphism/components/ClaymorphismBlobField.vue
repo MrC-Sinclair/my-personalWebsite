@@ -1,21 +1,18 @@
 <!--
   ClaymorphismBlobField - claymorphism 风格漂浮装饰层
   ------------------------------------------------------------
-  英雄区背后的漂浮黏土球装饰：全部由纯 CSS 绘制（径向渐变
-  高光 + 同色系彩色投影），大小 / 颜色 / 浮动周期 / 延迟各异，
-  营造「软黏土球飘在 Pastel 天空里」的氛围。
-  纯装饰（aria-hidden），reduced-motion 下全部静止。
+  评审诊断原首屏「糖果色球太多太散，五种颜色齐上」：这里从
+  8 颗 / 6 色收敛到 3 颗，配色定为一个主色（lilac 紫）+ 两个
+  点缀（butter 黄 / mint 绿），并按大中小三档 + 透明度递降做
+  前后景深，全部退到内容背后，不再与内容抢注意力。
+  纯 CSS 绘制（径向渐变高光 + 同色系彩色投影），纯装饰
+  （aria-hidden），reduced-motion 下静止。
 -->
 <template>
   <div class="field" aria-hidden="true">
-    <span class="ball ball-pink"/>
-    <span class="ball ball-mint"/>
-    <span class="ball ball-butter"/>
     <span class="ball ball-lilac"/>
-    <span class="ball ball-blue"/>
-    <span class="ball ball-peach"/>
-    <span class="ball ball-tiny-a"/>
-    <span class="ball ball-tiny-b"/>
+    <span class="ball ball-butter"/>
+    <span class="ball ball-mint"/>
   </div>
 </template>
 
@@ -40,101 +37,45 @@
   animation: bob var(--bob-time, 7s) ease-in-out var(--bob-delay, 0s) infinite alternate;
 }
 
-/* —— 各色黏土球：Pastel 色板（风格签名装饰色） —— */
-.ball-pink {
-  --ball-color: #f7a8c8;
-  --ball-shadow: rgb(215 100 150 / 0.35);
-  --ball-shadow-soft: rgb(215 100 150 / 0.18);
-  top: 12%;
-  left: 6%;
-  width: 88px;
-  height: 88px;
-  --bob-time: 6.5s;
-}
-
-.ball-mint {
-  --ball-color: #8fddb7;
-  --ball-shadow: rgb(90 175 135 / 0.35);
-  --ball-shadow-soft: rgb(90 175 135 / 0.18);
-  top: 58%;
-  left: 10%;
-  width: 56px;
-  height: 56px;
-  --bob-time: 8s;
-  --bob-delay: 0.6s;
-}
-
-.ball-butter {
-  --ball-color: #ffd97a;
-  --ball-shadow: rgb(215 170 70 / 0.35);
-  --ball-shadow-soft: rgb(215 170 70 / 0.18);
-  top: 20%;
-  right: 8%;
-  width: 104px;
-  height: 104px;
-  --bob-time: 7.5s;
-  --bob-delay: 0.3s;
-}
-
+/* —— 前景大球：主色紫，画面右上，不压住中央内容卡 —— */
 .ball-lilac {
   --ball-color: #c3a6f5;
   --ball-shadow: rgb(140 100 200 / 0.35);
   --ball-shadow-soft: rgb(140 100 200 / 0.18);
-  top: 66%;
-  right: 14%;
-  width: 72px;
-  height: 72px;
-  --bob-time: 6s;
-  --bob-delay: 1s;
-}
-
-.ball-blue {
-  --ball-color: #93c2f5;
-  --ball-shadow: rgb(80 130 200 / 0.35);
-  --ball-shadow-soft: rgb(80 130 200 / 0.18);
-  top: 42%;
-  left: 20%;
-  width: 40px;
-  height: 40px;
-  --bob-time: 9s;
-  --bob-delay: 0.4s;
-}
-
-.ball-peach {
-  --ball-color: #ffb99a;
-  --ball-shadow: rgb(215 120 80 / 0.35);
-  --ball-shadow-soft: rgb(215 120 80 / 0.18);
-  top: 8%;
-  right: 30%;
-  width: 34px;
-  height: 34px;
+  top: 10%;
+  right: 7%;
+  width: 132px;
+  height: 132px;
+  opacity: 0.9;
   --bob-time: 7s;
-  --bob-delay: 1.4s;
 }
 
-/* 小圆点：填补大球之间的空隙 */
-.ball-tiny-a {
-  --ball-color: #e2d4ff;
-  --ball-shadow: rgb(150 110 210 / 0.3);
-  --ball-shadow-soft: rgb(150 110 210 / 0.15);
-  bottom: 12%;
-  left: 30%;
-  width: 18px;
-  height: 18px;
-  --bob-time: 5.5s;
-  --bob-delay: 0.8s;
+/* —— 中景点缀：暖黄，左侧偏下 —— */
+.ball-butter {
+  --ball-color: #ffd97a;
+  --ball-shadow: rgb(215 170 70 / 0.35);
+  --ball-shadow-soft: rgb(215 170 70 / 0.18);
+  bottom: 16%;
+  left: 6%;
+  width: 76px;
+  height: 76px;
+  opacity: 0.62;
+  --bob-time: 8.5s;
+  --bob-delay: 0.5s;
 }
 
-.ball-tiny-b {
-  --ball-color: #ffd7e8;
-  --ball-shadow: rgb(215 100 150 / 0.3);
-  --ball-shadow-soft: rgb(215 100 150 / 0.15);
-  bottom: 20%;
-  right: 34%;
-  width: 22px;
-  height: 22px;
-  --bob-time: 6.8s;
-  --bob-delay: 1.8s;
+/* —— 远景点缀：薄荷，右下，最小最淡 —— */
+.ball-mint {
+  --ball-color: #8fddb7;
+  --ball-shadow: rgb(90 175 135 / 0.35);
+  --ball-shadow-soft: rgb(90 175 135 / 0.18);
+  bottom: 10%;
+  right: 12%;
+  width: 44px;
+  height: 44px;
+  opacity: 0.42;
+  --bob-time: 9.5s;
+  --bob-delay: 1.2s;
 }
 
 /* 浮动：上下轻漂（alternate 往返，无跳变） */
@@ -145,6 +86,27 @@
 
   to {
     transform: translateY(16px);
+  }
+}
+
+/* 窄屏：球再退一档景深，给内容留出完整宽度 */
+@media (max-width: 640px) {
+  .ball-lilac {
+    width: 96px;
+    height: 96px;
+    opacity: 0.5;
+  }
+
+  .ball-butter {
+    width: 56px;
+    height: 56px;
+    opacity: 0.38;
+  }
+
+  .ball-mint {
+    width: 32px;
+    height: 32px;
+    opacity: 0.28;
   }
 }
 

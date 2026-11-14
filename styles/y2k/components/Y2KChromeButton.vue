@@ -93,10 +93,8 @@ const {
     #aeb9e8 84%,
     #e7ecff 100%
   );
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
-    inset 0 -3px 6px rgb(24 16 84 / 0.4),
-    0 10px 24px rgb(110 90 255 / 0.4);
+  /* 评审「按钮投影统一」：主态走同一份 --y2k-btn-shadow */
+  box-shadow: var(--y2k-btn-shadow);
 }
 
 /* —— 首屏 CTA 级尺寸：与巨型铬标题同框时保持存在感
@@ -134,23 +132,20 @@ const {
     #7d89c1 100%
   );
   border-color: rgb(235 240 255 / 0.6);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.8),
-    inset 0 -3px 6px rgb(5 0 42 / 0.5),
-    0 8px 22px rgb(5 0 42 / 0.45);
+  /* 与亮铬主按钮同一套投影，主次仍靠底色明暗区分 */
+  box-shadow: var(--y2k-btn-shadow);
 }
 
-/* hover：辉光增强 + 上浮 */
+/* hover：只上浮 + 亮度增强，投影保持与主态完全一致。
+   评审「按钮投影统一」：原来两个 hover 各写一套不同数值的
+   box-shadow，导致同排按钮的落影方向/扩散范围看着不齐。 */
 .y2k-btn--chrome:hover {
   filter: brightness(1.1);
   transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
-    inset 0 -3px 6px rgb(24 16 84 / 0.4),
-    0 16px 34px rgb(139 92 255 / 0.55);
 }
 
 .y2k-btn--plastic:hover {
+  filter: brightness(1.08);
   transform: translateY(-2px);
   background: linear-gradient(
     180deg,
@@ -161,10 +156,6 @@ const {
     #8c98cf 88%,
     #c6cff2 100%
   );
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.9),
-    inset 0 -3px 6px rgb(5 0 42 / 0.45),
-    0 14px 30px rgb(110 90 255 / 0.45);
 }
 
 /* active：塑料被按瘪（内凹 + 下沉） */

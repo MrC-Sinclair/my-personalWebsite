@@ -1,9 +1,17 @@
 <!--
   TerminalConsole - terminal 风格终端主体（命令行交互核心）
   ------------------------------------------------------------
-  整页终端的交互核心：输出区（role="log" + aria-live="polite"，
-  打字进行中的行以 aria-hidden 排除出读屏，避免逐字播报）+
-  命令输入行（Enter 执行 / ↑↓ 翻命令历史）。
+  整页终端的交互核心：输出区（role="log" + aria-live="polite" +
+  overflow-y:auto 可滚动日志，打字进行中的行以 aria-hidden 排除出
+  读屏，避免逐字播报）+ 命令输入行（Enter 执行 / ↑↓ 翻命令历史）。
+
+  2026-11-13 完成度修补（C 档「只补完成度，不用克制去削」）：
+  评审点名「首屏中间一大片纯黑空白」——根因是横幅 / MOTD / 日志
+  全部只在 onMounted 里 push，SSG 首帧只有一个 idle 游标。现改为
+  buildBootLog() 在 setup 同步构造「横幅 + MOTD + 命令回显 + 真实
+  项目 / 文章列表」作为 entries 初值，预渲染即含内容；打字机只补
+  欢迎语。全部沿用现有纯文本条目类型，纯黑底绿字 / 扫描线 /
+  命令行叙事一个未动，也未新增任何装饰。
 
   · 命令解析与输出是本风格的表现层交互（tier 3 允许），
     但所有内容数据仍来自共享层：works/blog 经 props 透传
@@ -110,6 +118,7 @@ import TerminalBlockTheme from './TerminalBlockTheme.vue'
 import TerminalBlockWorks from './TerminalBlockWorks.vue'
 import { pickTerminalCopy } from '../copy'
 import { styleRegistry } from '~/styles/registry'
+import { formatDate } from '~/utils/format'
 
 /** 快捷命令栏的说明文字 id（固定值：SSR 与客户端必须一致，不能用随机串） */
 const QUICK_LABEL_ID = 'terminal-quick-label'
@@ -200,6 +209,19 @@ interface BlockEntry extends BaseEntry {
 
 type Entry = EchoEntry | BannerEntry | MotdEntry | LineEntry | RunEntry | BlockEntry
 
+/**
+ * 开机日志初值：SSG 首帧即含真实内容。
+ * ------------------------------------------------------------
+ * 评审诊断「首屏中间一大片纯黑空白，内容全挤在上三分之一」的根因：
+ * 原来横幅 / MOTD / 日志全部在 onMounted 里才 push，预渲染 HTML
+ * 只有一个 idle 游标，无 JS 或首帧看到的是整片黑场。
+ * 现在把「横幅 + MOTD + 命令回显 + 真实项目 / 文章列表」作为
+ * entries 的确定性初值（只依赖 props / t() / formatDate 纯函数，
+ * SSR 与客户端完全一致，无 hydration 风险），沿用现有纯文本
+ * 条目类型，不加任何装饰。打字机继续负责后续欢迎语。
+ */
+/** 开机日志各列条数：取到让首屏形成可滚动日志的密度（真实数据，非装饰） */
+const BOOT_ITEMS = 5
 const entries = ref<Entry[]>([])
 const queue: Entry[] = []
 const typing = ref<{ entry: LineEntry; shown: number } | null>(null)
@@ -479,6 +501,54 @@ const motdText = computed(() => {
   ).join('\n')
 })
 
+/* ============ 开机日志：SSG 首帧即含真实内容 ============ */
+
+/**
+ * 构造确定性开机日志（SSR 与客户端同参同结果，无 hydration 风险）。
+ * 只用 props 里的真实项目 / 文章数据与现成命令名、i18n 文案，
+ * 不编造任何数字或内容；纯文本行，不加卡片 / 图标 / 装饰。
+ */
+function buildBootLog(): Entry[] {
+  const log: Entry[] = [
+    { id: nextId(), kind: 'banner', text: bannerText.value },
+    { id: nextId(), kind: 'motd', text: motdText.value },
+  ]
+
+  const works = blockProjects.value.slice(0, BOOT_ITEMS)
+  if (works.length) {
+    log.push({ id: nextId(), kind: 'echo', text: 'works' })
+    works.forEach((work, i) => {
+      const tags = (Array.isArray(work.tags) ? work.tags : []).slice(0, 2).join(' / ')
+      const date = work.date ? formatDate(work.date, locale.value) : ''
+      log.push(
+        line(
+          'out',
+          `  [${String(i + 1).padStart(2, '0')}] ${work.title}${date ? `  ·  ${date}` : ''}${tags ? `  ·  ${tags}` : ''}`,
+        ),
+      )
+    })
+  }
+
+  const posts = blockPosts.value.slice(0, BOOT_ITEMS)
+  if (posts.length) {
+    log.push({ id: nextId(), kind: 'echo', text: 'blog' })
+    posts.forEach((post, i) => {
+      const date = post.date ? formatDate(post.date, locale.value) : ''
+      log.push(
+        line(
+          'dim',
+          `  [${String(i + 1).padStart(2, '0')}] ${post.title}${date ? `  ·  ${date}` : ''}${post.category ? `  ·  ${post.category}` : ''}`,
+        ),
+      )
+    })
+  }
+
+  return log
+}
+
+// setup 同步执行：SSG 预渲染 HTML 里就有这批日志，不再等客户端打字机
+entries.value = buildBootLog()
+
 /* ============ 交互辅助 ============ */
 
 /** 点击终端任意空白处聚焦输入框（终端惯例） */
@@ -521,11 +591,8 @@ onMounted(() => {
     input.addEventListener('keydown', keydownHandler)
   }
 
-  // 开机：横幅瞬时输出，问候语走打字机（reduced-motion 下直接整行）
-  commit({ id: nextId(), kind: 'banner', text: bannerText.value })
-  // MOTD：横幅之后、问候语之前补 neofetch 式信息块，
-  // 让首屏不再是一整片纯黑（此前整块黑场缺少可辨识的终端信息）
-  commit({ id: nextId(), kind: 'motd', text: motdText.value })
+  // 横幅 / MOTD / 真实项目与文章日志已在 setup 里作为 SSR 首帧输出，
+  // 这里只补打字机欢迎语（reduced-motion 下直接整行），避免重复。
   enqueue(
     line('out', t('home.tagline')),
     line('dim', copy.value.welcomeGuide),

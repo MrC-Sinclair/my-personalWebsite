@@ -1,10 +1,21 @@
 <!--
   NeumorphismHero - neumorphism 风格首屏英雄区
   ------------------------------------------------------------
-  居中对称的首屏：凸起圆形头像刻着姓名首字母 + 问候语 + 大号
-  浮雕姓名 + 标语/简介 + 两枚凸起按钮（原生锚点跳到项目/文章
-  区块，按下时凹进材料）。首屏撑满一屏，入场为轻微的
-  「浮现」动画（prefers-reduced-motion 下关闭）。
+  居中对称的首屏：凸起圆形头像 + 问候 + 浮雕姓名 + 标语/简介 +
+  两枚凸起按钮，下方是一块「内凹」的真实文章面板。
+
+  评审诊断：原来首屏底部有一组材质仪表（两枚凸起表盘 + 一条
+  内凹推子），「拟物控件完成度高，但和个人简介毫无关系，属于
+  纯炫技」。本轮删掉整组控件，把腾出的位置交给最新三篇真实
+  文章（标题 / 日期 / 分类 / 详情链接）。材质签名不丢：面板用
+  --shadow-press 做内凹槽，条目是凸起/内凹交替的新拟态行。
+
+  边界说明：评审的 fix 还提到「把控件变成文章筛选 / 主题切换 /
+  年份滑块」，那属于新增业务交互，超出本阶段「只改变现层取用
+  与摆放已有内容、不改 composables、不编造数据」的硬边界，故
+  本轮不实现；仅做删装饰 + 真实内容上屏。
+  数据来自共享层 useBlog（由首页以 props 传入），日期格式化与
+  详情链接复用共享层 utils / useStyleContentPath。
 -->
 <template>
   <section class="hero">
@@ -19,33 +30,55 @@
       <a class="hero-btn" href="#posts">{{ t('home.viewBlog') }}</a>
     </div>
 
-    <!--
-      材质仪表组：新拟态的招牌构件（纯装饰，aria-hidden）
-      两枚凸起表盘（外圈凸 / 内圈凹 / 指针）+ 一条内凹滑轨与凸起推子。
-      作用有二：填充首屏空档，并在同一块材料上拉开明度层次——
-      凸起 = 左上亮右下暗，内凹 = 同组阴影取 inset，指针提供强调色。
-      指针角度与推子位置为固定值，SSR/客户端一致。
-    -->
-    <div class="hero-cluster" aria-hidden="true">
-      <span class="dial">
-        <span class="dial-face">
-          <span class="dial-needle dial-needle--a" />
-        </span>
-      </span>
-      <span class="dial">
-        <span class="dial-face">
-          <span class="dial-needle dial-needle--b" />
-        </span>
-      </span>
-      <span class="slider">
-        <span class="slider-knob" />
-      </span>
-    </div>
+    <!-- 内凹内容面板：原「两表盘 + 推子」材质仪表组的位置，
+         换成最新三篇真实文章。材质由内容承担，不再纯炫技。 -->
+    <section class="hero-feed" :aria-label="t('home.latestPosts')">
+      <p class="feed-kicker">{{ t('home.latestPosts') }}</p>
+
+      <div v-if="pending" class="feed-loading" role="status">
+        <p class="sr-only">{{ t('common.loading') }}</p>
+        <span v-for="i in FEED_COUNT" :key="i" class="feed-loading-line" aria-hidden="true"/>
+      </div>
+
+      <ol v-else-if="feedItems.length" class="feed-list">
+        <li v-for="item in feedItems" :key="item.to">
+          <NuxtLink class="neu-hero-item" :to="item.to">
+            <span class="feed-main">
+              <span class="feed-title">{{ item.title }}</span>
+              <span class="feed-meta">
+                <time :datetime="item.date">{{ item.dateText }}</time>
+                <span v-if="item.category">{{ item.category }}</span>
+              </span>
+            </span>
+            <span class="feed-arrow" aria-hidden="true">→</span>
+          </NuxtLink>
+        </li>
+      </ol>
+      <p v-else class="feed-empty">{{ t('blog.noResults') }}</p>
+    </section>
   </section>
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+import type { BlogPost } from '~/types/blog'
+import { contentSlug } from '~/utils/content'
+import { formatDate } from '~/utils/format'
+
+const props = defineProps<{
+  /** 最新文章列表（来自共享层 useBlog，由首页传入） */
+  posts: BlogPost[]
+  /** 数据是否仍在加载（加载时显示补白行，不误报空状态） */
+  pending?: boolean
+}>()
+
+/** 内凹面板展示的文章条数 */
+const FEED_COUNT = 3
+
+const { t, locale } = useI18n()
+// 详情链接走共享层，风格层不重写路由拼接
+const { postPath } = useStyleContentPath()
+
+const dateLocale = computed(() => (locale.value === 'zh' ? 'zh-CN' : 'en-US'))
 
 /** 从站点名提取首字母缩写（纯字符串推导，SSR/客户端一致） */
 const initials = computed(() => {
@@ -58,6 +91,17 @@ const initials = computed(() => {
     .join('')
   return letters || 'N'
 })
+
+/** 内凹面板条目：把共享层数据映射成真实内容（标题 / 日期 / 分类 / 链接） */
+const feedItems = computed(() =>
+  props.posts.slice(0, FEED_COUNT).map((post) => ({
+    title: post.title,
+    date: post.date,
+    dateText: formatDate(post.date, dateLocale.value),
+    category: post.category ?? '',
+    to: postPath(contentSlug(post.path)),
+  })),
+)
 </script>
 
 <style scoped>
@@ -108,7 +152,7 @@ const initials = computed(() => {
   line-height: 1.15;
   color: var(--c-text);
   letter-spacing: 0.01em;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
   text-shadow: 1px 1px 1px rgb(255 255 255 / 0.92), -1px -1px 1px rgb(163 177 198 / 0.45);
 }
 
@@ -139,7 +183,7 @@ const initials = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 46px;
+  min-height: var(--scale-hit);
   padding: 12px 28px;
   font-size: var(--fs-base);
   font-weight: 700;
@@ -168,82 +212,142 @@ const initials = computed(() => {
   outline-offset: 3px;
 }
 
-/* —— 材质仪表组：两枚表盘 + 一条推子 ——
-   同一块材料上拉开明度层次：外圈凸起 → 内圈内凹 → 指针强调色，
-   让首屏不再是单一的死灰面 */
-.hero-cluster {
+/* —— 内凹内容面板：删掉表盘 / 推子后由真实文章承担材质 —— */
+.hero-feed {
+  width: 100%;
+  max-width: 640px;
+  min-width: 0;
+  margin-top: 20px;
+  padding: clamp(16px, 3vw, 28px);
+  text-align: left;
+  background: var(--c-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-press);
+}
+
+.feed-kicker {
+  margin: 0 0 12px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--c-accent);
+}
+
+.feed-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.neu-hero-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--scale-hit);
+  padding: 12px 16px;
+  color: var(--c-text);
+  text-decoration: none;
+  background: var(--c-bg);
+  border-radius: var(--radius-sm);
+  box-shadow: 4px 4px 9px #a3b1c6, -4px -4px 9px #ffffff;
+  transition:
+    box-shadow var(--transition),
+    color var(--transition);
+}
+
+.feed-list li + li {
+  margin-top: 10px;
+}
+
+.neu-hero-item:hover {
+  color: var(--c-accent);
+  box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+}
+
+.neu-hero-item:active {
+  box-shadow: var(--shadow-press);
+}
+
+.neu-hero-item:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
+.feed-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.feed-title {
+  font-size: var(--scale-body);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.feed-meta {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  margin-top: 20px;
+  gap: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
 }
 
-/* 表盘：外圈凸起圆台 + 内圈内凹盘面 + 强调色指针 */
-.dial {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 84px;
-  height: 84px;
-  background: var(--c-bg);
-  border-radius: 50%;
-  box-shadow: var(--shadow);
+.feed-arrow {
+  flex: none;
+  margin-left: auto;
+  color: var(--c-accent);
+  opacity: 0.75;
+  transition: transform var(--transition);
 }
 
-.dial-face {
-  position: relative;
-  display: block;
-  width: 58px;
-  height: 58px;
+.neu-hero-item:hover .feed-arrow {
+  transform: translateX(4px);
+}
+
+.feed-empty {
+  margin: 0;
+  padding: 12px 0;
+  font-size: var(--fs-base);
+  color: var(--c-muted);
+}
+
+.feed-loading {
+  display: grid;
+  gap: 12px;
+}
+
+.feed-loading-line {
+  height: var(--scale-space-5);
   background: var(--c-bg);
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-press);
+  animation: feed-breathe 1.4s ease-in-out infinite;
 }
 
-/* 指针：以盘心为原点旋转，末端为强调色（--deco 渐变） */
-.dial-needle {
+@keyframes feed-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.sr-only {
   position: absolute;
-  left: 50%;
-  bottom: 50%;
-  width: 3px;
-  height: 21px;
-  margin-left: -1.5px;
-  transform-origin: 50% 100%;
-  background: var(--deco);
-  border-radius: 2px;
-}
-
-.dial-needle--a {
-  transform: rotate(38deg);
-}
-
-.dial-needle--b {
-  transform: rotate(-62deg);
-}
-
-/* 推子：内凹轨道 + 凸起滑块（轨道内部比材料暗，形成凹槽） */
-.slider {
-  position: relative;
-  display: block;
-  width: 168px;
-  height: 20px;
-  background: var(--c-bg);
-  border-radius: 999px;
-  box-shadow: var(--shadow-press);
-}
-
-.slider-knob {
-  position: absolute;
-  top: 50%;
-  left: 58%;
-  width: 34px;
-  height: 34px;
-  margin-top: -16px;
-  background: var(--c-bg);
-  border-radius: 50%;
-  box-shadow: var(--shadow);
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  white-space: nowrap;
 }
 
 /* 入场浮现动画（纯 CSS，交错延迟） */
@@ -288,12 +392,19 @@ const initials = computed(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero > * {
+  .hero > *,
+  .feed-loading-line {
     animation: none;
   }
 
-  .hero-btn {
+  .hero-btn,
+  .neu-hero-item,
+  .feed-arrow {
     transition: none;
+  }
+
+  .neu-hero-item:hover .feed-arrow {
+    transform: none;
   }
 }
 </style>

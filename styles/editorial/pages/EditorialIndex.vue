@@ -15,7 +15,8 @@
     <EditorialMasthead />
 
     <main class="sheet-body">
-      <EditorialCover />
+      <!-- 封面「本期要目」用首页已取好的真实文章列表，不新增取数 -->
+      <EditorialCover :posts="latestPosts" :pending="loading" />
 
       <div class="flow">
         <EditorialProfile />

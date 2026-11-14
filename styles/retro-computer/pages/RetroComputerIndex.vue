@@ -11,9 +11,16 @@
   - CRT 覆盖层：扫描线 + 暗角（pointer-events: none，不挡交互），
     扫描亮带动画在 prefers-reduced-motion 下关闭（静态纹理保留）
 
-  排版轴：12 列桌面网格，窗口宽窄悬殊（7:5 / 5:7 交替）且上下
-  错位摆放，与滚动文档式布局根本不同；窄屏窗口纵向堆叠满宽，
+  排版轴：12 列桌面网格，窗口宽窄悬殊（统一 7:5）且上下错位
+  摆放，与滚动文档式布局根本不同；窄屏窗口纵向堆叠满宽，
   回退的是「布局」不是「设计」（立体边框、扫描线全部保留）。
+
+  2026-11-13 完成度修补（C 档「只补完成度，不用克制去削」）：
+  评审点名「窗口堆叠太满、任务栏压住内容、两个窗口宽度不等」。
+  现两行窗口统一到 7:5 栅格（保留宽窄悬殊 + 错位的题材签名），
+  加大窗口沟槽让青绿桌面底色透出来，并把任务栏高度做成显式
+  --rc-taskbar-h 补偿，保证滚到底时内容不被固定任务栏遮住。
+  标题栏、立体边框、系统时钟、CRT 扫描线一个未动。
 
   数据全部来自共享层 composables（useAppInfo / useProjects /
   useBlog），异步数据在 onMounted 获取（SSG 安全：服务端与客户端
@@ -259,24 +266,31 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
   background-size: 4px 4px;
 }
 
-/* —— 屏幕区域：为固定菜单条 / 任务栏让位（含刘海安全区）—— */
+/* —— 屏幕区域：为固定菜单条 / 任务栏让位（含刘海安全区）——
+   任务栏实高 = 48px 内容 + 1px 顶边 + 安全区；这里给到 48+1+24
+   = 73px 补偿，保证滚到底时最后一个窗口底边仍在任务栏之上。 */
 .rc-screen {
+  --rc-taskbar-h: 49px;
   flex: 1;
   width: 100%;
   padding: calc(56px + env(safe-area-inset-top, 0px)) var(--space)
-    calc(64px + env(safe-area-inset-bottom, 0px));
+    calc(var(--rc-taskbar-h) + var(--gap) + env(safe-area-inset-bottom, 0px));
 }
 
+/* 桌面呼吸：加大窗口之间的沟槽，让青绿桌面底色透出来 */
 .rc-screen__inner {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: calc(var(--gap) * 1.5);
+  gap: calc(var(--gap) * 2);
   align-items: start;
   max-width: var(--page-w);
   margin: 0 auto;
 }
 
-/* ============ 窗口摆放：宽窄悬殊 + 上下错位（窗口随手搁在桌面上）============ */
+/* ============ 窗口摆放：统一 7:5 栅格 + 上下错位 ============
+   评审「两个窗口宽度不等显得随意」：原第二行是 5:7，与首行 7:5
+   不一致。现两行统一为 7:5（宽窄悬殊与错位仍是本风格的排版轴，
+   不改成等宽），桌面底色从沟槽里露出来。 */
 .rc-pos-home {
   grid-column: 1 / -1;
 }
@@ -291,11 +305,11 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
 }
 
 .rc-pos-blog {
-  grid-column: 1 / 6;
+  grid-column: 1 / 8;
 }
 
 .rc-pos-contact {
-  grid-column: 6 / -1;
+  grid-column: 8 / -1;
   margin-top: var(--space);
 }
 
@@ -307,6 +321,11 @@ const taskbarWindows = computed<RetroTaskbarWindow[]>(() => [
   .rc-pos-contact {
     grid-column: 1 / -1;
     margin-top: 0;
+  }
+
+  /* 窄屏桌面呼吸略收，但沟槽仍比改前大，青绿底色可见 */
+  .rc-screen__inner {
+    gap: calc(var(--gap) * 1.5);
   }
 }
 

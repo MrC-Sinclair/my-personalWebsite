@@ -3,8 +3,10 @@
   GlassmorphismIndex - glassmorphism 风格首页（/style/glassmorphism/）
   ------------------------------------------------------------
   「磨砂玻璃叠在彩色渐变上」的完整首页。布局轴：垂直玻璃
-  板错落堆叠流——英雄区开放排版直接暴露在 mesh 渐变上，
-  其后各区块是一块块错位（左右交替）的磨砂玻璃板，桌面端
+  板错落堆叠流——英雄区左侧开放排版直接暴露在 mesh 渐变上，
+  右侧是一块承载最新三篇真实文章的磨砂玻璃卡（让「透」有对象，
+  取代原来两枚纯装饰圆片与三枚漂浮统计片），其后各区块是一块块
+  错位（左右交替）的磨砂玻璃板，桌面端
   板宽收窄 92% 左右交替，形成之字形节奏；窄屏回退为单列
   （回退的是布局，玻璃材质与 Glow 签名保留）。
   数据全部来自共享层 composables（useAsyncData 承载，SSG
@@ -16,8 +18,13 @@
     <GlassmorphismNav :sections="navSections" />
 
     <main class="flow">
-      <!-- ① 英雄区（开放排版 + 漂浮统计片） -->
-      <GlassmorphismHero class="sheet" :chips="heroChips" />
+      <!-- ① 英雄区（左侧开放排版 + 右侧真实内容玻璃卡） -->
+      <GlassmorphismHero
+        class="sheet"
+        :posts="latestPosts"
+        :chips="heroChips"
+        :pending="loading"
+      />
 
       <!-- 全局加载骨架（防御分支：正常 await 后数据已就绪） -->
       <GlassmorphismGlassPanel v-if="loading" class="sheet">

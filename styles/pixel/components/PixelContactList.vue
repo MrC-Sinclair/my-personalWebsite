@@ -74,12 +74,13 @@ function linkText(url: string): string {
   list-style: none;
 }
 
+/* 键列与首屏图标格同宽（--px-icon），行距 / 内距统一到 4px 网格 */
 .crow {
   display: grid;
-  grid-template-columns: minmax(64px, auto) 1fr auto;
+  grid-template-columns: minmax(var(--px-icon), auto) 1fr auto;
   align-items: center;
-  gap: 8px 12px;
-  padding: 8px 12px;
+  gap: calc(var(--px-grid) * 2) calc(var(--px-grid) * 3);
+  padding: calc(var(--px-grid) * 2) calc(var(--px-grid) * 3);
   background: color-mix(in srgb, var(--c-bg) 55%, var(--c-surface));
   border: 2px solid color-mix(in srgb, var(--c-muted) 40%, transparent);
 }
@@ -154,10 +155,11 @@ function linkText(url: string): string {
   color: var(--c-muted);
 }
 
-/* 二维码：pixelated 硬像素放大（风格签名） */
+/* 二维码：pixelated 硬像素放大（风格签名）
+   56px 原是散值，统一到 14 × 4px 网格，与首屏图标格同一基准 */
 .crow-qr {
-  width: 56px;
-  height: 56px;
+  width: calc(var(--px-grid) * 14);
+  height: calc(var(--px-grid) * 14);
   image-rendering: var(--img-rendering);
   border: 2px solid var(--c-border);
   justify-self: end;

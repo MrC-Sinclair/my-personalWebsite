@@ -5,6 +5,14 @@
   左上暖光（明确光源方向）；问候语与简介为烫印在皮革上的
   象牙字，站名为烫金压花大字。下方两颗实体按钮（木质/黄铜）
   按压有 inset 行程感，均为页内锚点（不写业务逻辑）。
+
+  2026-11-15 完成度修补（C 档「只补完成度，不用克制去削」）：
+  评审「中央一大块空皮面，文字挤在正中，像一张没放东西的皮垫」。
+  在标题与按钮下方嵌入一块**同材质的烫印目录**（内凹皮革 + 细
+  缝线 + 象牙刻字），承载最新三篇真实文章，把下方空皮面交给内容。
+  按评审「铜钉对齐四角即可，别再加密度」，目录区不加铆钉；皮革
+  配方、四角铆钉、缝线凹槽、烫金站名、实体按钮材质一个未动。
+  数据来自共享层 useBlog（首页以 props 传入）。
 -->
 <template>
   <section class="hero-zone">
@@ -26,16 +34,71 @@
         <a class="btn btn--wood" href="#posts">{{ t('home.viewBlog') }}</a>
         <a class="btn btn--brass" href="#projects">{{ t('home.viewProjects') }}</a>
       </div>
+
+      <!-- 皮革封面上的烫印目录：真实最新文章。
+           评审「中央一大块空皮面，文字挤在正中，像一张没放东西的皮垫」——
+           这里把下方空皮面交给内容，材质仍是同一块皮（内凹 + 细缝线），
+           不新增铆钉（按评审「铜钉对齐四角即可，别再加密度」）。 -->
+      <section class="hero-album" :aria-label="t('home.latestPosts')">
+        <p class="album-kicker">{{ t('home.latestPosts') }}</p>
+
+        <div v-if="pending" class="album-loading" role="status">
+          <p class="sr-only">{{ t('common.loading') }}</p>
+          <span v-for="i in ALBUM_COUNT" :key="i" class="album-loading-line" aria-hidden="true"/>
+        </div>
+
+        <ol v-else-if="albumItems.length" class="album-list">
+          <li v-for="(item, i) in albumItems" :key="item.to">
+            <NuxtLink class="sk-hero-item" :to="item.to">
+              <span class="album-no" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</span>
+              <span class="album-main">
+                <span class="album-title">{{ item.title }}</span>
+                <span class="album-meta">
+                  <time :datetime="item.date">{{ item.dateText }}</time>
+                  <span v-if="item.category">{{ item.category }}</span>
+                </span>
+              </span>
+              <span class="album-arrow" aria-hidden="true">→</span>
+            </NuxtLink>
+          </li>
+        </ol>
+        <p v-else class="album-empty">{{ t('blog.noResults') }}</p>
+      </section>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-/**
- * @file 拟物风格的英雄区组件
- * @description 皮革横幅：铆钉 + 缝线 + 烫印文字 + 实体按压按钮（页内锚点）。
- */
-const { t } = useI18n()
+import type { BlogPost } from '~/types/blog'
+import { contentSlug } from '~/utils/content'
+import { formatDate } from '~/utils/format'
+
+const props = defineProps<{
+  /** 最新文章列表（来自共享层 useBlog，由首页传入） */
+  posts: BlogPost[]
+  /** 数据是否仍在加载（加载时显示压印补白行，不误报空状态） */
+  pending?: boolean
+}>()
+
+/** 烫印目录展示的文章条数 */
+const ALBUM_COUNT = 3
+
+const { t, locale } = useI18n()
+// 详情链接走共享层，风格层不重写路由拼接
+const { postPath } = useStyleContentPath()
+
+const dateLocale = computed(() => (locale.value === 'zh' ? 'zh-CN' : 'en-US'))
+
+/** 目录条目：把共享层数据映射成真实内容（标题 / 日期 / 分类 / 链接） */
+const albumItems = computed(() =>
+  props.posts.slice(0, ALBUM_COUNT).map((post) => ({
+    title: post.title,
+    date: post.date,
+    dateText: formatDate(post.date, dateLocale.value),
+    category: post.category ?? '',
+    to: postPath(contentSlug(post.path)),
+  })),
+)
 </script>
 
 <style scoped>
@@ -263,6 +326,176 @@ const { t } = useI18n()
     linear-gradient(180deg, #e0bc72 0%, #bd9040 48%, #91632a 100%);
 }
 
+/* —— 皮革封面上的烫印目录 ——
+   同一块皮革的内凹区域（inset 阴影 + 暗缝线），不加铆钉、不加纸张，
+   材质语言与封面一致；条目是压进皮面的象牙刻字。 */
+.hero-album {
+  position: relative;
+  width: min(100%, 620px);
+  margin-top: calc(var(--space) * 1.2);
+  /* 底部留 20px：虚线圈在 inset 6px，最后一行到虚线还有 14px，
+     不会像贴住文字的表格线 */
+  padding: 18px 20px 20px;
+  text-align: left;
+  border-radius: calc(var(--radius) - 10px);
+  /* 内凹：用**暖棕暗调**而不是纯黑——纯黑叠在皮革上会显出一层冷灰，
+     像塑料板；同一块皮压深后应是更深的棕。 */
+  background:
+    linear-gradient(180deg, rgb(58 30 10 / 0.38) 0%, rgb(58 30 10 / 0.14) 100%),
+    var(--sk-grain);
+  background-size: 100% 100%, 180px 180px;
+  box-shadow:
+    inset 0 2px 6px rgb(0 0 0 / 0.55),
+    inset 0 -1px 0 rgb(255 232 190 / 0.14),
+    0 1px 0 rgb(255 232 190 / 0.1);
+}
+
+/* 凹槽内的一圈细缝线（与封面缝线同一做法，但更细、更淡） */
+.hero-album::before {
+  position: absolute;
+  inset: 6px;
+  content: '';
+  border: 1px dashed rgb(243 231 201 / 0.22);
+  border-radius: calc(var(--radius) - 14px);
+  pointer-events: none;
+}
+
+.album-kicker {
+  margin: 0 0 8px;
+  font-family: var(--font-head);
+  font-size: var(--fs-small);
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  text-transform: uppercase;
+  color: rgb(243 231 201 / 0.72);
+  text-shadow:
+    0 -1px 0 rgb(0 0 0 / 0.65),
+    0 1px 0 rgb(255 240 210 / 0.12);
+}
+
+.album-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sk-hero-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--scale-hit);
+  padding: 9px 6px;
+  color: #f3e7c9;
+  text-decoration: none;
+  border-top: 1px solid rgb(0 0 0 / 0.28);
+  box-shadow: inset 0 1px 0 rgb(255 232 190 / 0.08);
+  transition:
+    color var(--transition),
+    background var(--transition);
+}
+
+.album-list li:last-child .sk-hero-item {
+  border-bottom: 1px solid rgb(0 0 0 / 0.28);
+}
+
+.sk-hero-item:hover {
+  color: #fff6dd;
+  background: rgb(255 232 190 / 0.06);
+}
+
+.sk-hero-item:focus-visible {
+  outline: 2px solid #e0bc72;
+  outline-offset: 2px;
+}
+
+.album-no {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: #c9a45c;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.5);
+}
+
+.album-main {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.album-title {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  /* 压印：上缘吃进阴影、下缘挑出高光 */
+  text-shadow:
+    0 -1px 0 rgb(0 0 0 / 0.6),
+    0 1px 0 rgb(255 240 210 / 0.14);
+}
+
+.album-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: rgb(230 213 180 / 0.78);
+}
+
+.album-arrow {
+  flex: none;
+  margin-left: auto;
+  color: #c9a45c;
+  transition: transform var(--transition);
+}
+
+.sk-hero-item:hover .album-arrow {
+  transform: translateX(3px);
+}
+
+.album-empty {
+  margin: 0;
+  padding: 10px 0;
+  font-size: var(--fs-base);
+  color: rgb(230 213 180 / 0.85);
+}
+
+.album-loading {
+  display: grid;
+  gap: 10px;
+}
+
+.album-loading-line {
+  height: 18px;
+  background: rgb(0 0 0 / 0.24);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.5);
+  animation: album-breathe 1.4s ease-in-out infinite;
+}
+
+@keyframes album-breathe {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  white-space: nowrap;
+}
+
 /* —— 窄屏：按钮撑满、留出触控余量 —— */
 @media (max-width: 480px) {
   .hero {
@@ -280,11 +513,21 @@ const { t } = useI18n()
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn {
+  .btn,
+  .sk-hero-item,
+  .album-arrow {
     transition: none;
   }
 
   .btn:active {
+    transform: none;
+  }
+
+  .album-loading-line {
+    animation: none;
+  }
+
+  .sk-hero-item:hover .album-arrow {
     transform: none;
   }
 }

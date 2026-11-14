@@ -46,14 +46,15 @@ const dateText = computed(() =>
 </script>
 
 <style scoped>
+/* 行距与内距统一到 4px 网格；命中区 44px 保持不动 */
 .row {
   position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px 12px;
+  gap: calc(var(--px-grid) * 2) calc(var(--px-grid) * 3);
   min-height: 44px;
-  padding: 8px 12px;
+  padding: calc(var(--px-grid) * 2) calc(var(--px-grid) * 3);
   background: color-mix(in srgb, var(--c-bg) 55%, var(--c-surface));
   border: 2px solid color-mix(in srgb, var(--c-muted) 40%, transparent);
 }

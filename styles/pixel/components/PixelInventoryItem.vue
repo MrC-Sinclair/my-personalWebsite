@@ -75,12 +75,13 @@ const metaText = computed(() => {
 </script>
 
 <style scoped>
+/* 编号格 44px 原是散值；统一到 11 × 4px 网格，间距同基准 */
 .item {
   position: relative;
   display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 12px;
-  padding: 12px;
+  grid-template-columns: calc(var(--px-grid) * 11) 1fr;
+  gap: calc(var(--px-grid) * 3);
+  padding: calc(var(--px-grid) * 3);
   background: color-mix(in srgb, var(--c-bg) 55%, var(--c-surface));
   border: 3px solid var(--c-border);
 }

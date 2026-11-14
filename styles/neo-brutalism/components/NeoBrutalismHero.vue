@@ -4,8 +4,14 @@
   海报式首屏：撑满一屏（min-height clamp），问候语做成歪斜的
   黑底反白标签，名字大到不合理（clamp 最大 140px）并垫一块
   海报黄硬影，下方动作按钮组全部为原生锚点跳页内区块。
-  右侧挂一块 45° 斜纹装饰方块（纯 CSS，--deco 图案），
+  右上角挂一块 45° 斜纹装饰方块（纯 CSS，--deco 图案）——
+  2026-11-15 完成度修补（C 档「只补完成度，不用克制去削」）：
+  评审「巨型姓名和斜纹块贴在同一水平线，缺刻意的『不平衡』」。
+  斜纹块从垂直居中（与标题同带、右缘压字）上移到标题上方并右移
+  出血到边缘，旋转 -8deg → -14deg；文字层抬到它之上，不平衡靠
+  位置而不是遮挡。跑马灯与 hero 的间距在首页 CSS 里另行拉开。
   右下角一枚上下蹦跳的 ↓ 符号（reduced-motion 下静止）。
+  黑黄硬影、4px 硬描边、方角、撞色按钮全部保留，未磨圆。
 -->
 <template>
   <section class="hero">
@@ -142,17 +148,33 @@ const { t } = useI18n()
   outline-offset: 3px;
 }
 
-/* —— 装饰：45° 斜纹方块（--deco 图案） —— */
+/* —— 装饰：45° 斜纹方块（--deco 图案） ——
+   评审「巨型姓名和斜纹块贴在同一水平线，缺刻意的不平衡」：
+   原来 top:50% + translateY(-50%) 正好与标题同带、右缘还压着字。
+   现在上移到标题上方、右移出血到边缘（overflow:clip 会裁掉出界部分，
+   保留「从版面边缘挤出去」的不平衡），旋转加大到 -14deg。
+   粗糙感保留：仍是方角、硬描边、无圆角无过渡。 */
 .deco {
   position: absolute;
-  top: 50%;
-  right: 24px;
+  top: -4%;
+  right: -4%;
+  z-index: 0;
   width: clamp(110px, 14vw, 180px);
   aspect-ratio: 1;
   background: var(--deco);
   border: 4px solid var(--c-border);
-  transform: translateY(-50%) rotate(-8deg);
+  transform: rotate(-14deg);
   pointer-events: none;
+}
+
+/* 内容压在斜纹块之上，避免重叠区挡字（不平衡靠位置，不靠遮挡） */
+.badge,
+.name,
+.tagline,
+.desc,
+.actions {
+  position: relative;
+  z-index: 1;
 }
 
 /* —— 装饰：蹦跳的下滑箭头 —— */

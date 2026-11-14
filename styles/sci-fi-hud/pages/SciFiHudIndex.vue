@@ -3,8 +3,8 @@
   ------------------------------------------------------------
   把个人网站呈现为「宇宙飞船驾驶舱控制面板」：
   顶部主控条（站点标识 + 页内锚点 + 风格画廊入口）→
-  主视屏（英雄区：目标标注框框住名字 + CTA 原生锚点；
-  右舷：雷达模块 + 真实数据读数）→ HUD 面板甲板（非对称
+  主视屏（左舷：目标标注框 + CTA + 真实项目载荷日志；
+  右舷缩到 38%：雷达模块 + 真实数据读数）→ HUD 面板甲板（非对称
   12 列网格：SEC-01 任务履历 / SEC-02 技能模块 / SEC-03
   项目载荷 / SEC-04 文章数据流 / SEC-05 通讯频道）→
   底部遥测状态条（页脚）。
@@ -51,6 +51,31 @@
               {{ t('home.viewBlog') }}<span class="cta-glyph" aria-hidden="true">▸</span>
             </a>
           </div>
+
+          <!-- 载荷日志：左栏原本只有六段序列、大片空置，改由真实项目数据承担 -->
+          <section class="bay scroll-reveal scroll-reveal-delay-3" :aria-label="t('home.featuredProjects')">
+            <header class="bay-head">
+              <span class="bay-label" aria-hidden="true">LOG</span>
+              <span class="bay-caption">{{ t('home.featuredProjects') }}</span>
+            </header>
+
+            <SciFiHudLoader v-if="projectsLoading" />
+            <ol v-else-if="bayItems.length" class="bay-list">
+              <li v-for="item in bayItems" :key="item.to">
+                <NuxtLink class="hud-index-item" :to="item.to">
+                  <span class="bay-no" aria-hidden="true">{{ item.no }}</span>
+                  <span class="bay-main">
+                    <span class="bay-title">{{ item.title }}</span>
+                    <span v-if="item.tags.length" class="bay-tags">
+                      <span v-for="tag in item.tags" :key="tag" class="bay-tag">{{ tag }}</span>
+                    </span>
+                  </span>
+                  <time class="bay-date" :datetime="item.date">{{ item.dateText }}</time>
+                </NuxtLink>
+              </li>
+            </ol>
+            <p v-else class="bay-empty">{{ t('projects.noResults') }}</p>
+          </section>
         </div>
 
         <!-- 右舷：雷达 + 真实数据读数 -->
@@ -173,6 +198,8 @@
 <script setup lang="ts">
 import type { BlogPost } from '~/types/blog'
 import type { Project } from '~/types/project'
+import { contentSlug } from '~/utils/content'
+import { formatDate } from '~/utils/format'
 import SciFiHudTopBar from '../components/SciFiHudTopBar.vue'
 import SciFiHudRadar from '../components/SciFiHudRadar.vue'
 import SciFiHudPanel from '../components/SciFiHudPanel.vue'
@@ -189,11 +216,17 @@ import SciFiHudTelemetryBar from '../components/SciFiHudTelemetryBar.vue'
 const POST_COUNT = 6
 /** 首页展示的精选项目数上限 */
 const PROJECT_COUNT = 6
+/** 左栏载荷日志条数 */
+const BAY_COUNT = 3
+/** 每条项目日志展示的技术栈标签数 */
+const BAY_TAGS = 2
 
 const { t, locale } = useI18n()
 
 // 对外路由链接的本地化路径（搜索入口跳转博客子页用）
 const localePath = useLocalePath()
+// 项目详情链接走共享层，风格层不重写路由拼接
+const { projectPath } = useStyleContentPath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { siteConfig, socialLinks, skillGroups, timeline } = useAppInfo()
@@ -239,6 +272,18 @@ const featuredProjects = computed<Project[]>(() =>
 /** 加载态：仅在尚无任何数据时显示数据流占位 */
 const postsLoading = computed(() => postsPending.value && !postsData.value)
 const projectsLoading = computed(() => projectsPending.value && !projectsData.value)
+
+/** 左栏载荷日志：把共享层精选项目映射成编号数据行（标题 / 技术栈 / 日期 / 详情链接） */
+const bayItems = computed(() =>
+  featuredProjects.value.slice(0, BAY_COUNT).map((project, i) => ({
+    no: String(i + 1).padStart(2, '0'),
+    title: project.title,
+    date: project.date,
+    dateText: formatDate(project.date, locale.value),
+    tags: (Array.isArray(project.tags) ? project.tags : []).slice(0, BAY_TAGS),
+    to: projectPath(contentSlug(project.path)),
+  })),
+)
 
 // —— 雷达读数（真实统计的仪表化表达） ——
 const readoutPosts = computed(() => String(posts.value.length))
@@ -330,9 +375,10 @@ useScrollReveal()
   min-height: clamp(520px, 78vh, 860px);
 }
 
+/* 右舷按评审收到 38%：左栏补进真实载荷日志后，雷达不再与内容等权 */
 @media (min-width: 1024px) {
   .viewport {
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: minmax(0, 62fr) minmax(0, 38fr);
   }
 }
 
@@ -423,17 +469,19 @@ useScrollReveal()
   overflow-wrap: break-word;
 }
 
-/* 框内底部刻度尺（装饰） */
+/* 框内底部刻度尺：原本 50% 强调色 + 10px 密排太抢注意力，
+   降对比度并拉疏间距，退成背景纹理（题材签名仍在）。 */
 .tf-ruler {
   position: absolute;
   right: 14px;
   bottom: 6px;
   left: 14px;
-  height: 4px;
+  height: 3px;
+  opacity: 0.35;
   background: repeating-linear-gradient(
     90deg,
-    color-mix(in srgb, var(--c-accent) 50%, transparent) 0 1px,
-    transparent 1px 10px
+    color-mix(in srgb, var(--c-accent) 32%, transparent) 0 1px,
+    transparent 1px 22px
   );
 }
 
@@ -504,11 +552,131 @@ useScrollReveal()
   font-family: var(--font-mono);
 }
 
+/* —— 左栏载荷日志：真实项目数据行 —— */
+.bay {
+  min-width: 0;
+  margin-top: clamp(24px, 3vw, 40px);
+  padding-top: 12px;
+  border-top: var(--border-w) solid color-mix(in srgb, var(--c-accent) 30%, var(--c-border));
+}
+
+.bay-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.bay-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.22em;
+  color: var(--c-accent);
+}
+
+.bay-caption {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.08em;
+  color: var(--c-muted);
+}
+
+.bay-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hud-index-item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  align-items: baseline;
+  min-height: var(--scale-hit);
+  padding: 10px 8px 10px 0;
+  color: var(--c-text);
+  text-decoration: none;
+  border-top: var(--border-w) solid var(--c-border);
+  transition: background var(--transition);
+}
+
+.bay-list li:last-child .hud-index-item {
+  border-bottom: var(--border-w) solid var(--c-border);
+}
+
+.hud-index-item:hover {
+  background: color-mix(in srgb, var(--c-accent) 8%, transparent);
+}
+
+.bay-no {
+  grid-row: 1 / span 2;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-accent-2);
+}
+
+.bay-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.bay-title {
+  font-size: var(--scale-body);
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.bay-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.bay-tag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.bay-date {
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+
+.bay-empty {
+  margin: 0;
+  padding: 12px 0;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+/* 窄屏：日期移到标题下方，避免三列挤压造成横向溢出 */
+@media (max-width: 640px) {
+  .hud-index-item {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 2px 10px;
+  }
+
+  .bay-no {
+    grid-row: 1 / span 2;
+  }
+
+  .bay-date {
+    white-space: normal;
+  }
+}
+
 /* —— 右舷雷达模块 —— */
 .radar-module {
   display: grid;
   gap: 12px;
-  max-width: 420px;
+  width: 100%;
+  max-width: 340px;
   padding: 12px;
   background: color-mix(in srgb, var(--c-surface) 78%, transparent);
   border: var(--border-w) solid var(--c-border);
@@ -679,7 +847,8 @@ useScrollReveal()
     animation: none;
   }
 
-  .cta {
+  .cta,
+  .hud-index-item {
     transition: none;
   }
 

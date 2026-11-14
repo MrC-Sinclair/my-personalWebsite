@@ -418,8 +418,9 @@ function submitSearch(): void {
   height: 44px;
   border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: 50%;
+  /* 光源统一到 --y2k-light，与首屏行星球 / 星轨 / 气泡同向 */
   background: radial-gradient(
-    120% 120% at 32% 26%,
+    120% 120% at var(--y2k-light),
     #ffffff 0%,
     #c3cdf2 34%,
     #7d89c9 66%,

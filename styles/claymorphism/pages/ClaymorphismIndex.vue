@@ -2,7 +2,8 @@
   ClaymorphismIndex - claymorphism 风格首页（/style/claymorphism/）
   ------------------------------------------------------------
   「黏土岛」布局轴：整页铺在 Pastel 渐变天空上，内容组织成
-  一座座错落的厚黏土岛——首屏满屏黏土舞台（漂浮黏土球装饰）
+  一座座错落的厚黏土岛——首屏黏土舞台收敛为 3 颗景深球 +
+  中央「姓名 + 最新三篇真实文章」的内容岛（原只装姓名的贴纸白板）
   → 关于岛 + 技能岛（7/5 错落双栏）→ 精选项目（双色相轮换
   黏土板，桌面端交错下沉）→ 最新文章（圆滚滚厚胶囊行）→
   联系方式（奶油色岛 + 鹅卵石卡）→ 黏土页脚。
@@ -15,7 +16,8 @@
     <ClaymorphismTopNav :sections="sections" />
 
     <main class="page-main">
-      <ClaymorphismHero />
+      <!-- 首屏黏土内容岛用首页已取好的最新文章，不新增取数 -->
+      <ClaymorphismHero :posts="posts" :pending="postsLoading" />
 
       <div class="content">
         <!-- ① 关于岛 + ② 技能岛：7/5 错落双栏（窄屏单列堆叠） -->

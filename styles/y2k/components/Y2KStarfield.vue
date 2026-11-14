@@ -81,7 +81,9 @@
   width: 150px;
   height: 2px;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.9));
+  /* 亮端朝运动方向（向左），与左上 --y2k-light 光源同侧进入：
+     原渐变亮端在右、却向左移动，星轨的「来光方向」与球体高光相反。 */
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.9), transparent);
   transform: rotate(-24deg);
   animation: meteor 7.5s ease-in infinite;
 }
@@ -112,8 +114,9 @@
   position: absolute;
   border: 1px solid rgb(255 255 255 / 0.4);
   border-radius: 50%;
+  /* 高光统一到 --y2k-light，与首屏行星球、空状态球同向 */
   background:
-    radial-gradient(120% 120% at 30% 24%, rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.1) 26%, transparent 48%),
+    radial-gradient(120% 120% at var(--y2k-light), rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.1) 26%, transparent 48%),
     radial-gradient(100% 100% at 68% 82%, rgb(255 92 225 / 0.28) 0%, transparent 55%),
     radial-gradient(100% 100% at 50% 50%, rgb(139 123 255 / 0.16) 0%, rgb(139 123 255 / 0.04) 100%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4);

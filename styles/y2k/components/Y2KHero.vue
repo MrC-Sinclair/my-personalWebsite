@@ -6,6 +6,14 @@
   行星球（带土星环的铬球，漂浮动画）+ 轨道环 + 星芒闪光。
   CTA 为风格内 Y2KChromeButton（页内锚点跳转）。
   动画在 prefers-reduced-motion 下关闭。
+
+  2026-11-14 完成度修补（C 档「只补完成度，不用克制去削，不改风格」）：
+  评审「星轨与星球统一光源方向、铬字高光别糊、按钮投影统一」。
+  球体 / glint / 气泡 / 空状态球全部改用 tokens 的 --y2k-light
+  （30% 24%）单一光源坐标；流星亮端改成朝运动方向、与光源同侧；
+  铬字去掉 28px 宽模糊、改 --y2k-chrome-shadow 硬白边 + 紧实落影；
+  两颗 CTA 及其 hover 统一到 --y2k-btn-shadow，hover 只上浮提亮。
+  铬金属渐变、土星环、星芒、彩虹分隔线等 Y2K 题材元素一个未动。
 -->
 <template>
   <section id="hero" data-section="hero" class="hero" aria-labelledby="hero-title">
@@ -120,7 +128,9 @@ const { t } = useI18n()
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 2px 0 rgb(255 255 255 / 0.3)) drop-shadow(0 16px 28px rgb(4 0 38 / 0.7));
+  /* 评审「铬字高光别糊」：原 16px/28px 宽模糊让字面发糊，
+     统一到 --y2k-chrome-shadow 的硬白边 + 紧实落影。 */
+  filter: var(--y2k-chrome-shadow);
 }
 
 .hero-tagline {
@@ -160,8 +170,9 @@ const { t } = useI18n()
   width: clamp(96px, 14vw, 190px);
   height: clamp(96px, 14vw, 190px);
   border-radius: 50%;
+  /* 光源统一到 --y2k-light（左上偏上），与星轨/气泡/空状态球同向 */
   background: radial-gradient(
-    120% 120% at 32% 26%,
+    120% 120% at var(--y2k-light),
     #ffffff 0%,
     #c3cdf2 26%,
     #7d89c9 50%,
@@ -179,7 +190,7 @@ const { t } = useI18n()
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(46% 34% at 30% 22%, rgb(255 255 255 / 0.85), transparent 70%);
+  background: radial-gradient(46% 34% at var(--y2k-light), rgb(255 255 255 / 0.85), transparent 70%);
 }
 
 /* 土星环：旋转椭圆描边 */

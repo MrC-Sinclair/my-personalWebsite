@@ -23,7 +23,7 @@
 
     <main class="page-main">
       <!-- ============ 英雄区：皮革烫金名牌 ============ -->
-      <SkeuomorphismHeroPlate />
+      <SkeuomorphismHeroPlate :posts="safePosts" :pending="postsLoading" />
 
       <div class="page-inner">
         <!-- ============ 关于 + 技能：橡木镶板 + 皮革挂签 ============ -->
