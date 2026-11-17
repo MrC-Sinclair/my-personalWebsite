@@ -160,7 +160,8 @@
     "bluetoothd",
     "ohos",
     "BLEMTU",
-    "OPPO"
+    "OPPO",
+    "routify"
   ],
   "ignorePaths": [
     "node_modules",
