@@ -2,11 +2,13 @@
   LiquidGlassHero - liquid-glass 风格的英雄区
   ------------------------------------------------------------
   首屏撑满一屏的巨型玻璃主板（min-height 随视口缩放）：
-  问候语 eyebrow → 巨型渐变名字（玻璃内部折射染色）→
-  职业标签玻璃胶囊 → 简介文案 → 两颗玻璃 CTA（页内锚点）。
-  玻璃签名全部在此呈现：半透填充、折射微染色、半透描边、
-  上缘高光弧、顶部镜面高光、缓慢扫过的折射光带；周围漂浮
-  两颗小玻璃片与字符装饰（aria-hidden），营造层叠景深。
+  卡内拆成「左主内容 + 右真实文章侧栏」——左侧是问候 /
+  纯色巨型名字 / 职业胶囊 / 简介 / 两颗玻璃 CTA，右侧是
+  最新三篇真实文章（标题 / 日期 / 分类 / 详情链接）。
+  评审点名的两处廉价感已修：巨型名字从四段蓝紫渐变填充改纯色，
+  实心主按钮从高饱和青紫渐变降为单色。玻璃签名（半透填充、
+  板下光源、透镜环、镜面高光、折射光带）保留，且背景光斑
+  现在有真实内容可透。数据来自共享层 useBlog（首页 props 传入）。
 -->
 <template>
   <section id="home" data-section="home" class="hero-zone">
@@ -32,16 +34,45 @@
       <span class="lens" aria-hidden="true"/>
       <span class="sheen" aria-hidden="true"/>
 
+      <!-- 卡内拆成主内容 + 真实文章侧栏：原来整块卡只装六段序列，
+           视觉重心散且玻璃后面没有内容可透。侧栏用最新三篇真实文章。 -->
       <div class="hero-body">
-        <p class="greeting">{{ t('home.greeting') }}</p>
-        <h1 class="name">{{ t('home.name') }}</h1>
-        <p class="tagline">{{ t('home.tagline') }}</p>
-        <p class="desc">{{ t('home.description') }}</p>
+        <div class="hero-main">
+          <p class="greeting">{{ t('home.greeting') }}</p>
+          <h1 class="name">{{ t('home.name') }}</h1>
+          <p class="tagline">{{ t('home.tagline') }}</p>
+          <p class="desc">{{ t('home.description') }}</p>
 
-        <div class="cta-row">
-          <a class="cta cta-primary" href="#projects">{{ t('home.viewProjects') }}</a>
-          <a class="cta cta-ghost" href="#posts">{{ t('home.viewBlog') }}</a>
+          <div class="cta-row">
+            <a class="cta cta-primary" href="#projects">{{ t('home.viewProjects') }}</a>
+            <a class="cta cta-ghost" href="#posts">{{ t('home.viewBlog') }}</a>
+          </div>
         </div>
+
+        <aside class="hero-side" :aria-label="t('home.latestPosts')">
+          <p class="side-kicker">{{ t('home.latestPosts') }}</p>
+
+          <div v-if="pending" class="side-loading" role="status">
+            <p class="sr-only">{{ t('common.loading') }}</p>
+            <span v-for="i in SIDE_COUNT" :key="i" class="side-loading-line" aria-hidden="true"/>
+          </div>
+
+          <ol v-else-if="sideItems.length" class="side-list">
+            <li v-for="item in sideItems" :key="item.to">
+              <NuxtLink class="liquid-hero-item" :to="item.to">
+                <span class="side-main">
+                  <span class="side-title">{{ item.title }}</span>
+                  <span class="side-meta">
+                    <time :datetime="item.date">{{ item.dateText }}</time>
+                    <span v-if="item.category">{{ item.category }}</span>
+                  </span>
+                </span>
+                <span class="side-arrow" aria-hidden="true">→</span>
+              </NuxtLink>
+            </li>
+          </ol>
+          <p v-else class="side-empty">{{ t('blog.noResults') }}</p>
+        </aside>
       </div>
 
       <!-- 向下探索提示（纯装饰箭头，随呼吸浮动） -->
@@ -53,7 +84,36 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+import type { BlogPost } from '~/types/blog'
+import { contentSlug } from '~/utils/content'
+import { formatDate } from '~/utils/format'
+
+const props = defineProps<{
+  /** 最新文章列表（来自共享层 useBlog，由首页传入） */
+  posts: BlogPost[]
+  /** 数据是否仍在加载（加载时显示补白行，不误报空状态） */
+  pending?: boolean
+}>()
+
+/** 侧栏展示的文章条数 */
+const SIDE_COUNT = 3
+
+const { t, locale } = useI18n()
+// 详情链接走共享层，风格层不重写路由拼接
+const { postPath } = useStyleContentPath()
+
+const dateLocale = computed(() => (locale.value === 'zh' ? 'zh-CN' : 'en-US'))
+
+/** 侧栏条目：把共享层数据映射成真实内容（标题 / 日期 / 分类 / 链接） */
+const sideItems = computed(() =>
+  props.posts.slice(0, SIDE_COUNT).map((post) => ({
+    title: post.title,
+    date: post.date,
+    dateText: formatDate(post.date, dateLocale.value),
+    category: post.category ?? '',
+    to: postPath(contentSlug(post.path)),
+  })),
+)
 </script>
 
 <style scoped>
@@ -223,9 +283,23 @@ const { t } = useI18n()
   }
 }
 
+/* 卡内两栏：左主内容 / 右真实文章侧栏，玻璃后面有内容可透 */
 .hero-body {
   position: relative;
-  max-width: 30em;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .hero-body {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+}
+
+.hero-main {
+  min-width: 0;
 }
 
 /* 问候 eyebrow：强调色小字 + 发光字距 */
@@ -237,24 +311,19 @@ const { t } = useI18n()
   color: var(--c-accent);
 }
 
-/* 巨型名字：玻璃后的折射染色文字（强调色 → 电光紫 → 霓虹粉签名渐变） */
+/* 巨型名字：去掉四段渐变填充改纯色。评审点名「标题文字用蓝紫渐变
+   填充显廉价」——纯色 + 一层极淡的字距光晕，层级靠字号与字重，
+   不靠染色。玻璃的冷调由背景与边缘光学承担。 */
 .name {
   margin: 0 0 20px;
   font-family: var(--font-head);
-  font-size: clamp(48px, 9vw, 108px);
+  font-size: clamp(48px, 8vw, 96px);
   font-weight: 800;
   line-height: 1.04;
   letter-spacing: -0.02em;
-  overflow-wrap: break-word;
-  /* 尾色从霓虹粉 #ff7ab8 换成淡紫 #e6d9ff：荧光粉在深底上是最扎眼的
-     一档，会把整个标题拽向「霓虹感」而离开玻璃的冷调。收在淡紫，
-     渐变从白到青到紫是连续的，不会再有末梢突然跳色的断层感。 */
-  background: linear-gradient(100deg, var(--c-text) 6%, var(--c-accent) 40%, var(--c-accent-2) 72%, #e6d9ff 96%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  filter: drop-shadow(0 6px 24px rgb(94 227 255 / 0.18));
+  color: var(--c-text);
+  overflow-wrap: anywhere;
+  text-shadow: 0 6px 30px rgb(94 227 255 / 0.14);
 }
 
 /* 职业标签：玻璃内胶囊（半透白 + 半透描边） */
@@ -303,15 +372,15 @@ const { t } = useI18n()
     transform var(--transition);
 }
 
+/* 主按钮：从高饱和青紫双色渐变降为单色强调 + 淡顶边。
+   评审「降饱和」——彩色渐变实心块在玻璃上是最抢眼的塑料感来源。 */
 .cta-primary {
   color: var(--c-on-accent);
-  background: linear-gradient(140deg, var(--c-accent), var(--c-accent-2));
-  /* 描边从 0.4 降到 0.16：实心按钮上的亮白描边是最典型的塑料感来源，
-     Apple 的 filled button 只有一层极淡的顶边，没有整圈白框 */
+  background: color-mix(in srgb, var(--c-accent) 78%, var(--c-surface));
   border: var(--border-w) solid rgb(255 255 255 / 0.16);
   box-shadow:
     inset 0 1px 0 var(--lg-bevel-solid),
-    0 10px 26px rgb(94 227 255 / 0.3);
+    0 10px 26px rgb(94 227 255 / 0.22);
 }
 
 .cta-primary:hover {
@@ -342,6 +411,129 @@ const { t } = useI18n()
 
 .cta-ghost:active {
   transform: var(--press-transform);
+}
+
+/* —— 真实文章侧栏：玻璃卡里的内容主体 —— */
+.hero-side {
+  min-width: 0;
+  padding: clamp(16px, 2vw, 24px);
+  background: rgb(255 255 255 / 0.05);
+  border: var(--border-w) solid rgb(255 255 255 / 0.14);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 1px 0 var(--lg-bevel);
+}
+
+.side-kicker {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.2em;
+  color: var(--c-accent);
+}
+
+.side-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.liquid-hero-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--scale-hit);
+  padding: 12px 4px;
+  color: var(--c-text);
+  text-decoration: none;
+  border-top: var(--border-w) solid rgb(255 255 255 / 0.12);
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.side-list li:last-child .liquid-hero-item {
+  border-bottom: var(--border-w) solid rgb(255 255 255 / 0.12);
+}
+
+.liquid-hero-item:hover {
+  background: rgb(255 255 255 / 0.07);
+  transform: translateX(3px);
+}
+
+.side-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.side-title {
+  font-size: var(--scale-body);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.side-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.side-arrow {
+  flex: none;
+  margin-left: auto;
+  color: var(--c-accent);
+  opacity: 0.75;
+  transition: transform var(--transition);
+}
+
+.liquid-hero-item:hover .side-arrow {
+  transform: translateX(4px);
+}
+
+.side-empty {
+  margin: 0;
+  padding: 12px 0;
+  font-size: var(--fs-base);
+  color: var(--c-muted);
+}
+
+.side-loading {
+  display: grid;
+  gap: var(--gap);
+}
+
+.side-loading-line {
+  height: var(--scale-space-5);
+  background: rgb(255 255 255 / 0.08);
+  border-radius: var(--radius-sm);
+  animation: side-breathe 1.4s ease-in-out infinite;
+}
+
+@keyframes side-breathe {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  white-space: nowrap;
 }
 
 /* 向下探索：呼吸浮动的玻璃圆钮 */
@@ -383,22 +575,34 @@ const { t } = useI18n()
   }
 }
 
-/* 窄屏：布局回退（单列、缩小留白），玻璃签名保留 */
+/* 窄屏：两栏回退单列，玻璃签名与真实内容侧栏都保留 */
 @media (max-width: 640px) {
   .hero-body {
-    max-width: none;
+    gap: var(--gap);
+  }
+
+  .hero-side {
+    padding: 16px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sheen,
-  .scroll-hint {
+  .scroll-hint,
+  .side-loading-line {
     animation: none;
   }
 
   .cta-primary,
-  .cta-ghost {
+  .cta-ghost,
+  .liquid-hero-item,
+  .side-arrow {
     transition: none;
+  }
+
+  .liquid-hero-item:hover,
+  .liquid-hero-item:hover .side-arrow {
+    transform: none;
   }
 
   .cta-primary:hover,

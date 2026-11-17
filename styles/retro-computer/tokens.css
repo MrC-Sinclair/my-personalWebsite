@@ -48,12 +48,15 @@
   --shadow-press: inset 1px 1px 0 0 #0a0a0a, inset -1px -1px 0 0 #ffffff;
 
   /* —— 字体 —— */
-  --font-body: 'MS Sans Serif', Tahoma, Geneva, Verdana, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body:
+    'MS Sans Serif', Tahoma, Geneva, Verdana, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-head: 'MS Sans Serif', Tahoma, Verdana, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-mono: 'Courier New', Courier, 'Noto Sans Mono', monospace;
   --font-smooth: auto;
 
   /* —— 字号（95 界面以小字号、高密度著称）—— */
+  /* —— 按题材签名判定：本风格不接入共享字阶，--fs-* 保留原值；
+     仅共享 --scale-hit 触控红线（2026-11-10）—— */
   --fs-base: 14px;
   --fs-small: 12px;
   --fs-head: 44px;

@@ -188,6 +188,7 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
 /* 首字母浮雕字形：下深上亮的错位阴影挤出立体感 */
 .project-card-glyph {
   font-family: var(--font-head);
+  /* 装饰字形，不是排印层级；不进共享刻度。 */
   font-size: 60px;
   font-weight: 800;
   color: rgb(255 255 255 / 0.94);
@@ -286,7 +287,7 @@ const hasLinks = computed(() => Boolean(props.project.demoUrl || props.project.g
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;

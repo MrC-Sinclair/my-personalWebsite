@@ -175,8 +175,8 @@ const projectLinks = computed(() => {
   display: inline-flex;
   align-items: center;
   /* 命中区地板：等宽小字下「首页」只有 26×32，两个方向都抬到 40 */
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   color: var(--c-accent);
   text-decoration: none;
 }
@@ -259,8 +259,8 @@ const projectLinks = computed(() => {
   justify-content: center;
   /* 命中区地板：行高只撑出 23px 的纯文字链，高度下限得显式写；
      宽度同理——「在线演示↗」在 CI 的 Linux 回退字体下实测 39px */
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding-inline: 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -418,7 +418,7 @@ const projectLinks = computed(() => {
   gap: 8px;
   align-items: baseline;
   /* 命中区地板：整行可点，行高由地板决定而不是等宽小字 */
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   text-decoration: none;

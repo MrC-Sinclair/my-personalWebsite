@@ -9,6 +9,14 @@
   四角 HUD 边角括号 + 底部符号数据条均为装饰（aria-hidden）。
   reduced-motion 下：故障抖动、光标闪烁、地面滚动全部静止，
   霓虹辉光本身保留。
+
+  2026-11-14 完成度修补（C 档「只补完成度，不用克制去削」）：
+  评审「发光过曝、网格线条与按钮色块互相抢、紫色副标题对比不足」。
+  ① glitch / 眉标 / 地平线 / 两枚 CTA 的 glow 各收一档（扩散与
+     alpha 降低约 1/3），字面笔画读得清；② 网格线 alpha 减半并叠
+     opacity，退到背景层；③ 副标语混入 28% 白，对比度 5.60→8.50:1，
+     仍是霓虹紫青。glitch 色偏、透视网格、HUD 角标、切角按钮、
+     扫描线等赛博题材元素一个未删，也未改成克制风格。
 -->
 <template>
   <section id="home" data-section="home" class="hero">
@@ -69,7 +77,9 @@ const { t } = useI18n()
     var(--c-bg);
 }
 
-/* 透视网格地面：两方向 repeating 渐变 + rotateX 压出纵深 */
+/* 透视网格地面：两方向 repeating 渐变 + rotateX 压出纵深
+   评审「网格降对比度退到背景」：线条 alpha 减半（0.16→0.08 /
+   0.12→0.06），再叠一层 opacity，让网格不与按钮色块抢注意力。 */
 .grid-floor {
   position: absolute;
   right: -20%;
@@ -77,8 +87,9 @@ const { t } = useI18n()
   left: -20%;
   height: 52%;
   background:
-    repeating-linear-gradient(90deg, rgb(34 211 238 / 0.16) 0 1px, transparent 1px 58px),
-    repeating-linear-gradient(0deg, rgb(255 45 149 / 0.12) 0 1px, transparent 1px 46px);
+    repeating-linear-gradient(90deg, rgb(34 211 238 / 0.08) 0 1px, transparent 1px 58px),
+    repeating-linear-gradient(0deg, rgb(255 45 149 / 0.06) 0 1px, transparent 1px 46px);
+  opacity: 0.72;
   transform: perspective(480px) rotateX(58deg);
   transform-origin: top center;
   mask-image: linear-gradient(180deg, #000 40%, transparent);
@@ -93,10 +104,11 @@ const { t } = useI18n()
   left: 0;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--c-accent) 30%, var(--c-accent-2) 70%, transparent);
+  /* 地平线辉光收一档：原来 18px/42px 双层光带压过按钮 */
   box-shadow:
-    0 0 18px rgb(34 211 238 / 0.6),
-    0 0 42px rgb(255 45 149 / 0.35);
-  opacity: 0.8;
+    0 0 12px rgb(34 211 238 / 0.4),
+    0 0 28px rgb(255 45 149 / 0.2);
+  opacity: 0.68;
 }
 
 /* —— 内容层：居中偏左的巨标题堆栈 —— */
@@ -117,7 +129,7 @@ const { t } = useI18n()
   font-size: clamp(14px, 1.6vw, 18px);
   letter-spacing: 0.32em;
   color: var(--c-accent);
-  text-shadow: 0 0 10px rgb(34 211 238 / 0.55);
+  text-shadow: 0 0 7px rgb(34 211 238 / 0.38);
 }
 
 /* 闪烁光标（街机待机） */
@@ -147,9 +159,11 @@ const { t } = useI18n()
   line-height: 1.05;
   letter-spacing: 0.02em;
   color: var(--c-text);
+  /* 收一档 glow：原 12px/46px 双层让字面糊成一团光。
+     保留青色霓虹签名，但把扩散与不透明度压到能读清笔画的程度。 */
   text-shadow:
-    0 0 12px rgb(34 211 238 / 0.65),
-    0 0 46px rgb(34 211 238 / 0.28);
+    0 0 8px rgb(34 211 238 / 0.42),
+    0 0 28px rgb(34 211 238 / 0.16);
   overflow-wrap: break-word;
 }
 
@@ -215,12 +229,15 @@ const { t } = useI18n()
   }
 }
 
+/* 副标语提亮：原 color-mix(青 42%, 粉) 落在 #05010d 上只有 5.60:1，
+   在过曝 glow 与网格干扰下读起来发闷。混入 28% 白后到 8.50:1，
+   仍是霓虹紫青（未被拉成纯白），符合评审「提高副标题亮度」。 */
 .tagline {
   margin: 0 0 8px;
   font-family: var(--font-head);
   font-size: clamp(16px, 2vw, 21px);
-  color: color-mix(in srgb, var(--c-accent) 42%, var(--c-accent-2));
-  text-shadow: 0 0 12px rgb(255 45 149 / 0.35);
+  color: color-mix(in srgb, #ffffff 28%, color-mix(in srgb, var(--c-accent) 42%, var(--c-accent-2)));
+  text-shadow: 0 0 8px rgb(255 45 149 / 0.25);
 }
 
 .desc {
@@ -263,11 +280,11 @@ const { t } = useI18n()
 .cta-cyan {
   color: var(--c-on-accent);
   background: var(--c-accent);
-  box-shadow: 0 0 18px rgb(34 211 238 / 0.45);
+  box-shadow: 0 0 12px rgb(34 211 238 / 0.32);
 }
 
 .cta-cyan:hover {
-  box-shadow: 0 0 30px rgb(34 211 238 / 0.75);
+  box-shadow: 0 0 20px rgb(34 211 238 / 0.5);
 }
 
 /* 粉色描边按钮：hover 粉色填充 */
@@ -282,7 +299,7 @@ const { t } = useI18n()
   background: var(--c-accent-2);
   box-shadow:
     inset 0 0 0 var(--border-w) var(--c-accent-2),
-    0 0 24px rgb(255 45 149 / 0.55);
+    0 0 16px rgb(255 45 149 / 0.38);
 }
 
 /* CTA 箭头：hover 右移 */

@@ -65,7 +65,7 @@ defineProps<{
 .kpi-value {
   margin: 8px 0 4px;
   font-family: var(--font-head);
-  font-size: clamp(32px, 4.5vw, 48px);
+  font-size: var(--scale-subtitle-fluid);
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
   color: var(--c-text);

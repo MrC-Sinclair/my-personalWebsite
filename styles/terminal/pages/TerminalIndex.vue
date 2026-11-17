@@ -81,10 +81,11 @@ import TerminalBlockBlog from '../components/TerminalBlockBlog.vue'
 import TerminalBlockContact from '../components/TerminalBlockContact.vue'
 import { pickTerminalCopy } from '../copy'
 
-/** 最新文章展示条数 */
-const POST_COUNT = 4
+/** 展示条数：开机日志要铺满终端中部形成可滚动日志，取到 6 条真实内容。
+    数据仍是 useAsyncData 取回的全量里前 6 条，不新增取数、不编造内容。 */
+const POST_COUNT = 6
 /** 精选项目展示条数 */
-const PROJECT_COUNT = 4
+const PROJECT_COUNT = 6
 
 const { t, locale } = useI18n()
 /** 终端风味文案（随语言响应式切换；字典本身为纯 TS 模块） */
@@ -231,7 +232,7 @@ const skipLinks = computed(() => [
 .skip-link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-on-accent);

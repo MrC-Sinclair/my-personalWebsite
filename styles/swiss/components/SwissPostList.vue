@@ -106,7 +106,7 @@ function metaOf(post: BlogPost): string {
 
 /* 标题行：大号 + hover 强调色下划线生长 + 箭头右移 */
 .row-title {
-  font-size: clamp(18px, 2.4vw, 28px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.01em;
@@ -122,7 +122,7 @@ function metaOf(post: BlogPost): string {
 
 .row-desc {
   max-width: 68ch;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
 }
 

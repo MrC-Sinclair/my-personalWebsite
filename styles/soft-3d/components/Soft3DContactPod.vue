@@ -138,7 +138,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;

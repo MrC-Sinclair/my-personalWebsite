@@ -113,7 +113,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   flex: none;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   color: var(--c-text);
   text-decoration: none;
   transition: opacity var(--transition);
@@ -175,7 +175,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
 .link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-base);
   color: var(--c-muted);
@@ -204,8 +204,8 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   flex: none;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-base);
   color: var(--c-muted);
@@ -240,7 +240,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-base);
   color: var(--c-accent);
@@ -302,7 +302,7 @@ const { targetPath, targetLabel } = useLocaleSwitch()
   .brand {
     gap: 8px;
     flex: none;
-    min-width: 40px;
+    min-width: var(--scale-hit);
   }
 
   .brand-orb {

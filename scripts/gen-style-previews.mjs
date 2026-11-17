@@ -70,11 +70,35 @@ await send('Emulation.setDeviceMetricsOverride', {
 })
 
 for (const id of ids) {
-  await send('Page.navigate', { url: `${BASE}/style/${id}` })
+  await send('Page.navigate', { url: `${BASE}/style/${id}/` })
   await sleep(8000)
+  // 命中保护：base/端口配置错了会静默截到 404 页（曾因 Git Bash 把 `/`
+  // 参数转成 PortableGit 路径，产出 20 张 404 截图却不报错）。
+  // 用「页面里是否存在该风格的 data-style」作为真实渲染的判据。
+  const probe = await send('Runtime.evaluate', {
+    expression: `(() => {
+      const root = document.querySelector("[data-style]");
+      return { style: root ? root.getAttribute("data-style") : null,
+               title: document.title, bodyLen: document.body.innerText.length };
+    })()`,
+    returnByValue: true,
+  })
+  const got = probe.result?.value
+  if (!got || got.style !== id || got.bodyLen < 40) {
+    throw new Error(
+      `[${id}] 没有渲染出该风格页（data-style=${got?.style}, bodyLen=${got?.bodyLen}, title=${got?.title}）——` +
+        `检查 SITE_BASE 是否指向产物根路径、静态服务 base 参数是否被 shell 转换`,
+    )
+  }
   // Page.navigate 会恢复上次滚动位置，先回顶部再截
   await send('Runtime.evaluate', { expression: 'window.scrollTo(0, 0)' })
-  await sleep(900)
+  // headless 下 IntersectionObserver 不回调，带 .scroll-reveal 的元素会停在
+  // opacity:0（web2-glossy 首屏的标题/文案/按钮都是这类）——缩略图会缺内容。
+  // 截图前手动补上终态类，等过渡结束再截。
+  await send('Runtime.evaluate', {
+    expression: "document.querySelectorAll('.scroll-reveal').forEach((el) => el.classList.add('revealed'))",
+  })
+  await sleep(1200)
   const { data } = await send('Page.captureScreenshot', { format: 'jpeg', quality: QUALITY })
   const file = join(outDir, `${id}.jpg`)
   writeFileSync(file, Buffer.from(data, 'base64'))

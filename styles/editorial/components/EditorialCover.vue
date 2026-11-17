@@ -1,20 +1,32 @@
 <!--
   EditorialCover - editorial 风格的杂志封面（首页英雄区）
   ------------------------------------------------------------
-  整屏「创刊号封面」版面：顶部 kicker（问候语拉宽字距 +
-  右侧 № 期号装饰）→ 巨大衬线刊名（t('home.name')，末尾缀
-  刊头红句点）→ 非对称双栏（左：衬线斜体封面语 tagline /
-  右：hairline 分隔的提要 description）→ 底部「本期目录」
-  条（01–04 编号锚点，原生 <a href="#..."> 平滑滚动）。
-  封面撑满首屏（min-height clamp），窄屏回退单栏但保留
-  巨大标题与编号装饰。
+  版式原型：编辑型 / 索引式节奏（A 档 01 稿）
+  与另外两稿的差别：swiss 是「左右栅格 + 数据清单」、minimalism 是
+  「单列阅读流 + 单篇展开」；本稿是「上下分区 + 编号索引」——
+  首屏下半部直接铺真实文章索引，不用巨型姓名独占整屏。
+
+  具体做法：
+  · 打散「问候 → 巨型姓名 → 头衔 → 一句话 → 两个按钮」的六段序列：
+    保留刊名（唯一 h1）与对开提要，把原来「01–04 四个占位锚点」
+    的目录条换成最新三篇真实文章的编号索引（标题 / 摘要 / 日期 / 分类），
+    每条用 NuxtLink 直达详情；页内区块导航由 EditorialMasthead 承担。
+  · 删掉与内容零关系的装饰：右上角「№ 01」期号换成最新一条内容的
+    真实发布日期；不再有纯占位的目录导航条。
+  · 腾出的位置交给内容：文章标题、摘要、日期、分类全部来自
+    共享层 useBlog（由首页以 props 传入），不编造任何数字与文案。
+  数据经 useAsyncData 在 SSG 预渲染时已就绪；异步未完成时目录
+  走空状态分支，不会出现半截骨架。
 -->
 <template>
   <section id="home" class="cover" data-section="cover">
     <div class="inner">
       <header class="top">
         <p class="kicker">{{ t('home.greeting') }}</p>
-        <span class="folio" aria-hidden="true">№ 01</span>
+        <!-- 原装饰性期号改为「本期最新一条内容」的真实发布日期 -->
+        <time v-if="latestDate" class="folio" :datetime="latestDate">
+          {{ formatDate(latestDate, dateLocale) }}
+        </time>
       </header>
 
       <h1 class="name">{{ t('home.name') }}<span class="dot" aria-hidden="true">.</span></h1>
@@ -24,32 +36,79 @@
         <p class="desc">{{ t('home.description') }}</p>
       </div>
 
-      <nav class="toc" :aria-label="t('blog.toc')">
-        <p class="toc-caption">{{ t('blog.toc') }}</p>
-        <ul class="toc-list">
-          <li v-for="item in tocItems" :key="item.href">
-            <a class="toc-item" :href="item.href">
+      <!-- 本期要目：真实内容索引（编号 + 标题 + 摘要 + 日期 + 分类） -->
+      <nav class="toc" :aria-label="t('home.latestPosts')">
+        <p class="toc-caption">{{ t('home.latestPosts') }}</p>
+
+        <!-- 加载中：不误报「没有文章」，用 hairline 补白行占位 -->
+        <div v-if="pending" class="toc-loading" role="status">
+          <p class="sr-only">{{ t('common.loading') }}</p>
+          <span v-for="i in COVER_ITEMS" :key="i" class="toc-loading-row" aria-hidden="true"/>
+        </div>
+
+        <ol v-else-if="tocItems.length" class="toc-list">
+          <li v-for="item in tocItems" :key="item.to" class="toc-row">
+            <NuxtLink class="toc-item" :to="item.to">
               <span class="toc-no" aria-hidden="true">{{ item.no }}</span>
-              <span class="toc-label">{{ item.label }}</span>
+              <span class="toc-main">
+                <span class="toc-label">{{ item.title }}</span>
+                <span v-if="item.desc" class="toc-desc">{{ item.desc }}</span>
+              </span>
+              <span class="toc-meta">
+                <time :datetime="item.date">{{ item.dateText }}</time>
+                <span v-if="item.category">{{ item.category }}</span>
+              </span>
               <span class="toc-arrow" aria-hidden="true">→</span>
-            </a>
+            </NuxtLink>
           </li>
-        </ul>
+        </ol>
+        <p v-else class="toc-empty">{{ t('blog.noResults') }}</p>
+
+        <NuxtLink class="toc-more" :to="localePath('/style/editorial/blog')">
+          {{ t('home.viewBlog') }}<span class="more-arrow" aria-hidden="true">→</span>
+        </NuxtLink>
       </nav>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+import type { BlogPost } from '~/types/blog'
+import { contentSlug } from '~/utils/content'
+import { formatDate } from '~/utils/format'
 
-/** 本期目录条目（编号 + i18n 文案，原生锚点跳转） */
-const tocItems = computed(() => [
-  { no: '01', href: '#about', label: t('nav.about') },
-  { no: '02', href: '#projects', label: t('nav.projects') },
-  { no: '03', href: '#posts', label: t('nav.blog') },
-  { no: '04', href: '#contact', label: t('nav.contact') },
-])
+const props = defineProps<{
+  /** 最新文章列表（来自共享层 useBlog，由首页传入） */
+  posts: BlogPost[]
+  /** 数据是否仍在加载（加载时显示补白行，不误报空状态） */
+  pending?: boolean
+}>()
+
+/** 封面索引条数：三条足以构成目录节奏，又不把首屏撑爆 */
+const COVER_ITEMS = 3
+
+const { t, locale } = useI18n()
+const localePath = useLocalePath()
+// 详情链接与日期格式都走共享层，风格层不重写业务规则
+const { postPath } = useStyleContentPath()
+
+const dateLocale = computed(() => (locale.value === 'zh' ? 'zh-CN' : 'en-US'))
+
+/** 期号位置展示的真实日期：取列表首条的发布日期 */
+const latestDate = computed(() => props.posts[0]?.date ?? '')
+
+/** 本期要目：把共享层数据映射成杂志目录行（编号 / 标题 / 摘要 / 日期 / 分类 / 链接） */
+const tocItems = computed(() =>
+  props.posts.slice(0, COVER_ITEMS).map((post, i) => ({
+    no: String(i + 1).padStart(2, '0'),
+    title: post.title,
+    desc: post.description ?? '',
+    date: post.date,
+    dateText: formatDate(post.date, dateLocale.value),
+    category: post.category ?? '',
+    to: postPath(contentSlug(post.path)),
+  })),
+)
 </script>
 
 <style scoped>
@@ -69,7 +128,7 @@ const tocItems = computed(() => [
   padding: clamp(24px, 4vw, 44px) var(--space) clamp(28px, 4vw, 48px);
 }
 
-/* 顶部：kicker + 期号装饰 */
+/* 顶部：宽字距题签 + 真实发布日期（取代纯装饰的期号） */
 .top {
   display: flex;
   align-items: baseline;
@@ -77,7 +136,6 @@ const tocItems = computed(() => [
   gap: var(--gap);
 }
 
-/* kicker：问候语拉宽字距，像杂志封面上的题签 */
 .kicker {
   margin: 0;
   font-size: var(--fs-small);
@@ -93,12 +151,11 @@ const tocItems = computed(() => [
   color: var(--c-muted);
 }
 
-/* 刊名：巨大衬线字，末尾缀刊头红句点 */
+/* 刊名：巨大衬线字，末尾缀刊头红句点。
+   题材签名例外：刊名字就是封面本身，不套共享刻度的 Display 96。 */
 .name {
   margin: clamp(16px, 3vw, 36px) 0 clamp(20px, 3.4vw, 40px);
   font-family: var(--font-head);
-  /* 题材签名例外：刊名字就是封面本身，不套共享刻度的 Display 96，
-     否则 editorial 会失去它唯一真正成立的版式语言。 */
   font-size: clamp(48px, 11.5vw, 164px);
   font-weight: 700;
   line-height: 0.98;
@@ -126,8 +183,7 @@ const tocItems = computed(() => [
   font-style: italic;
   line-height: 1.4;
   color: var(--c-text);
-  /* 均衡各行长度，避免折行后末行只挂一个字（如「…开发者」的「者」独占一行）。
-     短句用 balance 效果最好；不支持的浏览器降级为普通换行，无副作用 */
+  /* 均衡各行长度，避免折行后末行只挂一个字 */
   text-wrap: balance;
 }
 
@@ -140,9 +196,8 @@ const tocItems = computed(() => [
   border-left: var(--border-w) solid var(--ink-soft);
 }
 
-/* 本期目录：hairline 顶线 + 编号条目
-   margin-top: auto 把目录钉在封面底边——封面是撑满首屏的 flex 列，
-   不吸掉余量的话 1280 宽下标题下方会留 270px 空白。 */
+/* —— 本期要目：hairline 顶线 + 编号索引行 ——
+   margin-top: auto 把目录钉在封面底边，标题下方不留大片空白。 */
 .toc {
   margin-top: auto;
   padding-top: clamp(32px, 6vh, 64px);
@@ -150,7 +205,7 @@ const tocItems = computed(() => [
 }
 
 .toc-caption {
-  margin: 12px 0 4px;
+  margin: 12px 0 12px;
   font-size: var(--fs-small);
   letter-spacing: 0.32em;
   color: var(--c-accent);
@@ -158,26 +213,27 @@ const tocItems = computed(() => [
 
 .toc-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .toc-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  min-height: 48px;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto 16px;
+  gap: 4px 16px;
+  align-items: baseline;
+  min-height: var(--scale-hit);
   padding: 12px 12px 12px 0;
   color: var(--c-text);
   text-decoration: none;
   background: transparent;
+  border-bottom: var(--border-w) solid var(--ink-soft);
   transition: background var(--transition);
 }
 
-/* 荧光笔淡染：悬停时整条泛起刊头红淡染 */
+/* 荧光笔淡染：悬停时整行泛起刊头红淡染 */
 .toc-item:hover {
   background: var(--deco);
 }
@@ -198,15 +254,43 @@ const tocItems = computed(() => [
   color: var(--c-accent);
 }
 
+.toc-main {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
 .toc-label {
   font-family: var(--font-head);
-  font-size: var(--scale-lead-fluid);
+  font-size: var(--scale-body);
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.toc-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--c-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.toc-meta {
+  display: grid;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--c-muted);
+  text-align: right;
+  white-space: nowrap;
 }
 
 .toc-arrow {
-  align-self: flex-end;
+  align-self: baseline;
   font-family: var(--font-mono);
   color: var(--c-accent);
   opacity: 0;
@@ -221,7 +305,81 @@ const tocItems = computed(() => [
   transform: translateX(0);
 }
 
-/* 窄屏：双栏回退单栏，封面语与提要上下排布 */
+.toc-empty {
+  margin: 0;
+  padding: 16px 0;
+  font-size: var(--fs-base);
+  color: var(--c-muted);
+}
+
+/* 加载补白：与索引行同高，数据到位后无布局跳动 */
+.toc-loading {
+  display: grid;
+  gap: var(--gap);
+}
+
+.toc-loading-row {
+  height: var(--scale-hit);
+  border-bottom: var(--border-w) solid var(--ink-soft);
+  animation: toc-breathe 1.4s ease-in-out infinite;
+}
+
+@keyframes toc-breathe {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  white-space: nowrap;
+}
+
+/* 「查看博客」入口：独立控件，命中区不小于共享刻度红线 */
+.toc-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--scale-hit);
+  margin-top: 12px;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--c-accent);
+  text-decoration: none;
+  border-bottom: var(--border-w) solid transparent;
+  transition: border-color var(--transition);
+}
+
+.toc-more:hover {
+  border-bottom-color: var(--c-accent);
+}
+
+.toc-more:active {
+  transform: var(--press-transform);
+}
+
+.more-arrow {
+  transition: transform var(--transition);
+}
+
+.toc-more:hover .more-arrow {
+  transform: translateX(4px);
+}
+
+/* 窄屏：双栏提要回退单栏；目录行的日期/分类落到标题下方，
+   避免 390 宽下四列互相挤压造成横向溢出 */
 @media (max-width: 760px) {
   .spread {
     grid-template-columns: 1fr;
@@ -233,42 +391,47 @@ const tocItems = computed(() => [
   }
 }
 
-@media (max-width: 480px) {
-  .toc-list {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 宽屏：目录条目排成印刷索引的一行式（编号 + 标题 + 箭头）。
-   两栏各约 590px 宽，纵向堆叠会让单元格中间空成一片，
-   底线把这段空白变成「引导线」，箭头也才贴在自己那条条目上。 */
-@media (min-width: 761px) {
-  .toc-list {
-    column-gap: clamp(28px, 4vw, 56px);
-  }
-
+@media (max-width: 640px) {
   .toc-item {
-    flex-direction: row;
-    gap: 16px;
-    align-items: baseline;
-    border-bottom: var(--border-w) solid var(--ink-soft);
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 4px 12px;
+  }
+
+  .toc-no {
+    grid-row: 1 / span 2;
+  }
+
+  .toc-meta {
+    grid-column: 2;
+    display: flex;
+    gap: 10px;
+    text-align: left;
+    white-space: normal;
   }
 
   .toc-arrow {
-    align-self: auto;
-    margin-left: auto;
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .toc-item,
   .toc-no,
-  .toc-arrow {
+  .toc-arrow,
+  .toc-more,
+  .more-arrow {
     transition: none;
   }
 
+  .toc-loading-row {
+    animation: none;
+    opacity: 0.6;
+  }
+
   .toc-item:active,
-  .toc-item:hover .toc-arrow {
+  .toc-more:active,
+  .toc-item:hover .toc-arrow,
+  .toc-more:hover .more-arrow {
     transform: none;
   }
 }

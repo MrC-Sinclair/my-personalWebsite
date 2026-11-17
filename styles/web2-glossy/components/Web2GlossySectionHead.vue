@@ -67,6 +67,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
   position: relative;
   display: inline-flex;
   align-items: center;
+  /* 区块标题徽章，非可点控件；保留。 */
   min-height: 30px;
   padding: 4px 16px;
   overflow: hidden;

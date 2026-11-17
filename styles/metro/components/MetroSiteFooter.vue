@@ -54,7 +54,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   margin-left: auto;
   font-size: var(--fs-small);
   letter-spacing: 0.1em;

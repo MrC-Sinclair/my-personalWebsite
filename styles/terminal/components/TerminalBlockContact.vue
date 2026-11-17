@@ -109,7 +109,7 @@ function urlText(url: string): string {
   grid-template-columns: minmax(72px, auto) 1fr;
   align-items: center;
   gap: 4px 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 4px 0;
 }
 
@@ -144,7 +144,7 @@ function urlText(url: string): string {
 .link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   color: var(--c-accent);
   text-decoration: none;
   overflow-wrap: anywhere;
@@ -172,7 +172,7 @@ function urlText(url: string): string {
 .copy {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-body);
   font-size: var(--fs-small);

@@ -176,7 +176,7 @@ a.cell:active {
   justify-content: space-between;
   gap: 8px;
   margin-top: auto;
-  min-height: 40px;
+  min-height: var(--scale-hit);
 }
 
 .visit {

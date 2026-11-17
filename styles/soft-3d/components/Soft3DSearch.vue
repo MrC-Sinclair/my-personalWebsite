@@ -133,7 +133,7 @@ const { t } = useI18n()
 .count {
   margin: 8px 0 0;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   font-variant-numeric: tabular-nums;
   color: var(--c-muted);
 }

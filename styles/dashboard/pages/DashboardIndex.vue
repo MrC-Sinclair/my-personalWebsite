@@ -3,9 +3,11 @@
   ------------------------------------------------------------
   把个人网站压成一个可快速扫描的「个人数据控制中心」：
   左侧边栏（窄屏收起为顶部条）+ 主区 12 列密集网格：
-  英雄区 + KPI 行（真实统计）→ 图表行（文章分类 / 项目
-  技术栈条形图、技能环形图、发文趋势迷你线）→ 精选项目表格 → 最新文章
-  表格（带分类筛选器）→ 联系方式卡片 → 页脚状态条。
+  首屏主块（最新一篇真实文章）+ 从属指标带（真实统计，低一级字号）
+  → 图表行（文章分类 / 项目技术栈条形图、技能环形图、发文趋势迷你线）
+  → 精选项目表格 → 最新文章表格（带分类筛选器）→ 联系方式卡片 → 页脚状态条。
+  首屏按数据型原型组织：真实内容占主块、数字降为从属，删掉原大号
+  幽灵数字与 4 张等权 KPI 卡，让统计不再与内容抢视觉重心。
   数据全部来自共享层 composables（useAsyncData 承载，SSG
   预渲染即含真实内容）；统计与筛选均为视图侧同步推导。
 -->
@@ -15,31 +17,63 @@
 
     <div class="main">
       <div class="main-inner">
-        <!-- ① 总览：英雄区 + KPI 行 -->
+        <!-- ① 总览：主内容块（最新一篇真实文章）+ 从属指标带
+             数据型原型：主块占视觉重心，统计数字降为从属注记；
+             删掉原来与文章总数重复的大号幽灵数字和 4 张等权 KPI 卡。 -->
         <section id="overview" data-section="overview" class="cell">
           <header class="hero">
             <p class="hero-eyebrow">{{ t('home.greeting') }}</p>
             <div class="hero-row">
               <h1 class="hero-name">{{ t('home.name') }}</h1>
-              <p class="hero-ghost" aria-hidden="true">{{ kpiPosts }}</p>
+              <!-- 原装饰性幽灵数字改为最新内容的真实发布日期 -->
+              <p v-if="latestPost" class="hero-date">
+                <span class="hero-date-label">{{ t('blog.publishedAt') }}</span>
+                <time :datetime="latestPost.date">
+                  {{ formatDate(latestPost.date, locale) }}
+                </time>
+              </p>
             </div>
             <p class="hero-tagline">{{ t('home.tagline') }}</p>
             <p class="hero-desc">{{ t('home.description') }}</p>
           </header>
 
-          <div class="kpi-grid">
-            <DashboardKpiCard :label="t('nav.blog')" :value="kpiPosts" :hint="kpiPostsHint" />
-            <DashboardKpiCard
-              :label="t('nav.projects')"
-              :value="kpiProjects"
-              :hint="kpiProjectsHint"
-            />
-            <DashboardKpiCard
-              :label="t('blog.categories')"
-              :value="kpiCategories"
-              :hint="kpiCategoriesHint"
-            />
-            <DashboardKpiCard :label="t('blog.tags')" :value="kpiTags" :hint="kpiTagsHint" />
+          <div class="overview-grid">
+            <!-- 主块：真实文章承担视觉重量（标题 / 摘要 / 日期 / 分类 / 标签 / 详情入口） -->
+            <article class="lead-panel" :aria-label="t('home.latestPosts')">
+              <div class="lead-head">
+                <p class="lead-caption">{{ t('home.latestPosts') }}</p>
+                <span v-if="leadPost?.category" class="lead-category">{{ leadPost.category }}</span>
+              </div>
+
+              <div v-if="loading" class="lead-loading" role="status">
+                <p class="sr-only">{{ t('common.loading') }}</p>
+                <span class="lead-loading-line" aria-hidden="true" />
+                <span class="lead-loading-line lead-loading-line--short" aria-hidden="true" />
+              </div>
+
+              <template v-else-if="leadPost">
+                <h2 class="lead-title">{{ leadPost.title }}</h2>
+                <p v-if="leadPost.description" class="lead-desc">{{ leadPost.description }}</p>
+                <p class="lead-meta">
+                  <time :datetime="leadPost.date">{{ leadPost.dateText }}</time>
+                  <span v-for="tag in leadPost.tags" :key="tag">{{ tag }}</span>
+                </p>
+                <NuxtLink class="lead-link" :to="leadPost.to">
+                  {{ t('blog.readMore') }}<span class="lead-arrow" aria-hidden="true">→</span>
+                </NuxtLink>
+              </template>
+
+              <p v-else class="lead-empty">{{ t('blog.noResults') }}</p>
+            </article>
+
+            <!-- 从属指标：4 个真实统计紧凑成带，字号比主块低一级 -->
+            <div class="metric-strip">
+              <div v-for="metric in metrics" :key="metric.label" class="metric">
+                <p class="metric-label">{{ metric.label }}</p>
+                <p class="metric-value">{{ metric.value }}</p>
+                <p class="metric-hint">{{ metric.hint }}</p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -215,9 +249,9 @@
 <script setup lang="ts">
 import type { BlogPost } from '~/types/blog'
 import type { Project } from '~/types/project'
+import { contentSlug } from '~/utils/content'
 import DashboardSidebar from '../components/DashboardSidebar.vue'
 import DashboardPanel from '../components/DashboardPanel.vue'
-import DashboardKpiCard from '../components/DashboardKpiCard.vue'
 import DashboardBarChart from '../components/DashboardBarChart.vue'
 import DashboardDonutChart from '../components/DashboardDonutChart.vue'
 import DashboardTrendLine from '../components/DashboardTrendLine.vue'
@@ -232,6 +266,8 @@ const { t, locale } = useI18n()
 
 // 对外路由链接的本地化路径（搜索入口跳转博客子页用）
 const localePath = useLocalePath()
+// 首屏主块的文章详情链接走共享层，风格层不重写路由拼接
+const { postPath } = useStyleContentPath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 const { getAllPosts } = useBlog()
@@ -304,6 +340,9 @@ const {
 const kpiPosts = computed(() => posts.value.length)
 const kpiProjects = computed(() => projectsData.value?.all.length ?? 0)
 
+/** 主块展示的标签数（真实标签，按内容顺序） */
+const LEAD_TAGS_SHOWN = 2
+
 /** 最新一篇文章（列表按日期倒序，首篇即最新） */
 const latestPost = computed(() => posts.value[0] ?? null)
 
@@ -318,6 +357,29 @@ const kpiProjectsHint = computed(
 /** KPI：分类数（全量，不受图表 Top N 截断影响） */
 const kpiCategoriesHint = computed(() => categoryStats.value[0]?.label ?? t('blog.allCategories'))
 const kpiTagsHint = computed(() => fullTagStats.value[0]?.label ?? t('blog.tags'))
+
+/** 首屏主块：把共享层数据映射成真实内容条目（标题 / 摘要 / 日期 / 分类 / 标签 / 链接） */
+const leadPost = computed(() => {
+  const post = latestPost.value
+  if (!post) return null
+  return {
+    title: post.title,
+    description: post.description ?? '',
+    date: post.date,
+    dateText: formatDate(post.date, locale.value),
+    category: post.category ?? '',
+    tags: (Array.isArray(post.tags) ? post.tags : []).slice(0, LEAD_TAGS_SHOWN),
+    to: postPath(contentSlug(post.path)),
+  }
+})
+
+/** 从属指标带：4 个真实统计，配原本就有的说明文案，不新增任何数字 */
+const metrics = computed(() => [
+  { label: t('nav.blog'), value: kpiPosts.value, hint: kpiPostsHint.value },
+  { label: t('nav.projects'), value: kpiProjects.value, hint: kpiProjectsHint.value },
+  { label: t('blog.categories'), value: kpiCategories.value, hint: kpiCategoriesHint.value },
+  { label: t('blog.tags'), value: kpiTags.value, hint: kpiTagsHint.value },
+])
 
 // —— 分类筛选器（视图侧过滤已获取的列表） ——
 /** 当前筛选的分类（空字符串 = 全部分类） */
@@ -415,9 +477,9 @@ const sections = computed(() => [
   }
 }
 
-/* —— 英雄区：小 eyebrow + 大等宽名字 + 幽灵数字 —— */
+/* —— 英雄区：小 eyebrow + 等宽名字 + 真实发布日期 —— */
 .hero {
-  padding: var(--space) 0 calc(var(--space) / 2);
+  padding: var(--space) 0 var(--scale-space-3);
 }
 
 .hero-eyebrow {
@@ -430,9 +492,10 @@ const sections = computed(() => [
 
 .hero-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space);
+  gap: 8px var(--space);
 }
 
 .hero-name {
@@ -442,18 +505,23 @@ const sections = computed(() => [
   font-weight: 700;
   line-height: 1.12;
   color: var(--c-text);
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
-/* 幽灵数字：文章总数的大号装饰重复（真实数据的装饰化表达） */
-.hero-ghost {
-  flex: none;
+/* 原本的大号幽灵数字是文章总数的装饰化重复，换成真实发布日期 */
+.hero-date {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   margin: 0;
   font-family: var(--font-mono);
-  font-size: clamp(48px, 9vw, 120px);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  color: color-mix(in srgb, var(--c-accent) 26%, transparent);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.hero-date-label {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .hero-tagline {
@@ -467,11 +535,212 @@ const sections = computed(() => [
   color: var(--c-muted);
 }
 
-/* —— KPI 行：自适应等宽卡片 —— */
-.kpi-grid {
+/* —— 主次网格：主块占 8 栏，从属指标带占 4 栏 —— */
+.overview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap);
+  align-items: stretch;
+}
+
+@media (min-width: 1024px) {
+  .overview-grid {
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: var(--scale-space-3);
+  }
+}
+
+/* —— 主块：真实内容承担视觉重量（顶部数据高光条是风格签名） —— */
+.lead-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--scale-space-3);
+  background: var(--c-surface);
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius);
+  border-top: 3px solid var(--c-accent);
+}
+
+.lead-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px var(--gap);
+  margin-bottom: var(--scale-space-2);
+}
+
+.lead-caption {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.lead-category {
+  padding: 2px 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius-sm);
+}
+
+/* 主块标题用 Subtitle 级：仍是从属指标的两倍，但不会在 1440/390
+   折成四行把首屏变成单篇海报——数据型的本体是密集信息。 */
+.lead-title {
+  margin: 0;
+  font-size: var(--scale-subtitle-fluid);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--c-text);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.lead-desc {
+  margin: var(--scale-space-2) 0 0;
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--c-muted);
+}
+
+.lead-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px var(--scale-space-2);
+  margin: var(--scale-space-2) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.lead-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  min-height: var(--scale-hit);
+  margin-top: auto;
+  padding: 8px 18px;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--c-accent);
+  text-decoration: none;
+  background: transparent;
+  border: var(--border-w) solid var(--c-accent);
+  border-radius: var(--radius-sm);
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.lead-link:hover {
+  color: var(--c-on-accent);
+  background: var(--c-accent);
+}
+
+.lead-link:active {
+  transform: var(--press-transform);
+}
+
+.lead-arrow {
+  transition: transform var(--transition);
+}
+
+.lead-link:hover .lead-arrow {
+  transform: translateX(4px);
+}
+
+.lead-empty {
+  margin: 0;
+  color: var(--c-muted);
+}
+
+/* 加载补白：不误报空状态 */
+.lead-loading {
+  display: grid;
+  gap: var(--gap);
+}
+
+.lead-loading-line {
+  height: var(--scale-space-3);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--c-border) 40%, transparent);
+  animation: lead-breathe 1.4s ease-in-out infinite;
+}
+
+.lead-loading-line--short {
+  width: 60%;
+}
+
+@keyframes lead-breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* —— 从属指标带：2×2 紧凑网格，字号比主块低一级（原 4 张等权卡降级） —— */
+.metric-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+  align-content: start;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--scale-space-2);
+  background: var(--c-bg);
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius-sm);
+}
+
+.metric-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.1em;
+  color: var(--c-muted);
+}
+
+.metric-label::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  background: var(--c-border);
+}
+
+.metric-value {
+  margin: 6px 0 2px;
+  font-family: var(--font-head);
+  font-size: var(--scale-lead-fluid);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--c-text);
+}
+
+.metric-hint {
+  overflow: hidden;
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* —— 分类筛选器（面板头 actions 插槽） —— */
@@ -484,9 +753,9 @@ const sections = computed(() => [
 .filter-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 两个汉字在回退等宽字体下只有 39px 宽（CI 实测），命中区下限不该由字形决定 */
-  min-width: 40px;
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -562,7 +831,7 @@ const sections = computed(() => [
 .post-search input {
   flex: 1 1 auto;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -605,11 +874,20 @@ const sections = computed(() => [
     animation: none;
   }
 
-  .filter-chip {
+  .lead-loading-line {
+    animation: none;
+    opacity: 0.6;
+  }
+
+  .filter-chip,
+  .lead-link,
+  .lead-arrow {
     transition: none;
   }
 
-  .filter-chip:active {
+  .filter-chip:active,
+  .lead-link:active,
+  .lead-link:hover .lead-arrow {
     transform: none;
   }
 }

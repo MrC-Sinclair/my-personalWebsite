@@ -74,7 +74,7 @@ const host = computed(() => `guest@${t('home.name')}`.toLowerCase())
 .gallery {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   margin-left: auto;
   font-size: var(--fs-small);
@@ -110,8 +110,8 @@ const host = computed(() => `guest@${t('home.name')}`.toLowerCase())
 .lang {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-accent-2);

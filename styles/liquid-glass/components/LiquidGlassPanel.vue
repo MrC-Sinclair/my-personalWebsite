@@ -194,7 +194,7 @@ const headingTag = computed(() => (props.level === 1 ? 'h1' : 'h2'))
 .title {
   margin: 0;
   font-family: var(--font-head);
-  font-size: clamp(24px, 3.4vw, 32px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 700;
   letter-spacing: 0.01em;
   color: var(--c-text);

@@ -213,6 +213,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  /* 卡片装饰徽章，非可点控件；紧凑尺寸是题材本体，保留。 */
   min-height: 30px;
   padding: 4px 16px;
   font-family: var(--font-head);

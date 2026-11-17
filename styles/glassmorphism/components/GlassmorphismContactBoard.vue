@@ -152,7 +152,7 @@ const { copied, copy } = useClipboardCopy()
 }
 
 .copy-btn {
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   margin-left: auto;
   font-size: var(--fs-small);

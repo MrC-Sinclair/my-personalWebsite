@@ -73,7 +73,7 @@ function safeSkills(group: SkillGroup): string[] {
   margin: 0;
   overflow: hidden;
   font-family: var(--font-head);
-  font-size: 14px;
+  font-size: var(--scale-body);
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--c-text);
@@ -116,7 +116,7 @@ function safeSkills(group: SkillGroup): string[] {
 .gauge-cell {
   display: flex;
   align-items: center;
-  min-height: 34px;
+  min-height: var(--scale-hit);
   padding: 4px 8px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

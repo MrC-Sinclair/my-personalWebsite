@@ -108,7 +108,7 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   text-decoration: none;
   transition:
     opacity var(--transition),
@@ -189,7 +189,7 @@ function isActive(path: string): boolean {
 .link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-base);
@@ -245,8 +245,8 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   gap: 4px;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
@@ -298,7 +298,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 20px;
   font-family: var(--font-head);
   font-size: var(--fs-base);

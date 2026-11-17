@@ -122,7 +122,7 @@ function pad(n: number): string {
 /* 语言切换：画廊右侧的安静格子——灰字、无强调箭头 */
 .mast-lang {
   grid-column: 2 / 3;
-  min-width: 40px;
+  min-width: var(--scale-hit);
   color: var(--c-muted);
 }
 
@@ -184,7 +184,7 @@ function pad(n: number): string {
 }
 
 .brand-name {
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   letter-spacing: -0.02em;
   text-transform: uppercase;

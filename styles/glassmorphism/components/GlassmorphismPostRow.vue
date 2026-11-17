@@ -144,6 +144,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
 /* 箭头：hover 右滑（列表项微动） */
 .row-arrow {
   font-family: var(--font-mono);
+  /* 行箭头图标，不走排印刻度。 */
   font-size: 18px;
   color: var(--c-accent);
   transition: transform var(--transition);

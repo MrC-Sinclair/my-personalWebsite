@@ -74,7 +74,7 @@ function tone(index: number): FlatTone {
 
 .skill-bars__label {
   font-family: var(--font-head);
-  font-size: 16px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -113,7 +113,7 @@ function tone(index: number): FlatTone {
 
 .skill-bars__chip {
   padding: 4px 12px;
-  font-size: 12px;
+  font-size: var(--scale-meta);
   font-weight: 600;
   color: var(--c-text);
   background: #edf1f6;

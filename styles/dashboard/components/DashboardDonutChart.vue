@@ -145,6 +145,7 @@ const segments = computed(() => {
   left: 50%;
   margin: 0;
   font-family: var(--font-head);
+  /* 装饰数据读数（环形图总数），不是文本层级，不进排印刻度。 */
   font-size: 28px;
   font-variant-numeric: tabular-nums;
   color: var(--c-text);
@@ -163,7 +164,7 @@ const segments = computed(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 32px;
+  min-height: var(--scale-hit);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
   transition: background var(--transition);

@@ -83,7 +83,7 @@ const safeGroups = computed(() =>
 .stamp {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: 14px;
   font-weight: 700;

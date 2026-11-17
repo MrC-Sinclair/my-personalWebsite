@@ -26,6 +26,12 @@
       色只做「点到为止」的指向（链接、指示点、悬停渲染）
    7. --deco 用作悬停时的 6% 静默底色渲染：最小限度的 hover
       反馈——不位移、不变色，只有一层几乎不可见的雾
+   8. 2026-11-08 接入共享排印刻度：--fs-* 指向 --scale-*；
+      标题级 clamp() 换成 --scale-*-fluid；命中区收到
+      --scale-hit 44px。原 .sec-title 的 clamp() 第三参数
+      隐式依赖 --fs-head，已换成显式的 subtitle-fluid，
+      避免改 --fs-head 时被连带放大到 64px。
+      保留的首屏巨型姓名是「大而轻」的版式签名。
    ============================================================ */
 
 [data-style='minimalism'] {
@@ -45,23 +51,22 @@
   --border-w: 1px;
 
   /* —— 阴影（轻量级双层软阴影：极简的光影是「轻」不是「无」） —— */
-  --shadow:
-    0 1px 2px rgb(29 29 31 / 0.04),
-    0 10px 30px rgb(29 29 31 / 0.05);
+  --shadow: 0 1px 2px rgb(29 29 31 / 0.04), 0 10px 30px rgb(29 29 31 / 0.05);
   --shadow-press: 0 1px 2px rgb(29 29 31 / 0.08);
 
   /* —— 字体（单字族纪律：标题与正文同族，层级靠字重与字号） —— */
-  --font-body:
-    system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-head: var(--font-body);
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --font-smooth: auto;
 
-  /* —— 字号（排版主导：大而轻的标题 + 舒朗的正文行距） —— */
-  --fs-base: 16px;
-  --fs-small: 13px;
-  --fs-head: 48px;
-  --fs-title: 24px;
+  /* —— 字号：统一指向共享刻度，风格层不再自造散值 ——
+     条目标题刻意比 editorial / swiss 低一级（用 Lead 而非 Heading），
+     这是「克制」的表达，但取的是同一套刻度的级，不是自造数值。 */
+  --fs-base: var(--scale-body); /* 17 / 16 */
+  --fs-small: var(--scale-meta); /* 13，不缩 */
+  --fs-head: var(--scale-title); /* 64 / 32 */
+  --fs-title: var(--scale-lead); /* 24 / 20 */
   --lh-body: 1.8;
 
   /* —— 间距（留白即设计：大间距、窄测量） —— */

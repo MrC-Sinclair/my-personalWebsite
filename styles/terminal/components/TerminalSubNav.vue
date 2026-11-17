@@ -87,7 +87,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   color: var(--c-on-accent);
   background: var(--c-accent-2);
@@ -121,7 +121,7 @@ function isActive(path: string): boolean {
 .subnav__link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   color: var(--c-accent);
   text-decoration: none;
@@ -158,7 +158,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   margin-left: auto;
   padding: 8px 12px;
   color: var(--c-muted);
@@ -177,7 +177,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   color: var(--c-muted);
   text-decoration: none;

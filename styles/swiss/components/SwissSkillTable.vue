@@ -63,7 +63,7 @@ function skillsText(skills: unknown): string {
 }
 
 .row-cat {
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--c-text);
@@ -72,7 +72,7 @@ function skillsText(skills: unknown): string {
 /* 技能清单：小号宽字距，斜杠分隔是本风格的清单签名 */
 .row-list {
   grid-column: 2;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   line-height: 1.9;
   color: var(--c-muted);
   letter-spacing: 0.04em;

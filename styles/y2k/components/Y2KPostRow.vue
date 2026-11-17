@@ -56,7 +56,7 @@ const padIndex = computed(() => String(props.index + 1).padStart(2, '0'))
   align-items: center;
   gap: var(--gap);
   overflow: hidden;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 16px 20px;
   text-decoration: none;
   border: var(--border-w) solid rgb(190 200 255 / 0.3);

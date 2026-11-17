@@ -96,14 +96,14 @@ function toggleQr() {
 
 <style scoped>
 .social__glyph {
-  font-size: 21px;
+  font-size: var(--scale-lead);
   font-weight: 300;
   line-height: 1;
 }
 
 .social__name {
   font-family: var(--font-head);
-  font-size: 21px;
+  font-size: var(--scale-lead);
   font-weight: 700;
   line-height: 1.2;
   overflow-wrap: break-word;

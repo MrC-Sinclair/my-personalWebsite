@@ -129,6 +129,7 @@ const safeTags = computed(() => (Array.isArray(props.project.tags) ? props.proje
   z-index: 2;
   display: inline-flex;
   align-items: center;
+  /* 项目卡徽章，非可点控件；保留。 */
   min-height: 30px;
   padding: 4px 16px;
   overflow: hidden;

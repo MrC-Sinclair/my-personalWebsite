@@ -74,7 +74,7 @@ function dateText(post: BlogPost): string {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 4px 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 4px;
 }
 

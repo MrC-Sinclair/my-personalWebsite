@@ -96,7 +96,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   min-height: 44px;
   padding: 12px 16px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--scale-meta);
   letter-spacing: 0.04em;
   color: var(--c-text);
   background: var(--c-surface);
@@ -138,7 +138,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 }
 
 .port-count {
-  font-size: 11px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
 }
 
@@ -150,7 +150,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   min-height: 44px;
   padding: 12px 12px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--scale-meta);
   color: var(--c-accent-2);
   background: transparent;
   border: var(--border-w) solid var(--c-accent-2);
@@ -189,7 +189,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   min-height: 44px;
   padding: 12px 12px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--scale-meta);
   color: var(--c-accent-2);
   background: transparent;
   border: var(--border-w) solid var(--c-accent-2);

@@ -95,7 +95,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   text-decoration: none;
 }
 
@@ -127,7 +127,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -169,7 +169,7 @@ function isActive(path: string): boolean {
 /* 语言切换键：像素字出窄方块，40px 命中下限显式兜住并与字形宽度解耦 */
 .hud-item--lang {
   justify-content: center;
-  min-width: 40px;
+  min-width: var(--scale-hit);
 }
 
 /* 风格画廊入口：草绿底强调项（与首页同一配色分工） */

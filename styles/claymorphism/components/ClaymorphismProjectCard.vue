@@ -9,7 +9,14 @@
   详情页 slug 由共享层 contentSlug 从内容路径推导。
 -->
 <template>
-  <NuxtLink class="card-link" :to="localePath(projectRoute)">
+  <div class="card-link">
+    <!-- 整卡点击层：外层改用 div + 绝对定位覆盖链接，避免锚点嵌套。
+         浏览器会把嵌套锚点拆成空链接（空白键盘焦点、命中区不达标、SSR/CSR DOM 不一致）。 -->
+    <NuxtLink
+      class="card-overlay"
+      :to="localePath(projectRoute)"
+      :aria-label="project.title"
+    />
     <article class="card" :class="`tone-${tone}`">
       <!-- 封面必须放在 .card-head 之外：.card-head 是「小球 + 标题 + 徽标」的横向 flex，
            width:100% 的图进去会把标题挤成 0 宽 —— 实测标题每字一行并溢出卡片 -->
@@ -58,7 +65,7 @@
         </a>
       </footer>
     </article>
-  </NuxtLink>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -239,7 +246,7 @@ const projectRoute = computed(
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -347,5 +354,23 @@ const projectRoute = computed(
   object-fit: cover;
   border-radius: var(--radius-sm);
   background: var(--c-surface);
+}
+
+/* 整卡点击层：外层 div + 绝对定位覆盖链接，替代原先包裹整卡的可点链接。
+   嵌套锚点会被浏览器拆出空链接（空白键盘焦点、44px 命中区不达标、SSR/CSR DOM 不一致）。 */
+.card-link {
+  position: relative;
+}
+
+.card-overlay {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.actions {
+  position: relative;
+  z-index: 2;
 }
 </style>

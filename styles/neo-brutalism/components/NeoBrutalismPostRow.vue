@@ -84,7 +84,7 @@ const safeTags = computed<string[]>(() => (Array.isArray(props.post.tags) ? prop
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);

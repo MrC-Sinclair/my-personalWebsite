@@ -94,7 +94,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
   display: inline-flex;
   align-items: baseline;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: inherit;
   font-size: var(--fs-small);
@@ -132,7 +132,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 
 .tag-count {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   font-variant-numeric: tabular-nums;
   color: var(--c-muted);
 }
@@ -146,7 +146,7 @@ const hidden = computed(() => (expanded.value ? 0 : limited.value.hidden))
 .toggle {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);

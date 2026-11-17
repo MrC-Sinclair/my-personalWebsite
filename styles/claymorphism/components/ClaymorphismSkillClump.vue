@@ -104,8 +104,9 @@ function progressOf(group: SkillGroup): number {
   flex: none;
   align-items: center;
   justify-content: center;
+  /* 黏土小药丸的宽度下限：紧凑控件题材密度，保留。 */
   min-width: 34px;
-  min-height: 34px;
+  min-height: var(--scale-hit);
   padding: 0 8px;
   font-size: var(--fs-small);
   font-weight: 800;
@@ -133,6 +134,7 @@ function progressOf(group: SkillGroup): number {
 /* 填充条：同色系凸起黏土条（顶部高光 + 底部微影） */
 .fill {
   display: block;
+  /* 装饰黏土小圆点的宽度下限，保留。 */
   min-width: 18px;
   height: 100%;
   background: linear-gradient(180deg, var(--tone-bg), color-mix(in srgb, var(--tone-bg) 78%, var(--tone-text)));
@@ -157,7 +159,7 @@ function progressOf(group: SkillGroup): number {
 .pill {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-base);
   font-weight: 600;

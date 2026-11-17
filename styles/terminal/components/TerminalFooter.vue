@@ -57,7 +57,7 @@ const { t } = useI18n()
 .top {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   margin-left: auto;
   color: var(--c-muted);

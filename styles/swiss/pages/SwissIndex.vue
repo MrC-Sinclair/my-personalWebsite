@@ -20,7 +20,8 @@
         <!-- 极淡的 12 栏背景网格线：版面骨架的可见提示 -->
         <div class="grid-lines" aria-hidden="true" />
 
-        <SwissHero />
+        <!-- 右半屏项目索引用首页已取好的精选项目，不新增取数 -->
+        <SwissHero :projects="featuredProjects" :pending="loading" />
 
         <!-- 加载骨架（防御分支：正常情况下 await 后数据已就绪） -->
         <div v-if="loading" class="skeleton-zone" role="status" aria-live="polite">
@@ -341,14 +342,14 @@ const loading = computed(
 
 .empty-main {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
 }
 
 .empty-hint {
   margin: 8px 0 0;
-  font-size: 14px;
+  font-size: var(--scale-meta);
 }
 
 /* 查看全部：右对齐的文字链接，下划线生长反馈 */
@@ -361,7 +362,7 @@ const loading = computed(
   min-height: 44px;
   margin-top: 12px;
   margin-left: auto;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   color: var(--c-text);
   text-decoration: none;

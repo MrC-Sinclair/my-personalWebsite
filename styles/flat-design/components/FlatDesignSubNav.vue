@@ -98,7 +98,7 @@ function isActive(path: string): boolean {
   align-items: center;
   gap: 12px;
   flex: none;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   text-decoration: none;
   color: var(--c-text);
 }
@@ -112,7 +112,7 @@ function isActive(path: string): boolean {
 
 .fd-subnav__name {
   font-family: var(--font-head);
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 800;
   letter-spacing: 0.04em;
 }
@@ -129,10 +129,10 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 两字标签只有 31px 宽，兜到 40px 才有可点的横向命中区 */
-  min-width: 40px;
-  font-size: 14px;
+  min-width: var(--scale-hit);
+  font-size: var(--scale-meta);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -175,8 +175,8 @@ function isActive(path: string): boolean {
   align-items: center;
   justify-content: center;
   flex: none;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 0 12px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -212,10 +212,10 @@ function isActive(path: string): boolean {
   flex: none;
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 同上：三个字在窄一号的回退字体下只有 37px 宽，命中区下限不该依赖字形 */
-  min-width: 40px;
-  font-size: 14px;
+  min-width: var(--scale-hit);
+  font-size: var(--scale-meta);
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--c-accent);

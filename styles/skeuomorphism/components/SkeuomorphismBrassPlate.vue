@@ -220,7 +220,7 @@ const { copied, copy } = useClipboardCopy()
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);

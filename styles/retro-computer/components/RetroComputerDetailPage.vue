@@ -134,7 +134,7 @@ const projectLinks = computed(() => {
   align-items: center;
   align-self: flex-start;
   /* 命中区地板：32px 的 Win95 按钮高度在窄屏不够，统一抬到 40 */
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 16px;
   font-family: var(--font-body);
   font-size: var(--fs-small);
@@ -374,8 +374,8 @@ const projectLinks = computed(() => {
   display: inline-flex;
   align-items: center;
   /* 命中区地板：地址栏里的短链接（如「首页」）实测只有 32×32 */
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 0 4px;
   color: var(--c-accent);
   text-decoration: none;

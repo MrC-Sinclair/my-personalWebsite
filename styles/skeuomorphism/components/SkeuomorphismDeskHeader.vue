@@ -137,7 +137,7 @@ const { activeId } = useActiveSection()
 .brand {
   display: inline-flex;
   flex: none;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   text-decoration: none;
 }
 
@@ -200,7 +200,7 @@ const { activeId } = useActiveSection()
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 20px;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -253,8 +253,8 @@ const { activeId } = useActiveSection()
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -308,7 +308,7 @@ const { activeId } = useActiveSection()
   flex: none;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);

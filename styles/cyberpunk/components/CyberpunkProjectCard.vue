@@ -9,7 +9,14 @@
   slug 换算复用共享层 contentSlug（不在风格里重写业务逻辑）。
 -->
 <template>
-  <NuxtLink :to="localePath(projectRoute)" class="card-link">
+  <div class="card-link">
+    <!-- 整卡点击层：外层改用 div + 绝对定位覆盖链接，避免锚点嵌套。
+         浏览器会把嵌套锚点拆成空链接（空白键盘焦点、命中区不达标、SSR/CSR DOM 不一致）。 -->
+    <NuxtLink
+      class="card-overlay"
+      :to="localePath(projectRoute)"
+      :aria-label="project.title"
+    />
     <article class="card">
       <!-- 视觉区：封面图或纯 CSS 网格占位 -->
       <div class="visual" :class="{ 'visual-plain': !project.image }">
@@ -69,7 +76,7 @@
         </footer>
       </div>
     </article>
-  </NuxtLink>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -330,7 +337,7 @@ const projectRoute = computed(
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);
@@ -402,5 +409,23 @@ const projectRoute = computed(
     top: -40%;
     opacity: 0;
   }
+}
+
+/* 整卡点击层：外层 div + 绝对定位覆盖链接，替代原先包裹整卡的可点链接。
+   嵌套锚点会被浏览器拆出空链接（空白键盘焦点、44px 命中区不达标、SSR/CSR DOM 不一致）。 */
+.card-link {
+  position: relative;
+}
+
+.card-overlay {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.actions {
+  position: relative;
+  z-index: 2;
 }
 </style>

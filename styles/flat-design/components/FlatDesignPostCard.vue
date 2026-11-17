@@ -114,7 +114,7 @@ const tagText = computed(() =>
 /* 分类章：纯色底白字（色板均校验 ≥ 4.5:1） */
 .post-card__chip {
   padding: 2px 8px;
-  font-size: 12px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   letter-spacing: 0.04em;
   color: #ffffff;
@@ -124,14 +124,14 @@ const tagText = computed(() =>
 
 .post-card__date {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
 }
 
 .post-card__title {
   margin: 12px 0 0;
   font-family: var(--font-head);
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 800;
   line-height: 1.35;
 }
@@ -172,7 +172,7 @@ const tagText = computed(() =>
 
 .post-card__tags {
   margin: 12px 0 0;
-  font-size: 12px;
+  font-size: var(--scale-meta);
   letter-spacing: 0.04em;
   color: var(--c-muted);
 }
@@ -184,7 +184,7 @@ const tagText = computed(() =>
   gap: 8px;
   margin: 16px 0 0;
   padding-top: 12px;
-  font-size: 14px;
+  font-size: var(--scale-meta);
   font-weight: 700;
   color: var(--c-muted);
   border-top: var(--border-w) solid #edf1f6;

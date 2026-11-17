@@ -108,14 +108,14 @@ const { t } = useI18n()
 .count {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   font-variant-numeric: tabular-nums;
   color: var(--c-muted);
 }
 
 /* —— 清除：与标签栏同款（青色文字 tile） —— */
 .clear {
-  min-height: 34px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-family: inherit;
   font-size: var(--fs-small);

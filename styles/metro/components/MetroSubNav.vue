@@ -97,9 +97,9 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   flex: none;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   font-family: var(--font-head);
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -130,9 +130,9 @@ function isActive(path: string): boolean {
   align-items: center;
   justify-content: center;
   flex: none;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   /* 两字标签只有 29px 宽，拇指横向命中不够：兜到 40px，长标签不受影响 */
-  min-width: 40px;
+  min-width: var(--scale-hit);
   font-size: var(--fs-small);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -160,8 +160,8 @@ function isActive(path: string): boolean {
   align-items: center;
   justify-content: center;
   flex: none;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   font-weight: 600;
@@ -204,7 +204,7 @@ function isActive(path: string): boolean {
   flex-direction: row;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 600;

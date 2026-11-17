@@ -47,7 +47,7 @@ withDefaults(
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 20px;
   background: var(--c-surface);
   border: var(--border-w) solid;

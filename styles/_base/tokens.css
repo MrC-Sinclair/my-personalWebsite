@@ -80,12 +80,17 @@
    【11-07 校正：原先的接入层选错了】
    全量扫描 20 个风格共 1285 条 font-size 声明，真实分布是：
      var(--fs-small)  698   var(--fs-base)  172   var(--fs-title)  44
-     var(--fs-head)     0   ← 全站从未被引用，是死变量
+     var(--fs-head)     0   ← 没有一处「直接」拿它当 font-size 值；
+                            历史上有 5 处藏在 clamp() 参数里间接引用
+                            （minimalism / glassmorphism / neumorphism /
+                             retro-computer 等），已在各风格接入时逐个
+                            显式替换；2026-11-10 全站归零。
      clamp() 字面量   133   ← 76 种互不相同的表达式
      px 字面量        193   其他 45
    结论：--fs-* 只管「注释小字与正文」，真正决定排印层级的大标题
-   全部散落在组件里手写的 clamp() 里。所以「把 --fs-head 指向
-   --scale-title」不会有任何可见效果，刻度必须接到 clamp 那一层。
+   全部散落在组件里手写的 clamp() 里。所以只把 --fs-* 指向刻度几乎
+   不会有可见效果；且直接改 --fs-head 还会连带改变那些把它塞进
+   clamp() 的风格，必须一并换成显式的 --scale-*-fluid。
 
    本契约因此提供同一套刻度的两种表达：
      --scale-*        固定端点，对应设计稿 Desktop / Mobile 两个 mode

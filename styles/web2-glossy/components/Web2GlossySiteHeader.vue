@@ -102,7 +102,7 @@ const anchors = computed(() => [
   align-items: center;
   gap: 12px;
   /* 字母牌是 38×38，会把整条链接的命中区定在 38px；补到 40 与 Web2GlossySubNav 的 .brand 一致 */
-  min-height: 40px;
+  min-height: var(--scale-hit);
   color: var(--c-text);
   text-decoration: none;
   transition: filter var(--transition);
@@ -175,7 +175,7 @@ const anchors = computed(() => [
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
@@ -235,8 +235,8 @@ const anchors = computed(() => [
   flex: none;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 4px 16px;
   font-family: var(--font-head);
   font-size: var(--fs-small);

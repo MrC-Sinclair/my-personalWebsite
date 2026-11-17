@@ -185,7 +185,7 @@ const projectLinks = computed(() => {
   gap: 8px;
   align-items: center;
   align-self: flex-start;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 16px;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -206,7 +206,7 @@ const projectLinks = computed(() => {
 .title {
   margin: 0 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(28px, 4vw, 48px);
+  font-size: var(--scale-title-fluid);
   font-weight: 700;
   line-height: 1.15;
   color: var(--c-text);
@@ -257,7 +257,7 @@ const projectLinks = computed(() => {
   display: inline-flex;
   gap: 8px;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 16px;
   font-size: var(--fs-small);
   color: var(--c-text);
@@ -275,7 +275,7 @@ const projectLinks = computed(() => {
 .prose :deep(h2) {
   margin: 1.8em 0 0.7em;
   font-family: var(--font-head);
-  font-size: clamp(18px, 2.3vw, 24px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -283,7 +283,7 @@ const projectLinks = computed(() => {
 .prose :deep(h3) {
   margin: 1.5em 0 0.6em;
   font-family: var(--font-head);
-  font-size: clamp(16px, 1.9vw, 21px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -432,10 +432,10 @@ const projectLinks = computed(() => {
 .crumb {  /* 地板写死在链接自己身上：标签是「首页 / 项目」这种两字中文时，字形宽度随字体
      度量浮动——同一页在 CI 的 Linux 回退字体下实测 38px，本机与英文侧却过线。
      命中区不能交给字形决定。 */
-  min-width: 40px;
+  min-width: var(--scale-hit);
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 16px;
   color: var(--c-text);
   text-decoration: none;

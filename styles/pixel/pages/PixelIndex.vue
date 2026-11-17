@@ -12,6 +12,12 @@
   · CONTACT 存档情报键值行（偏左收窄，右侧留白呼吸）
   数据全部来自共享层 composables（useAsyncData 承载，SSG 预渲染
   即含真实内容）；文案全部走 i18n；扫描线与像素网格为纯 CSS 装饰。
+
+  2026-11-13 首屏完成度修补（C 档「只补完成度，不用克制去削」）：
+  加行距与区块留白（hero-id 8→12px、区块 16→24px、网格断点同步），
+  并把 sprite 落点、头像格、物品编号格、二维码、列表行距统一到
+  --px-grid（4px）/ --px-icon（64px）两个网格基准；像素画帧、
+  硬阴影、有限色板、CRT 扫描线等年代感元素一个未动。
 -->
 <template>
   <div id="top" class="page">
@@ -241,11 +247,13 @@ function submitSearch(): void {
 }
 
 /* —— 游戏屏幕：窄屏单列，≥900px 起 12 栏分栏 —— */
+/* 区块留白：评审「下方列表过密」。网格基准的 6 倍 = 24px，
+   仍在 4px 网格上，比原 16px 多一档呼吸。 */
 .screen {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space);
+  gap: calc(var(--px-grid) * 6);
   width: 100%;
   max-width: var(--page-w);
   margin: 0 auto;
@@ -256,7 +264,8 @@ function submitSearch(): void {
   .screen {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: var(--space);
+    /* 与窄屏同一网格基准，桌面不留回 16px */
+    gap: calc(var(--px-grid) * 6);
   }
 
   .col-full {
@@ -288,8 +297,8 @@ function submitSearch(): void {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: start;
-  gap: var(--space);
-  padding: calc(var(--space) + 4px);
+  gap: calc(var(--px-grid) * 6);
+  padding: calc(var(--px-grid) * 7);
   background: var(--c-surface);
   border: var(--border-w) solid var(--c-border);
   box-shadow:
@@ -297,21 +306,23 @@ function submitSearch(): void {
     var(--shadow);
 }
 
+/* 头像格统一到 --px-icon（16 × 4px 网格） */
 .hero-portrait {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: var(--px-icon);
+  height: var(--px-icon);
   background: var(--c-bg);
   border: var(--border-w) solid var(--c-border);
 }
 
-/* 8-bit 外星人：4px 网格 × 11×8 的 box-shadow 像素画（待机帧） */
+/* 8-bit 外星人：4px 网格 × 11×8 的 box-shadow 像素画（待机帧）
+   落点也对齐网格：原 left:10px 是网格间的半格，会让像素画发虚。 */
 .sprite {
   position: absolute;
-  top: 16px;
-  left: 10px;
-  width: 4px;
-  height: 4px;
+  top: calc(var(--px-grid) * 4);
+  left: calc(var(--px-grid) * 2);
+  width: var(--px-grid);
+  height: var(--px-grid);
   color: var(--c-accent);
   box-shadow:
     8px 0,
@@ -420,10 +431,11 @@ function submitSearch(): void {
     36px 28px;
 }
 
+/* 行距：原 8px 六段挤在一起，提到 3 格（12px），仍是 4px 网格 */
 .hero-id {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: calc(var(--px-grid) * 3);
   min-width: 0;
 }
 
@@ -514,10 +526,11 @@ function submitSearch(): void {
 }
 
 /* —— 物品栏 / 日志行容器 —— */
+/* 列表行距：3 格 = 12px 的网格表达，与首屏同一基准 */
 .stack {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: calc(var(--px-grid) * 3);
   margin: 0;
   padding: 0;
   list-style: none;

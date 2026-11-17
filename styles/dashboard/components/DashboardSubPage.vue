@@ -111,7 +111,7 @@ defineProps<{
 .pagehead-title {
   margin: 4px 0 8px;
   font-family: var(--font-head);
-  font-size: clamp(28px, 4.4vw, 40px);
+  font-size: var(--scale-subtitle-fluid);
   font-weight: 700;
   line-height: 1.16;
   color: var(--c-text);

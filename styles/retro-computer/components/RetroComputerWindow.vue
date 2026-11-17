@@ -117,7 +117,7 @@ const emit = defineEmits<{ (e: 'activate'): void }>()
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 2px 3px 2px 8px;
   background: var(--c-surface);
   border-bottom: var(--border-w) solid;
@@ -149,7 +149,7 @@ const emit = defineEmits<{ (e: 'activate'): void }>()
 .rc-win__title {
   flex: 1;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 4px 8px;
   overflow: hidden;
   border: 0;

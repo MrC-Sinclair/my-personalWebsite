@@ -71,7 +71,7 @@ function slugOf(path: string): string {
   display: flex;
   align-items: center;
   gap: 16px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 16px 20px 16px 60px;
   text-decoration: none;
   border: 1px solid rgb(0 0 0 / 0.4);

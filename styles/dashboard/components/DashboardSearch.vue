@@ -72,7 +72,7 @@ const { t } = useI18n()
 .field-label {
   margin-right: 2px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   color: var(--c-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -82,7 +82,7 @@ const { t } = useI18n()
 .input {
   flex: 1 1 220px;
   min-width: 0;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
@@ -112,7 +112,7 @@ const { t } = useI18n()
 
 /* —— 清除：与标签栏同款（琥珀描边，hover 实心） —— */
 .clear {
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-family: inherit;
   font-size: var(--fs-small);
@@ -144,7 +144,7 @@ const { t } = useI18n()
 .count {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--scale-meta);
   font-variant-numeric: tabular-nums;
   color: var(--c-muted);
 }

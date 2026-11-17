@@ -110,7 +110,7 @@ function pad(n: number): string {
    命中区靠 min-width/min-height（.mast-cell 已给 48px）撑满整格 */
 .mast-lang {
   grid-column: 2 / 3;
-  min-width: 40px;
+  min-width: var(--scale-hit);
   color: var(--c-muted);
 }
 
@@ -163,7 +163,7 @@ function pad(n: number): string {
 }
 
 .brand-name {
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   letter-spacing: -0.02em;
   text-transform: uppercase;

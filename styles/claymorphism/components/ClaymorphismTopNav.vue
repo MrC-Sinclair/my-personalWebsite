@@ -95,7 +95,7 @@ const { activeId } = useActiveSection()
   flex: none;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 4px 12px 4px 4px;
   text-decoration: none;
   border-radius: 999px;
@@ -149,7 +149,7 @@ const { activeId } = useActiveSection()
 .anchor-pill {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-base);
   color: var(--c-muted);
@@ -191,8 +191,8 @@ const { activeId } = useActiveSection()
   flex: none;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 16px;
   font-size: var(--fs-small);
   font-weight: 700;
@@ -231,7 +231,7 @@ const { activeId } = useActiveSection()
   flex: none;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 20px;
   font-size: var(--fs-base);
   font-weight: 700;

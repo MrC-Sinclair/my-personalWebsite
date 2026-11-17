@@ -4,7 +4,7 @@
   「一站多风格」架构中 web2-glossy 风格的唯一交付页面：
   - 自带导航头部（站点标识 + 页内锚点 + 风格画廊入口）与页脚
   - 区块：英雄区（天空渐变 + 云朵 + 地平线高光 + 星芒徽章 +
-    倒影标题）→ 关于/技能（7:5 非对称分栏）→ 精选项目（大卡 +
+    渐变标题）→ 关于/技能（7:5 非对称分栏）→ 精选项目（大卡 +
     双列，色带区块）→ 最新文章（光泽行条目）→ 联系方式（深蓝
     大色块 + 白色光泽磁贴）
   - 排版轴：居中英雄 + 非对称分栏 + 全宽色带交替，与其它风格
@@ -13,6 +13,15 @@
   数据全部来自共享层 composables（useAppInfo / useProjects /
   useBlog），异步数据有 loading 骨架与空状态；文案全部走 i18n；
   滚动进入动画复用共享层 useScrollReveal 与全局 scroll-reveal 类。
+
+  2026-11-14 完成度修补（C 档「只补完成度，不用克制去削」）：
+  评审「标题下的倒影字与两块白色信息胶囊混进了现代感，风格不纯」。
+  ① 删掉 .hero__reflection 倒影字（DOM + CSS），标题 margin 从 48px
+     收到 8px；② 标语 / 简介两块纯白磨砂胶囊改成 Web2.0 蓝色凝胶
+     渐变条（主次靠明度区分，不换材质），问候胶囊也收敛到同族；
+  ③ 所有高光统一为 180deg 自上而下 + 顶部白色 inset 高光，与
+     Web2GlossyGelButton 同一配方。橙色太阳徽章、天空渐变、云朵、
+     地平线高光、凝胶按钮等 Web2.0 题材元素一个未动。
 -->
 <template>
   <div id="top" class="w2g-page">
@@ -26,9 +35,10 @@
         <div class="container hero__inner">
           <p class="hero__greeting scroll-reveal">{{ t('home.greeting') }}</p>
 
+          <!-- 倒影字已删：评审「标题下的倒影字混进了现代感，风格不纯」。
+               Web2.0 的高光方向统一自上而下，翻转镜像是反方向的第二光源。 -->
           <h1 id="hero-title" class="hero__name scroll-reveal scroll-reveal-delay-1">
             <span class="hero__name-text">{{ t('home.name') }}</span>
-            <span class="hero__reflection" aria-hidden="true">{{ t('home.name') }}</span>
           </h1>
 
           <p class="hero__tagline scroll-reveal scroll-reveal-delay-2">{{ t('home.tagline') }}</p>
@@ -369,28 +379,30 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
   text-align: center;
 }
 
-/* 问候胶囊：亮面玻璃 */
+/* 问候胶囊：与下方两条共用同一族蓝渐变 + 顶部白高光，
+   高光方向统一自上而下（180deg），不再出现纯白磨砂面。 */
 .hero__greeting {
   display: inline-flex;
   align-items: center;
   margin: 0;
   padding: 8px 24px;
-  border: 1px solid var(--c-border);
+  border: 1px solid rgb(23 74 128 / 0.5);
   border-radius: var(--radius-sm);
   color: #1a5fc0;
   font-family: var(--font-head);
   font-size: 1.0625rem;
   font-weight: 700;
-  background: linear-gradient(180deg, #ffffff 0%, #e9f2fc 100%);
+  background: linear-gradient(180deg, #f2f8ff 0%, #d6e8fb 52%, #b7d5f3 100%);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.95),
+    inset 0 -2px 4px rgb(23 74 128 / 0.12),
     0 3px 8px rgb(23 74 128 / 0.22);
 }
 
-/* 巨型渐变光泽标题 */
+/* 巨型渐变光泽标题（倒影字已删，不再为镜像预留 48px 空白） */
 .hero__name {
   position: relative;
-  margin: 0 0 48px;
+  margin: 0 0 8px;
   font-family: var(--font-head);
   font-size: clamp(2.625rem, 8vw, 5.25rem);
   font-weight: 800;
@@ -407,60 +419,45 @@ const safeSocialLinks = computed(() => (Array.isArray(socialLinks.value) ? socia
   filter: drop-shadow(0 3px 2px rgb(255 255 255 / 0.55));
 }
 
-/* 倒影：翻转 + 渐隐遮罩，纯装饰 */
-/* 倒影：翻转 + 渐隐遮罩，纯装饰。
-   三处调整让它更像镜面而不是「淡影子」：
-   1) 不透明度 0.32 → 0.4：原来太淡，几乎读不出是倒影
-   2) 加 0.8px 模糊：真实反射面不是完美镜面，一点点模糊才像「照出来的」
-      （纯 CSS 的矢量文字倒影太锐利，反而像复制了一份）
-   3) 遮罩起点 0.6 → 0.78：靠近标题的那一段要更实，倒影的说服力
-      来自「近处清晰、远处化开」这个梯度 */
-.hero__reflection {
-  position: absolute;
-  inset: 100% 0 auto 0;
-  opacity: 0.4;
-  pointer-events: none;
-  user-select: none;
-  background: linear-gradient(180deg, #1b5cb0 0%, #0e3261 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  transform: scaleY(-1);
-  filter: blur(0.8px);
-  -webkit-mask-image: linear-gradient(to top, rgb(0 0 0 / 0.78) 0%, transparent 62%);
-  mask-image: linear-gradient(to top, rgb(0 0 0 / 0.78) 0%, transparent 62%);
-}
-
-/* 标语：白色凝胶面板胶囊 */
+/* 标语条：原纯白磨砂胶囊混进现代感，改成 Web2.0 蓝色凝胶渐变条。
+   与 GelButton 同一套高光配方：180deg 自上而下、顶部白高光、
+   底部深边，白字压深蓝段对比充足。 */
 .hero__tagline {
   display: inline-flex;
   align-items: center;
   margin: 0;
   padding: 12px 28px;
-  border: 1px solid var(--c-border);
+  border: 1px solid rgb(23 74 128 / 0.75);
   border-radius: 18px;
-  color: var(--c-text);
+  color: #ffffff;
   font-family: var(--font-head);
   font-size: clamp(1rem, 2.4vw, 1.1875rem);
   font-weight: 700;
-  background: linear-gradient(180deg, #ffffff 0%, #eef5fd 100%);
+  /* 顶端不用 #4f9cf0：白字压它只有 2.86:1（连大字号 3:1 都不到）。
+     收到 #2b72c6 后白字 4.86:1，叠顶部白高光仍有裕量；
+     渐变仍是「顶部亮 → 底部深」的 Web2.0 凝胶结构。 */
+  background: linear-gradient(180deg, #2b72c6 0%, #1f63b2 48%, #1d5fae 100%);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
-    0 4px 10px rgb(23 74 128 / 0.2),
-    0 12px 26px rgb(23 74 128 / 0.16);
+    inset 0 1px 0 rgb(255 255 255 / 0.4),
+    inset 0 -3px 6px rgb(10 44 96 / 0.32),
+    0 4px 10px rgb(23 74 128 / 0.22);
+  text-shadow: 0 1px 1px rgb(9 40 88 / 0.45);
 }
 
-/* 简介：半透明白磨砂胶囊 */
+/* 简介条：同一族但明度高一档（主次靠明暗，不换材质） */
 .hero__desc {
   max-width: 560px;
   margin: 0;
   padding: 12px 24px;
-  border: 1px solid rgb(255 255 255 / 0.55);
+  border: 1px solid rgb(23 74 128 / 0.55);
   border-radius: 14px;
-  color: var(--c-text);
+  color: #103c7d;
   font-size: 0.9375rem;
-  background: rgb(255 255 255 / 0.62);
-  box-shadow: 0 2px 8px rgb(23 74 128 / 0.14);
+  background: linear-gradient(180deg, #eaf4ff 0%, #c9e0f8 52%, #a9ccef 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    inset 0 -2px 5px rgb(23 74 128 / 0.16),
+    0 3px 8px rgb(23 74 128 / 0.18);
 }
 
 .hero__actions {

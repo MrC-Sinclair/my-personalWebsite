@@ -98,7 +98,7 @@ function revealClass(index: number): string {
 .exp-title {
   margin: calc(var(--space) * 1.3) 0 var(--gap);
   font-family: var(--font-head);
-  font-size: clamp(21px, 2.6vw, 28px);
+  font-size: var(--scale-heading-fluid);
   font-weight: 700;
   color: var(--c-text);
 }
@@ -157,7 +157,7 @@ function revealClass(index: number): string {
 .exp-role {
   margin: 0 0 4px;
   font-family: var(--font-head);
-  font-size: 18px;
+  font-size: var(--scale-body);
   font-weight: 700;
   color: var(--c-text);
 }

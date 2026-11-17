@@ -2,8 +2,9 @@
   Soft3DIndex - soft-3d 风格首页（/style/soft-3d/）
   ------------------------------------------------------------
   布局轴：空间舞台 + 漂浮物体拼摆——整页是一座深色空间
-  「展台」：英雄区是一组受光球体（主球 + 卫星 + 星环 +
-  立方体）与巨型渐变标题；下方各区块是摆在不同 Z 层的
+  「展台」：英雄区只留一颗主球作视觉锚点并退到内容背后做
+  景深，前景是对齐球基线的真实文章舱（删掉原来三颗无构图
+  散落的卫星球与立方体）；左侧是巨型渐变标题，下方各区块是摆在不同 Z 层的
   漂浮物体（技能舱 / 里程碑 / 项目卡 / 刊物卡 / 联系舱），
   桌面端用 translateY + scale 表达前后层级，窄屏收敛为
   同层但保留物体感阴影与圆角。
@@ -35,22 +36,43 @@
           </div>
         </div>
 
-        <!-- 球体群：纯 CSS 物体，纯装饰 -->
-        <div class="hero-scene" aria-hidden="true">
-          <Soft3DOrb :size="66" variant="cyan" float :duration="6" :delay="0.6" class="sat sat-1" />
-          <Soft3DOrb
-            :size="44"
-            variant="pink"
-            float
-            ring
-            :duration="7.5"
-            :delay="1.4"
-            class="sat sat-2"
-          />
-          <Soft3DOrb :size="34" variant="mint" float :duration="5.4" :delay="2" class="sat sat-3" />
-          <span class="scene-cube" />
-          <Soft3DOrb :size="248" variant="violet" float :duration="8" class="hero-core" />
-          <span class="hero-floor" />
+        <!-- 空间舞台：单一主球作视觉锚点，退到内容背后做景深；
+             前景是真实文章舱，内容对齐主球基线。删掉原来三颗
+             无构图散落的卫星球与立方体，把腾出的位置交给内容。 -->
+        <div class="hero-stage">
+          <div class="hero-scene" aria-hidden="true">
+            <Soft3DOrb :size="248" variant="violet" float :duration="8" class="hero-core" />
+            <span class="hero-floor" />
+          </div>
+
+          <section class="hero-cabin" :aria-label="t('home.latestPosts')">
+            <header class="cabin-head">
+              <span class="cabin-kicker">{{ t('home.latestPosts') }}</span>
+              <span v-if="heroItems.length" class="cabin-total">{{ heroItems.length }}</span>
+            </header>
+
+            <div v-if="loading" class="cabin-loading" role="status">
+              <p class="sr-only">{{ t('common.loading') }}</p>
+              <span v-for="i in HERO_COUNT" :key="i" class="cabin-loading-line" aria-hidden="true"/>
+            </div>
+
+            <ol v-else-if="heroItems.length" class="cabin-list">
+              <li v-for="(item, i) in heroItems" :key="item.to">
+                <NuxtLink class="soft3d-hero-item" :to="item.to">
+                  <span class="cabin-no" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</span>
+                  <span class="cabin-main">
+                    <span class="cabin-title">{{ item.title }}</span>
+                    <span class="cabin-meta">
+                      <time :datetime="item.date">{{ item.dateText }}</time>
+                      <span v-if="item.category">{{ item.category }}</span>
+                    </span>
+                  </span>
+                  <span class="cabin-arrow" aria-hidden="true">→</span>
+                </NuxtLink>
+              </li>
+            </ol>
+            <p v-else class="cabin-empty">{{ t('blog.noResults') }}</p>
+          </section>
         </div>
       </section>
 
@@ -197,6 +219,8 @@
 <script setup lang="ts">
 import type { BlogPost } from '~/types/blog'
 import type { Project } from '~/types/project'
+import { contentSlug } from '~/utils/content'
+import { formatDate } from '~/utils/format'
 import Soft3DBackground from '../components/Soft3DBackground.vue'
 import Soft3DFloatNav from '../components/Soft3DFloatNav.vue'
 import Soft3DSectionHead from '../components/Soft3DSectionHead.vue'
@@ -210,11 +234,15 @@ import Soft3DOrb from '../components/Soft3DOrb.vue'
 
 /** 每区展示的文章 / 项目数量上限 */
 const FEATURED_LIMIT = 6
+/** 首屏文章舱条数 */
+const HERO_COUNT = 3
 
 const { t, locale } = useI18n()
 
 // 对外路由链接的本地化路径（模板中使用，需在 setup 中取得）
 const localePath = useLocalePath()
+// 首屏文章详情链接走共享层，风格层不重写路由拼接
+const { postPath } = useStyleContentPath()
 
 // —— 共享层数据（组件不直接调用 content API） ——
 // 技能分组与经历时间线已随「关于」区块下沉到 Soft3DAboutBlock
@@ -260,6 +288,17 @@ const projects = computed<Project[]>(() =>
 /** 加载态：仅在尚无任何数据时显示 */
 const loading = computed(
   () => (postsPending.value && !postsData.value) || (projectsPending.value && !projectsData.value),
+)
+
+/** 首屏文章舱：把共享层数据映射成真实条目（标题 / 日期 / 分类 / 详情链接） */
+const heroItems = computed(() =>
+  posts.value.slice(0, HERO_COUNT).map((post) => ({
+    title: post.title,
+    date: post.date,
+    dateText: formatDate(post.date, locale.value === 'zh' ? 'zh-CN' : 'en-US'),
+    category: post.category ?? '',
+    to: postPath(contentSlug(post.path)),
+  })),
 )
 
 // —— 导航锚点（label 随语言更新） ——
@@ -353,6 +392,14 @@ function revealClass(index: number): string {
   scroll-margin-top: 0;
 }
 
+/* 桌面：左文案 / 右舞台分栏，内容舱与主球形成对角构图 */
+@media (min-width: 1024px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(24px, 4vw, 64px);
+  }
+}
+
 .hero-copy {
   max-width: 60rem;
 }
@@ -374,6 +421,7 @@ function revealClass(index: number): string {
 .hero-name {
   margin: 0 0 16px;
   font-family: var(--font-head);
+  /* 首屏展示级例外：空间里的大标题；窄屏覆盖见下方 @media，须一并保留。 */
   font-size: clamp(48px, 8.4vw, 92px);
   font-weight: 800;
   line-height: 1.04;
@@ -387,7 +435,7 @@ function revealClass(index: number): string {
 .hero-tagline {
   margin: 0 0 12px;
   padding-left: 16px;
-  font-size: clamp(18px, 2.2vw, 21px);
+  font-size: var(--scale-lead-fluid);
   font-weight: 600;
   color: var(--c-accent-2);
   border-left: 3px solid var(--c-accent-2);
@@ -463,81 +511,209 @@ function revealClass(index: number): string {
   transform: var(--press-transform);
 }
 
-/* —— 球体群场景 —— */
-.hero-scene {
+/* —— 空间舞台：单一主球退到景深，真实内容舱浮在前景 —— */
+.hero-stage {
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: flex-start;
   min-height: 340px;
 }
 
-/* 卫星物体：绝对定位在主球四周，各占一层 */
-.sat {
+/* 主球作为唯一视觉锚点：桌面偏到右上，压低透明度退到景深，
+   不再被内容舱整块盖住（评审要「定一颗主球作视觉锚点」）。 */
+.hero-scene {
   position: absolute;
-  z-index: 2;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.42;
 }
 
-.sat-1 {
-  top: 4%;
-  left: 6%;
-}
-
-.sat-2 {
-  right: 8%;
-  bottom: 22%;
-}
-
-.sat-3 {
-  top: 18%;
-  right: 14%;
-}
-
-/* 立方小物体：圆角方块受光体，与球体拉开几何差异 */
-.scene-cube {
-  position: absolute;
-  bottom: 8%;
-  left: 12%;
-  z-index: 2;
-  width: 52px;
-  height: 52px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  border-radius: 16px;
-  box-shadow:
-    inset 0 2px 5px rgb(255 255 255 / 0.4),
-    inset 0 -8px 14px rgb(9 5 40 / 0.5),
-    0 16px 28px rgb(99 102 241 / 0.4);
-  transform: rotate(14deg);
-  animation: cube-float 6.2s ease-in-out 1s infinite;
-}
-
-@keyframes cube-float {
-  0%,
-  100% {
-    transform: rotate(14deg) translateY(0);
+@media (min-width: 1024px) {
+  .hero-stage {
+    min-height: 440px;
+    align-items: flex-end;
   }
 
-  50% {
-    transform: rotate(9deg) translateY(-10px);
+  .hero-scene {
+    align-items: flex-start;
+    justify-content: flex-end;
+    opacity: 0.66;
+  }
+
+  .hero-core {
+    margin-top: -12px;
+    /* 不用负 margin-right：248px 主球会越出 480px 舞台右缘 29px */
+    margin-right: 0;
+  }
+
+  .hero-floor {
+    bottom: 34%;
+  }
+
+  /* 内容舱收窄靠左，主球从右上方露出一部分，形成对角构图。
+     用 .hero-stage 限定特异性：.hero-cabin 的 width:100% 定义在后面，
+     同特异性会被覆盖，必须提高一级。 */
+  .hero-stage .hero-cabin {
+    width: 88%;
+    margin-right: auto;
   }
 }
 
-/* 主球：场景核心 */
 .hero-core {
   position: relative;
-  z-index: 1;
+  z-index: 0;
+  flex: none;
+  transform: scale(1.12);
 }
 
 /* 地面接触影：物体「摆在」空间里的落点 */
 .hero-floor {
   position: absolute;
-  bottom: -6px;
+  bottom: 8%;
   left: 50%;
-  width: 58%;
+  width: 48%;
   height: 34px;
   background: radial-gradient(ellipse, rgb(5 3 20 / 0.6), rgb(5 3 20 / 0) 70%);
   filter: blur(7px);
   transform: translateX(-50%);
+}
+
+/* —— 文章舱：对齐主球基线的内容卡 —— */
+.hero-cabin {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 0;
+  padding: var(--scale-space-3);
+  background: color-mix(in srgb, var(--c-surface) 88%, transparent);
+  border: var(--border-w) solid var(--c-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow), inset 0 1px 3px rgb(255 255 255 / 0.32);
+}
+
+.cabin-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gap);
+  margin-bottom: var(--scale-space-2);
+}
+
+.cabin-kicker {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--c-accent);
+}
+
+.cabin-total {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.cabin-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.soft3d-hero-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--scale-hit);
+  padding: 12px 8px;
+  color: var(--c-text);
+  text-decoration: none;
+  border-top: var(--border-w) solid var(--c-border);
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.cabin-list li:last-child .soft3d-hero-item {
+  border-bottom: var(--border-w) solid var(--c-border);
+}
+
+.soft3d-hero-item:hover {
+  background: color-mix(in srgb, var(--c-accent) 10%, transparent);
+  transform: translateY(-2px);
+}
+
+.cabin-no {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-accent);
+}
+
+.cabin-main {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cabin-title {
+  font-size: var(--scale-body);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.cabin-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.cabin-arrow {
+  flex: none;
+  margin-left: auto;
+  color: var(--c-accent);
+  opacity: 0.75;
+  transition: transform var(--transition);
+}
+
+.soft3d-hero-item:hover .cabin-arrow {
+  transform: translateX(4px);
+}
+
+.cabin-empty {
+  margin: 0;
+  padding: 16px 0;
+  font-size: var(--fs-base);
+  color: var(--c-muted);
+}
+
+.cabin-loading {
+  display: grid;
+  gap: var(--gap);
+}
+
+.cabin-loading-line {
+  height: var(--scale-space-5);
+  background: color-mix(in srgb, var(--c-border) 45%, transparent);
+  border-radius: var(--radius-sm);
+  animation: cabin-breathe 1.4s ease-in-out infinite;
+}
+
+@keyframes cabin-breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
 
 /* ============ ③ 项目网格：三列 Z 层 ============ */
@@ -721,6 +897,7 @@ function revealClass(index: number): string {
 }
 
 .top-orb-arrow {
+  /* 箭头图标：图标尺寸是独立体系，不走排印刻度。 */
   font-size: 21px;
   font-weight: 700;
   color: var(--c-on-accent);
@@ -733,9 +910,9 @@ function revealClass(index: number): string {
     padding-top: var(--space);
   }
 
-  .hero-scene {
+  .hero-stage {
     order: 2;
-    min-height: 300px;
+    min-height: 280px;
   }
 }
 
@@ -745,14 +922,17 @@ function revealClass(index: number): string {
     gap: calc(var(--space) * 1.4);
   }
 
-  /* 场景整体缩放，卫星收拢，主球仍是视觉核心 */
+  /* 窄屏主球再退一层景深，不缩放内容舱（内容优先） */
   .hero-scene {
-    transform: scale(0.72);
-    transform-origin: center;
-    margin: -32px 0;
+    opacity: 0.28;
+  }
+
+  .hero-core {
+    transform: scale(0.86);
   }
 
   .hero-name {
+    /* 同上：这是巨型姓名的窄屏覆盖，与桌面例外是一组，不要单独接入刻度。 */
     font-size: clamp(40px, 12vw, 60px);
   }
 
@@ -768,8 +948,20 @@ function revealClass(index: number): string {
   .more-arrow,
   .top-orb,
   .hero-scene,
+  .soft3d-hero-item,
+  .cabin-arrow,
   .z-item {
     transition: none;
+  }
+
+  .cabin-loading-line {
+    animation: none;
+    opacity: 0.6;
+  }
+
+  .soft3d-hero-item:hover,
+  .soft3d-hero-item:hover .cabin-arrow {
+    transform: none;
   }
 
   .cta-solid:hover,
@@ -784,10 +976,6 @@ function revealClass(index: number): string {
   .more:active,
   .top-orb:active {
     transform: none;
-  }
-
-  .scene-cube {
-    animation: none;
   }
 }
 </style>

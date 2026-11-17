@@ -110,6 +110,7 @@ const safeTags = computed(() => (Array.isArray(props.post.tags) ? props.post.tag
   display: inline-flex;
   flex: none;
   align-items: center;
+  /* 文章日期标签，非可点控件；保留。 */
   min-height: 34px;
   padding: 4px 16px;
   overflow: hidden;

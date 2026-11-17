@@ -75,7 +75,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 0 12px;
   font-size: var(--fs-small);
   font-weight: 700;

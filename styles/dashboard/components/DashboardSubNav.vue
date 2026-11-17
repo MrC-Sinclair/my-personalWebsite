@@ -138,7 +138,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   /* 同 DashboardSidebar：站名是可点元素，撑到项目约定的 40px 命中高度 */
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 2px 0;
   font-family: var(--font-head);
   font-size: var(--fs-base);
@@ -176,8 +176,8 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: var(--scale-hit);
+  min-width: var(--scale-hit);
   padding: 8px 12px;
   font-family: var(--font-mono);
   font-size: var(--fs-small);
@@ -215,7 +215,7 @@ function isActive(path: string): boolean {
   flex: none;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-small);
   color: var(--c-muted);
@@ -259,7 +259,7 @@ function isActive(path: string): boolean {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: var(--scale-hit);
   padding: 8px 12px;
   font-size: var(--fs-base);
   color: var(--c-muted);

@@ -161,7 +161,7 @@ function tagsText(tags: unknown): string {
 /* 项目名：大号 + 强调色下划线生长 */
 .proj-title {
   margin: 0;
-  font-size: clamp(24px, 3vw, 40px);
+  font-size: var(--scale-subtitle-fluid);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -223,8 +223,8 @@ function tagsText(tags: unknown): string {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
-  font-size: 14px;
+  min-height: var(--scale-hit);
+  font-size: var(--scale-meta);
   font-weight: 700;
   color: var(--c-text);
   text-decoration: none;
