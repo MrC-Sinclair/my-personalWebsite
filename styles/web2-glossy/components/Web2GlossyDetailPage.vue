@@ -28,7 +28,7 @@
         <span class="reflect" aria-hidden="true">{{ view.doc.title }}</span>
 
         <div class="meta">
-          <span class="pill pill--date">{{ formatDate(view.doc.date) }}</span>
+          <span class="pill pill--date">{{ formatDate(view.doc.date, locale) }}</span>
           <span v-if="category" class="pill pill--cat">{{ category }}</span>
           <span v-for="tag in tags" :key="tag" class="pill">{{ tag }}</span>
         </div>
@@ -93,7 +93,7 @@ const props = defineProps<{ view: DetailView }>()
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const kindLabel = computed(() => t(props.view.kind === 'post' ? 'nav.blog' : 'nav.projects'))
 

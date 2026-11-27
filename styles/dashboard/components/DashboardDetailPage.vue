@@ -29,7 +29,7 @@
       <div class="kpis">
         <div class="kpi">
           <span class="kpi-label">{{ t('blog.publishedAt') }}</span>
-          <span class="kpi-value kpi-value--sm">{{ formatDate(view.doc.date) }}</span>
+          <span class="kpi-value kpi-value--sm">{{ formatDate(view.doc.date, locale) }}</span>
         </div>
         <div v-if="category" class="kpi">
           <span class="kpi-label">{{ t('blog.categories') }}</span>
@@ -107,7 +107,7 @@ const props = defineProps<{ view: DetailView }>()
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const { styleId } = useStyleContentPath()
 

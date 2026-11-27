@@ -28,7 +28,7 @@
         <dl class="readout">
           <div class="readout-row">
             <dt>{{ t('blog.publishedAt') }}</dt>
-            <dd>{{ formatDate(view.doc.date) }}</dd>
+            <dd>{{ formatDate(view.doc.date, locale) }}</dd>
           </div>
           <div v-if="category" class="readout-row">
             <dt>{{ t('blog.categories') }}</dt>
@@ -91,7 +91,7 @@ const props = defineProps<{ view: DetailView }>()
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 /** 面板编号：文章 = 03（与首页博客区块编号一致），项目 = 02 */
 const kindCode = computed(() => (props.view.kind === 'post' ? '03' : '02'))

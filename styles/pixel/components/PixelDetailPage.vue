@@ -28,7 +28,7 @@
         <dl class="status">
           <div class="status-row">
             <dt>{{ t('blog.publishedAt') }}</dt>
-            <dd>{{ formatDate(view.doc.date) }}</dd>
+            <dd>{{ formatDate(view.doc.date, locale) }}</dd>
           </div>
           <div v-if="category" class="status-row">
             <dt>{{ t('blog.categories') }}</dt>
@@ -93,7 +93,7 @@ const props = defineProps<{ view: DetailView }>()
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const kindLabel = computed(() => t(props.view.kind === 'post' ? 'nav.blog' : 'nav.projects'))
 

@@ -32,7 +32,7 @@
         <dl class="header">
           <div class="header-row">
             <dt>date</dt>
-            <dd>{{ formatDate(view.doc.date) }}</dd>
+            <dd>{{ formatDate(view.doc.date, locale) }}</dd>
           </div>
           <div v-if="category" class="header-row">
             <dt>category</dt>
@@ -103,7 +103,7 @@ const props = defineProps<{ view: DetailView }>()
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const { styleId } = useStyleContentPath()
 

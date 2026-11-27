@@ -25,7 +25,7 @@
         <h1 class="title">{{ view.doc.title }}</h1>
 
         <div class="meta">
-          <span class="chip chip--date">{{ formatDate(view.doc.date) }}</span>
+          <span class="chip chip--date">{{ formatDate(view.doc.date, locale) }}</span>
           <span v-if="category" class="chip">{{ category }}</span>
           <span v-for="tag in tags" :key="tag" class="chip">{{ tag }}</span>
         </div>
@@ -81,7 +81,7 @@ const props = defineProps<{ view: DetailView }>()
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const kindLabel = computed(() =>
   props.view.kind === 'post' ? t('nav.blog') : t('nav.projects'),

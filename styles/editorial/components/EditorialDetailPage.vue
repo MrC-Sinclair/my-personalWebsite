@@ -29,7 +29,7 @@
         <h1 class="title">{{ view.doc.title }}<span class="period" aria-hidden="true">.</span></h1>
 
         <p class="meta">
-          <span class="meta-date">{{ formatDate(view.doc.date) }}</span>
+          <span class="meta-date">{{ formatDate(view.doc.date, locale) }}</span>
           <template v-if="category">
             <span class="sep" aria-hidden="true">/</span>
             <span>{{ category }}</span>
@@ -107,7 +107,7 @@ const props = defineProps<{ view: DetailView }>()
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const { styleId } = useStyleContentPath()
 

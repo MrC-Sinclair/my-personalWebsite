@@ -23,7 +23,7 @@
 
       <!-- 元信息行：日期 · 分类 · 标签 -->
       <p class="meta">
-        <span class="meta-date">{{ formatDate(view.doc.date) }}</span>
+        <span class="meta-date">{{ formatDate(view.doc.date, locale) }}</span>
         <template v-if="category">
           <span class="dot" aria-hidden="true">·</span>
           <span>{{ category }}</span>
@@ -85,7 +85,7 @@ import MinimalismSubPage from './MinimalismSubPage.vue'
 
 const props = defineProps<{ view: DetailView }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)

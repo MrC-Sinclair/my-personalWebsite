@@ -32,7 +32,7 @@
       <div class="field">
         <div class="field-row">
           <span class="field-key">{{ t('blog.publishedAt') }}</span>
-          <span class="field-val">{{ formatDate(view.doc.date) }}</span>
+          <span class="field-val">{{ formatDate(view.doc.date, locale) }}</span>
         </div>
         <div v-if="category" class="field-row">
           <span class="field-key">{{ t('blog.categories') }}</span>
@@ -97,7 +97,7 @@ const props = defineProps<{ view: DetailView }>()
 /** 面包屑（首页 > 列表 > 当前）：层级与路径由共享层算，风格只管画 */
 const { items } = useDetailBreadcrumb(() => props.view)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 /** 窗口底部状态条：仿老系统的文件信息行 */
 const statusText = computed(() => `${formatDate(props.view.doc.date)} · ${props.view.doc.title}`)
